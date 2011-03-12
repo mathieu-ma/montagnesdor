@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans 	xmlns="http://www.springframework.org/schema/beans"
+       	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+
+	<bean id="LocalesAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultLocalesAssembler">
+		<property name="logger">
+			<bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultLocalesAssembler</value></constructor-arg>
+   		   	</bean>
+		</property>
+	</bean>
+	<bean id="MdoTableAsEnumsAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultMdoTableAsEnumsAssembler">
+		<property name="logger">
+			<bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultMdoTableAsEnumsAssembler</value></constructor-arg>
+   		   	</bean>
+		</property>
+	</bean>
+	<bean id="VatsAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultValueAddedTaxesAssembler">
+		<property name="logger">
+			<bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultValueAddedTaxesAssembler</value></constructor-arg>
+   		   	</bean>
+		</property>
+		<property name="mdoTableAsEnumsAssembler" ref="MdoTableAsEnumsAssembler" />
+	</bean>
+	<bean id="TableTypesAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultTableTypesAssembler">
+		<property name="logger">
+			<bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultTableTypesAssembler</value></constructor-arg>
+   		   	</bean>
+		</property>
+		<property name="mdoTableAsEnumsAssembler" ref="MdoTableAsEnumsAssembler" />
+	</bean>
+	<bean id="RestaurantPrefixTablesAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultRestaurantPrefixTablesAssembler">
+		<property name="logger">
+			<bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultRestaurantPrefixTablesAssembler</value></constructor-arg>
+   		   	</bean>
+		</property>
+		<property name="mdoTableAsEnumsAssembler" ref="MdoTableAsEnumsAssembler" />
+		<property name="tableTypesAssembler" ref="TableTypesAssembler" />
+	</bean>
+	<bean id="RestaurantVatsAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultRestaurantValueAddedTaxesAssembler">
+		<property name="logger">
+			<bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultRestaurantValueAddedTaxesAssembler</value></constructor-arg>
+   		   	</bean>
+		</property>
+		<property name="vatsAssembler" ref="VatsAssembler" />
+	</bean>
+	<bean id="RestaurantsAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultRestaurantsAssembler">
+		<property name="logger">
+			<bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultRestaurantsAssembler</value></constructor-arg>
+   		   	</bean>
+		</property>
+		<property name="mdoTableAsEnumsAssembler" ref="MdoTableAsEnumsAssembler" />
+		<property name="restaurantVatsAssembler" ref="RestaurantVatsAssembler" />
+		<property name="restaurantPrefixTablesAssembler" ref="RestaurantPrefixTablesAssembler" />
+	</bean>
+	<bean id="UserRestaurantsAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultUserRestaurantsAssembler">
+		<property name="logger">
+			<bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultUserRestaurantsAssembler</value></constructor-arg>
+   		   	</bean>
+		</property>
+		<property name="restaurantsAssembler" ref="RestaurantsAssembler" />
+	</bean>
+	<bean id="UsersAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultUsersAssembler">
+		<property name="logger">
+			<bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultUsersAssembler</value></constructor-arg>
+   		   	</bean>
+		</property>
+		<property name="mdoTableAsEnumsAssembler" ref="MdoTableAsEnumsAssembler" />
+		<property name="userRestaurantsAssembler" ref="UserRestaurantsAssembler" />
+	</bean>
+	<bean id="UserRolesAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultUserRolesAssembler">
+		<property name="logger">
+			<bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultUserRolesAssembler</value></constructor-arg>
+   		   	</bean>
+		</property>
+		<property name="mdoTableAsEnumsAssembler" ref="MdoTableAsEnumsAssembler" />
+	</bean>
+	<bean id="UserLocalesAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultUserLocalesAssembler">
+		<property name="logger">
+			<bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultUserLocalesAssembler</value></constructor-arg>
+   		   	</bean>
+		</property>
+		<property name="localesAssembler" ref="LocalesAssembler" />
+	</bean>
+	<bean id="UserAuthenticationsAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultUserAuthenticationsAssembler">
+		<property name="logger">
+			<bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultUserAuthenticationsAssembler</value></constructor-arg>
+   		   	</bean>
+		</property>
+		<property name="localesAssembler" ref="LocalesAssembler" />
+		<property name="restaurantsAssembler" ref="RestaurantsAssembler" />
+		<property name="usersAssembler" ref="UsersAssembler" />
+		<property name="userRolesAssembler" ref="UserRolesAssembler" />
+		<property name="userLocalesAssembler" ref="UserLocalesAssembler" />
+	</bean>
+	<bean id="CategoriesAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultCategoriesAssembler">
+		<property name="logger">
+			<bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultCategoriesAssembler</value></constructor-arg>
+   		   	</bean>
+		</property>
+		<property name="mdoTableAsEnumsAssembler" ref="MdoTableAsEnumsAssembler" />
+	</bean>
+	<bean id="ProductPartsAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultProductPartsAssembler">
+		<property name="logger">
+			<bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultProductPartsAssembler</value></constructor-arg>
+   		   	</bean>
+		</property>
+		<property name="mdoTableAsEnumsAssembler" ref="MdoTableAsEnumsAssembler" />
+	</bean>
+	<bean id="ProductCategoriesAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultProductCategoriesAssembler">
+		<property name="logger">
+			<bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultProductCategoriesAssembler</value></constructor-arg>
+   		   	</bean>
+		</property>
+		<property name="categoriesAssembler" ref="CategoriesAssembler" />
+	</bean>
+	<bean id="ProductsAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultProductsAssembler">
+		<property name="logger">
+			<bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultProductsAssembler</value></constructor-arg>
+   		   	</bean>
+		</property>
+		<property name="productCategoriesAssembler" ref="ProductCategoriesAssembler" />
+		<property name="restaurantsAssembler" ref="RestaurantsAssembler" />
+		<property name="vatsAssembler" ref="VatsAssembler" />
+	</bean>
+	<bean id="ProductSpecialCodesAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultProductSpecialCodesAssembler">
+		<property name="logger">
+			<bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultProductSpecialCodesAssembler</value></constructor-arg>
+   		   	</bean>
+		</property>
+		<property name="mdoTableAsEnumsAssembler" ref="MdoTableAsEnumsAssembler" />
+		<property name="restaurantsAssembler" ref="RestaurantsAssembler" />
+	</bean>
+
+	<bean id="DaoSessionFactory" class="fr.mch.mdo.restaurant.dao.hibernate.DefaultSessionFactory">
+		<property name="logger">
+			<bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.dao.hibernate.DefaultSessionFactory</value></constructor-arg>
+   		   	</bean>
+		</property>
+	</bean>
+
+	<bean id="LocalesManager" class="fr.mch.mdo.restaurant.services.business.managers.locales.DefaultLocalesManager">
+		<property name="logger">
+			 <bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.locales.DefaultLocalesManager</value></constructor-arg>
+   		   	</bean>
+		</property>	
+		<property name="assembler" ref="LocalesAssembler" />
+		<property name="dao">
+			<bean class="fr.mch.mdo.restaurant.dao.locales.hibernate.DefaultLocalesDao">
+				<property name="logger">
+					<bean factory-bean="Logger" factory-method="getLogger">
+					 	<constructor-arg><value>fr.mch.mdo.restaurant.dao.locales.hibernate.DefaultLocalesDao</value></constructor-arg>
+		   		   	</bean>
+				</property>
+				<property name="bean">
+					<bean class="fr.mch.mdo.restaurant.dao.beans.Locale"/>
+				</property>
+				<property name="sessionFactory" ref="DaoSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="MdoTableAsEnumsManager" class="fr.mch.mdo.restaurant.services.business.managers.DefaultMdoTableAsEnumsManager">
+		<property name="logger">
+			 <bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.DefaultMdoTableAsEnumsManager</value></constructor-arg>
+   		   	</bean>
+		</property>	
+		<property name="assembler" ref="MdoTableAsEnumsAssembler" />
+		<property name="dao">
+			<bean class="fr.mch.mdo.restaurant.dao.hibernate.DefaultMdoTableAsEnumsDao">
+				<property name="logger">
+					<bean factory-bean="Logger" factory-method="getLogger">
+					 	<constructor-arg><value>fr.mch.mdo.restaurant.dao.hibernate.DefaultMdoTableAsEnumsDao</value></constructor-arg>
+		   		   	</bean>
+				</property>
+				<property name="bean">
+					<bean class="fr.mch.mdo.restaurant.dao.beans.MdoTableAsEnum"/>
+				</property>
+				<property name="sessionFactory" ref="DaoSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="TableTypesManager" class="fr.mch.mdo.restaurant.services.business.managers.tables.DefaultTableTypesManager">
+		<property name="mdoTableAsEnumsManager" ref="MdoTableAsEnumsManager" />
+		<property name="logger">
+			 <bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.tables.DefaultTableTypesManager</value></constructor-arg>
+   		   	</bean>
+		</property>	
+		<property name="assembler" ref="TableTypesAssembler" />
+		<property name="dao">
+			<bean class="fr.mch.mdo.restaurant.dao.tables.hibernate.DefaultTableTypesDao">
+				<property name="logger">
+					<bean factory-bean="Logger" factory-method="getLogger">
+					 	<constructor-arg><value>fr.mch.mdo.restaurant.dao.tables.hibernate.DefaultTableTypesDao</value></constructor-arg>
+		   		   	</bean>
+				</property>
+				<property name="bean">
+					<bean class="fr.mch.mdo.restaurant.dao.beans.TableType"/>
+				</property>
+				<property name="sessionFactory" ref="DaoSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="ValueAddedTaxesManager" class="fr.mch.mdo.restaurant.services.business.managers.products.DefaultValueAddedTaxesManager">
+		<property name="mdoTableAsEnumsManager" ref="MdoTableAsEnumsManager" />
+		<property name="logger">
+			 <bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.products.DefaultValueAddedTaxesManager</value></constructor-arg>
+   		   	</bean>
+		</property>	
+		<property name="assembler" ref="VatsAssembler" />
+		<property name="dao">
+			<bean class="fr.mch.mdo.restaurant.dao.products.hibernate.DefaultValueAddedTaxesDao">
+				<property name="logger">
+					<bean factory-bean="Logger" factory-method="getLogger">
+					 	<constructor-arg><value>fr.mch.mdo.restaurant.dao.products.hibernate.DefaultValueAddedTaxesDao</value></constructor-arg>
+		   		   	</bean>
+				</property>
+				<property name="bean">
+					<bean class="fr.mch.mdo.restaurant.dao.beans.ValueAddedTax"/>
+				</property>
+				<property name="sessionFactory" ref="DaoSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="RestaurantsManager" class="fr.mch.mdo.restaurant.services.business.managers.restaurants.DefaultRestaurantsManager">
+		<property name="valueAddedTaxesManager" ref="ValueAddedTaxesManager" />
+		<property name="mdoTableAsEnumsManager" ref="MdoTableAsEnumsManager" />
+		<property name="tableTypesManager" ref="TableTypesManager" />
+		<property name="logger">
+			 <bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.restaurants.DefaultRestaurantsManager</value></constructor-arg>
+   		   	</bean>
+		</property>	
+		<property name="assembler" ref="RestaurantsAssembler" />
+		<property name="dao">
+			<bean class="fr.mch.mdo.restaurant.dao.restaurants.hibernate.DefaultRestaurantsDao">
+				<property name="logger">
+					<bean factory-bean="Logger" factory-method="getLogger">
+					 	<constructor-arg><value>fr.mch.mdo.restaurant.dao.restaurants.hibernate.DefaultRestaurantsDao</value></constructor-arg>
+		   		   	</bean>
+				</property>
+				<property name="bean">
+					<bean class="fr.mch.mdo.restaurant.dao.beans.Restaurant"/>
+				</property>
+				<property name="sessionFactory" ref="DaoSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="UsersManager" class="fr.mch.mdo.restaurant.services.business.managers.users.DefaultUsersManager">
+		<property name="restaurantsManager" ref="RestaurantsManager" />
+		<property name="mdoTableAsEnumsManager" ref="MdoTableAsEnumsManager" />
+		<property name="logger">
+			 <bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.users.DefaultUsersManager</value></constructor-arg>
+   		   	</bean>
+		</property>	
+		<property name="assembler" ref="UsersAssembler" />
+		<property name="dao">
+			<bean class="fr.mch.mdo.restaurant.dao.users.hibernate.DefaultUsersDao">
+				<property name="logger">
+					<bean factory-bean="Logger" factory-method="getLogger">
+					 	<constructor-arg><value>fr.mch.mdo.restaurant.dao.users.hibernate.DefaultUsersDao</value></constructor-arg>
+		   		   	</bean>
+				</property>
+				<property name="bean">
+					<bean class="fr.mch.mdo.restaurant.dao.beans.User"/>
+				</property>
+				<property name="sessionFactory" ref="DaoSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="UserRolesManager" class="fr.mch.mdo.restaurant.services.business.managers.users.DefaultUserRolesManager">
+		<property name="localesManager" ref="LocalesManager" />
+		<property name="logger">
+			 <bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.users.DefaultUserRolesManager</value></constructor-arg>
+   		   	</bean>
+		</property>	
+		<property name="assembler" ref="UserRolesAssembler" />
+		<property name="dao">
+			<bean class="fr.mch.mdo.restaurant.dao.users.hibernate.DefaultUserRolesDao">
+				<property name="logger">
+					<bean factory-bean="Logger" factory-method="getLogger">
+					 	<constructor-arg><value>fr.mch.mdo.restaurant.dao.users.hibernate.DefaultUserRolesDao</value></constructor-arg>
+		   		   	</bean>
+				</property>
+				<property name="bean">
+					<bean class="fr.mch.mdo.restaurant.dao.beans.UserRole"/>
+				</property>
+				<property name="sessionFactory" ref="DaoSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+		
+	<bean id="UserAuthenticationsManager" class="fr.mch.mdo.restaurant.services.business.managers.users.DefaultUserAuthenticationsManager">
+		<property name="logger">
+			 <bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.users.DefaultUserAuthenticationsManager</value></constructor-arg>
+   		   	</bean>
+		</property>	
+		<property name="assembler" ref="UserAuthenticationsAssembler" />
+		<property name="dao">
+			<bean class="fr.mch.mdo.restaurant.dao.users.hibernate.DefaultUserAuthenticationsDao">
+				<property name="logger">
+					<bean factory-bean="Logger" factory-method="getLogger">
+					 	<constructor-arg><value>fr.mch.mdo.restaurant.dao.users.hibernate.DefaultUserAuthenticationsDao</value></constructor-arg>
+		   		   	</bean>
+				</property>
+				<property name="bean">
+					<bean class="fr.mch.mdo.restaurant.dao.beans.UserAuthentication"/>
+				</property>
+				<property name="sessionFactory" ref="DaoSessionFactory" />
+			</bean>
+		</property>
+	</bean>		
+
+	<bean id="CategoriesManager" class="fr.mch.mdo.restaurant.services.business.managers.products.DefaultCategoriesManager">
+		<property name="logger">
+			 <bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.products.DefaultCategoriesManager</value></constructor-arg>
+   		   	</bean>
+		</property>	
+		<property name="assembler" ref="CategoriesAssembler" />
+		<property name="dao">
+			<bean class="fr.mch.mdo.restaurant.dao.products.hibernate.DefaultCategoriesDao">
+				<property name="logger">
+					<bean factory-bean="Logger" factory-method="getLogger">
+					 	<constructor-arg><value>fr.mch.mdo.restaurant.dao.products.hibernate.DefaultCategoriesDao</value></constructor-arg>
+		   		   	</bean>
+				</property>
+				<property name="bean">
+					<bean class="fr.mch.mdo.restaurant.dao.beans.Category"/>
+				</property>
+				<property name="sessionFactory" ref="DaoSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="ProductPartsManager" class="fr.mch.mdo.restaurant.services.business.managers.products.DefaultProductPartsManager">
+		<property name="logger">
+			 <bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.products.DefaultProductPartsManager</value></constructor-arg>
+   		   	</bean>
+		</property>	
+		<property name="assembler" ref="ProductPartsAssembler" />
+		<property name="dao">
+			<bean class="fr.mch.mdo.restaurant.dao.products.hibernate.DefaultProductPartsDao">
+				<property name="logger">
+					<bean factory-bean="Logger" factory-method="getLogger">
+					 	<constructor-arg><value>fr.mch.mdo.restaurant.dao.products.hibernate.DefaultProductPartsDao</value></constructor-arg>
+		   		   	</bean>
+				</property>
+				<property name="bean">
+					<bean class="fr.mch.mdo.restaurant.dao.beans.ProductPart"/>
+				</property>
+				<property name="sessionFactory" ref="DaoSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="ProductsManager" class="fr.mch.mdo.restaurant.services.business.managers.products.DefaultProductsManager">
+		<property name="logger">
+			 <bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.products.DefaultProductsManager</value></constructor-arg>
+   		   	</bean>
+		</property>	
+		<property name="assembler" ref="ProductsAssembler" />
+		<property name="dao">
+			<bean class="fr.mch.mdo.restaurant.dao.products.hibernate.DefaultProductsDao">
+				<property name="logger">
+					<bean factory-bean="Logger" factory-method="getLogger">
+					 	<constructor-arg><value>fr.mch.mdo.restaurant.dao.products.hibernate.DefaultProductsDao</value></constructor-arg>
+		   		   	</bean>
+				</property>
+				<property name="bean">
+					<bean class="fr.mch.mdo.restaurant.dao.beans.Product"/>
+				</property>
+				<property name="sessionFactory" ref="DaoSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="ProductSpecialCodesManager" class="fr.mch.mdo.restaurant.services.business.managers.products.DefaultProductSpecialCodesManager">
+		<property name="logger">
+			 <bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.products.DefaultProductSpecialCodesManager</value></constructor-arg>
+   		   	</bean>
+		</property>	
+		<property name="assembler" ref="ProductSpecialCodesAssembler" />
+		<property name="dao">
+			<bean class="fr.mch.mdo.restaurant.dao.products.hibernate.DefaultProductSpecialCodesDao">
+				<property name="logger">
+					<bean factory-bean="Logger" factory-method="getLogger">
+					 	<constructor-arg><value>fr.mch.mdo.restaurant.dao.products.hibernate.DefaultProductSpecialCodesDao</value></constructor-arg>
+		   		   	</bean>
+				</property>
+				<property name="bean">
+					<bean class="fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode"/>
+				</property>
+				<property name="sessionFactory" ref="DaoSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+</beans>       

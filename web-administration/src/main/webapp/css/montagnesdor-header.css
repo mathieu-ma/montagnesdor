@@ -1,0 +1,278 @@
+	#global-transparent
+	{
+		/* effet de transparence : merci Alsacreation */
+		position: absolute;
+		background: red;
+		filter:alpha(opacity=40);
+		-moz-opacity:.40;
+		opacity:.40;
+		height: 100%;
+		width: 100%;
+		top:0;
+		left:0;
+	}
+	
+	img.logo1
+	{
+		height: 19px;
+		width:  19px;
+	}
+
+	/*START flag*/
+	#temp-image-flag
+	{
+		display: none;
+	}
+	
+	img.flag-unselected
+	{
+		cursor: pointer;
+		border-width: 0px;
+	}
+	
+	img.flag-selected, img.flag-unselected:hover
+	{
+		border-color: white;
+		border-width: 2px;
+		border-style: solid;
+	}
+	
+	img.flag-selected, img.flag-unselected
+	{
+		height: 20px;
+		width:  30px;
+	}
+	/*END flag*/
+	
+	div#header label 
+	{
+		font-weight: bold;
+		font-size: 11px;
+		/*23 is input type=text height*/
+		line-height: 23px;
+	}
+
+	/*START menu top*/
+	div.header-menu-top
+	{
+		width: 80%;
+		float: left;
+	}
+	
+	#menu-top
+	{
+		z-index: 100000;
+		position: fixed;
+		overflow: visible;
+		width: 100%;
+	}
+	
+	#menu-top ul
+	{
+		float:					left;
+		list-style-image:		none;
+		list-style-position:	outside;
+		list-style-type:		none;
+		margin:					0pt;
+		padding:				0pt;
+		width:					13em;
+	}
+	
+	#menu-top h2
+	{
+		background:#000000 none repeat scroll 0%;
+		color:#FFFFFF;
+	}
+	
+	#menu-top ul>li>h2
+	{
+		text-align: center;
+	}
+	
+	
+	#menu-top h2:hover
+	{
+		background-color: #FFB73D;
+		color:#000000;
+	}
+	
+	#menu-top h2.toggle 
+	{
+		background-color: #FFFFFF;
+		color:#000000;
+	}
+	
+	#menu-top a, #menu-top h2
+	{
+		border-color:#CCCCCC rgb(136, 136, 136) rgb(85, 85, 85) rgb(187, 187, 187);
+		border-style:solid;
+		border-width:1px;
+		display:block;
+		font-family:arial,helvetica,sans-serif;
+		font-size:11px;
+		font-size-adjust:none;
+		font-stretch:normal;
+		font-style:normal;
+		font-variant:normal;
+		font-weight:bold;
+		line-height:16px;
+		margin:0pt;
+		padding:2px 3px;
+	}
+	
+	#menu-top li 
+	{
+		position: relative;
+	}
+	
+	#menu-top ul ul 
+	{
+		position: absolute;
+	}
+
+	#menu-top ul ul ul 
+	{
+		position: absolute;
+		top: 0;
+		left: 100%;
+	}
+
+	/*Use for IE*/
+	#menu-top li 
+	{
+		float: left; 
+		width: 100%;
+		background: black;
+	}
+
+	div#menu-top ul ul,
+	div#menu-top ul li:hover ul ul,
+	div#menu-top ul ul li:hover ul ul
+	{
+		display: none;
+	}
+
+	div#menu-top ul li:hover ul,
+	div#menu-top ul ul li:hover ul,
+	div#menu-top ul ul ul li:hover ul
+	{
+		display: block;
+	}	
+	/*END menu top*/
+
+	/*START date header*/
+	div.header-date label.pointer
+	{
+		cursor: pointer;
+	}
+
+	div.header-date label.no-pointer
+	{
+		cursor: inherit;
+	}
+
+	div.header-date label.pointer, div.header-date label.no-pointer
+	{
+		/*Used by ie to display next sibling element after this label block*/
+		display: block;
+	}
+
+	div.header-date ul
+	{
+		float:left;
+		list-style-image:none;
+		list-style-position:outside;
+		list-style-type:none;
+		margin:0pt;
+		padding:0pt;
+	}
+	
+	div.header-date li
+	{
+		position:relative;
+	}
+
+	#header-date-form-transparent
+	{
+		z-index: 100000;
+			
+		/* effet de transparence : merci Alsacreation */
+		background: black;
+		filter:alpha(opacity=80);
+		-moz-opacity:.80;
+		opacity:.80;
+	}
+
+	#header-date-form-opaque, #header-date-form-transparent
+	{	
+		display: none;
+		
+		background: black;
+		
+		position: absolute;
+		
+		height: 800%;
+		width: 350%;
+	}
+	
+	#header-date-form-opaque 
+	{
+		color: white;
+	}
+		
+	#header-date-form.visible
+	{
+		visibility: visible;
+		display: block;
+	}
+	/*END date header*/
+	
+	div#command-table
+	{
+		clear: both;
+		padding-top: 3px;
+		height: 26px;
+	}
+	
+	div.header-date, div.table-customer, div.table-number
+	{
+		float: left;
+	}
+	
+	div.header-date
+	{
+		width: 20%;
+	}
+	
+	div.table-customer
+	{
+		width: 55%;
+	}
+	
+	div.table-number
+	{
+		width: 24%;
+	}
+	
+	div.customer-number
+	{
+		visibility: hidden;
+		float: left;
+		width: 30%;
+	}
+	
+	div.auto-update-orderLine
+	{
+		float: right;
+		padding-right: 2%;
+	}
+	
+	#menu-top a:hover
+	{  
+		color: #000000; 
+	}
+	
+	#menu-top a.toggle
+	{  
+		color: #000000; 
+	} 	

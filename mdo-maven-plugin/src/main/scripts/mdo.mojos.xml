@@ -1,0 +1,34 @@
+<pluginMetadata>
+	<mojos>
+		<mojo>
+			<goal>mdo-install-tomcat</goal>
+			<call>mdo-install-tomcat</call>
+			<description>mdo-install-tomcat</description>
+		</mojo>
+		<mojo>
+			<goal>mdo-uninstall-tomcat</goal>
+			<call>mdo-uninstall-tomcat</call>
+			<description>mdo-uninstall-tomcat</description>
+			<parameters>
+				<parameter>
+					<name>message</name>
+					<property>message</property>
+					<required>false</required>
+					<expression>${message}</expression>
+					<type>java.lang.Object</type>
+					<defaultValue>${settings.localRepository}</defaultValue>
+					<description>Prints a message</description>
+				</parameter>
+				<parameter>
+					<name>settingsX</name>
+					<property>settingsX</property>
+					<required>false</required>
+					<expression>${settingsX}</expression>
+					<type>java.lang.Object</type>
+					<defaultValue>Toto</defaultValue>
+					<description>settings.xml File with abolute path</description>
+				</parameter>
+			</parameters>
+		</mojo>
+	</mojos>
+</pluginMetadata>

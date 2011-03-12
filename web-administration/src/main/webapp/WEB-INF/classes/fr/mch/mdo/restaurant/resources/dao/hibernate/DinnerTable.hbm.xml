@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="fr.mch.mdo.restaurant.dao.beans.DinnerTable" table="t_dinner_table">
+		<id name="id" column="dtb_id" type="long">
+			<generator class="increment" />
+		</id>
+		<property name="deleted" column="dtb_deleted" />
+
+		<property name="roo_id" type="long" />
+		<property name="number" column="dtb_code" type="string" />
+		<property name="customersNumber" column="dtb_customers_number" type="integer" />
+		<property name="quantitiesSum" column="dtb_quantities_sum" type="big_decimal" />
+		<!--
+			<property name="quantitiesSumByFormula" type="big_decimal"
+			formula="(SELECT SUM(orl.orl_quantity) FROM t_order_line orl WHERE
+			orl.dtb_id = dtb_id)"/>
+		-->
+		<property name="amountsSum" column="dtb_amounts_sum" type="big_decimal" />
+		<property name="reductionRatio" column="dtb_reduction_ratio" type="big_decimal" />
+		<property name="amountPay" column="dtb_amount_pay" type="big_decimal" />
+		<property name="registrationDate" column="dtb_registration_date" type="timestamp" />
+		<property name="printingDate" column="dtb_printing_date" type="timestamp" />
+		<property name="cashingDate" column="dtb_cashing_date" type="timestamp" />
+		<property name="reductionRatioChanged" column="dtb_reduction_ratio_changed" type="boolean" />
+
+		<many-to-one name="restaurant" column="res_id" />
+		<many-to-one name="user" column="aut_id" />
+		<many-to-one name="type" column="tbt_id" />
+
+		<set name="orders" cascade="all-delete-orphan" inverse="true" table="t_order_line" order-by="orl_id asc">
+			<key column="dtb_id" />
+			<one-to-many class="fr.mch.mdo.restaurant.dao.beans.OrderLine" />
+		</set>
+
+		<set name="vats" cascade="all-delete-orphan" inverse="true" table="t_table_vat" order-by="vat_id asc">
+			<key column="dtb_id" />
+			<one-to-many class="fr.mch.mdo.restaurant.dao.beans.TableVat" />
+		</set>
+
+		<!--
+			<map name="vats" table="t_vat_table" order-by="vat_id asc"
+			inverse="true"> <key column="dtb_id" /> <index-many-to-many
+			column="vat_id" class="fr.mch.mdo.restaurant.dao.beans.ValueAddedTax"
+			/> <one-to-many class="fr.mch.mdo.restaurant.dao.beans.VatTable" />
+			</map>
+		-->
+
+		<set name="credits" cascade="all-delete-orphan" inverse="true" table="t_table_credit" order-by="tcr_id asc">
+			<key column="dtb_id" />
+			<one-to-many class="fr.mch.mdo.restaurant.dao.beans.TableCredit" />
+		</set>
+
+		<set name="bills" cascade="all-delete-orphan" inverse="true" table="t_table_bill" order-by="tbi_id asc">
+			<key column="dtb_id" />
+			<one-to-many class="fr.mch.mdo.restaurant.dao.beans.TableBill" />
+		</set>
+
+		<set name="cashings" cascade="all-delete-orphan" inverse="true" table="t_table_cashing" order-by="tcs_id asc">
+			<key column="dtb_id" />
+			<one-to-many class="fr.mch.mdo.restaurant.dao.beans.TableCashing" />
+		</set>
+
+	</class>
+</hibernate-mapping>

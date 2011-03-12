@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Tomcat Certificate" default="PKCS12ToJKS" basedir=".">
+	<description>
+        Targets présents : 
+    </description>
+
+	<property name="security-tools-folder" location="./security-tools"/>
+	<property name="security-generated-files-folder" location="./security-generated-files"/>
+  	<property name="openssl.exe" location="${security-tools-folder}/openssl.exe"/> 	
+  	<property name="privateKeyRSA" value="${security-generated-files-folder}/mdo-private-key.pem"/> 	
+  	<property name="certificateRequest" value="${security-generated-files-folder}/cert.csr"/>
+  	<property name="selfSignedCertificate" value="${security-generated-files-folder}/mdo-cacert.pem"/>
+  	<property name="openSSLConf" value="${security-tools-folder}/openssl-noprompt.cnf"/> 	
+ 	
+  	<target name="privateKeyRSA">
+  		<description>
+  			To generate a new RSA key
+  		</description>
+  		<echo message="${openssl.exe} genrsa -out ${privateKeyRSA} 2048"></echo>
+		<exec executable="${openssl.exe}">
+			<arg line="genrsa -out ${privateKeyRSA} 1024"/>
+		</exec>
+  	</target>
+	
+  	<target name="selfSignedCertificate" depends="privateKeyRSA">
+  		<description>
+  			Creating a self-signed test certificate
+  		</description>
+  		<echo message="${openssl.exe} req -config ${openSSLConf} -new -x509 -key ${privateKeyRSA} -out ${selfSignedCertificate} -days 1095"></echo>
+		<exec executable="${openssl.exe}">
+			<arg line="req -config ${openSSLConf} -new -x509 -key ${privateKeyRSA} -out ${selfSignedCertificate} -days 1095"/>
+		</exec>
+  	</target>
+
+	<property name="java.bin.dir" location="C:\Program Files\Java\jdk1.6.0\bin"/>  	
+	<property name="keytool.exe" location="${java.bin.dir}/keytool"/>
+	<property name="alias" value="kimsanalias"/>
+	<property name="keystoreJKS" value="${security-generated-files-folder}/kimsankeystore"/>
+	<property name="keystorePKCS12" value="${security-generated-files-folder}/mdo-keystore.pkcs12"/>
+	<property name="passwordsFileKeystorePKCS12" value="${security-tools-folder}/mdo-keystore-pkcs12.pass"/>
+	<property name="keypass" value="kimsan"/>	
+	<property name="storepass" value="kimsan"/>
+ 	<target name="PKCS12" depends="selfSignedCertificate">
+		<description>Create pkcs12 keystore</description>
+  		<delete file="./${keystorePKCS12}"></delete>
+  		<echo message="${openssl.exe} pkcs12 -export -password pass:${keypass} -in ${selfSignedCertificate} -inkey ${privateKeyRSA} -out ${keystorePKCS12} -name ${alias}"></echo>
+		<exec executable="${openssl.exe}">
+			<arg line="pkcs12 -export -password pass:${keypass} -in ${selfSignedCertificate} -inkey ${privateKeyRSA} -out ${keystorePKCS12} -name ${alias}"/>
+		</exec>
+  	</target>
+
+ 	<target name="PKCS12ToJKS" depends="PKCS12">
+		<description>Convert PKCS12 keystore to JKS keystore. The generated file kimsankeystore is used for SSL in Tomcat server.xml file</description>
+  		<delete file="./${keystore}"></delete>
+  		<echo message="java -classpath ${security-tools-folder}/pkcs12ToJks.jar fr.montagnesdor.util.PKCS12Import ${keystorePKCS12} ${keystoreJKS} ${passwordsFileKeystorePKCS12}"/>
+		<java classpath="${security-tools-folder}/pkcs12ToJks.jar" classname="fr.montagnesdor.util.PKCS12Import">
+			<arg value="${keystorePKCS12}"/>
+			<arg value="${keystoreJKS}"/>
+			<arg value="${passwordsFileKeystorePKCS12}"/>
+		</java>
+  	</target>
+
+</project>

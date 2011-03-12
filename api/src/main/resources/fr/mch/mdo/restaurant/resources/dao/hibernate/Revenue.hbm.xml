@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="fr.mch.mdo.restaurant.dao.beans.Revenue" table="t_revenue">
+		<id name="id" column="rev_id" type="long">
+			<generator class="increment" />
+		</id>
+		<property name="deleted" column="rev_deleted" />
+		
+		<property name="revenueDate" column="rev_revenue_date" type="date" />
+		<property name="printingDate" column="rev_printing_date" type="timestamp" />
+		<property name="closingDate" column="rev_closing_date" type="timestamp" />
+		<property name="amount" column="rev_amount" type="big_decimal" />
+
+		<many-to-one name="restaurant" column="res_id"/>
+		<many-to-one name="tableType" column="tbt_id"/>
+
+		<set name="cashings" cascade="all-delete-orphan" inverse="true" table="t_revenue_cashing" order-by="rvc_id asc">
+			<key column="rev_id" />
+			<one-to-many class="fr.mch.mdo.restaurant.dao.beans.RevenueCashing" />
+		</set>
+
+		<set name="vats" cascade="all-delete-orphan" inverse="true" table="t_revenue_vat" order-by="rva_id asc">
+			<key column="rev_id" />
+			<one-to-many class="fr.mch.mdo.restaurant.dao.beans.RevenueVat" />
+		</set>
+	</class>
+
+</hibernate-mapping>

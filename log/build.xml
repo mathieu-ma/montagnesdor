@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="06-mdo-log" basedir="." default="mvn2-install">
+	<description>
+		This ant build file is only used for running ANT into eclipse
+		without the need of command line
+    </description>
+
+   	<target name="mvn2-purge-local-repository">
+		<ant antfile="../build.xml" target="mvn2-purge-local-repository"/>
+  	</target>
+   
+	<target name="mvn2-clean">
+		<ant antfile="../build.xml" target="mvn2-clean"/>
+  	</target>
+
+	<target name="mvn2-install">
+		<ant antfile="../build.xml" target="mvn2-install"/>
+  	</target>
+
+	<target name="mvn2-compile">
+		<ant antfile="../build.xml" target="mvn2-compile"/>
+  	</target>
+
+	<target name="mvn2-unpack-shared-resources">
+		<ant antfile="../build.xml" target="mvn2-unpack-shared-resources"/>
+  	</target>
+
+	<target name="mvn2-eclipse-clean">
+		<ant antfile="../build.xml" target="mvn2-eclipse-clean"/>
+  	</target>
+
+	<target name="mvn2-eclipse">
+		<ant antfile="../build.xml" target="mvn2-eclipse"/>
+  	</target>
+	
+	<target name="mvn2-war-exploded">
+		<ant antfile="../build.xml" target="mvn2-war-exploded"/>
+  	</target>
+
+</project>

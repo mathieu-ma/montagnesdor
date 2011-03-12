@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="fr.mch.mdo.restaurant.dao.beans.RestaurantValueAddedTax" table="t_restaurant_vat">
+		<id name="id" column="rvt_id" type="long">
+			<generator class="increment" />
+		</id>
+		<property name="deleted" column="rvt_deleted" />
+		
+		<many-to-one name="restaurant" column="res_id" not-null="true" />
+		<many-to-one name="vat" column="vat_id" />
+
+	</class>
+
+</hibernate-mapping>

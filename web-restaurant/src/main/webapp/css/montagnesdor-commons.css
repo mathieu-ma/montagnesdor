@@ -1,0 +1,644 @@
+	html
+	{
+		border: 6px groove #FFB73D;
+		color: #FFF;
+		height: 97.5%;
+		/height: 97.4%;
+		overflow: hidden;
+		font-family: Segoe UI,Arial,sans-serif; 
+		font-size: 12px;
+		background-color: #660000; 
+		cursor: url('../images/panda.cur'), pointer;
+		background-image: url("./images/montagnesdor2.gif"); 
+	}
+
+	body
+	{
+		height: 100%;
+		margin: auto;
+	}
+
+	img.logo1
+	{
+		height: 19px;
+		width:  19px;
+	}
+	
+	a
+	{  
+		font-weight: bolder; 
+		color: #FFF; 
+		text-decoration: none;
+		outline: none;
+	}
+
+	div#main, div#body
+	{
+		height: 100%;
+		width: 100%;
+	}
+
+	div#body-scroll, div#menu
+	{
+		height: 70%;
+	}
+
+	div#menu
+	{
+		background-color: green; 
+		float: left;
+		width: 10%;				
+	}
+
+	div#body-scroll
+	{
+		/overflow-y: scroll;
+		/overflow-x: hidden;
+		width: 90%;
+	}
+	
+	div#body, div#body-scroll
+	{
+		outline: none;
+		float: left;
+		background: url('../images/montagnesdor2.gif') no-repeat center center;
+	  	background-attachment: fixed;
+	}
+
+	div#header
+	{
+		height: 20%;
+		/height: 20.5%;
+	}
+
+	div#footer
+	{
+		height: 10%;
+		/height: 10.5%;
+		clear: both;
+	}
+	
+	div.error
+	{
+		clear: both;
+		color: #FFB73D;
+		font-size: 16px;
+		font-weight:bold;
+	}
+
+	div.clear
+	{
+		clear: both;
+	}
+	
+	div.hspacer-right
+	{	
+		float: right;
+		
+		width: 10%;
+	}
+	
+	div.hspacer-left, div.hspacer-left-15p, div.hspacer-left-20p, div.hspacer-left-25p, div.hspacer-left-33p, div.hspacer-left-66p, div.hspacer-left-75p, div.hspacer-left-100p, div.vspacer-left-100p, div.hspacer-left-50p
+	{
+		float: left;
+		width: 10%;
+	}
+
+	div.hspacer-left-100p
+	{
+		width: 100%;
+		/* Because of IE scroll bar with 1.5% width*/
+		/width: 98.5%;
+	}
+	
+	div.hspacer-left-50p
+	{
+		width: 50%;
+		/width: 49.10%;
+	}
+
+	div.hspacer-left-15p
+	{
+	/*
+		border-width: 2px;
+		border-style:solid;
+		border-color: red;
+	*/	
+		width: 15%;
+	}
+
+	div.hspacer-left-20p
+	{
+		width: 20%;
+	}
+
+	div.hspacer-left-25p
+	{
+		width: 25%;
+	}
+
+	div.hspacer-left-33p
+	{
+		width: 33%;
+	}
+
+	div.hspacer-left-66p
+	{
+		width: 66%;
+	}
+
+	div.hspacer-left-75p
+	{
+		width: 74%;
+	}
+	
+	div.vspacer-left-100p
+	{
+		height: 100%;
+		width: 100%;
+	}
+
+	div.vspacer100px
+	{
+		height: 100px;
+	}
+
+	div.vspacer50px
+	{
+		height: 50px;
+	}
+	
+	div.vspacer25px
+	{
+		height: 25px;
+	}
+
+	div.vspacer100px, div.vspacer50px, div.vspacer25px
+	{
+		clear: both;
+		width: 90%;
+	}
+
+	div.logon-top, div.logon-bottom
+	{
+		height: 20%;
+		width: 100%;
+		clear: both;
+	}
+
+	div.logon-center, div.logon-center-left, div.logon-center-right
+	{
+		height: 60%;
+		float: left;
+	}
+
+	div.logon-center
+	{
+		width: 48%;
+		text-align: center;
+	}
+
+	div.logon-center-left, div.logon-center-right
+	{
+		width: 25.6%;
+	}
+
+	div.logon-center-top
+	{
+		height: 30%;
+	}
+	
+	div.logon-center fieldset legend
+	{
+		color: white;
+	}
+	
+	.logon-center-height
+	{
+		height: 98%;
+	}
+	
+	object 	
+	{
+		/*
+		visibility: hidden;
+		*/
+		width: 1px;
+		height: 1px;
+		background-color: #660000;
+	}
+	
+	#ajax-response
+	{
+		display: none;
+	}
+	
+	div.applets
+	{
+		width: 1px;
+		height: 1px;
+		background-color: #660000;
+	}
+
+	.crud-list .hspacer-left-100p:hover
+	{
+		background-color: #FFB73D;
+	}
+
+	/*Used for hiding submit form element : not disable, different to display none */
+ 	#hidden-submit-form
+ 	{
+ 		display: none;
+ 		margin: -99999999px;
+ 	}
+ 	
+ 	.integer, .number, .number-float, .number-float-percent
+ 	{
+ 		text-align: right;
+ 		padding-right: 1px;
+ 	}
+
+	input[type='text']:focus, input[type='password']:focus
+	{
+		border-color: yellow;
+	}
+
+	input[type='text'][readonly]
+	{
+		border: 0;
+		background-color: inherit;
+		color: #FFCC00;
+		font: inherit;
+		padding-top: 4px;
+	}
+
+	input[type=text], input[type=password]
+	{
+		text-indent: 5px;
+	}
+	
+	.mdo-date
+	{
+		text-transform: capitalize;	
+	}
+
+	.uppercase
+	{
+		text-transform: uppercase;
+	}
+
+/****************************/
+/*	START: Table Scroll   	*/
+/****************************/
+	.table-scroller-header 
+	{
+		padding-top: 3.5em;
+		position: relative;
+		width: 100%;
+		height: 100%; 
+	}
+
+	.table-scroller 
+	{
+		height: 85.5%; 
+		overflow-y: scroll;
+		width: 100%;
+	}
+
+	.table-scroller table thead tr:first-child
+	{
+		width: 98.1%;
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+
+	.mdo-restaurant-table
+	{
+		width: 99.8%; 
+		border-collapse: collapse; 
+		margin: 0 auto;
+	}
+
+	.mdo-restaurant-table thead tr th:first-child
+	{
+		width: 9em;
+		height: 3.3em;
+	}
+	
+	.mdo-restaurant-table tbody tr
+	{
+		background: #660000; 
+	}
+
+	.mdo-restaurant-table tbody tr:hover
+	{
+		background-color: #0078A3;
+	}
+
+	.mdo-restaurant-table td, .mdo-restaurant-table th
+	{
+		border: 2px inset #FFCC00;
+	}
+
+	.mdo-restaurant-table tfoot tr, .mdo-restaurant-table thead tr 
+	{
+		background: #800000; 
+	}
+
+	.mdo-restaurant-table thead tr 
+	{
+		text-align: center;
+		color: #fff;
+	}
+
+	.mdo-restaurant-table tbody td 
+	{
+		color: #FFCC00;
+	}
+
+/****************************/
+/*	END: Table Scroll   	*/
+/****************************/
+	
+/****************************/
+/*	START: JQuery Theme   	*/
+/****************************/
+	div.global-transparent-hidden
+	{
+		display: none;
+	}
+	
+	div.global-transparent-visible 
+	{
+		display: block;
+	}
+	
+	div.mdo-resizable
+	{
+		overflow: hidden;
+		width: 100%;
+		height: 100.1%;
+		background-color: #800000;
+	} 	
+	
+	div.mdo-ui-resizable-handle-e, div.mdo-ui-resizable-handle-n, div.mdo-ui-resizable-handle-s
+	{
+		border: 1px gray dotted;
+	}
+	
+	div.mdo-ui-resizable-handle-e
+	{
+		height: 99.7%;
+		width: 1px;
+		right: 0px;
+		cursor: col-resize;
+	}
+
+	div.mdo-ui-resizable-handle-n
+	{
+		width: 99.7%;
+		height: 1px;
+		top: 0px;
+		cursor: row-resize;
+	}
+	
+	div.mdo-ui-resizable-handle-s
+	{
+		width: 99.7%;
+		height: 1px;
+		bottom: 0px;
+		cursor: row-resize;
+	}
+	
+	span.mdo-ui-button
+	{
+		position: relative;
+		/position: static;
+		/zoom:1; /* for ie peekaboo bug */
+		padding: .4em 1em .4em 20px; 
+		/padding-left: 10px; 
+		text-decoration: none; 
+		border: 1px grey solid;
+		cursor: pointer;
+	}
+	
+	span.mdo-ui-button span.ui-icon 
+	{
+		position: absolute;
+		/position: inherit;
+		/float: left; 
+		margin: -8px 5px 0 0;
+		/margin-top: 0px;
+		left: .2em;
+		top: 50%;
+	}
+
+	span.mdo-ui-button:hover
+	{
+		border: 1px solid #59b4d4;
+		background: #0078a3 url(images/ui-bg_glass_40_0078a3_1x400.png) 50% 50% repeat-x;
+		font-weight: bold;
+		color: #ffffff;
+		outline: none; 
+	}
+
+	.ui-datepicker-trigger
+	{
+		cursor: pointer;
+		float: left;
+	}
+	
+	#ui-datepicker-div
+	{
+		width: 20em;
+	}
+
+	/*Hide the dialog title bar*/
+	div.waiting-hidden-dialog-title-bar > div:first-child
+	{
+		display: none;
+	}
+	
+	#waiting-dialog
+	{
+		background-position: center center;
+		background-repeat: no-repeat;
+		background-image: url('../images/waiting-loader.gif'); 
+	}
+
+	.anchor
+	{
+		cursor: pointer;
+	}
+
+	div.alert-dialog
+	{
+		text-align: center;
+	}
+	
+	div.ui-widget-overlay
+	{
+		background-repeat: repeat;
+	}
+
+	div.mdo-overlay
+	{
+		margin: 0px;
+		padding: 0px;
+		top: 0px;
+		left: 0px;
+		height: 100%;
+		width: 100%;
+		display: none;
+		z-index: 1000000;
+	}
+	
+	div.ui-widget-shadow
+	{
+		/margin: -7px 0 0 -7px;
+	}
+	
+	#ui-datepicker-div div.ui-datepicker-buttonpane
+	{
+		text-align: center;
+	}
+	
+	#ui-datepicker-div div.ui-datepicker-buttonpane button.ui-datepicker-current
+	{
+		float: none;
+	}
+	
+	#ui-datepicker-div div.ui-datepicker-buttonpane button.ui-datepicker-close
+	{
+		display: none;
+	}
+
+	.bg-color-selected 
+	{
+		background-color: #FFB73D;
+	}
+	
+	#tabs.ui-tabs .ui-tabs-nav
+	{
+		position: static;
+	}
+
+	div.ui-dialog[role=dialog]
+	{
+		border-width: 6px;
+	}
+
+/****************************/
+/*	END: JQuery Theme   	*/
+/****************************/
+
+/****************************/
+/*	START: Color picker		*/
+/****************************/
+#colorSelector {
+	width: 36px;
+	height: 36px;
+	background: url(../jquery-ui/theme/images/select2.png);
+}
+
+div.colorpicker
+{
+	z-index: 1;
+}
+
+.colorpicker_submit
+{
+	cursor: pointer;
+}
+
+/****************************/
+/*	END: Color picker   	*/
+/****************************/
+
+/****************************/
+/*	START: Autocomplete   	*/
+/****************************/
+
+.ac_results li
+{
+	color: #000000;
+}
+
+.ac_results li.ac_over
+{
+	color: #FFFFFF;
+	background-color: #FFB73D; 
+}
+
+/****************************/
+/*	END: Autocomplete   	*/
+/****************************/
+
+/****************************/
+/*	START: Struts 2 skin  	*/
+/****************************/
+form label.errorLabel
+{
+	float: left;
+	width: 30%;
+}
+
+form#Logon div.errorMessage
+{
+	float: right;
+}
+
+form#Logon div.wwgrp
+{
+	width: 100%;
+	text-align: left;
+}
+
+form#Logon div.wwctrl input[type='text'], form#Logon div.wwctrl input[type='password']
+{
+	width: 45%;
+}
+
+div.wwgrp
+{
+	border-width: 0px;
+	border-color: yellow;
+	border-style: dashed;
+	white-space: normal;
+	padding: 5px;
+}
+
+div.hspacer-left-100p
+{
+	border-width: 0px;
+	border-color: red;
+	border-style: dotted;
+		
+}
+
+div.wwlbl
+{
+	word-wrap: break-word;		
+}
+
+div.wwctrl
+{
+}
+
+div.wwgrp br
+{
+	display: none;
+}
+
+
+form#ChangePassword .label 
+{
+	width: 55%;
+}
+/****************************/
+/*	END: Struts 2 skin  	*/
+/****************************/
+
+
+ 	

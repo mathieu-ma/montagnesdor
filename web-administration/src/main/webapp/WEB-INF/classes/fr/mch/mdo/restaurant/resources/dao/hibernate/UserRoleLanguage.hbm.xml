@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="fr.mch.mdo.restaurant.dao.beans.UserRoleLanguage" table="t_user_role_language">
+		<id name="id" column="url_id" type="long">
+			<generator class="increment" />
+		</id>
+		<property name="deleted" column="url_deleted" />
+		<many-to-one name="locale" column="loc_id"
+			class="fr.mch.mdo.restaurant.dao.beans.Locale" />
+		<many-to-one name="userRole" column="rol_id"
+			class="fr.mch.mdo.restaurant.dao.beans.UserRole" />
+		<property name="label" column="url_label" />
+	</class>
+
+</hibernate-mapping>

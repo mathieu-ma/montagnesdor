@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="00-mdo-core" basedir="." default="mvn2-install">
+
+	<description>
+		This ant build file is only used for running ANT into eclipse
+		without the need of command line
+    </description>
+
+   	<property name="maven2.home" location="D:\montagnesdor\Download\apache-maven-2.2.1"/>  	
+  	<property name="mvn.exe" location="${maven2.home}/bin/mvn.bat"/>
+  	<property name="mvn.install.skip.test" value="-Dmaven.test.skip=true"/>
+	
+
+   	<target name="mvn2-tree">
+		<description>
+			Purge Local Repository
+		</description>
+		<echo>${mvn.exe} -e dependency:tree</echo>
+		<exec executable="${mvn.exe}">
+			<arg line="-e dependency:tree"/>
+		</exec>
+  	</target>
+
+   	<target name="mvn2-purge-local-repository">
+		<description>
+			Purge Local Repository
+		</description>
+		<echo>${mvn.exe} -e dependency:purge-local-repository</echo>
+		<exec executable="${mvn.exe}">
+			<arg line="-e dependency:purge-local-repository -DresolutionFuzziness=version -Dverbose=true -DreResolve=true"/>
+		</exec>
+  	</target>
+   
+	<target name="mvn2-clean">
+		<description>
+			Clean the target folder
+		</description>
+		<echo>${mvn.exe} -e clean</echo>
+		<exec executable="${mvn.exe}">
+			<arg line="-e clean"/>
+		</exec>
+  	</target>
+
+	<target name="mvn2-install">
+		<description>
+			Install this project into local repository
+		</description>
+		<echo>${mvn.exe} -e ${mvn.install.skip.test} install</echo>
+		<exec executable="${mvn.exe}">
+			<arg line="-e -U ${mvn.install.skip.test} install"/>
+		</exec>
+  	</target>
+
+	<target name="mvn2-compile">
+		<description>
+			Compile this project into local repository
+		</description>
+		<echo>${mvn.exe} -e compile</echo>
+		<exec executable="${mvn.exe}">
+			<arg line="-e compile"/>
+		</exec>
+  	</target>
+
+	<target name="mvn2-unpack-shared-resources">
+		<description>
+			Unpack resource
+		</description>
+		<echo>${mvn.exe} -e dependency:unpack-dependencies</echo>
+		<exec executable="${mvn.exe}">
+			<arg line="-e dependency:unpack-dependencies"/>
+		</exec>
+  	</target>
+
+	<target name="mvn2-eclipse-clean">
+		<description>
+			Remove properties files for eclipse
+		</description>
+		<echo>${mvn.exe} -e eclipse:clean</echo>
+		<exec executable="${mvn.exe}">
+			<arg line="-e eclipse:clean"/>
+		</exec>
+  	</target>
+
+	<target name="mvn2-eclipse">
+		<description>
+			Create properties files for eclipse
+		</description>
+		<echo>${mvn.exe} -e -Declipse.ajdtVersion=none eclipse:eclipse</echo>
+		<exec executable="${mvn.exe}">
+			<arg line="-e -Declipse.ajdtVersion=none eclipse:eclipse"/>
+		</exec>
+  	</target>
+
+	<target name="mvn2-eclipse-webapp">
+		<description>
+			Create properties files for eclipse
+		</description>
+		<echo>${mvn.exe} -e -Peclipse-webapp -Declipse.ajdtVersion=none eclipse:eclipse</echo>
+		<exec executable="${mvn.exe}">
+			<arg line="-e -Peclipse-webapp -Declipse.ajdtVersion=none eclipse:eclipse"/>
+		</exec>
+  	</target>
+
+	<target name="mvn2-war-exploded" depends="mvn2-install">
+		<description>
+			Export web appl to target folder for Tomcat plugin
+		</description>
+		<echo>${mvn.exe} -e war:exploded</echo>
+		<exec executable="${mvn.exe}">
+			<arg line="-e war:exploded"/>
+		</exec>
+	</target>
+	
+	<target name="mvn2-effective-pom">
+		<description>
+			To display the effective pom
+		</description>
+		<echo>${mvn.exe} -e help:effective-pom</echo>
+		<exec executable="${mvn.exe}">
+			<arg line="-e help:effective-pom"/>
+		</exec>
+	</target>
+	
+
+</project>

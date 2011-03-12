@@ -1,0 +1,38 @@
+grant Principal * * 
+{
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/Logon";
+};
+
+grant Principal fr.mch.mdo.restaurant.services.authorization.jaas.TypedPrincipal "TITI" 
+{
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/RestaurantsManager";  	
+};
+
+grant Principal fr.mch.mdo.restaurant.services.authorization.jaas.TypedPrincipal "TOTO" 
+{
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/UserRolesManager";
+};
+
+grant Principal fr.mch.mdo.restaurant.services.authorization.jaas.TypedPrincipal "USER" 
+{
+};
+
+grant Principal fr.mch.mdo.restaurant.services.authorization.jaas.TypedPrincipal "GLOBAL_ADMINISTRATOR" 
+{
+	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/RedirectToSchemeHTTP";
+
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/LocalesManager";  	
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/RestaurantsManager";  	
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/UserRolesManager";
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/UserAuthenticationsManager";
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/UsersManager";  	
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/CategoriesManager";  	
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/ProductSpecialCodesManager";  	
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/ProductPartsManager";  	
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/ValueAddedTaxesManager";  	
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/ProductsManager";  	
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/TypeTablesManager";  	
+
+};
+
+

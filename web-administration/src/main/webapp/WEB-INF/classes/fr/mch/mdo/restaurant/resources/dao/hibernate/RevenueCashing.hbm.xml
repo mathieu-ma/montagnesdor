@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="fr.mch.mdo.restaurant.dao.beans.RevenueCashing" table="t_revenue_cashing">
+		<id name="id" column="rvc_id" type="long">
+			<generator class="increment" />
+		</id>
+		<property name="deleted" column="rvc_deleted"/>
+
+		<property name="amount" column="rvc_amount" type="big_decimal" />
+
+		<many-to-one name="revenue" column="rev_id" not-null="true" />
+		<many-to-one name="type" column="rvc_type_enum_id" />
+
+	</class>
+
+</hibernate-mapping>

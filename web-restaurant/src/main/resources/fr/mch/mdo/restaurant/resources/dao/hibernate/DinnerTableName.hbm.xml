@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="fr.mch.mdo.restaurant.dao.beans.DinnerTableName" table="t_dinner_table">
+		<id name="id" column="dtb_id" type="long">
+			<generator class="increment" />
+		</id>
+		<property name="userId" column="usr_id" type="long" />
+        <property name="number" column="dtb_number" type="string"/>
+	</class>
+
+</hibernate-mapping>

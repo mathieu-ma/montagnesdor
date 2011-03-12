@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pdm SYSTEM "http://www.devaki.org/nextobjects/dtd/pdm_1_0.dtd">
+<pdm baseClass="org.apache.torque.om.BaseObject"
+    basePeer="org.apache.util.BasePeer" id="MODEL_1" name="Model 1" package="org.devaki.nomodels.om">
+    <databaseProperties>
+        <dbType>1</dbType>
+        <databaseHost>127.0.0.1</databaseHost>
+        <createDatabaseUrl>jdbc:postgresql://127.0.0.1/template1</createDatabaseUrl>
+        <buildDatabaseUrl>jdbc:postgresql://127.0.0.1/dummydb</buildDatabaseUrl>
+        <schema>public</schema>
+    </databaseProperties>
+    <project>
+        <pomVersion>3</pomVersion>
+        <id>MODEL_1</id>
+        <name>Model 1</name>
+        <groupId>org.devaki</groupId>
+        <currentVersion>0.1</currentVersion>
+        <package>org.devaki.nomodels.om</package>
+        <build>
+            <unitTest>
+                <!--no resources-->
+            </unitTest>
+            <!--no resources-->
+        </build>
+    </project>
+    <modelTitleView height="50" width="250" x="4860" y="2460"/>
+    <table abstract="false" alias=""
+        baseClass="org.apache.torque.om.BaseObject"
+        basePeer="org.apache.util.BasePeer" description=""
+        heavyIndexing="false" height="187" idMethod="none"
+        javaNamingMethod="underscore" name="tablediner" skipSql="false"
+        width="152" x="5054" y="2627">
+        <code>tablediner</code>
+        <column autoIncrement="true" code="idtable" default=""
+            description="Identifiant de la table" inheritance="false"
+            inputValidator="" javaName="" javaNamingMethod="underscore"
+            javaType="primitive" name="idtable" primaryKey="true"
+            required="true" size="8" type="INTEGER"/>
+        <column autoIncrement="false" code="idsalle" default=""
+            description="Identifant de la salle dans laquelle se trouve cette table"
+            inheritance="false" inputValidator="" javaName=""
+            javaNamingMethod="underscore" javaType="primitive"
+            name="idsalle" primaryKey="false" required="false" size="8" type="INTEGER"/>
+        <column autoIncrement="false" code="numerotable" default=""
+            description="Numéro de la table" inheritance="false"
+            inputValidator="" javaName="" javaNamingMethod="underscore"
+            javaType="primitive" name="numerotable" primaryKey="false"
+            required="false" size="5" type="VARCHAR"/>
+        <column autoIncrement="false" code="nombrepersonnes" default=""
+            description="Nombre de personnes occupant la table"
+            inheritance="false" inputValidator="" javaName=""
+            javaNamingMethod="underscore" javaType="primitive"
+            name="nombrepersonnes" primaryKey="false" required="false"
+            size="8" type="INTEGER"/>
+        <column autoIncrement="false" code="sommequantites" default=""
+            description="Somme de toutes les quantités commandées par la table"
+            inheritance="false" inputValidator="" javaName=""
+            javaNamingMethod="underscore" javaType="primitive"
+            name="sommequantites" primaryKey="false" required="false"
+            size="10,2" type="NUMERIC"/>
+        <column autoIncrement="false" code="sommemontants" default=""
+            description="Somme de tous les montants de chaque lignes de commande"
+            inheritance="false" inputValidator="" javaName=""
+            javaNamingMethod="underscore" javaType="primitive"
+            name="sommemontants" primaryKey="false" required="false"
+            size="10,2" type="NUMERIC"/>
+        <column autoIncrement="false" code="tauxreduction" default=""
+            description="Taux de réduction pour cette table"
+            inheritance="false" inputValidator="" javaName=""
+            javaNamingMethod="underscore" javaType="primitive"
+            name="tauxreduction" primaryKey="false" required="false"
+            size="10,2" type="NUMERIC"/>
+        <column autoIncrement="false" code="sommedue" default=""
+            description="Somme réellement due par la table : faisant intervenir le taux de réduction"
+            inheritance="false" inputValidator="" javaName=""
+            javaNamingMethod="underscore" javaType="primitive"
+            name="sommedue" primaryKey="false" required="false"
+            size="10,2" type="NUMERIC"/>
+        <column autoIncrement="false" code="dateentreeoccupation"
+            default=""
+            description="Date d&apos;enregistrement de la table dans la base de données"
+            inheritance="false" inputValidator="" javaName=""
+            javaNamingMethod="underscore" javaType="primitive"
+            name="dateentreeoccupation" primaryKey="false"
+            required="false" size="" type="DATE"/>
+        <column autoIncrement="false" code="dateimpression" default=""
+            description="Date d&apos;impression de la table"
+            inheritance="false" inputValidator="" javaName=""
+            javaNamingMethod="underscore" javaType="primitive"
+            name="dateimpression" primaryKey="false" required="false"
+            size="" type="DATE"/>
+        <column autoIncrement="false" code="cashingDate" default=""
+            description="Date d&apos;encaissement de la table"
+            inheritance="false" inputValidator="" javaName=""
+            javaNamingMethod="underscore" javaType="primitive"
+            name="cashingDate" primaryKey="false" required="false"
+            size="" type="DATE"/>
+        <column autoIncrement="false" code="reductionRatioChanged"
+            default="" description="" inheritance="false"
+            inputValidator="" javaName="" javaNamingMethod="underscore"
+            javaType="primitive" name="reductionRatioChanged"
+            primaryKey="false" required="false" size="2" type="INTEGER"/>
+        <style adjusted="true" backgroundColor="#b0b0d8" borderColor="#000000"/>
+    </table>
+</pdm>

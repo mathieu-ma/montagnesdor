@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="MdoAuthorizationService" class="fr.mch.mdo.restaurant.services.authorization.jaas.MdoAuthorizationServiceImpl">
+		<property name="logger">
+			 <bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.authorization.jaas.MdoAuthorizationServiceImpl</value></constructor-arg>
+   		   	</bean>
+		</property>	
+ 	</bean>
+	<bean id="MdoAuthenticationService" class="fr.mch.mdo.restaurant.services.authentication.jaas.MdoAuthenticationServiceImpl" scope="prototype">
+		<property name="logger">
+			 <bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.authentication.jaas.MdoAuthenticationServiceImpl</value></constructor-arg>
+   		   	</bean>
+		</property>	
+ 	</bean>
+</beans>       

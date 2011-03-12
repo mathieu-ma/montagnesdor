@@ -1,0 +1,732 @@
+	html {
+		border: 6px groove #FFB73D;
+		color: #FFF;
+		height: 97.5%;
+		/height: 97.4%;
+		overflow: hidden;
+		background-color: #660000; 
+		cursor: url('../images/panda.cur'), pointer;
+		background-image: url("./images/montagnesdor2.gif"); 
+	}
+
+	html, button {
+		font-family: Segoe UI,Arial,sans-serif; 
+		font-size: 12px;
+	}
+
+	body {
+		height: 100%;
+		margin: auto;
+	}
+
+	img.logo1 {
+		height: 19px;
+		width:  19px;
+	}
+	
+	a {  
+		font-weight: bolder; 
+		color: #FFF; 
+		text-decoration: none;
+		outline: none;
+	}
+
+	.mdo-date {
+		text-transform: capitalize;	
+	}
+	
+	div#body, div#body-scroll, div#menu {
+		height: 80%;
+	}
+
+	div#menu {
+		background-color: green; 
+		float: left;
+		width: 10%;				
+	}
+
+	div#body-scroll {
+		overflow-y: scroll;
+		overflow-x: hidden;
+	}
+
+	div#body, div#body-scroll {
+		outline: none;
+		float: left;
+		background: url('../images/montagnesdor2.gif') no-repeat center center;
+	  	background-attachment: fixed;
+		width: 90%;
+	}
+
+	div#header, div#footer {
+		height: 10%;
+		/height: 10.5%;
+	}
+
+	div#header {
+		background-color: blue; 
+	}
+
+	div#footer {
+		background-color: blue; 
+		clear: both;
+	}
+	
+	div.error {
+		color: #FFB73D;
+		font-size: 12px;
+		font-weight:bold;
+	}
+
+	div.clear {
+		clear: both;
+	}
+	
+	div.hspacer-right {	
+		float: right;
+		width: 10%;
+	}
+	
+	div.hspacer-left, div.hspacer-left-15p, div.hspacer-left-20p, div.hspacer-left-25p, div.hspacer-left-33p, div.hspacer-left-66p, div.hspacer-left-75p, div.hspacer-left-100p, div.vspacer-left-100p, div.hspacer-left-50p
+	{
+		float: left;
+		width: 10%;
+	}
+
+	div.hspacer-left-100p
+	{
+		width: 100%;
+		/* Because of IE scroll bar with 1.5% width*/
+		/width: 98.5%;
+	}
+	
+	div.hspacer-left-50p
+	{
+		width: 50%;
+		/width: 49.10%;
+	}
+
+	div.hspacer-left-15p
+	{
+	/*
+		border-width: 2px;
+		border-style:solid;
+		border-color: red;
+	*/	
+		width: 15%;
+	}
+
+	div.hspacer-left-20p
+	{
+		width: 20%;
+	}
+
+	div.hspacer-left-25p
+	{
+		width: 25%;
+	}
+
+	div.hspacer-left-33p
+	{
+		width: 33%;
+	}
+
+	div.hspacer-left-66p
+	{
+		width: 66%;
+	}
+
+	div.hspacer-left-75p
+	{
+		width: 74%;
+	}
+	
+	div.vspacer-left-100p
+	{
+		height: 100%;
+		width: 100%;
+	}
+
+	div.vspacer100px
+	{
+		height: 100px;
+	}
+
+	div.vspacer50px
+	{
+		height: 50px;
+	}
+	
+	div.vspacer25px
+	{
+		height: 25px;
+	}
+
+	div.vspacer100px, div.vspacer50px, div.vspacer25px
+	{
+		clear: both;
+		width: 90%;
+	}
+
+	/* START Table Fixed Header */
+div.scroll-table-outer-body th, div.scroll-table-outer-body td {
+//	border-style: solid;
+//	border-width: thin;
+}
+	div.scroll-table-outer-body table {
+		border: 0px;
+		padding: 0px;
+		border-spacing: 0px;
+		border-collapse: separate; 
+	}
+	div.scroll-table-outer-body {
+		position: relative;
+		padding: 3.5em 0 3em 0;
+		margin: 0 auto 3em auto;
+	}
+	div.scroll-table-outer-body thead tr {
+		position: absolute;
+		top: 0em;
+		left: 0em;
+	}
+	div.scroll-table-outer-body thead tr:nth-child(2) {
+		top: 3.5em;
+	}
+	div.scroll-table-outer-body-2-headers {
+		/* 2*3,5 = 7 */
+		padding-top: 7em;
+	}
+	div.scroll-table-inner-body {
+		overflow: auto;
+	}
+	div.scroll-table-outer-body th, div.scroll-table-outer-body td {
+		height: 3.5em;
+	}
+	div.scroll-table-outer-body tr:hover {
+		background-color: #FFB73D;
+	}
+	div.scroll-table-outer-body thead tr:hover {
+		background-color: grey;
+	}
+
+	div.scroll-table-inner-body {
+		height: 295px;
+	}
+	div.scroll-table-outer-body, div.scroll-table-inner-body {
+//		width: 44.1em;
+	}
+	div.scroll-table-outer-body th, div.scroll-table-outer-body td {
+		width: 21em;
+	}
+	
+	/* SPECIFIC PART*/
+	
+	/* END Table Fixed Header */
+
+	
+
+	div.logon-center
+	{
+		text-align: center;
+		margin-top: 7%;
+		margin-left: 17%;
+		width: 55%;
+	}
+	
+	div.logon-center fieldset legend
+	{
+		color: white;
+	}
+	
+	#menu-top
+	{
+	}
+	
+	#menu-top a:hover
+	{  
+		color: #000000; 
+	}
+	
+	#menu-top a.toggle
+	{  
+		color: #000000; 
+	}
+		
+	object 	
+	{
+		/*
+		visibility: hidden;
+		*/
+		width: 1px;
+		height: 1px;
+		background-color: #660000;
+	}
+	
+	div.applets
+	{
+		width: 1px;
+		height: 1px;
+		background-color: #660000;
+	}
+
+	.crud-list .hspacer-left-100p:hover
+	{
+		background-color: #FFB73D;
+	}
+
+	div.hspacer-left, div.hspacer-left-15p, div.hspacer-left-20p, div.hspacer-left-100p, div.hspacer-left-50p, div.table-customer, div.hspacer-right
+	{
+		margin-left: auto;
+		margin-top: auto;
+		text-align: center;
+	}
+
+	/*END horizontal alignment*/
+
+	/*START button*/
+	div.button, div.button p, div.button span
+	{
+		float: none;	 		
+ 		display: inline;
+
+ 		padding: 7px 0px 6px;
+ 		margin:0px;
+ 		
+ 		line-height: 30px;
+		
+		font-weight:bold;
+		text-decoration: none;
+		
+		font-size: 15px;
+	}
+	
+	div.button 
+	{
+ 		background: transparent url('../images/buttons/button_grey_right.jpg') no-repeat scroll top right;
+ 		background-color: red;
+ 		/padding: 0px;
+	}
+
+	div.button p 
+	{
+ 		background: transparent url('../images/buttons/button_grey_left.jpg') no-repeat;
+ 		/padding: 0px;
+	}
+
+	div.button span 
+	{
+ 		background: transparent url('../images/buttons/button_grey_middle.jpg') repeat;
+ 		margin: 0px 15px;
+	}
+
+	div.button label 
+	{
+		cursor: pointer;
+	}
+
+	#submit-image
+	{
+		width: 16px;
+		height: 16px;
+		margin: -3px -8px;
+		/margin: 7px -8px -10px;
+		cursor: pointer;
+	}
+	
+	div.button:hover, div.button a:hover 
+	{    
+		color: #FFB73D;
+	}
+	/*END button*/
+
+	/*START table form*/
+	div.row 
+	{
+ 		clear: both;
+	 	padding: 10px;
+ 	}
+
+	div.row span.label 
+	{
+ 		float: left;
+ 		width: 30%;
+ 		text-align: right;
+ 	}
+
+	div.row span.formw 
+	{
+		float: right;
+ 		width: 60%;
+ 		text-align: left;
+ 	}
+ 	/*END table form*/
+
+	/*Used for hiding submit form element : not disable, different to display none */
+ 	#hidden-submit-form
+ 	{
+ 		margin: -99999999px;
+ 	}
+ 	
+ 	.number, .number-float, .number-float-percent
+ 	{
+ 		text-align: right;
+ 		padding-right: 1px;
+ 	}
+
+
+/****************************/
+/*	START: JQuery Sortable   	*/
+/****************************/
+	table.sortable thead tr th.header {
+ 		cursor: pointer;
+	}
+	table.sortable thead tr th > span.ui-icon {
+ 		display: inline-block;
+	}
+	table.sortable thead tr th.headerSortDown span.ui-icon {
+		background-position: 0 -16px;
+	}
+	table.sortable thead tr th.headerSortUp span.ui-icon {
+		background-position: -64px -16px;
+	}
+/****************************/
+/*	END: JQuery Sortable   	*/
+/****************************/
+
+
+/****************************/
+/*	START: JQuery Theme   	*/
+/****************************/
+	div.global-transparent-hidden
+	{
+		display: none;
+	}
+	
+	div.global-transparent-visible 
+	{
+		display: block;
+	}
+	
+	div.mdo-resizable
+	{
+		overflow: hidden;
+		width: 100%;
+		height: 100.1%;
+		background-color: #800000;
+	} 	
+	
+	div.mdo-ui-resizable-handle-e, div.mdo-ui-resizable-handle-n, div.mdo-ui-resizable-handle-s
+	{
+		border: 1px gray dotted;
+	}
+	
+	div.mdo-ui-resizable-handle-e
+	{
+		height: 99.7%;
+		width: 1px;
+		right: 0px;
+		cursor: col-resize;
+	}
+
+	div.mdo-ui-resizable-handle-n
+	{
+		width: 99.7%;
+		height: 1px;
+		top: 0px;
+		cursor: row-resize;
+	}
+	
+	div.mdo-ui-resizable-handle-s
+	{
+		width: 99.7%;
+		height: 1px;
+		bottom: 0px;
+		cursor: row-resize;
+	}
+	
+	span.mdo-ui-button
+	{
+		position: relative;
+		/position: static;
+		/zoom:1; /* for ie peekaboo bug */
+		padding: .8em 1em .8em 20px; 
+		/padding-left: 10px; 
+		text-decoration: none; 
+		border: 1px grey solid;
+		cursor: pointer;
+	}
+	
+	span.mdo-ui-button span.ui-icon 
+	{
+		position: absolute;
+		/position: inherit;
+		/float: left; 
+		margin: -8px 5px 0 0;
+		/margin-top: 0px;
+		left: .2em;
+		top: 50%;
+	}
+
+	span.mdo-ui-button:hover, button.mdo-ui-button:hover
+	{
+		border: 1px solid #59b4d4;
+		background: #0078a3 url(images/ui-bg_glass_40_0078a3_1x400.png) 50% 50% repeat-x;
+		font-weight: bold;
+		color: #ffffff;
+		outline: none; 
+	}
+	
+	button.mdo-ui-button {
+		text-decoration: none; 
+		border: 1px grey solid;
+		cursor: pointer;
+		height: 3em;
+	}
+
+	button.mdo-ui-button span.ui-icon {
+		float: left;
+	}
+
+	.ui-datepicker-trigger
+	{
+		cursor: pointer;
+		float: left;
+	}
+
+	/*Hide the dialog title bar*/
+	div.waiting-hidden-dialog-title-bar > div:first-child
+	{
+		display: none;
+	}
+	
+	#waiting-dialog
+	{
+		background-position: center center;
+		background-repeat: no-repeat;
+		background-image: url('../images/waiting-loader.gif'); 
+	}
+
+	div.alert-dialog
+	{
+		text-align: center;
+	}
+	
+	div.ui-widget-overlay
+	{
+		background-repeat: repeat;
+	}
+
+	div.mdo-overlay
+	{
+		margin: 0px;
+		padding: 0px;
+		top: 0px;
+		left: 0px;
+		height: 100%;
+		width: 100%;
+		display: none;
+		z-index: 1000000;
+	}
+	
+	div.ui-widget-shadow
+	{
+		/margin: -12px 0 0 -12px;
+		/margin: -7px 0 0 -7px;
+	}
+	
+	#ui-datepicker-div div.ui-datepicker-buttonpane
+	{
+		text-align: center;
+	}
+	
+	#ui-datepicker-div div.ui-datepicker-buttonpane button.ui-datepicker-current
+	{
+		float: none;
+	}
+	
+	#ui-datepicker-div div.ui-datepicker-buttonpane button.ui-datepicker-close
+	{
+		display: none;
+	}
+
+	.bg-color-selected 
+	{
+		background-color: #FFB73D;
+	}
+	
+	div.ui-tabs .ui-tabs-nav {
+		position: static;
+	}
+	
+	div.ui-tabs li a:hover {
+		border-top-left-radius: 6px;
+		-moz-border-radius-topleft: 6px;
+		border-top-right-radius: 6px;
+		-moz-border-radius-topright: 6px;
+		background-color: #59b4d4;
+	} 
+	div.ui-tabs li.ui-tabs-selected a:hover {
+		background-color: #F58400;
+	}
+	
+	div.tab-contents {
+		/* height must be overriden by inline style */
+		height: 0em;
+		overflow: hidden;
+	}
+	
+	div.tab-contents div.ui-widget-content {
+		float: left;
+		width: 100%;
+		height: 102%;
+		overflow-y: auto;
+	}
+	
+
+/****************************/
+/*	END: JQuery Theme   	*/
+/****************************/
+
+/****************************/
+/*	START: Struts 2 skin  	*/
+/****************************/
+div.wwerr {
+	float: right;
+	padding-right: 5em;
+}
+
+form label.errorLabel {
+	float: left;
+	width: 30%;
+}
+
+form#Logon div.errorMessage
+{
+	float: right;
+}
+
+form#Logon div.wwgrp
+{
+	width: 100%;
+}
+
+form#Logon div.wwctrl input[type='text'], form#Logon div.wwctrl input[type='password']
+{
+	width: 50%;
+}
+
+div.wwgrp
+{
+	border-width: 0px;
+	border-color: yellow;
+	border-style: dashed;
+	white-space: normal;
+	padding: 5px;
+}
+
+div.hspacer-left-100p
+{
+	border-width: 0px;
+	border-color: red;
+	border-style: dotted;
+		
+}
+
+div.wwlbl
+{
+	word-wrap: break-word;		
+}
+
+div.wwctrl
+{
+}
+
+div.wwgrp br
+{
+	display: none;
+}
+
+table.admin-list-body
+{
+	width: 100%;
+	border: 0px;
+	padding: 0px;
+	border-spacing: 0px;
+	border-collapse: collapse; 
+}
+
+table.admin-list-body tr td, table.admin-list-body tr th
+{
+	padding: 10px;
+}
+
+#LocalesManager table tr th:first-child
+{
+	//width: 50%;
+}
+
+#LocalesManager table.admin-list-body
+{
+	width: 50%;
+}
+
+table.admin-list-body td
+{
+	padding: 0px;
+}
+
+table.admin-list-body tr:hover {
+	background-color: #FFB73D;
+}
+
+#wwgrp_LocalesManager_bean_language
+{
+	float: left;
+	text-align: left;	
+}
+
+#wwgrp_LocalesManager_form_dtoBean_daoBean_language
+{
+	width: 90%;
+	float: left;
+}
+
+#RestaurantsManager_bean_registrationDate > input[type=text]
+{
+	/* Dojo date time picker */
+	min-width: 12em;
+}
+
+#wwgrp_RestaurantsManager_form_dtoBean_daoBean_amount label
+{
+	width: 32%;
+}
+
+/****************************/
+/*	END: Struts 2 skin  	*/
+/****************************/
+
+/****************************/
+/*	START: Color picker		*/
+/****************************/
+#colorSelector {
+	width: 36px;
+	height: 36px;
+	background: url(../jquery-ui/theme/images/select2.png);
+}
+
+div.colorpicker
+{
+	z-index: 1;
+}
+
+.colorpicker_submit
+{
+	cursor: pointer;
+}
+
+/****************************/
+/*	END: Color picker   	*/
+/****************************/
+
+ 	

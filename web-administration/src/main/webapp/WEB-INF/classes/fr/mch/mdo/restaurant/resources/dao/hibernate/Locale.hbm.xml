@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="fr.mch.mdo.restaurant.dao.beans.Locale" table="t_locale">
+		<id name="id" column="loc_id" type="long">
+			<generator class="increment" />
+		</id>
+		<property name="deleted" column="loc_deleted" />
+
+		<property name="language" column="loc_language"/>
+	</class>
+
+</hibernate-mapping>

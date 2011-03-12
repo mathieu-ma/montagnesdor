@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="fr.mch.mdo.restaurant.dao.beans.TableType" table="t_table_type">
+		<id name="id" column="tbt_id" type="long">
+			<generator class="increment" />
+		</id>
+		<property name="deleted" column="tbt_deleted"/>
+
+		<many-to-one name="code" column="tbt_code_enm_id" class="fr.mch.mdo.restaurant.dao.beans.MdoTableAsEnum" />
+
+	</class>
+
+</hibernate-mapping>

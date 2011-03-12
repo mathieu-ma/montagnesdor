@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="fr.mch.mdo.restaurant.dao.beans.ProductSold" table="t_product_sold">
+		<id name="id" column="pds_id" type="long">
+			<generator class="increment" />
+		</id>
+		<property name="deleted" column="pds_deleted" />
+
+		<property name="soldDate" column="pds_sold_date" type="date" />
+		<property name="quantity" column="pds_quantity" type="big_decimal" />
+
+		<many-to-one name="product" column="pdt_id" />
+	</class>
+
+</hibernate-mapping>

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="fr.mch.mdo.restaurant.dao.beans.TableCashing" table="t_table_cashing">
+		<id name="id" column="tcs_id" type="long">
+			<generator class="increment" />
+		</id>
+		<property name="deleted" column="tcs_deleted"/>
+
+		<property name="value" column="tcs_value" type="big_decimal" />
+
+		<many-to-one name="dinnerTable" column="dtb_id" not-null="true" />
+		<many-to-one name="type" column="tcs_type_enum_id" />
+
+	</class>
+
+</hibernate-mapping>

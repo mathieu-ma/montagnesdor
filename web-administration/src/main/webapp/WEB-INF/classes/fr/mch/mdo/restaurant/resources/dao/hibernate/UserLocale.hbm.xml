@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="fr.mch.mdo.restaurant.dao.beans.UserLocale" table="t_user_locale">
+		<id name="id" column="ulo_id" type="long">
+			<generator class="increment" />
+		</id>
+		<property name="deleted" column="ulo_deleted" />
+
+		<many-to-one name="user" column="aut_id" class="fr.mch.mdo.restaurant.dao.beans.UserAuthentication" />
+		<many-to-one name="locale" not-null="true" column="loc_id" class="fr.mch.mdo.restaurant.dao.beans.Locale" />
+	</class>
+
+</hibernate-mapping>

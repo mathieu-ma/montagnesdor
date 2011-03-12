@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode"
+		table="t_product_special_code">
+		<id name="id" column="psc_id" type="long">
+			<generator class="increment" />
+		</id>
+		<property name="deleted" column="psc_deleted" />
+
+		<property name="shortCode" column="psc_short_code" />
+	
+		<many-to-one name="restaurant" column="res_id"/>
+		<many-to-one name="code" column="psc_code_enm_id"/>
+
+		<map name="labels" table="t_product_special_code_language">
+			<key column="psc_id" />
+			<index type="long">
+				<column name="loc_id" />
+			</index>
+			<element column="pcl_label" type="string" />
+		</map>
+
+	</class>
+
+</hibernate-mapping>

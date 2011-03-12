@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="fr.mch.mdo.restaurant.dao.beans.Credit" table="t_credit">
+		<id name="id" column="cre_id" type="long">
+			<generator class="increment" />
+		</id>
+		<property name="deleted" column="cre_deleted" />
+
+		<property name="reference" column="cre_reference" type="string" />
+		<property name="amount" column="cre_amount" type="big_decimal" />
+  		<property name="createdDate" column="cre_created_date" type="timestamp" />
+  		<property name="closingDate" column="cre_closing_date" type="timestamp" />
+		<property name="printed" column="cre_printed" />
+
+		<many-to-one name="restaurant" column="res_id" />
+	</class>
+</hibernate-mapping>

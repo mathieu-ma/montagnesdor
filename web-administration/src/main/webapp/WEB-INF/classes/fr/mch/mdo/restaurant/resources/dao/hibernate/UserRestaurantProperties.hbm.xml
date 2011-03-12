@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="fr.mch.mdo.restaurant.dao.beans.UserRestaurantProperties"
+		table="t_user_restaurant">
+		<id name="id" column="urt_id" type="long">
+			<generator class="increment" />
+		</id>
+		<property name="userId" column="usr_id"/>
+		<property name="restaurantId" column="res_id"/>
+	</class>
+
+</hibernate-mapping>

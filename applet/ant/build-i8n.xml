@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="montagnesdor" default="native2ascii" basedir="..">
+	<description>
+        Targets présents : 
+		1) native2ascii : permet de transformer les fichiers properties d'un certain langage en un autre.        
+		2) keytool.genkey : permet de générer un fichier de type keystore.
+		3) keytool.export : permet de générer un certificat associé au fichier keystore généré précédemment.
+		4) DateTimeApplet.jar : permet créer le jar DateTimeApplet.jar.
+		5) SDateTimeApplet.jar : permet de créer le jar avec sécurité SDateTimeApplet.jar à partir du jar DateTimeApplet.jar.
+		6) TableOrdersApplet.jar : permet créer le jar TableOrdersApplet.jar.
+		7) STableOrdersApplet.jar : permet de créer le jar avec sécurité STableOrdersApplet.jar à partir du jar TableOrdersApplet.jar.
+    </description>
+    
+   	<property name="java.bin.dir" location="C:\Program Files\Java\jdk1.6.0\bin"/>  	
+    
+  	<property name="native2ascii.exe" location="${java.bin.dir}/native2ascii"/>  	
+  	<property name="native2ascii.basedir" location="${basedir}/WEB-INF/src/fr/montagnesdor/restaurant/struts"/>  	
+	<property name="native2ascii.encoding" value="UTF-8"/>
+	<property name="native2ascii.input.file" location="${native2ascii.basedir}/ApplicationResources.properties"/>
+	<property name="native2ascii.output.file.fr" location="${native2ascii.basedir}/ApplicationResources_fr.properties"/>	
+	<property name="native2ascii.output.file.zh" location="${native2ascii.basedir}/ApplicationResources_zh.properties"/>	
+	<property name="native2ascii.output.file.en" location="${native2ascii.basedir}/ApplicationResources_en.properties"/>	
+	<property name="native2ascii.output.file.aa" location="${native2ascii.basedir}/ApplicationResources_aa.properties"/>		
+  	<target name="native2ascii">
+  		<echo message="${native2ascii.exe} -encoding ${native2ascii.encoding} ${native2ascii.input.file} ${native2ascii.output.file.fr}"></echo>
+		<exec executable="${native2ascii.exe}">
+			<arg line="-encoding ${native2ascii.encoding} ${native2ascii.input.file} ${native2ascii.output.file.fr}"/>
+		</exec>
+  	</target>
+
+	<property name="jar.exe" location="${java.bin.dir}/jar"/>
+	<property name="jarsigner.exe" location="${java.bin.dir}/jarsigner"/>	
+	<property name="jar.dir" location="${basedir}/jsp/commons"/>
+	<property name="class.base.dir" location="${basedir}/WEB-INF/classes"/>
+
+	<property name="class.base.dir" location="../WEB-INF/classes"/>
+  	<property name="jar.file.DateTimeApplet" location="${security-generated-files-folder}/DateTimeApplet.jar"/>
+  	<property name="class.file.DateTimeApplet" value="fr/montagnesdor/restaurant/applets/DateTimeApplet.class"/>  	
+  	<target name="DateTimeApplet.jar">
+  		<echo message="${jar.exe} cvfM ${jar.file.DateTimeApplet} -C ${class.base.dir} ${class.file.DateTimeApplet}"></echo>
+		<exec executable="${jar.exe}">
+			<arg line="cvfM ${jar.file.DateTimeApplet} -C ${class.base.dir} ${class.file.DateTimeApplet}"/>
+		</exec>
+  	</target>
+  	
+  	<property name="jar.file.SDateTimeApplet" location="${security-generated-files-folder}/SDateTimeApplet.jar"/>
+  	<target name="SDateTimeApplet.jar" depends="DateTimeApplet.jar">
+  		<echo message="${jarsigner.exe} -storetype pkcs12 -keystore ${keystorePKCS12} -storepass ${storepass} -keypass ${keypass} -signedjar ${jar.file.SDateTimeApplet} ${jar.file.DateTimeApplet} ${alias}"></echo>
+		<exec executable="${jarsigner.exe}">
+			<arg line="-storetype pkcs12 -keystore ${keystorePKCS12} -storepass ${storepass} -keypass ${keypass} -signedjar ${jar.file.SDateTimeApplet} ${jar.file.DateTimeApplet} ${alias}"/>
+		</exec>
+  	</target>
+</project>
