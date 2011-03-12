@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+        <class name="fr.mch.mdo.restaurant.dao.beans.OrderLine"	table="t_order_line">
+			<id name="id" column="orl_id" type="long">
+				<generator class="increment"/>
+            </id>
+            <property name="quantity" column="orl_quantity" type="big_decimal"/>
+			<property name="code" column="orl_code" type="string"/>         
+			<property name="label" column="orl_label" type="string"/>         
+			<property name="unitPrice" column="orl_unit_price" type="big_decimal"/>
+            <property name="amount" column="orl_amount" type="big_decimal"/>
+
+			<many-to-one name="dinnerTable" column="dtb_id"/>                
+			<many-to-one name="productPart" column="prp_id"/>				
+			<many-to-one name="product" column="pdt_id"/>
+			<many-to-one name="productSpecialCode" column="psc_id"/>				
+                
+		</class>
+
+</hibernate-mapping>

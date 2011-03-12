@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="08-mdo-applet-color-picker" basedir="." default="mvn2-install">
+	<description>
+		This ant build file is only used for running ANT into eclipse
+		without the need of command line
+    </description>
+
+   	<property name="maven2.home" location="D:\mdo\Download\apache-maven-2.0.9"/>  	
+  	<property name="mvn.exe" location="${maven2.home}/bin/mvn.bat"/>  	
+
+	<target name="mvn2-clean">
+		<description>
+			Install this project into local repository
+		</description>
+		<echo message="${mvn.exe} -o clean"></echo>
+		<exec executable="${mvn.exe}">
+			<arg line="-o clean"/>
+		</exec>
+  	</target>
+   
+	<target name="mvn2-install">
+		<description>
+			Install this project into local repository
+		</description>
+		<echo message="${mvn.exe} -o install"></echo>
+		<exec executable="${mvn.exe}">
+			<arg line="-o install"/>
+		</exec>
+  	</target>
+
+	<target name="mvn2-eclipse">
+		<description>
+			Build for eclipse
+		</description>
+		<echo message="${mvn.exe} -o eclipse:eclipse"></echo>
+		<exec executable="${mvn.exe}">
+			<arg line="-o eclipse:eclipse"/>
+		</exec>
+  	</target>
+
+	<target name="mvn2-eclipse-clean">
+		<description>
+			Build for eclipse
+		</description>
+		<echo message="${mvn.exe} -o eclipse:clean"></echo>
+		<exec executable="${mvn.exe}">
+			<arg line="-o eclipse:clean"/>
+		</exec>
+  	</target>
+
+	<target name="mvn2-compile">
+		<description>
+			Compile this project into local repository
+		</description>
+		<echo message="${mvn.exe} -o compile"></echo>
+		<exec executable="${mvn.exe}">
+			<arg line="-o compile"/>
+		</exec>
+  	</target>
+
+
+	<target name="mvn2-goal-jar-datetime">
+		<description>
+			Compile this project into local repository
+		</description>
+		<echo message="${mvn.exe} -o maven-jar-plugin:DateTimeApplet"></echo>
+		<exec executable="${mvn.exe}">
+			<arg line="jar:jar"/>
+		</exec>
+  	</target>
+
+</project>

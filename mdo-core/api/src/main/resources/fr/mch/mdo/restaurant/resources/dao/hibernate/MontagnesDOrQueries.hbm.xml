@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+		<query name="MdoTableAsEnum.SelectAllTypes">
+			SELECT DISTINCT mdoTableAsEnum.type FROM MdoTableAsEnum AS mdoTableAsEnum 
+		</query>
+
+		<query name="UserAuthentication.SelectByLogin">
+			FROM UserAuthentication AS userAuthentication 
+			WHERE userAuthentication.login = :login
+		</query>
+
+		<query name="User.SelectRestaurantsById">
+			SELECT userRestaurant.restaurant
+			FROM UserRestaurant AS userRestaurant
+			WHERE userRestaurant.user.id = :id
+		</query>
+
+		<query name="User.DeleteRestaurantsById">
+			DELETE UserRestaurantProperties
+			WHERE userId = :id
+		</query>
+
+		<query name="Product.SelectByCode">
+			FROM Product AS product 
+			WHERE product.code = :code
+		</query>
+
+</hibernate-mapping>

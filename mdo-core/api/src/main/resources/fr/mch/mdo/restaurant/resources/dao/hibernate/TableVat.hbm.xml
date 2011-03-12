@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="fr.mch.mdo.restaurant.dao.beans.TableVat" table="t_table_vat">
+		<id name="id" column="tvt_id" type="long">
+			<generator class="increment" />
+		</id>
+		<property name="deleted" column="tvt_deleted"/>
+
+		<property name="amount" column="tvt_amount" type="big_decimal" />
+		<property name="value" column="tvt_value" type="big_decimal" />
+
+		<many-to-one name="dinnerTable" column="dtb_id" not-null="true" />
+		<many-to-one name="vat" column="vat_id" />
+
+	</class>
+
+</hibernate-mapping>

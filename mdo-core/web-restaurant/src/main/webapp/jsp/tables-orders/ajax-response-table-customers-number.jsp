@@ -1,0 +1,2 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core".com/jsp/jstl/core" prefix="c" %>
+<form><input type="hidden" value="<c:out value="${form.dtoBean.dinnerTableDtoBean.customersNumber}"/>" id="ajax-header_order_table_customer"/></form>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<artifactId>mdo-core</artifactId>
+		<groupId>fr.mch.mdo</groupId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>fr.mch.mdo</groupId>
+	<artifactId>applet</artifactId>
+	<packaging>pom</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<name>applet</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<resources-folder>src/main/resources</resources-folder>
+		<security-generated-files-folder>
+			${resources-folder}/generated
+		</security-generated-files-folder>
+		<keystorePKCS12>
+			${security-generated-files-folder}/mdo-keystore.pkcs12
+		</keystorePKCS12>
+		<alias>mdoalias</alias>
+		<storepass>kimsan</storepass>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<modules>
+		<module>date-time</module>
+		<module>color-picker</module>
+		<module>serial-port-printer</module>
+	</modules>
+</project>

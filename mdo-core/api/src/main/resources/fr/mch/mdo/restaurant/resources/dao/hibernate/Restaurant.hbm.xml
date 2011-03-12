@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="fr.mch.mdo.restaurant.dao.beans.Restaurant" table="t_restaurant">
+		<id name="id" column="res_id" type="long">
+			<generator class="increment" />
+		</id>
+		<property name="deleted" column="res_deleted" />
+
+		<property name="registrationDate" column="res_registration_date"
+			type="date" />
+		<property name="reference" column="res_reference" type="string" />
+		<property name="name" column="res_name" type="string" />
+		<property name="addressRoad" column="res_address_road" type="string" />
+		<property name="addressZip" column="res_address_zip" type="string" />
+		<property name="addressCity" column="res_address_city" type="string" />
+		<property name="phone" column="res_phone" type="string" />
+		<property name="vatRef" column="res_vat_ref" type="string" />
+		<property name="visaRef" column="res_visa_ref" type="string" />
+		<property name="tripleDESKey" column="res_triple_DES_key" type="string" />
+		<property name="vatByTakeaway" column="res_vat_by_takeaway"	type="boolean" />
+		<property name="takeawayBasicReduction" column="res_takeaway_basic_reduction" type="big_decimal" />
+		<property name="takeawayMinAmountReduction" column="res_takeaway_min_amount_reduction" type="big_decimal" />
+
+		<many-to-one name="specificRound" column="res_specific_round" />
+
+		<set name="prefixTableNames" cascade="all-delete-orphan" inverse="true" table="t_restaurant_prefix_table">
+			<key column="res_id" />
+			<one-to-many class="fr.mch.mdo.restaurant.dao.beans.RestaurantPrefixTable" />
+		</set>
+
+		<set name="vats" cascade="all-delete-orphan" inverse="true" table="t_restaurant_vat">
+			<key column="res_id" />
+			<one-to-many class="fr.mch.mdo.restaurant.dao.beans.RestaurantValueAddedTax" />
+		</set>
+	</class>
+
+</hibernate-mapping>

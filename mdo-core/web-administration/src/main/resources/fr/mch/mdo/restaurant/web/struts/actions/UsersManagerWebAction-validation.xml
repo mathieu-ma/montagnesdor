@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE validators PUBLIC "-//OpenSymphony Group//XWork Validator 1.0//EN" "http://www.opensymphony.com/xwork/xwork-validator-1.0.dtd">
+<validators>
+	<field name="form.dtoBean.name">
+        <field-validator type="requiredstring">
+            <message key="error.user.name.required"></message>
+        </field-validator>
+	</field>	
+	<field name="form.dtoBean.forename1">
+        <field-validator type="requiredstring">
+            <message key="error.user.name.required"></message>
+        </field-validator>
+	</field>	
+	<field name="form.dtoBean.birthdate">
+        <field-validator type="required">
+            <message key="error.user.date.required"></message>
+        </field-validator>
+		<field-validator type="date">
+            <message key="error.user.date.required"></message>
+		</field-validator>
+	</field>	
+</validators>

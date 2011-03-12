@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="SpecificRound" class="fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto">
+		<property name="defaultLabel" value="Half Round" />
+		<property name="languageKeyLabel" value="SPECIFIC_ROUND.HALF_ROUND.0" />
+		<property name="name" value="HALF_ROUND" />
+		<property name="order" value="0" />
+		<property name="type" value="SPECIFIC_ROUND" />
+	</bean>
+	<bean id="RestaurantGlobalAdmin" class="fr.mch.mdo.restaurant.dto.beans.RestaurantDto">
+		<property name="reference" value="RESTAURANT_GLOBAL_ADMIN" />
+		<property name="name" value="RESTAURANT GLOBAL ADMIN" />
+		<property name="registrationDate">
+			<bean class="java.util.Date" />
+		</property>
+		<property name="addressRoad" value="NA" />
+		<property name="addressZip" value="NA" />
+		<property name="addressCity" value="NA" />
+		<property name="phone" value="NA" />
+		<property name="vatRef" value="NA" />
+		<property name="visaRef" value="NA" />
+		<property name="tripleDESKey" value="12345678ABCDDCBA12345678" />
+		<property name="vatByTakeaway" value="FALSE" />
+		<property name="takeawayBasicReduction" value="10" />
+		<property name="takeawayMinAmountReduction" value="15" />
+
+		<property name="specificRound" ref="SpecificRound" />
+	</bean>
+
+	<bean id="UserRoleCode" class="fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto">
+		<property name="defaultLabel" value="Global Administrator" />
+		<property name="languageKeyLabel" value="USER_ROLE.GLOBAL_ADMINISTRATOR.0" />
+		<property name="name" value="GLOBAL_ADMINISTRATOR" />
+		<property name="order" value="0" />
+		<property name="type" value="USER_ROLE" />
+	</bean>
+	<bean id="UserRoleGlobalAdmin" class="fr.mch.mdo.restaurant.dto.beans.UserRoleDto">
+		<property name="code" ref="UserRoleCode" />
+	</bean>
+
+	<bean id="GregorianCalendarBirthDate" class="java.util.GregorianCalendar">
+		<constructor-arg>
+			<value>1970</value>
+		</constructor-arg>
+		<constructor-arg>
+			<value>7</value>
+		</constructor-arg>
+		<constructor-arg>
+			<value>15</value>
+		</constructor-arg>
+	</bean>
+	<bean id="Title" class="fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto">
+		<property name="defaultLabel" value="Mister" />
+		<property name="languageKeyLabel" value="USER_TITLE.MISTER.0" />
+		<property name="name" value="MISTER" />
+		<property name="order" value="0" />
+		<property name="type" value="USER_TITLE" />
+	</bean>
+	<bean id="UserRestaurantGlobalAdmin" class="fr.mch.mdo.restaurant.dto.beans.UserRestaurantDto">
+		<property name="restaurant" ref="RestaurantGlobalAdmin" />
+	</bean>
+	<bean id="UserGlobalAdmin" class="fr.mch.mdo.restaurant.dto.beans.UserDto">
+		<property name="name" value="MA" />
+		<property name="forename1" value="Mathieu" />
+		<property name="forename2" value="Chhui Huy" />
+		<property name="birthdate">
+			<bean factory-bean="GregorianCalendarBirthDate" factory-method="getTime">
+			</bean>
+		</property>
+		<property name="sex" value="0" />
+		<property name="title" ref="Title" />
+		<property name="restaurants">
+			<set>
+				<ref bean="UserRestaurantGlobalAdmin" />
+			</set>
+		</property>
+	</bean>
+
+	<bean id="LocaleGlobalAdmin" class="fr.mch.mdo.restaurant.dto.beans.LocaleDto">
+		<property name="languageCode" value="fr" />
+	</bean>
+	<bean id="UserLocaleGlobalAdmin" class="fr.mch.mdo.restaurant.dto.beans.UserLocaleDto">
+		<property name="locale" ref="LocaleGlobalAdmin" />
+	</bean>
+	<bean id="UserAuthenticationGlobalAdmin" class="fr.mch.mdo.restaurant.dto.beans.UserAuthenticationDto">
+		<property name="login" value="GLOBAL_ADMINISTRATOR" />
+		<property name="userRole" ref="UserRoleGlobalAdmin" />
+		<property name="user" ref="UserGlobalAdmin" />
+		<property name="restaurant" ref="RestaurantGlobalAdmin" />
+		<property name="printingLocale" ref="LocaleGlobalAdmin" />
+		<property name="password" value="GLOBAL_ADMINISTRATOR" />
+		<property name="levelPass1" value="GLOBAL_ADMINISTRATOR" />
+		<property name="levelPass2" value="GLOBAL_ADMINISTRATOR" />
+		<property name="levelPass3" value="GLOBAL_ADMINISTRATOR" />
+		<property name="locales">
+			<set>
+				<ref bean="UserLocaleGlobalAdmin" />
+			</set>
+		</property>
+	</bean>
+
+</beans>

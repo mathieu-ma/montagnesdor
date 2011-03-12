@@ -1,0 +1,151 @@
+#---Begin---
+#
+# Fichier de configuration pour OpenSSL.
+# S'emploie surtout pour les demandes de certificats.
+#
+# NdT: autre chose que de l'ASCII dans les fichiers de
+# configuration me rend nerveux. Il y a donc un zest de triche
+# dans ce qui suit. Vous ne voudriez pas me rendre nerveux, non ? :o)
+#
+RANDFILE  = .rnd
+oid_file  = .oid
+oid_section  = new_oids
+prompt = no
+# Section des extension X.509v3 pour se servir du
+# fichier avec l'option -extfile de la commande
+# "openssl x509"
+# extensions  =
+# (Variante: employer un fichier de configuration qui
+# n'a que des extensions X.509v3 dans sa section
+# principale [= default])
+[ new_oids ]
+# On ajoute des OID pour les commandes 'ca' et 'req'.
+# Par exemple:
+# testoid1=1.2.3.4
+# L'emploi de substitutions est possible:
+# testoid2=${testoid1}.5.6
+####################################################################
+[ ca ]
+default_ca = CA_default  # Section de la CA standard
+####################################################################
+[ CA_default ]
+dir             = .		                			# Emplacement de base
+certs           = $dir/certs            			# Emplacement de stockage des nouveaux certificats
+crl_dir         = $dir/crl              			# Emplacement des nouvelles CRL
+database        = $dir/index.txt        			# Fichier d'index
+new_certs_dir   = $dir/newcerts         			# Emplacement des nouveaux certificats
+certificate     = $dir/cacert.pem       			# Certificat de la CA
+serial          = $dir/serial   	   				# Numero de serie en cours
+crl             = $dir/crl.pem 	          			# CRL en cours
+private_key     = $dir/private/cakey.pem  			# Clef privee
+RANDFILE        = $dir/private/private.rand      	# Fichier d'alea
+
+x509_extensions = usr_cert		        			# Extensions pour les certificats
+# Extensions pour la CRL. Remarque: Netscape communicator n'aime pas les CRL de version 2,
+# on commente donc pour avoir une CRL version 1
+default_days    = 365                     # Duree de vie d'un certificat
+default_crl_days= 7                       # Intervalle entre CRLs
+default_md      = sha1                    # Algorithme de hachage
+preserve        = no                      # Conserve-t-on l'ordre du DN ?
+# Diverses facons de specifier l'allure des requetes
+# Pour une requete de type CA, les attributs doivent etre les memes
+# Les champs 'optional' et 'supplied' correspondent respectivement
+# a des champs optionnels et fournis :o)
+policy  = policy_match
+# Typage CA
+[ policy_match ]
+countryName            = match
+stateOrProvinceName    = optional
+localityName           = match
+organizationName       = match
+organizationalUnitName = optional
+commonName             = supplied
+emailAddress           = optional
+# Typage tout-venant
+# Tous les types d'objets acceptables doivent etre enumeres
+[ policy_anything ]
+countryName            = optional
+stateOrProvinceName    = optional
+localityName           = optional
+organizationName       = optional
+organizationalUnitName = optional
+commonName             = supplied
+emailAddress           = optional
+####################################################################
+[ req ]
+default_bits       = 1024
+default_keyfile    = privkey.pem
+distinguished_name = req_distinguished_name
+attributes         = req_attributes
+default_md         = sha1
+# Mot de passe pour les clefs privees (l'application le demande s'il est vide).
+input_password = ${input.keystore.passphrase}
+output_password = ${output.keystore.passphrase}
+# Masque pour les types de chaines valides. Plusieurs choix sont possibles.
+# default: PrintableString, T61String, BMPString.
+# pkix : PrintableString, BMPString.
+# utf8only: only UTF8Strings.
+# nombstr : PrintableString, T61String (pas de BMPStrings ni de UTF8Strings).
+# MASK:XXXX valeur litterale.
+# Attention: certaines versions de Netscape plantent sur les BMPStrings ou les UTF8Strings.
+# A utiliser avec prudence!
+string_mask = nombstr
+[ req_distinguished_name ]
+countryName         = ${countryName}			# Nom du pays (code sur 2 lettres)
+stateOrProvinceName         = ${stateOrProvinceName}	# Etat ou province (nom complet)
+localityName          = ${localityName}
+0.organizationName         = ${0.organizationName} # nom de l'entreprise par exemple)
+# Possible mais pas normalement pas necessaire :-)
+#1.organizationName         = Second nom de l'organization
+#1.organizationName_default = World Wide Web SARL
+organizationalUnitName         = ${organizationalUnitName} # Nom du departement dans l'organisation
+commonName					= ${commonName}
+emailAddress     			= ${emailAddress}
+# SET-ex3   = SET extension number 3
+[ req_attributes ]
+challengePassword     		= ${challengePassword}
+unstructuredName      		= ${unstructuredName}
+[ usr_cert ]
+# Extensions ajoutees quand 'ca' signe une requete.
+# Contraire aux suggestions PKIX mais des CA le font et certains
+# logiciels le demandent pour ne pas confondre un certificat
+# utilisateur avec un certificat de CA
+basicConstraints=CA:FALSE
+# Examples d'utilisation de nsCertType. En cas d'omission,
+# le certificat peut servir a tout sauf a signer des objets
+# Serveur SSL
+# nsCertType   = server
+# Certificat promis a signer des objets.
+# nsCertType = objsign
+# Client normal.
+# nsCertType = client, email
+# Tout.
+# nsCertType = client, email, objsign
+# Classique pour un certificat client.
+# keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+# Pour la boiboite de commentaire de Netscape.
+#nsComment  = "Certificate issued by https://www.mdo.org/ssl/"
+# Recommandations PKIX sans effets secondaires facheux.
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid,issuer:always
+# On importe l'adresse e-mail
+# pour les attributs subjectAltName et issuerAltname.
+# subjectAltName=email:copy
+# Informations relatives au sujet.
+# issuerAltName=issuer:copy
+# Adresse de base des autres URL si on n'en donne pas
+# au cas par cas.
+#nsBaseUrl  = https://www.mdo.org/ssl/
+# Adresse de la CRL du moment.
+#nsCaRevocationUrl = https://www.mdo.org/ssl/mdo-ca.crl
+# Adresse pour revoquer un certificat.
+#nsRevocationUrl  = https://www.mdo.org/ssl/revocation.html?
+# Adresse pour renouveller un certificat.
+#nsRenewalUrl  = https://www.mdo.org/ssl/renewal.html?
+# Adresse des pratiques de la CA.
+#nsCaPolicyUrl  = https://www.mdo.org/ssl/policy.html.
+# Adresse du certificat du signataire.
+#issuerAltName = URI:https://www.sopac.org/ssl/sopac.crt.
+# Adresse de la CRL du moment.
+#crlDistributionPoints = URI:https://www.mdo.org/ssl/mdo-ca.crl
+#----End----

@@ -1,0 +1,130 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<artifactId>applet</artifactId>
+		<groupId>fr.mch.mdo</groupId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>fr.mch.mdo</groupId>
+	<artifactId>date-time</artifactId>
+	<packaging>jar</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<name>date-time</name>
+	<url>http://maven.apache.org</url>
+
+	<!--
+		Properties ${keystorePKCS12}, ${alias}, ${storepass} are in parent pom
+		file
+	-->
+	<build>
+		<finalName>DateTimeApplet</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>initialize-applet-resources</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<echo>
+									Remove all files in
+									${security-generated-files-folder}				
+								</echo>
+								<delete verbose="true" failonerror="no">
+									<fileset dir="${security-generated-files-folder}" />
+								</delete>
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<!-- Get resource file from security jar -->
+						<id>unpack-shared-resources</id>
+						<goals>
+							<goal>unpack-dependencies</goal>
+						</goals>
+						<phase>generate-resources</phase>
+						<configuration>
+							<outputDirectory>
+								src/main/resources
+							</outputDirectory>
+							<includeArtifacIds>security</includeArtifacIds>
+							<includeGroupIds>${project.groupId}</includeGroupIds>
+							<excludeTransitive>false</excludeTransitive>
+							<includes>
+								**\/mdo-keystore.pkcs12
+							</includes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<type>pkcs12</type>
+					<keystore>${keystorePKCS12}</keystore>
+					<alias>${alias}</alias>
+					<storepass>${storepass}</storepass>
+					<signedjar>
+						<!--
+							${settings.localRepository}/fr/mch/mdo/${project.name}/signed/S${project.build.finalName}.jar
+						-->
+						target/signed/S${project.build.finalName}.jar
+					</signedjar>
+					<verify>true</verify>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>security</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>test</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>

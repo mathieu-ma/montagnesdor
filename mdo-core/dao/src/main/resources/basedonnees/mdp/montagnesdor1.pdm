@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pdm SYSTEM "http://www.devaki.org/nextobjects/dtd/pdm_1_0.dtd">
+<pdm baseClass="org.apache.torque.om.BaseObject"
+    basePeer="org.apache.util.BasePeer" defaultIdMethod="native"
+    id="montagnesdor" name="montagnesdor" package="org.devaki.nomodels.om">
+    <databaseProperties>
+        <dbType>0</dbType>
+        <databaseHost>127.0.0.1</databaseHost>
+        <createDatabaseUrl>jdbc:postgresql://127.0.0.1/template1</createDatabaseUrl>
+        <buildDatabaseUrl>jdbc:postgresql://127.0.0.1/montagnesdor</buildDatabaseUrl>
+        <schema>public</schema>
+        <databaseUser>montagnesdor</databaseUser>
+        <databasePassword>powermdo</databasePassword>
+    </databaseProperties>
+    <project>
+        <pomVersion>3</pomVersion>
+        <id>montagnesdor</id>
+        <name>montagnesdor</name>
+        <groupId>montagnesdor</groupId>
+        <currentVersion>0.1</currentVersion>
+        <package>org.devaki.nomodels.om</package>
+        <build>
+            <nagEmailAddress/>
+            <sourceDirectory/>
+            <unitTestSourceDirectory/>
+            <aspectSourceDirectory/>
+            <unitTest>
+                <!--no resources-->
+            </unitTest>
+            <!--no resources-->
+        </build>
+    </project>
+    <modelTitleView height="50" width="250" x="4860" y="2460"/>
+    <table abstract="false" alias=""
+        baseClass="org.apache.torque.om.BaseObject"
+        basePeer="org.apache.util.BasePeer" description=""
+        heavyIndexing="false" height="63" idMethod="native"
+        javaNamingMethod="underscore" name="t_value_added_tax"
+        skipSql="false" width="224" x="5492" y="2592">
+        <code>t_value_added_tax</code>
+        <column autoIncrement="true" code="vat_id" default=""
+            description="Identifiant de cette table" inheritance="false"
+            inputValidator="" javaName="" javaNamingMethod="underscore"
+            javaType="primitive" name="vat_id" primaryKey="true"
+            required="true" size="8" type="INTEGER"/>
+        <column autoIncrement="false" code="vat_value" default=""
+            description="Valeur en pourcentage de la tva : c&apos;est aussi une clé primaire"
+            inheritance="false" inputValidator="" javaName=""
+            javaNamingMethod="underscore" javaType="primitive"
+            name="vat_value" primaryKey="false" required="false"
+            size="8" type="INTEGER"/>
+        <unique>
+            <unique-column name="vat_value"/>
+        </unique>
+        <style adjusted="true" backgroundColor="#b0b0d8" borderColor="#000000"/>
+    </table>
+    <table abstract="false" alias=""
+        baseClass="org.apache.torque.om.BaseObject"
+        basePeer="org.apache.util.BasePeer" description=""
+        heavyIndexing="false" height="145" idMethod="native"
+        javaNamingMethod="underscore" name="t_order_line"
+        skipSql="false" width="237" x="5090" y="2551">
+        <code>t_order_line</code>
+        <column autoIncrement="true" code="orl_id" default=""
+            description="Identifiant de cette table" inheritance="false"
+            inputValidator="" javaName="" javaNamingMethod="underscore"
+            javaType="primitive" name="orl_id" primaryKey="true"
+            required="true" size="8" type="INTEGER"/>
+        <column autoIncrement="false" code="tbd_id" default=""
+            description="Identifiant de la table t_diner_table : c&apos;est une clé étrangère de la table t_diner_table"
+            inheritance="false" inputValidator="" javaName=""
+            javaNamingMethod="underscore" javaType="primitive"
+            name="tbd_id" primaryKey="false" required="false" size="8" type="INTEGER"/>
+        <column autoIncrement="false" code="orl_product_code" default=""
+            description="Code produit : peut représenter un identifiant de la table t_product mais pas nécessairement"
+            inheritance="false" inputValidator="" javaName=""
+            javaNamingMethod="underscore" javaType="primitive"
+            name="orl_product_code" primaryKey="false" required="false"
+            size="5" type="VARCHAR"/>
+        <column autoIncrement="false" code="orl_label" default=""
+            description="Désignation du produit : si le code produit de cette enregistrement existe dans la table t_product alors cette désignation sera la même que celle associée au code produit de la table t_product"
+            inheritance="false" inputValidator="" javaName=""
+            javaNamingMethod="underscore" javaType="primitive"
+            name="orl_label" primaryKey="false" required="false"
+            size="50" type="VARCHAR"/>
+        <column autoIncrement="false" code="orl_quantity" default=""
+            description="Quantité commandée" inheritance="false"
+            inputValidator="" javaName="" javaNamingMethod="underscore"
+            javaType="primitive" name="orl_quantity" primaryKey="false"
+            required="false" size="10,2" type="NUMERIC"/>
+        <column autoIncrement="false" code="orl_unit_price" default=""
+            description="Prix du produit à l&apos;unité"
+            inheritance="false" inputValidator="" javaName=""
+            javaNamingMethod="underscore" javaType="primitive"
+            name="orl_unit_price" primaryKey="false" required="false"
+            size="10,2" type="NUMERIC"/>
+        <column autoIncrement="false" code="orl_amount" default=""
+            description="Montant de la ligne de commande : c&apos;est la quantité multipliée par le prix unitaire"
+            inheritance="false" inputValidator="" javaName=""
+            javaNamingMethod="underscore" javaType="primitive"
+            name="orl_amount" primaryKey="false" required="false"
+            size="10,2" type="NUMERIC"/>
+        <column autoIncrement="false" code="vat_value" default=""
+            description="Valeur en pourcentage de la TVA du produit : ceci représente la valeur du champ vat_value de la table t_value_added_tax : c&apos;est une clé étrangère de la table t_value_added_tax"
+            inheritance="false" inputValidator="" javaName=""
+            javaNamingMethod="underscore" javaType="primitive"
+            name="vat_value" primaryKey="false" required="false"
+            size="10,2" type="NUMERIC"/>
+        <style adjusted="false" backgroundColor="#b0b0d8" borderColor="#000000"/>
+        <foreign-key foreignCtrlPoint="4" foreignTable="t_diner_table"
+            localCtrlPoint="1" onDelete="none" onUpdate="none">
+            <reference foreign="tbd_id" local="tbd_id"/>
+            <style lineColor="#0000ff"/>
+        </foreign-key>
+        <foreign-key foreignCtrlPoint="4" foreignTable="t_diner_table"
+            localCtrlPoint="5" onDelete="none" onUpdate="none">
+            <reference foreign="tbd_id" local="tbd_id"/>
+            <style lineColor="#0000ff"/>
+        </foreign-key>
+        <foreign-key foreignCtrlPoint="4" foreignTable="t_diner_table"
+            localCtrlPoint="5" onDelete="none" onUpdate="none">
+            <reference foreign="tbd_id" local="tbd_id"/>
+            <style lineColor="#0000ff"/>
+        </foreign-key>
+        <foreign-key foreignCtrlPoint="4" foreignTable="t_diner_table"
+            localCtrlPoint="5" onDelete="none" onUpdate="none">
+            <reference foreign="tbd_id" local="tbd_id"/>
+            <style lineColor="#0000ff"/>
+        </foreign-key>
+    </table>
+    <table abstract="false" alias=""
+        baseClass="org.apache.torque.om.BaseObject"
+        basePeer="org.apache.util.BasePeer" description=""
+        heavyIndexing="false" height="187" idMethod="none"
+        javaNamingMethod="underscore" name="t_diner_table"
+        skipSql="false" width="278" x="5045" y="2789">
+        <code>t_diner_table</code>
+        <column autoIncrement="true" code="tbd_id" default=""
+            description="Identifiant de la table" inheritance="false"
+            inputValidator="" javaName="" javaNamingMethod="underscore"
+            javaType="primitive" name="tbd_id" primaryKey="true"
+            required="true" size="8" type="INTEGER"/>
+        <column autoIncrement="false" code="roo_id" default=""
+            description="Identifant de la salle dans laquelle se trouve cette table"
+            inheritance="false" inputValidator="" javaName=""
+            javaNamingMethod="underscore" javaType="primitive"
+            name="roo_id" primaryKey="false" required="false" size="8" type="INTEGER"/>
+        <column autoIncrement="false" code="tbd_number" default=""
+            description="Numéro de la table" inheritance="false"
+            inputValidator="" javaName="" javaNamingMethod="underscore"
+            javaType="primitive" name="tbd_number" primaryKey="false"
+            required="false" size="5" type="VARCHAR"/>
+        <column autoIncrement="false" code="tbd_customers_number"
+            default=""
+            description="Nombre de personnes occupant la table"
+            inheritance="false" inputValidator="" javaName=""
+            javaNamingMethod="underscore" javaType="primitive"
+            name="tbd_customers_number" primaryKey="false"
+            required="false" size="8" type="INTEGER"/>
+        <column autoIncrement="false" code="tbd_quantites_sum"
+            default=""
+            description="Somme de toutes les quantités commandées par la table"
+            inheritance="false" inputValidator="" javaName=""
+            javaNamingMethod="underscore" javaType="primitive"
+            name="tbd_quantites_sum" primaryKey="false" required="false"
+            size="10,2" type="NUMERIC"/>
+        <column autoIncrement="false" code="tbd_accounts_sum" default=""
+            description="Somme de tous les montants de chaque lignes de commande"
+            inheritance="false" inputValidator="" javaName=""
+            javaNamingMethod="underscore" javaType="primitive"
+            name="tbd_accounts_sum" primaryKey="false" required="false"
+            size="10,2" type="NUMERIC"/>
+        <column autoIncrement="false" code="tbd_reduction_ratio"
+            default="" description="Taux de réduction pour cette table"
+            inheritance="false" inputValidator="" javaName=""
+            javaNamingMethod="underscore" javaType="primitive"
+            name="tbd_reduction_ratio" primaryKey="false"
+            required="false" size="10,2" type="NUMERIC"/>
+        <column autoIncrement="false" code="tbd_amount_paid" default=""
+            description="Somme réellement due par la table : faisant intervenir le taux de réduction"
+            inheritance="false" inputValidator="" javaName=""
+            javaNamingMethod="underscore" javaType="primitive"
+            name="tbd_amount_paid" primaryKey="false" required="false"
+            size="10,2" type="NUMERIC"/>
+        <column autoIncrement="false" code="tbd_registration_date"
+            default=""
+            description="Date d&apos;enregistrement de la table dans la base de données"
+            inheritance="false" inputValidator="" javaName=""
+            javaNamingMethod="underscore" javaType="primitive"
+            name="tbd_registration_date" primaryKey="false"
+            required="false" size="4" type="TIMESTAMP"/>
+        <column autoIncrement="false" code="tbd_print_date" default=""
+            description="Date d&apos;impression de la table"
+            inheritance="false" inputValidator="" javaName=""
+            javaNamingMethod="underscore" javaType="primitive"
+            name="tbd_print_date" primaryKey="false" required="false"
+            size="4" type="TIMESTAMP"/>
+        <column autoIncrement="false" code="tbd_cashing_date" default=""
+            description="Date d&apos;encaissement de la table"
+            inheritance="false" inputValidator="" javaName=""
+            javaNamingMethod="underscore" javaType="primitive"
+            name="tbd_cashing_date" primaryKey="false" required="false"
+            size="4" type="TIMESTAMP"/>
+        <column autoIncrement="false" code="reductionRatioChanged"
+            default=""
+            description="Permet de savoir si l&apos;utilisateur a volontairement changé le taux de réduction"
+            inheritance="false" inputValidator="" javaName=""
+            javaNamingMethod="underscore" javaType="primitive"
+            name="tbd_reduction_ration_changed" primaryKey="false"
+            required="false" size="2" type="INTEGER"/>
+        <style adjusted="false" backgroundColor="#b0b0d8" borderColor="#000000"/>
+    </table>
+</pdm>

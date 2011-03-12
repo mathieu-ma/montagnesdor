@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="fr.mch.mdo.restaurant.dao.beans.Category" table="t_category">
+		<id name="id" column="cat_id" type="long">
+			<generator class="increment" />
+		</id>
+		<property name="deleted" column="cat_deleted"/>
+
+		<many-to-one name="code" column="cat_code_enm_id" class="fr.mch.mdo.restaurant.dao.beans.MdoTableAsEnum" />
+
+		<map name="labels" table="t_category_language">
+			<key column="cat_id" />
+			<index column="loc_id" type="long" />
+			<element column="ctl_label" type="string" />
+		</map>
+	</class>
+
+</hibernate-mapping>

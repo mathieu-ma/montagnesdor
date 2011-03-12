@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	
+	<package name="mdo-admin" namespace="/administration" extends="struts-default"> 
+		<result-types>
+			<result-type name="redirectActionTab" class="fr.mch.mdo.restaurant.web.struts.ServletActionRedirectTabResult">
+				<param name="tab"></param>
+			</result-type>
+		</result-types>
+				
+		<interceptors>
+			<interceptor name="mdoSwitchScheme" class="fr.mch.mdo.restaurant.web.struts.MdoSwitchSchemeInterceptor">
+				<param name="patternMethodAction">(|![a-z](.)*)\</param>
+<!-- 	
+	SWITCH_SCHEME_NONE = 0 : no switch scheme : scheme in == scheme out 
+	SWITCH_SCHEME_ONLY_HTTP = 1 : only http scheme : https scheme in redirect to http scheme out
+	SWITCH_SCHEME_ONLY_HTTPS = 2 : only https scheme : http scheme in redirect to https scheme out
+	SWITCH_SCHEME_HTTPS_ENTRY_POINT_ONLY = 21 : switch https scheme in to http scheme out
+ -->
+				<param name="switchScheme">21</param>
+			</interceptor>
+			<interceptor name="mdoUserContext" class="fr.mch.mdo.restaurant.web.struts.MdoUserContextInterceptor"/>
+			<interceptor name="mdoProcessLanguage" class="fr.mch.mdo.restaurant.web.struts.MdoProcessLanguageInterceptor">
+				<param name="attributeName">javax.servlet.jsp.jstl.fmt.locale</param>
+			</interceptor>
+			<interceptor name="mdoAuthorizationAction" class="fr.mch.mdo.restaurant.web.struts.MdoAuthorizationActionInterceptor"/>
+			<interceptor name="mdoParamMenuIdInterceptor" class="fr.mch.mdo.restaurant.web.struts.MdoParamMenuIdInterceptor"/>
+			
+			<interceptor-stack name="mdoValidationWorkflowStack">
+				<interceptor-ref name="basicStack"/>
+                <interceptor-ref name="validation">
+                    <param name="excludeMethods">execute,input,back,cancel,delete,form,list,listType</param>
+                </interceptor-ref>
+				<interceptor-ref name="workflow"/>				
+			</interceptor-stack>
+			
+			<interceptor-stack name="mdoLogonInterceptor">
+				<interceptor-ref name="mdoSwitchScheme"/>
+				<interceptor-ref name="mdoProcessLanguage"/>
+				<interceptor-ref name="mdoValidationWorkflowStack"/>
+			</interceptor-stack>
+			
+			<interceptor-stack name="mdoBasicInterceptor">
+				<interceptor-ref name="mdoSwitchScheme"/>
+				<interceptor-ref name="mdoUserContext"/>
+				<interceptor-ref name="mdoAuthorizationAction"/>
+				<interceptor-ref name="mdoProcessLanguage"/>
+				<interceptor-ref name="mdoParamMenuIdInterceptor">
+					<param name="selectedMenuItemIdKey">selectedMenuItemId</param>
+				</interceptor-ref>
+				<interceptor-ref name="mdoValidationWorkflowStack"/> 
+			</interceptor-stack>
+
+			<interceptor-stack name="mdoBasicInterceptorValStore">
+				<interceptor-ref name="mdoBasicInterceptor"/>
+				<interceptor-ref name="store">
+		    		<param name="operationMode">STORE</param>
+		   		</interceptor-ref>
+			</interceptor-stack>
+
+			<interceptor-stack name="mdoBasicInterceptorValRetrieve">
+				<interceptor-ref name="mdoBasicInterceptor"/>
+				<interceptor-ref name="store">
+		    		<param name="operationMode">RETRIEVE</param>
+		   		</interceptor-ref>
+			</interceptor-stack>
+
+		</interceptors>
+	
+		<default-interceptor-ref name="mdoBasicInterceptor"/>
+
+		<action name="AjaxI18nMessages" class="fr.mch.mdo.restaurant.web.struts.actions.AjaxI18nMessagesWebAction">
+			<result name="success" type="stream">
+				<param name="contentType">text/plain</param>
+			   	<param name="inputName">form.fileInputStream</param>
+			   	<param name="contentDisposition">filename="messages.properties"</param>
+			   	<param name="bufferSize">1024</param>
+			   	<param name="contentCharSet">;charset=iso-8859-1</param>
+			</result>
+		</action>
+
+		<action name="Logon" class="fr.mch.mdo.restaurant.web.struts.actions.LogonWebAction">
+			<interceptor-ref name="mdoLogonInterceptor"/>
+			<result name="input">/jsp/logon/logon.jsp</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">LocalesManager</param>
+				<param name="parse">true</param>				
+				<param name="method">list</param>
+				<param name="selectedMenuItemId">1</param>
+			</result>
+		</action>		
+
+		<action name="LocalesManager" class="fr.mch.mdo.restaurant.web.struts.actions.LocalesManagerWebAction" method="list">
+		   	<interceptor-ref name="mdoBasicInterceptorValRetrieve" />
+			<!-- After Success form or list -->
+			<result name="asformlist">/jsp/references/LocalesManager/locales.jsp</result>
+		</action>
+		<action name="LocalesManagerCUD" class="fr.mch.mdo.restaurant.web.struts.actions.LocalesManagerWebAction" method="form">
+		   	<interceptor-ref name="mdoBasicInterceptorValStore" />
+			<!-- After CUD -->
+			<result name="acud" type="redirectAction">LocalesManager</result>
+		</action>
+
+		<action name="MdoTableAsEnumsManager" class="fr.mch.mdo.restaurant.web.struts.actions.MdoTableAsEnumsManagerWebAction" method="list">
+		   	<interceptor-ref name="mdoBasicInterceptorValRetrieve" />
+			<!-- After Success form or list -->
+			<result name="asformlist">/jsp/references/MdoTableAsEnumsManager/mdo-table-as-enums.jsp</result>
+		</action>
+		<action name="MdoTableAsEnumsManagerCUD" class="fr.mch.mdo.restaurant.web.struts.actions.MdoTableAsEnumsManagerWebAction" method="form">
+		   	<interceptor-ref name="mdoBasicInterceptorValStore" />
+			<result name="input">/jsp/references/MdoTableAsEnumsManager/mdo-table-as-enums.jsp</result>
+			<!-- After CUD -->
+			<result name="acud" type="redirectAction">MdoTableAsEnumsManager</result>
+			<!-- After CUD list type -->
+			<result name="acudlisttype" type="redirectAction">
+				<param name="actionName">MdoTableAsEnumsManager</param>
+				<param name="method">listType</param>
+				<param name="form.dtoBean.type">${form.dtoBean.type}</param>
+			</result>
+		</action>
+
+		<action name="TableTypesManager" class="fr.mch.mdo.restaurant.web.struts.actions.TableTypesManagerWebAction" method="list">
+		   	<interceptor-ref name="mdoBasicInterceptorValRetrieve" />
+			<!-- After Success form or list -->
+			<result name="asformlist">/jsp/references/TableTypesManager/table-types.jsp</result>
+		</action>
+		<action name="TableTypesManagerCUD" class="fr.mch.mdo.restaurant.web.struts.actions.TableTypesManagerWebAction" method="form">
+		   	<interceptor-ref name="mdoBasicInterceptorValStore" />
+			<result name="input">/jsp/references/TableTypesManager/table-types.jsp</result>
+			<!-- After CUD -->
+			<result name="acud" type="redirectAction">TableTypesManager</result>
+		</action>
+
+		<action name="ValueAddedTaxesManager" class="fr.mch.mdo.restaurant.web.struts.actions.ValueAddedTaxesManagerWebAction" method="list">
+		   	<interceptor-ref name="mdoBasicInterceptorValRetrieve" />
+			<!-- After Success form or list -->
+			<result name="asformlist">/jsp/references/ValueAddedTaxesManager/value-added-taxes.jsp</result>
+		</action>
+		<action name="ValueAddedTaxesManagerCUD" class="fr.mch.mdo.restaurant.web.struts.actions.ValueAddedTaxesManagerWebAction" method="form">
+		   	<interceptor-ref name="mdoBasicInterceptorValStore" />
+			<result name="input">/jsp/references/ValueAddedTaxesManager/value-added-taxes.jsp</result>
+			<!-- After CUD -->
+			<result name="acud" type="redirectAction">ValueAddedTaxesManager</result>
+		</action>
+
+		<action name="RestaurantsManager" class="fr.mch.mdo.restaurant.web.struts.actions.RestaurantsManagerWebAction" method="list">
+		   	<interceptor-ref name="mdoBasicInterceptorValRetrieve" />
+			<!-- After Success form or list -->
+			<result name="asformlist">/jsp/restaurants/restaurants.jsp</result>
+		</action>
+		<action name="RestaurantsManagerCUD" class="fr.mch.mdo.restaurant.web.struts.actions.RestaurantsManagerWebAction" method="save">
+		   	<interceptor-ref name="mdoBasicInterceptorValStore" />
+			<result name="input">/jsp/restaurants/restaurants.jsp</result>
+			<!-- After CUD Prefix Table -->
+			<result name="acudprefixtable" type="redirectActionTab">
+				<param name="actionName">RestaurantsManager</param>
+				<param name="method">form</param>
+				<param name="tab">#tabs-3</param>
+				<param name="form.dtoBean.id">${form.dtoBean.id}</param>
+			</result>
+			<!-- After CUD -->
+			<result name="acud" type="redirectAction">RestaurantsManager</result>
+		</action>
+
+
+		<action name="UsersManager" class="fr.mch.mdo.restaurant.web.struts.actions.UsersManagerWebAction" method="list">
+		   	<interceptor-ref name="mdoBasicInterceptorValRetrieve" />
+			<!-- After Success form or list -->
+			<result name="asformlist">/jsp/users/users.jsp</result>
+		</action>
+		<action name="UsersManagerCUD" class="fr.mch.mdo.restaurant.web.struts.actions.UsersManagerWebAction" method="save">
+		   	<interceptor-ref name="mdoBasicInterceptorValStore" />
+			<result name="input">/jsp/users/users.jsp</result>
+			<!-- After CUD Prefix Table -->
+			<result name="acudrestaurant" type="redirectActionTab">
+				<param name="actionName">UsersManager</param>
+				<param name="method">form</param>
+				<param name="tab">#tabs-2</param>
+				<param name="form.dtoBean.id">${form.dtoBean.id}</param>
+			</result>
+			<!-- After CUD -->
+			<result name="acud" type="redirectAction">UsersManager</result>
+		</action>
+
+		<action name="UserRolesManager" class="fr.mch.mdo.restaurant.web.struts.actions.UserRolesManagerWebAction" method="list">
+		   	<interceptor-ref name="mdoBasicInterceptorValRetrieve" />
+			<!-- After Success form or list -->
+			<result name="asformlist">/jsp/users/users.jsp</result>
+		</action>
+		<action name="UserRolesManagerCUD" class="fr.mch.mdo.restaurant.web.struts.actions.UserRolesManagerWebAction" method="save">
+		   	<interceptor-ref name="mdoBasicInterceptorValStore" />
+			<result name="input">/jsp/users/users.jsp</result>
+			<!-- After CUD -->
+			<result name="acud" type="redirectAction">UserRolesManager</result>
+		</action>
+		
+		<action name="UserAuthenticationsManager" class="fr.mch.mdo.restaurant.web.struts.actions.UserAuthenticationsManagerAction" method="list">
+			<result name="list">/jsp/users/users.jsp</result>
+			<result name="ajax-response">/jsp/users/UserAuthenticationsManager/ajax-response.jsp</result>
+		</action>
+		
+		<action name="CategoriesManager" class="fr.mch.mdo.restaurant.web.struts.actions.CategoriesManagerWebAction" method="list">
+			<result name="list">/jsp/products/products.jsp</result>
+		</action>
+		<action name="ProductSpecialCodesManager" class="fr.mch.mdo.restaurant.web.struts.actions.ProductSpecialCodesManagerWebAction" method="list">
+			<result name="list">/jsp/products/products.jsp</result>
+			<result name="ajax-response">/jsp/products/ProductSpecialCodesManager/ajax-products-special-code-by-restaurant.jsp</result>
+		</action>		
+		<action name="ProductPartsManager" class="fr.mch.mdo.restaurant.web.struts.actions.ProductPartsManagerWebAction" method="list">
+			<result name="list">/jsp/products/products.jsp</result>
+		</action>		
+		<action name="ProductsManager" class="fr.mch.mdo.restaurant.web.struts.actions.ProductsManagerWebAction" method="list">
+			<result name="list">/jsp/products/products.jsp</result>
+		</action>
+<!--
+		<action name="TypeTablesManager" class="fr.mch.mdo.restaurant.web.struts.actions.TableTypesManagerWebAction" method="list">
+			<result name="list">/jsp/tables/tables.jsp</result>
+		</action>
+-->
+	</package>
+
+</struts>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+	<!-- We have to include default files struts-default.xml and struts-plugin.xml 
+		from jar -->
+	<include file="struts-default.xml" />
+	<include file="struts-plugin.xml" />
+
+	<constant name="struts.devMode" value="true" />
+	<constant name="struts.ui.theme" value="css_xhtml" />
+	<constant name="struts.custom.i18n.resources" value="fr.mch.mdo.restaurant.resources.i18n.ApplicationMessagesResources" />
+
+	<include file="fr/mch/mdo/restaurant/web/struts/struts-mdo-admin.xml" />
+
+</struts>

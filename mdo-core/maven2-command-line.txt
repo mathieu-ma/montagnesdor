@@ -1,0 +1,288 @@
+
+
+cd D:\montagnesdor\mdo-maven2-workspace
+
+D:\eclipse\eclipse.exe -data .
+
+Créer un projet
+eclipse > new project/java project/enter :mdo-core/finish
+
+Créez les alias:
+eclipse > /windows/preferences/java/Build path/Classpath variables et ajouter M2_REPO é C:/Documents and Settings/"account name"/.m2/repository 
+
+********************** START test module **********************************
+cd D:\montagnesdor\mdo-maven2-workspace\mdo-core
+//Choose 15: internal -> maven-archetype-quickstart ()
+mvn archetype:generate -DgroupId=fr.mch.mdo -DartifactId=test
+cd test
+mvn eclipse:eclipse
+
+Importer le projet test dans l'espace de travail de Eclipse  : 
+eide> import/existing project to workspace/select root directory: mdo-core\test
+
+Définir le classpath pour Junit : 
+eide> file/propertie/java build path/add variables/select M2-REPO/extend/change to junit-3-8-1.jar/ok
+********************** END test module **********************************
+
+****************** START security module ***************************
+cd D:\montagnesdor\mdo-maven2-workspace\mdo-core
+//Choose 15: internal -> maven-archetype-quickstart ()
+mvn archetype:generate -DgroupId=fr.mch.mdo -DartifactId=security
+cd security
+mvn eclipse:eclipse
+
+Importer le projet ioc dans l'espace de travail de Eclipse  : 
+eide> import/existing project to workspace/select root directory: mdo-core\security
+
+Définir le classpath pour Junit : 
+eide> file/propertie/java build path/add variables/select M2-REPO/extend/change to junit-3-8-1.jar/ok
+********************** END security module **********************************
+
+********************** START api module **********************************
+cd D:\montagnesdor\mdo-maven2-workspace\mdo-core
+//Choose 15: internal -> maven-archetype-quickstart ()
+mvn archetype:generate -DgroupId=fr.mch.mdo -DartifactId=api
+cd api
+mvn eclipse:eclipse
+
+Importer le projet api dans l'espace de travail de Eclipse  : 
+eide> import/existing project to workspace/select root directory: mdo-core\api
+
+Définir le classpath pour Junit : 
+eide> file/propertie/java build path/add variables/select M2-REPO/extend/change to junit-3-8-1.jar/ok
+********************** END api module **********************************
+
+****************** START i18n module ***************************
+cd D:\montagnesdor\mdo-maven2-workspace\mdo-core
+//Choose 15: internal -> maven-archetype-quickstart ()
+mvn archetype:generate -DgroupId=fr.mch.mdo -DartifactId=i18n
+cd i18n
+mvn eclipse:eclipse
+
+Importer le projet dao dans l'espace de travail d'eclipse  : 
+eide> import/existing project to workspace/select root directory: mdo-core\i18n
+
+Définir le classpath pour Junit : 
+eide> file/propertie/java build path/add variables/select M2-REPO/extend/change to junit-3-8-1.jar/ok
+******************* END i18n module **************************
+
+****************** START log module ***************************
+cd D:\montagnesdor\mdo-maven2-workspace\mdo-core
+//Choose 15: internal -> maven-archetype-quickstart ()
+mvn archetype:generate -DgroupId=fr.mch.mdo -DartifactId=log
+cd log
+mvn eclipse:eclipse
+
+Importer le projet dao dans l'espace de travail d'eclipse  : 
+eide> import/existing project to workspace/select root directory: mdo-core\log
+
+Définir le classpath pour Junit : 
+eide> file/propertie/java build path/add variables/select M2-REPO/extend/change to junit-3-8-1.jar/ok
+******************* END log module **************************
+
+
+********************** START exception module **********************************
+cd D:\montagnesdor\mdo-maven2-workspace\mdo-core
+//Choose 15: internal -> maven-archetype-quickstart ()
+mvn archetype:generate -DgroupId=fr.mch.mdo -DartifactId=exception
+cd exception
+mvn eclipse:eclipse
+
+Importer le projet exception dans l'espace de travail d'eclipse  : 
+eide> import/existing project to workspace/select root directory: mdo-core\exception
+
+Définir le classpath pour Junit : 
+eide> file/propertie/java build path/add variables/select M2-REPO/extend/change to junit-3-8-1.jar/ok
+********************** END exception module **********************************
+
+****************** START service module ***************************
+cd D:\montagnesdor\mdo-maven2-workspace\mdo-core
+//Choose 15: internal -> maven-archetype-quickstart ()
+mvn archetype:generate -DgroupId=fr.mch.mdo -DartifactId=services
+cd service
+mvn eclipse:eclipse
+
+Importer le projet service dans l'espace de travail de Eclipse  : 
+eide> import/existing project to workspace/select root directory: mdo-core\service
+
+Définir le classpath pour Junit : 
+eide> file/propertie/java build path/add variables/select M2-REPO/extend/change to junit-3-8-1.jar/ok
+******************* END service module **************************
+
+****************** START dao module ***************************
+cd D:\montagnesdor\mdo-maven2-workspace\mdo-core
+//Choose 15: internal -> maven-archetype-quickstart ()
+mvn archetype:generate -DgroupId=fr.mch.mdo -DartifactId=dao
+cd dao
+mvn eclipse:eclipse
+
+Importer le projet dao dans l'espace de travail de Eclipse  : 
+eide> import/existing project to workspace/select root directory: mdo-core\dao
+
+Définir le classpath pour Junit : 
+eide> file/propertie/java build path/add variables/select M2-REPO/extend/change to junit-3-8-1.jar/ok
+******************* END dao module **************************
+
+****************** START authentication module ***************************
+cd D:\montagnesdor\mdo-maven2-workspace\mdo-core
+//Choose 15: internal -> maven-archetype-quickstart ()
+mvn archetype:generate -DgroupId=fr.mch.mdo -DartifactId=authentication
+cd authentication
+mvn eclipse:eclipse
+
+Importer le projet authentication dans l'espace de travail de Eclipse  : 
+eide> import/existing project to workspace/select root directory: mdo-core\authentication
+
+Définir le classpath pour Junit : 
+eide> file/propertie/java build path/add variables/select M2-REPO/extend/change to junit-3-8-1.jar/ok
+******************* END authentication module **************************
+
+****************** START business module ***************************
+cd D:\montagnesdor\mdo-maven2-workspace\mdo-core
+//Choose 15: internal -> maven-archetype-quickstart ()
+mvn archetype:generate -DgroupId=fr.mch.mdo -DartifactId=business
+cd business
+mvn eclipse:eclipse
+
+Importer le projet business dans l'espace de travail de Eclipse  : 
+eide> import/existing project to workspace/select root directory: mdo-core\business
+
+Définir le classpath pour Junit : 
+eide> file/propertie/java build path/add variables/select M2-REPO/extend/change to junit-3-8-1.jar/ok
+********************** END business module **********************************
+
+
+
+****************** START ioc module ***************************
+cd D:\montagnesdor\mdo-maven2-workspace\mdo-core
+//Choose 15: internal -> maven-archetype-quickstart ()
+mvn archetype:generate -DgroupId=fr.mch.mdo -DartifactId=ioc
+cd ioc
+mvn eclipse:eclipse
+
+Importer le projet ioc dans l'espace de travail de Eclipse  : 
+eide> import/existing project to workspace/select root directory: mdo-core\ioc
+
+Définir le classpath pour Junit : 
+eide> file/propertie/java build path/add variables/select M2-REPO/extend/change to junit-3-8-1.jar/ok
+********************** END ioc module **********************************
+
+
+Créer un projet
+eclipse > new project/ project/enter :mdo-core\applet/finish
+
+cd D:\montagnesdor\mdo-maven2-workspace\mdo-core\applet
+//Choose 15: internal -> maven-archetype-quickstart ()
+mvn archetype:generate -DgroupId=fr.mch.mdo -DartifactId=date-time
+cd date-time
+mvn eclipse:eclipse
+
+Importer le projet date-time dans l'espace de travail de Eclipse  : 
+eide> import/existing project to workspace/select root directory: mdo-core\applet\date-time
+
+cd D:\montagnesdor\mdo-maven2-workspace\mdo-core\applet
+//Choose 15: internal -> maven-archetype-quickstart ()
+mvn archetype:generate -DgroupId=fr.mch.mdo -DartifactId=color-picker
+cd color-picker
+mvn eclipse:eclipse
+
+Importer le projet color-picker dans l'espace de travail de Eclipse  : 
+eide> import/existing project to workspace/select root directory: mdo-core\applet\color-picker
+
+cd D:\montagnesdor\mdo-maven2-workspace\mdo-core\applet
+//Choose 15: internal -> maven-archetype-quickstart ()
+mvn archetype:generate -DgroupId=fr.mch.mdo -DartifactId=serial-port-printer
+cd serial-port-printer
+mvn eclipse:eclipse
+
+Importer le projet serial-port-printer dans l'espace de travail de Eclipse  : 
+eide> import/existing project to workspace/select root directory: mdo-core\applet\date-time
+
+---------------------------------------------------------------------------------------------------
+cd D:\montagnesdor\mdo-maven2-workspace\mdo-core
+
+//Choose 18: internal -> maven-archetype-webapp (A simple Java web application)
+mvn archetype:generate -DgroupId=fr.mch.mdo -DartifactId=aop
+cd aop
+mvn eclipse:eclipse
+
+Importer le projet web dans l'espace de travail de Eclipse  : 
+eide> import/existing project to workspace/select root directory: mdo-core\aop
+
+Définir le classpath pour Junit : 
+eide> file/propertie/java build path/add variables/select M2-REPO/extend/change to junit-3-8-1.jar/ok
+
+
+---------------------------------------------------------------------------------------------------
+cd D:\montagnesdor\mdo-maven2-workspace\mdo-core
+
+//Choose 18: internal -> maven-archetype-webapp (A simple Java web application)
+mvn archetype:generate -DgroupId=fr.mch.mdo -DartifactId=web-administration
+cd web-administration
+mvn eclipse:eclipse
+
+Importer le projet web dans l'espace de travail de Eclipse  : 
+eide> import/existing project to workspace/select root directory: mdo-core\web-administration
+
+Définir le classpath pour Junit : 
+eide> file/propertie/java build path/add variables/select M2-REPO/extend/change to junit-3-8-1.jar/ok
+
+
+cd D:\montagnesdor\mdo-maven2-workspace\mdo-core
+
+//Choose 18: internal -> maven-archetype-webapp (A simple Java web application)
+mvn archetype:generate -DgroupId=fr.mch.mdo -DartifactId=web-restaurant
+cd web-restaurant
+mvn eclipse:eclipse
+
+Importer le projet web dans l'espace de travail de Eclipse  : 
+eide> import/existing project to workspace/select root directory: mdo-core\web-restaurant
+
+Définir le classpath pour Junit : 
+eide> file/propertie/java build path/add variables/select M2-REPO/extend/change to junit-3-8-1.jar/ok
+
+****************************************************************************************************************
+Pour utiliser Tomcat en production sous WINDOWS, il faut
+1) Copier le fichier tcnative-1.dll dans le répertoire java.library.path
+2) Ajouter dans le fichier server.xml, la partie "Define a APR SSL Coyote HTTP/1.1 Connector on port 8443"
+<!-- 
+	Define a APR SSL Coyote HTTP/1.1 Connector on port 8443  
+-->
+<Connector port="8443" minSpareThreads="5" maxSpareThreads="75"
+		enableLookups="true" disableUploadTimeout="true" 
+		acceptCount="100"  maxThreads="200"
+		scheme="https" secure="true" SSLEnabled="true"
+		SSLCertificateFile="${catalina.base}/conf/mdo-cacert.pem"
+		SSLCertificateKeyFile="${catalina.base}/conf/mdo-private-key.pem"
+SSLPassword="kimsan"
+           clientAuth="false" SSLProtocol="SSLv3"/>
+3) Il faut commenter la partie 
+    <Connector protocol="HTTP/1.1" port="8443"  SSLEnabled="true" 
+               maxThreads="150" scheme="https" secure="true" 
+               clientAuth="false" sslProtocol="TLS" 
+		keystoreFile="D:\montagnesdor\mdo-maven2-workspace\mdo-core\security\src\main\resources\fr\mch\mdo\restaurant\resources\security\generated\kimsankeystore" keystorePass="kimsan"
+	/>
+
+
+***************************************************************************************************
+Pour Debian Etch et Epson TM T88IV, si on veut charger le module usbserial au démarrage, il faut:
+1) Créer un fichier /etc/modprobe.d/epsontmt88iv dans lequel on ajoute les lignes suivantes:
+		alias epsontmt88iv usbserial
+		options epsontmt88iv vendor=0x04b8 product=0x0202
+2) Ajout la ligne suivante dans le ficher /etc/modules:
+	epsontmt88iv 		
+
+Pour foukoda:
+0) Télécharger le fichier http://mathieu.ma.free.fr/montagnesdor/install/linux/debian/install-debian-etch-montagnesdor-packages.sh et lancer les lignes correspondant é epsontmt88iv 
+1) Telecharger le fichier 
+wget http://mathieu.ma.free.fr/montagnesdor/foukoda/SPrinterApplet.jar
+2) Copier le fichier
+cp SPrinterApplet.jar /var/lib/tomcat5/webapps/montagnesdorV10/jsp/commons/SPrinterApplet.jar
+3) Modifier le fichier /var/lib/tomcat5/webapps/montagnesdorV10/jsp/commons/menuTop.jsp
+3a) Changer la valeur de l'attribut code de l'élément applet dont le name vaut printerApplet é fr.mch.mdo.applets.PrinterApplet.class
+3b) Changer la valeur de l'attribut value de l'élément param dont le name vaut linuxPortCom de cet applet é /dev/ttyUSB0
+3c) Ajouter un nouveau param pour cet applet:
+<param name='noCheckDsr' value='true'></param>  
+
+	
+	

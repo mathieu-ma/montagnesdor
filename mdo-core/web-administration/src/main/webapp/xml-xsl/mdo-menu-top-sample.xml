@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu>
+	<menu-entry>
+		<label key="menu.manage.locales"/>
+		<link>/LocalesManager.do?forwardKey=list</link>
+		<sub-menu>
+			<label key="menu.manage.orders"/>
+			<link>/LocalesManager.do?forwardKey=list</link>
+			<item>
+				<label key="menu.manage.tables"/>
+				<link>/RestaurantsManager.do?forwardKey=list</link>
+			</item>
+			<item>
+				<label key="menu.manage.day"/>
+				<link>/RestaurantsManager.do?forwardKey=list</link>
+				<sub-menu>
+					<label key="menu.manage.month"/>
+					<link>/LocalesManager.do?forwardKey=list</link>
+					<item>
+						<label key="menu.manage.menus"/>
+						<link>/RestaurantsManager.do?forwardKey=list</link>
+					</item>
+					<item>
+						<label key="menu.takeaway"/>
+						<link>/RestaurantsManager.do?forwardKey=list</link>
+					</item>
+				</sub-menu>
+			</item>
+		</sub-menu>
+	</menu-entry>
+	<menu-entry>
+		<label key="menu.manage.restaurants"/>
+		<link>/RestaurantsManager.do?forwardKey=list</link>
+	</menu-entry>
+	<menu-entry>
+		<label key="menu.manage.users"/>
+		<link>/UsersManager.do?forwardKey=list</link>
+	</menu-entry>
+</menu>

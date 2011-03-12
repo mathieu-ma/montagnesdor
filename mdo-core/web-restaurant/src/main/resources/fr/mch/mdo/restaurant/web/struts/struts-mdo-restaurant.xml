@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	
+	<package name="mdo-admin" namespace="/restaurant" extends="struts-default"> 
+				
+		<interceptors>
+			<interceptor name="mdoSwitchScheme" class="fr.mch.mdo.restaurant.web.struts.MdoSwitchSchemeInterceptor">
+				<param name="patternMethodAction">(|![a-z](.)*)\</param>
+<!-- 	
+	SWITCH_SCHEME_NONE = 0 : no switch scheme : scheme in == scheme out 
+	SWITCH_SCHEME_ONLY_HTTP = 1 : only http scheme : https scheme in redirect to http scheme out
+	SWITCH_SCHEME_ONLY_HTTPS = 2 : only https scheme : http scheme in redirect to https scheme out
+	SWITCH_SCHEME_HTTPS_ENTRY_POINT_ONLY = 21 : switch https scheme in to http scheme out
+ -->
+				<param name="switchScheme">21</param>
+			</interceptor>
+			<interceptor name="mdoUserContext" class="fr.mch.mdo.restaurant.web.struts.MdoUserContextInterceptor"/>
+			<interceptor name="mdoProcessLanguage" class="fr.mch.mdo.restaurant.web.struts.MdoProcessLanguageInterceptor">
+				<param name="parameterName">language</param>
+				<param name="attributeName">javax.servlet.jsp.jstl.fmt.locale</param>
+			</interceptor>
+			<interceptor name="mdoAuthorizationAction" class="fr.mch.mdo.restaurant.web.struts.MdoAuthorizationActionInterceptor"/>
+			<interceptor name="mdoParamMenuIdInterceptor" class="fr.mch.mdo.restaurant.web.struts.MdoParamMenuIdInterceptor"/>
+			
+			<interceptor-stack name="mdoValidationWorkflowStack">
+				<interceptor-ref name="basicStack"/>
+                <interceptor-ref name="validation">
+                    <param name="excludeMethods">execute,form,delete,list,input,back,cancel</param>
+                </interceptor-ref>
+				<interceptor-ref name="workflow"/>				
+			</interceptor-stack>
+			
+			<interceptor-stack name="mdoLogonInterceptor">
+				<interceptor-ref name="mdoSwitchScheme"/>
+				<interceptor-ref name="mdoProcessLanguage"/>
+				<interceptor-ref name="mdoValidationWorkflowStack"/>
+			</interceptor-stack>
+			
+			<interceptor-stack name="mdoBasicInterceptor">
+				<interceptor-ref name="mdoSwitchScheme"/>
+				<interceptor-ref name="mdoUserContext"/>
+				<interceptor-ref name="mdoAuthorizationAction"/>
+				<interceptor-ref name="mdoProcessLanguage"/>
+				<interceptor-ref name="mdoParamMenuIdInterceptor">
+					<param name="selectedMenuItemIdKey">selectedMenuItemId</param>
+				</interceptor-ref>
+				<interceptor-ref name="mdoValidationWorkflowStack"/> 
+			</interceptor-stack>
+
+		</interceptors>
+	
+		<default-interceptor-ref name="mdoBasicInterceptor"/>
+
+
+        <global-results>
+            <result name="unauthorizedAction">/jsp/commons/unauthorizedAction.jsp</result>
+        </global-results>
+
+
+		<action name="Logon" class="fr.mch.mdo.restaurant.web.struts.actions.LogonWebAction">
+			<interceptor-ref name="mdoLogonInterceptor"/>
+			<result name="input">/jsp/logon/logon.jsp</result>
+			<result name="success" type="redirect-action">
+				<param name="actionName">User</param>
+				<param name="parse">true</param>				
+				<param name="method">form</param>
+				<param name="selectedMenuItemId">1</param>
+			</result>
+		</action>
+
+		<action name="ChangeEntryDate" class="fr.mch.mdo.restaurant.web.struts.actions.ChangeEntryDateWebAction" method="form">
+			<result name="form">/jsp/commons/change-entry-date.jsp</result>
+			<result name="ajax-response">/jsp/commons/change-entry-date-ajax-response.jsp</result>
+		</action>
+		<action name="ChangePassword" class="fr.mch.mdo.restaurant.web.struts.actions.ChangePasswordWebAction" method="form">
+			<result name="form">/jsp/user/change-password.jsp</result>
+			<result name="ajax-response">/jsp/user/change-password-ajax-response.jsp</result>
+		</action>
+
+		<action name="TablesOrders" class="fr.mch.mdo.restaurant.web.struts.actions.TablesOrdersWebAction" method="form">
+			<result name="ajax-response-form">/jsp/tables-orders/ajax-response-form.jsp</result>
+			<result name="ajax-response-auto-complete-tables-names">/jsp/tables-orders/ajax-response-auto-complete-tables-names.jsp</result>
+			<result name="ajax-response-table-customers-number">/jsp/tables-orders/ajax-response-table-customers-number.jsp</result>
+			<result name="ajax-response-auto-complete-products-codes">/jsp/tables-orders/ajax-response-auto-complete-products-codes.jsp</result>
+			<result name="ajax-response-save-order-line">/jsp/tables-orders/ajax-response-save-order-line.jsp</result>
+			
+			
+		</action>
+
+		<action name="User" class="fr.mch.mdo.restaurant.web.struts.actions.UserWebAction" method="form">
+			<result name="form">/jsp/user/user.jsp</result>
+		</action>
+
+	</package>
+
+</struts>

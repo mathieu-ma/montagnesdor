@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="fr.mch.mdo.restaurant.dao.beans.CreditTable" table="t_credit_table">
+		<id name="id" column="crt_id" type="long">
+			<generator class="increment" />
+		</id>
+		<many-to-one name="dinnerTable" column="dtb_id"/>                
+		<many-to-one name="credit" column="cre_id"/>                
+		<property name="deleted" column="crt_deleted" type="boolean" />
+	</class>
+</hibernate-mapping>

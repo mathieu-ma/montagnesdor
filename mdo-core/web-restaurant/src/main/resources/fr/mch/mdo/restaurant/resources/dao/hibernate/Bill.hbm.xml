@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="fr.mch.mdo.restaurant.dao.beans.Bill" table="t_bill">
+		<id name="id" column="bil_id" type="long">
+			<generator class="increment" />
+		</id>
+		<many-to-one name="dinnerTable" column="dtb_id"/>                
+		<property name="reference" column="bil_reference" type="string" />
+		<property name="order" column="bil_order" type="integer" />
+		<property name="mealNumber" column="bil_meal_number" type="integer" />
+		<property name="amount" column="bil_amount" type="big_decimal" />
+		<property name="printed" column="bil_printed" type="boolean" />
+		<property name="deleted" column="bil_deleted" type="boolean" />
+	</class>
+</hibernate-mapping>

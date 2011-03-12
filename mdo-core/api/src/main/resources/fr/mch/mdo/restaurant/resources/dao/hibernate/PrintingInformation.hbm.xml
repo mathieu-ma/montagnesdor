@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="fr.mch.mdo.restaurant.dao.beans.PrintingInformation" table="t_printing_information">
+		<id name="id" column="pin_id" type="long">
+			<generator class="increment" />
+		</id>
+		<property name="deleted" column="pin_deleted" />
+		<property name="order" column="pin_order" />
+
+		<many-to-one name="restaurant" column="res_id" />
+		<many-to-one name="alignment" column="pin_alignment_enm_id" />
+		<many-to-one name="size" column="pin_size_enm_id" />
+		<many-to-one name="part" column="pin_part_enm_id" />
+
+		<map name="labels" table="t_printing_information_language">
+			<key column="pin_id" />
+			<index type="long">
+				<column name="loc_id" />
+			</index>
+			<element column="pil_label" type="string" />
+		</map>
+	</class>
+
+</hibernate-mapping>
