@@ -97,13 +97,14 @@ public abstract class MdoLoadingDatabaseTestCase extends MdoTestCase
 		}
 	}
 
+	// Files to be loaded
+	protected URL[] fileURLs = { ITestResources.class.getResource("montagnesdorStructure.sql"),
+			ITestResources.class.getResource("montagnesdorDatas.sql") 
+	};
+
 	protected MdoLoadingDatabaseTestCase(String testName) {
 		super(testName);
 		
-		// Files to be loaded
-		URL[] fileURLs = { ITestResources.class.getResource("montagnesdorStructure.sql"),
-				ITestResources.class.getResource("montagnesdorDatas.sql") 
-		};
 		// Check if we have already loaded the database files.
 		if (!alreadyLoaded) {
 			Connection connection = this.getConnection();
