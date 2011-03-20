@@ -17,12 +17,6 @@ public class UserRestaurantProperties extends MdoDaoBean
      * 
      */
     private static final long serialVersionUID = 1L;
-/*
-    --urt_id : identifiant de cette table 
-    --usr_id : cléf étrangère de la table t_user 
-    --res_id : cléf étrangère de la table t_restaurant
-    --urt_deleted bool : supprimer ou pas ?
-*/
     private Long userId;
     private Long restaurantId;
 
