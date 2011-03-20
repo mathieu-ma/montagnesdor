@@ -263,7 +263,7 @@ SSLPassword="kimsan"
 		keystoreFile="D:\montagnesdor\mdo-maven2-workspace\mdo-core\security\src\main\resources\fr\mch\mdo\restaurant\resources\security\generated\kimsankeystore" keystorePass="kimsan"
 	/>
 
-
+Remarque sur Ubuntu, installer tcnative-1 avet apt-get install tcnative-1 
 ***************************************************************************************************
 Pour Debian Etch et Epson TM T88IV, si on veut charger le module usbserial au démarrage, il faut:
 1) Créer un fichier /etc/modprobe.d/epsontmt88iv dans lequel on ajoute les lignes suivantes:
