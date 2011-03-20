@@ -239,6 +239,7 @@
 			${security-files-folder}/generated
 		</security-generated-files-folder>
 		<openssl.exe>${security-tools-folder}/openssl.exe</openssl.exe>
+		<openssl.exe>/usr/bin/openssl</openssl.exe>
 		<openSSLConf.initial.sample>${security-tools-folder}/openssl-initial-sample.cnf</openSSLConf.initial.sample>
 		<openSSLConf>
 			${security-files-folder}/openssl-noprompt.cnf
