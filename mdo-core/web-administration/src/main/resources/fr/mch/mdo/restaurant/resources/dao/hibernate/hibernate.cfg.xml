@@ -13,7 +13,7 @@
 		<!-- org.hsqldb.jdbcDriver ==> HSQLDB 1.8.X driver  -->
         <property name="hibernate.connection.driver_class">org.hsqldb.jdbc.JDBCDriver</property>
 
-       	<property name="hibernate.connection.url">jdbc:hsqldb:file:D:\temp\database\montagnesdor;shutdown=true;ifexists=true</property> 
+       	<property name="hibernate.connection.url">jdbc:hsqldb:file:/home/mathieu/tmp/database/montagnesdor;shutdown=true;ifexists=true</property> 
         <!-- 
 	        <property name="hibernate.connection.url">jdbc:postgresql://sql.free.fr:5432/montagnesdor?autoReconnect=true</property>
         -->
