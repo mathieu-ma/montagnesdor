@@ -4,6 +4,7 @@
  */
 package fr.mch.mdo.restaurant.dto.beans;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import fr.mch.mdo.restaurant.beans.MdoDtoBean;
@@ -61,9 +62,9 @@ public class UserAuthenticationDto extends MdoDtoBean
      */
     private String levelPass3;
     /**
-     * User locales
+     * User locales: have to instance it because we use Struts 2 conversion
      */
-    private Set<UserLocaleDto> locales;
+    private Set<UserLocaleDto> locales = new HashSet<UserLocaleDto>();
     /**
      * @return the printingLocale
      */

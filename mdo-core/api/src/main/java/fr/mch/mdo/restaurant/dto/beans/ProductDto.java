@@ -7,9 +7,11 @@
 package fr.mch.mdo.restaurant.dto.beans;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import fr.mch.mdo.restaurant.beans.IBeanLabelable;
 import fr.mch.mdo.restaurant.beans.MdoDtoBean;
 
 /**
@@ -17,7 +19,7 @@ import fr.mch.mdo.restaurant.beans.MdoDtoBean;
  * 
  * @author Mathieu MA sous conrad
  */
-public class ProductDto extends MdoDtoBean
+public class ProductDto extends MdoDtoBean implements IBeanLabelable
 {
 	/**
 	 * Default Serial Version UID
@@ -56,7 +58,7 @@ public class ProductDto extends MdoDtoBean
 	/**
 	 * This is used to detail product categories.
 	 */
-	private Set<ProductCategoryDto> categories;
+	private Set<ProductCategoryDto> categories = new HashSet<ProductCategoryDto>();
 
 
 	public RestaurantDto getRestaurant() {

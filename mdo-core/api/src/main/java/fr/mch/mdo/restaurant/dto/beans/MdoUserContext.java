@@ -26,6 +26,7 @@ public class MdoUserContext implements IMdoBean
 
 	/* Navigation part */
 	private String currentURLWithParameters;
+	private String currentURLWithParametersWithoutLocale;
 	private String currentURL;
 	private String currentNameSpace;
 	private String currentActionName;
@@ -213,6 +214,21 @@ public class MdoUserContext implements IMdoBean
 
 	public String getCurrentURLWithParameters() {
 		return currentURLWithParameters;
+	}
+
+	/**
+	 * @param currentURLWithParametersWithoutLocale the currentURLWithParametersWithoutLocale to set
+	 */
+	public void setCurrentURLWithParametersWithoutLocale(
+			String currentURLWithParametersWithoutLocale) {
+		this.currentURLWithParametersWithoutLocale = currentURLWithParametersWithoutLocale;
+	}
+
+	/**
+	 * @return the currentURLWithParametersWithoutLocale
+	 */
+	public String getCurrentURLWithParametersWithoutLocale() {
+		return currentURLWithParametersWithoutLocale;
 	}
 
 	public void setCurrentURL(String currentURL) {

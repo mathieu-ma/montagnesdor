@@ -4,7 +4,10 @@
  */
 package fr.mch.mdo.restaurant.dto.beans;
 
+import java.util.List;
 import java.util.Map;
+
+import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 
 /**
  * @author Mathieu MA
@@ -17,31 +20,51 @@ public class UserRolesManagerViewBean extends AdministrationManagerViewBean
      */
 	private static final long serialVersionUID = 1L;
 
-	private Map<String, String> labels;
+	private Map<Long, String> labels;
 
-	private Map<String, String> languages;
+	private Map<Long, String> languages;
 
-	
-	public void setLabels(Map<String, String> labels) {
+	private List<IMdoDtoBean> codes;
+
+	/**
+	 * @param labels the labels to set
+	 */
+	public void setLabels(Map<Long, String> labels) {
 		this.labels = labels;
 	}
 
-	public Map<String, String> getLabels() {
+	/**
+	 * @return the labels
+	 */
+	public Map<Long, String> getLabels() {
 		return labels;
 	}
 
 	/**
 	 * @param languages the languages to set
 	 */
-	public void setLanguages(Map<String, String> languages) {
+	public void setLanguages(Map<Long, String> languages) {
 		this.languages = languages;
 	}
 
 	/**
 	 * @return the languages
 	 */
-	public Map<String, String> getLanguages() {
+	public Map<Long, String> getLanguages() {
 		return languages;
 	}
 
+	/**
+	 * @return the codes
+	 */
+	public List<IMdoDtoBean> getCodes() {
+		return codes;
+	}
+
+	/**
+	 * @param codes the codes to set
+	 */
+	public void setCodes(List<IMdoDtoBean> codes) {
+		this.codes = codes;
+	}
 }

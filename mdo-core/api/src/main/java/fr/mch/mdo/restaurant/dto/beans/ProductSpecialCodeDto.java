@@ -8,6 +8,7 @@ package fr.mch.mdo.restaurant.dto.beans;
 
 import java.util.Map;
 
+import fr.mch.mdo.restaurant.beans.IBeanLabelable;
 import fr.mch.mdo.restaurant.beans.MdoDtoBean;
 
 /**
@@ -16,7 +17,7 @@ import fr.mch.mdo.restaurant.beans.MdoDtoBean;
  * 
  * @author Mathieu
  */
-public class ProductSpecialCodeDto extends MdoDtoBean 
+public class ProductSpecialCodeDto extends MdoDtoBean implements IBeanLabelable
 {
 	/**
 	 * Default Serial Version UID.

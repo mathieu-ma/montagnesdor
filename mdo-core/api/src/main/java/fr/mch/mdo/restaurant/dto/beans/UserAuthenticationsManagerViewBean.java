@@ -5,7 +5,6 @@
 package fr.mch.mdo.restaurant.dto.beans;
 
 import java.util.List;
-import java.util.Map;
 
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 
@@ -22,8 +21,6 @@ public class UserAuthenticationsManagerViewBean extends AdministrationManagerVie
 
     private List<LocaleDto> languages;
 
-    private Map<String, String> avalaibleLanguages;
-
     private List<UserLocaleDto> userLocales;
 
     private List<IMdoDtoBean> userRestaurants;
@@ -32,20 +29,16 @@ public class UserAuthenticationsManagerViewBean extends AdministrationManagerVie
 
     private List<IMdoDtoBean> users;
 
+    /**
+     * List of LocaleDto
+     * @return
+     */
 	public List<LocaleDto> getLanguages() {
 		return languages;
 	}
 
 	public void setLanguages(List<LocaleDto> languages) {
 		this.languages = languages;
-	}
-
-	public Map<String, String> getAvalaibleLanguages() {
-		return avalaibleLanguages;
-	}
-
-	public void setAvalaibleLanguages(Map<String, String> avalaibleLanguages) {
-		this.avalaibleLanguages = avalaibleLanguages;
 	}
 
 	public List<UserLocaleDto> getUserLocales() {

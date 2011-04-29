@@ -20,19 +20,49 @@ public class ProductsManagerViewBean extends AdministrationManagerViewBean
      */
     private static final long serialVersionUID = 1L;
 
-    private Map<String, String> categoryLabels;
+    private List<IMdoDtoBean> categories;
 
     private List<IMdoDtoBean> vats;
 
     private List<IMdoDtoBean> restaurants;
     
-    private Map<String, String> languages;
+	private Map<Long, String> labels;
 
-    public Map<String, String> getLanguages() {
+	private Map<Long, String> languages;
+
+    /**
+	 * @param categories the categories to set
+	 */
+	public void setCategories(List<IMdoDtoBean> categories) {
+		this.categories = categories;
+	}
+
+	/**
+	 * @return the categories
+	 */
+	public List<IMdoDtoBean> getCategories() {
+		return categories;
+	}
+
+	/**
+	 * @param labels the labels to set
+	 */
+	public void setLabels(Map<Long, String> labels) {
+		this.labels = labels;
+	}
+
+	/**
+	 * @return the labels
+	 */
+	public Map<Long, String> getLabels() {
+		return labels;
+	}
+
+	public Map<Long, String> getLanguages() {
         return languages;
     }
 
-    public void setLanguages(Map<String, String> languages) {
+    public void setLanguages(Map<Long, String> languages) {
         this.languages = languages;
     }
 
@@ -42,14 +72,6 @@ public class ProductsManagerViewBean extends AdministrationManagerViewBean
 
     public void setVats(List<IMdoDtoBean> vats) {
         this.vats = vats;
-    }
-
-    public Map<String, String> getCategoryLabels() {
-        return categoryLabels;
-    }
-
-    public void setCategoryLabels(Map<String, String> categoryLabels) {
-        this.categoryLabels = categoryLabels;
     }
 
     public List<IMdoDtoBean> getRestaurants() {

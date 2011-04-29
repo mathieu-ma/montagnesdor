@@ -11,7 +11,7 @@ import fr.mch.mdo.restaurant.beans.IMdoViewBean;
  */
 public interface IAdministrationManagerViewBean extends IMdoViewBean
 {
-    public List<IMdoDtoBean> getList();
+    List<IMdoDtoBean> getList();
 
-    public void setList(List<IMdoDtoBean> list);
+    void setList(List<IMdoDtoBean> list);
 }

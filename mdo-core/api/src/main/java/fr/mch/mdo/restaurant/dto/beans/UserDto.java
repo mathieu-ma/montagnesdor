@@ -51,7 +51,9 @@ public class UserDto extends MdoDtoBean
      * This is the picture of the user.
      */
     private byte[] picture;
-
+	/**
+	 * Set of user restaurants: have to instance it because we use Struts 2 conversion
+	 */
     private Set<UserRestaurantDto> restaurants = new HashSet<UserRestaurantDto>();
 
     /**

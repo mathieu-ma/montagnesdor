@@ -23,6 +23,11 @@ public class MdoTableAsEnumsManagerViewBean extends AdministrationManagerViewBea
 	 * List of ids that must not be deleted. 
 	 */
 	private List<Long> notDeletedBeanIds = new ArrayList<Long>();
+	
+	/**
+	 * List of already stored type names
+	 */
+	private List<String> existingTypes = new ArrayList<String>();
 
 	/**
 	 * @param notDeletedBeanIds the notDeletedBeanIds to set
@@ -36,5 +41,19 @@ public class MdoTableAsEnumsManagerViewBean extends AdministrationManagerViewBea
 	 */
 	public List<Long> getNotDeletedBeanIds() {
 		return notDeletedBeanIds;
+	}
+
+	/**
+	 * @param existingTypes the existingTypes to set
+	 */
+	public void setExistingTypes(List<String> existingTypes) {
+		this.existingTypes = existingTypes;
+	}
+
+	/**
+	 * @return the existingTypes
+	 */
+	public List<String> getExistingTypes() {
+		return existingTypes;
 	}
 }

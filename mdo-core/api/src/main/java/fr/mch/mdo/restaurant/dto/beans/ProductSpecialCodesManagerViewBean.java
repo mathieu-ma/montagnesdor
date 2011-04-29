@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
-import fr.mch.mdo.restaurant.services.business.ManagedProductSpecialCode;
 
 /**
  * @author Mathieu MA
@@ -21,33 +20,51 @@ public class ProductSpecialCodesManagerViewBean extends AdministrationManagerVie
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private List<IMdoDtoBean> restaurants;
+	private Map<Long, String> labels;
 
-	private Map<String, String> languages;
+	private Map<Long, String> languages;
 
-	private List<ManagedProductSpecialCode> productSpecialCodes;
+	private List<IMdoDtoBean> codes;
 
-	public Map<String, String> getLanguages() {
+	/**
+	 * @return the labels
+	 */
+	public Map<Long, String> getLabels() {
+		return labels;
+	}
+
+	/**
+	 * @param labels the labels to set
+	 */
+	public void setLabels(Map<Long, String> labels) {
+		this.labels = labels;
+	}
+
+	/**
+	 * @return the languages
+	 */
+	public Map<Long, String> getLanguages() {
 		return languages;
 	}
 
-	public void setLanguages(Map<String, String> languages) {
+	/**
+	 * @param languages the languages to set
+	 */
+	public void setLanguages(Map<Long, String> languages) {
 		this.languages = languages;
 	}
 
-	public void setRestaurants(List<IMdoDtoBean> restaurants) {
-		this.restaurants = restaurants;
+	/**
+	 * @param codes the codes to set
+	 */
+	public void setCodes(List<IMdoDtoBean> codes) {
+		this.codes = codes;
 	}
 
-	public List<IMdoDtoBean> getRestaurants() {
-		return restaurants;
-	}
-
-	public void setProductSpecialCodes(List<ManagedProductSpecialCode> productSpecialCodes) {
-		this.productSpecialCodes = productSpecialCodes;
-	}
-
-	public List<ManagedProductSpecialCode> getProductSpecialCodes() {
-		return productSpecialCodes;
+	/**
+	 * @return the codes
+	 */
+	public List<IMdoDtoBean> getCodes() {
+		return codes;
 	}
 }

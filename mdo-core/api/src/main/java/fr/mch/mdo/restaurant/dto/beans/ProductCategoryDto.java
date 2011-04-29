@@ -38,7 +38,7 @@ public class ProductCategoryDto extends MdoDtoBean {
 	 * category is FISH then the quantity is the quantity of fish for this
 	 * product. This can be used for stock management.
 	 */
-	private BigDecimal quantity;
+	private BigDecimal quantity = new BigDecimal(0);
 
 	public ProductDto getProduct() {
 		return product;
