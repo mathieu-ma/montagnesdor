@@ -5,12 +5,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import fr.mch.mdo.logs.ILogger;
+import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.IMdoTableAsEnumsDao;
 import fr.mch.mdo.restaurant.dao.beans.MdoTableAsEnum;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultMdoTableAsEnumsDao;
 import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto;
+import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumsManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.exception.MdoBusinessException;
 import fr.mch.mdo.restaurant.exception.MdoException;
@@ -148,6 +150,7 @@ public class DefaultMdoTableAsEnumsManager extends AbstractAdministrationManager
 	public void processList(IAdministrationManagerViewBean viewBean, MdoUserContext userContext, boolean... lazy) throws MdoBusinessException {
 		IMdoTableAsEnumsDao dao = (IMdoTableAsEnumsDao) super.getDao();
 		List<IMdoDtoBean> list = new ArrayList<IMdoDtoBean>();
+		List<String> existingTypes = new ArrayList<String>();
 		List<?> types;
 		try {
 			types = dao.findAllTypes();
@@ -160,8 +163,11 @@ public class DefaultMdoTableAsEnumsManager extends AbstractAdministrationManager
 			MdoTableAsEnumDto bean = new MdoTableAsEnumDto();
 			bean.setType(type);
 			list.add(bean);
+			
+			existingTypes.add(type);
 		}
 		viewBean.setList(list);
+		((MdoTableAsEnumsManagerViewBean) viewBean).setExistingTypes(existingTypes);
 	}
 
 	@Override
@@ -177,4 +183,18 @@ public class DefaultMdoTableAsEnumsManager extends AbstractAdministrationManager
 		return super.save(dtoBean, userContext);
 	}
 
+	@Override
+	public IMdoDtoBean findByTypeAndName(String type, String name, MdoUserContext userContext) throws MdoBusinessException {
+		IMdoDtoBean result = null;
+		try {
+			IMdoDaoBean bean = (IMdoDaoBean) ((IMdoTableAsEnumsDao) dao).findByUniqueKey(new String[] {type, name}, true);
+			if (bean != null) {
+				result = assembler.marshal(bean, userContext);
+			}
+		} catch (MdoException e) {
+			logger.error("message.error.administration.business.enum.find.by.type.name", new Object[] {type, name}, e);
+			throw new MdoBusinessException("message.error.administration.business.enum.find.by.type.name", new Object[] {type, name}, e);
+		}
+		return result;
+	}
 }

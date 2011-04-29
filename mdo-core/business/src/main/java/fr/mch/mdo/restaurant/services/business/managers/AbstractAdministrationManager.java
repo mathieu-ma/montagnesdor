@@ -53,9 +53,9 @@ public abstract class AbstractAdministrationManager implements IAdministrationMa
 	public IMdoDtoBean save(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
 		if (dtoBean != null) {
 			if (dtoBean.getId() == null) {
-				insert(dtoBean, userContext);
+				dtoBean = insert(dtoBean, userContext);
 			} else {
-				update(dtoBean, userContext);
+				dtoBean = update(dtoBean, userContext);
 			}
 		}
 		return dtoBean;
