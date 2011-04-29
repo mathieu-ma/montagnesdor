@@ -491,22 +491,23 @@ ALTER SEQUENCE t_category_language_ctl_id_seq *{OWNED BY t_category_language.ctl
 CREATE SEQUENCE t_product_special_code_psc_id_seq;
 CREATE TABLE t_product_special_code (
   psc_id integer *{DEFAULT NEXTVAL('t_product_special_code_psc_id_seq')} NOT null PRIMARY KEY,
-  res_id integer NOT null,
-  psc_short_code VARCHAR(1) NOT NULL,
+  res_id integer,
+  psc_short_code VARCHAR(1),
   psc_code_enm_id integer NOT null,
   psc_deleted BOOLEAN DEFAULT false NOT null,
   CONSTRAINT psc_id_uni UNIQUE (psc_id),
-  CONSTRAINT psc_res_id_psc_short_code_uni UNIQUE (res_id, psc_short_code),
-  CONSTRAINT psc_res_id_psc_code_enum_id_uni UNIQUE (res_id, psc_code_enm_id),
-  CONSTRAINT psc_res_id_psc_short_code_psc_enum_id_uni UNIQUE (res_id, psc_short_code, psc_code_enm_id),
+  CONSTRAINT psc_psc_code_enum_id_uni UNIQUE (psc_code_enm_id),
+--  CONSTRAINT psc_res_id_psc_short_code_uni UNIQUE (res_id, psc_short_code),
+--  CONSTRAINT psc_res_id_psc_code_enum_id_uni UNIQUE (res_id, psc_code_enm_id),
+--  CONSTRAINT psc_res_id_psc_short_code_psc_enum_id_uni UNIQUE (res_id, psc_short_code, psc_code_enm_id),
   CONSTRAINT psc_code_enm_id_fk FOREIGN KEY (psc_code_enm_id) REFERENCES t_enum (enm_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
   CONSTRAINT psc_res_id_fk FOREIGN KEY (res_id) REFERENCES t_restaurant (res_id) ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 -- COMMENT Statement is used for PostGresql but this is also compatible with HSQLDB 2.0.
 COMMENT ON TABLE t_product_special_code IS 'This table is used for product special code.';
 COMMENT ON COLUMN t_product_special_code.psc_id IS 'This is primary key of this table.';
-COMMENT ON COLUMN t_product_special_code.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant.';
-COMMENT ON COLUMN t_product_special_code.psc_short_code IS 'This is used to specify the short code enter by user.';
+COMMENT ON COLUMN t_product_special_code.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant. Currently NOT USED.';
+COMMENT ON COLUMN t_product_special_code.psc_short_code IS 'This is used to specify the short code enter by user.Currently NOT USED.';
 COMMENT ON COLUMN t_product_special_code.psc_code_enm_id IS 'This is a foreign key that refers to t_enum. It is used to specify the product special code.';
 COMMENT ON COLUMN t_product_special_code.psc_deleted IS 'This is used for logical deletion.';
 -- For PostGresql, the sequence is marked as "*{OWNED BY" the column, so that it will be dropped if the column or table is dropped.

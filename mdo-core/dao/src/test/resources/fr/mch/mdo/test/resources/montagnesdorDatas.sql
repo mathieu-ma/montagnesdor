@@ -363,3 +363,14 @@ INSERT INTO t_revenue_cashing VALUES(1, 1, 35, 115.12, false);
 --COMMENT ON COLUMN t_revenue_vat.rva_deleted IS 'This is used for logical deletion.';
 INSERT INTO t_revenue_vat VALUES(1, 1, 1, 123.456, 23.5, false);
 
+-- COMMENT Statement is used for PostGresql but this is also compatible with HSQLDB 2.0.
+--COMMENT ON TABLE t_printing_information IS 'This table is used for printing custom informations on specific restaurant.';
+--COMMENT ON COLUMN t_printing_information.pin_id IS 'This is primary key of this table.';
+--COMMENT ON COLUMN t_printing_information.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant. This field and the other enm_id field consist of a unique field.';
+--COMMENT ON COLUMN t_printing_information.pin_order IS 'It is used to specify the order of the printing information.';
+--COMMENT ON COLUMN t_printing_information.pin_alignment_enm_id IS 'This is a foreign key that refers to t_enum. It is used to specify the alignment of the printing information.';
+--COMMENT ON COLUMN t_printing_information.pin_size_enm_id IS 'This is a foreign key that refers to t_enum. It is used to specify the size of the printing information.';
+--COMMENT ON COLUMN t_printing_information.pin_part_enm_id IS 'This is a foreign key that refers to t_enum. It is used to specify the part of the printing information.';
+--COMMENT ON COLUMN t_printing_information.pin_deleted IS 'This is used for logical deletion.';
+INSERT INTO t_printing_information VALUES(1, 1, 1, 4, 7, 10, false);
+INSERT INTO t_printing_information VALUES(2, 1, 2, 5, 8, 11, false);

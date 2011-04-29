@@ -273,4 +273,21 @@ public class DefaultProductsDaoTest extends DefaultDaoServicesTestCase
 			fail(e.getMessage());
 		}
 	}
+	
+	/**
+	 * Test the findByRestaurant method.
+	 */
+	public void testFindByRestaurant() {
+		// 1 restaurant was created at HSQLDB startup
+		Long restaurantId = 1L;
+		try {
+			IProductsDao productsDao = (IProductsDao) this.getInstance();
+
+			List<IMdoBean> list = productsDao.findByRestaurant(restaurantId);
+			assertNotNull("List of IMdoBean must not be null", list);
+			assertFalse("List of IMdoBean must not be empty", list.isEmpty());
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+	}
 }
