@@ -27,7 +27,8 @@ public enum IocBeanName
     BEAN_PRODUCT_PARTS_MANAGER_NAME("ProductPartsManager"),
     BEAN_VALUE_ADDED_TAXES_MANAGER_NAME("ValueAddedTaxesManager"),
     BEAN_PRODUCT_SPECIAL_CODES_MANAGER_NAME("ProductSpecialCodesManager"),
-    BEAN_TABLE_TYPES_MANAGER_NAME("TableTypesManager");
+    BEAN_TABLE_TYPES_MANAGER_NAME("TableTypesManager"),
+    BEAN_PRINTING_INFORMATIONS_MANAGER_NAME("PrintingInformationsManager");
 
     private final String value;
 

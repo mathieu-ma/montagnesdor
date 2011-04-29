@@ -46,9 +46,14 @@ public interface Constants
     public static final String ACTION_RESULT_LIST = "list";
     public static final String ACTION_RESULT_FORM = "form";
     
+    public static final String ACTION_RESULT_AFTER_CUD_CATEGORY = "acudcategory";
     public static final String ACTION_RESULT_AFTER_CUD_PREFIX_TABLE = "acudprefixtable";
     public static final String ACTION_RESULT_AFTER_CUD_LIST_TYPE = "acudlisttype";
     public static final String ACTION_RESULT_AFTER_CUD_RESTAURANT = "acudrestaurant";
+    public static final String ACTION_RESULT_AFTER_CUD_LABELS = "acudlabels";
+    public static final String ACTION_RESULT_AFTER_CUD_LANGUAGE = "acudlanguage";
+    public static final String ACTION_RESULT_AFTER_CUD_LIST_PRODUCTS = "acudlistproducts";
+    public static final String ACTION_RESULT_AFTER_CUD_LIST_PRINTING_INFORMATIONS = "acudlistprintinginformations";
     
     /**
      * END WEB
