@@ -25,7 +25,7 @@ public interface ILocalesManager extends IAdministrationManager
 	 *         language in current locale, i.e., 
 	 *         1) if key=fr and current locale=fr then value=français 
 	 *         2) if key=fr and current locale=en then value=french
-	 * @throws MdoBusinessException
+     * @throws MdoException if any exception occur.
 	 */
 	Map<String, String> getAvailableLanguages(Locale currentLocale) throws MdoException;
 
@@ -41,7 +41,7 @@ public interface ILocalesManager extends IAdministrationManager
 	 *         language in current locale, i.e., 
 	 *         1) if key=fr and current locale=fr then value=français 
 	 *         2) if key=fr and current locale=en then value=french
-	 * @throws MdoBusinessException
+     * @throws MdoException if any exception occur.
 	 */
 	Map<String, String> getSystemAvailableLanguages(java.util.Locale currentLocale) throws MdoException;
 	
@@ -52,7 +52,7 @@ public interface ILocalesManager extends IAdministrationManager
      * @return a Map of key=id of mdo locale/value=display language of java.util.language by specific language iso code.
      * @throws MdoException if any exception occur.
      */
-    Map<String, String> getLanguages(Locale currentLocale) throws MdoException;
+    Map<Long, String> getLanguages(Locale currentLocale) throws MdoException;
 
     /**
      * Get Map of key=id of mdo locale/value=display language of java.util.Locale by specific language iso code. 
@@ -60,7 +60,7 @@ public interface ILocalesManager extends IAdministrationManager
      * @return a Map of key=id of mdo locale/value=display language of java.util.language by specific language iso code.
      * @throws MdoException if any exception occur.
      */
-	Map<String, String> getLanguages(String languageCode) throws MdoException;
+	Map<Long, String> getLanguages(String languageCode) throws MdoException;
 
 	IMdoBean findByLanguage(Object id, MdoUserContext userContext) throws MdoException;
     
