@@ -186,6 +186,13 @@ INSERT INTO t_user VALUES(1, 'MA', 'Chhui Huy', 'Mathieu', '1970-08-15 15:08:19'
 --COMMENT ON COLUMN t_user_authentication.aut_deleted IS 'This is used for logical deletion.';
 INSERT INTO t_user_authentication VALUES(1, 1, 1, 1, 1, 'mch', 'mch', 'mch1', 'mch2', 'mch3', false);
 
+--COMMENT ON TABLE t_user_restaurant IS 'This table is used to specify that a user has or works in several users.';
+--COMMENT ON COLUMN t_user_restaurant.urt_id IS 'This is primary key of this table.';
+--COMMENT ON COLUMN t_user_restaurant.usr_id IS 'This is a foreign key that refers to t_user. It is used to specify the user restaurant. This field and the other res_id field consist of a unique field.';
+--COMMENT ON COLUMN t_user_restaurant.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant of the user. This field and the other usr_id field consist of a unique field.';
+--COMMENT ON COLUMN t_user_restaurant.urt_deleted IS 'This is used for logical deletion.';
+INSERT INTO t_user_restaurant VALUES(1, 1, 1, false);
+
 --COMMENT ON TABLE t_category IS 'This table is used for product category.';
 --COMMENT ON COLUMN t_category.cat_id IS 'This is primary key of this table.';
 --COMMENT ON COLUMN t_category.cat_code_enm_id IS 'This is a foreign key that refers to t_enum. It is used to specify the product category code like MEAT, FISH ...';
@@ -335,7 +342,7 @@ INSERT INTO t_table_cashing VALUES(1, 1, 35, 115.12, false);
 --COMMENT ON COLUMN t_revenue.rev_closing_date IS 'This is the closing date of the day revenue depending on the type of table.';
 --COMMENT ON COLUMN t_revenue.rev_amount IS 'This is the amount of the day revenue depending on the type of table.';
 --COMMENT ON COLUMN t_revenue.rev_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_revenue VALUES(1, 1, '1970-08-15 15:08:19', 1, null, null, 345.6789, false);
+INSERT INTO t_revenue VALUES(1, 1, '1970-08-15', 1, null, null, 345.6789, false);
 
 -- COMMENT Statement is used for PostGresql but this is also compatible with HSQLDB 2.0.
 --COMMENT ON TABLE t_revenue_cashing IS 'This table is used for cashing revenue depending on type of cashing.';
@@ -356,3 +363,14 @@ INSERT INTO t_revenue_cashing VALUES(1, 1, 35, 115.12, false);
 --COMMENT ON COLUMN t_revenue_vat.rva_deleted IS 'This is used for logical deletion.';
 INSERT INTO t_revenue_vat VALUES(1, 1, 1, 123.456, 23.5, false);
 
+-- COMMENT Statement is used for PostGresql but this is also compatible with HSQLDB 2.0.
+--COMMENT ON TABLE t_printing_information IS 'This table is used for printing custom informations on specific restaurant.';
+--COMMENT ON COLUMN t_printing_information.pin_id IS 'This is primary key of this table.';
+--COMMENT ON COLUMN t_printing_information.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant. This field and the other enm_id field consist of a unique field.';
+--COMMENT ON COLUMN t_printing_information.pin_order IS 'It is used to specify the order of the printing information.';
+--COMMENT ON COLUMN t_printing_information.pin_alignment_enm_id IS 'This is a foreign key that refers to t_enum. It is used to specify the alignment of the printing information.';
+--COMMENT ON COLUMN t_printing_information.pin_size_enm_id IS 'This is a foreign key that refers to t_enum. It is used to specify the size of the printing information.';
+--COMMENT ON COLUMN t_printing_information.pin_part_enm_id IS 'This is a foreign key that refers to t_enum. It is used to specify the part of the printing information.';
+--COMMENT ON COLUMN t_printing_information.pin_deleted IS 'This is used for logical deletion.';
+INSERT INTO t_printing_information VALUES(1, 1, 1, 4, 7, 10, false);
+INSERT INTO t_printing_information VALUES(2, 1, 2, 5, 8, 11, false);

@@ -151,7 +151,7 @@ public class DefaultMdoTableAsEnumsDao extends DefaultDaoServices implements IMd
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<MdoString> findAllTypes() throws MdoException {
-		List result = new ArrayList<MdoString>();
+		List<MdoString> result = new ArrayList<MdoString>();
 		//result = super.findAllByQuery(Constants.HQL_MDO_TABLE_AS_ENUM_SELECT_ALL_TYPES, null, true);
 		Map<String, Entry<PropertiesRestrictions, Object>> propertyValueMap = new HashMap<String, Entry<PropertiesRestrictions,Object>>();
 		String property = "type";
@@ -160,6 +160,6 @@ public class DefaultMdoTableAsEnumsDao extends DefaultDaoServices implements IMd
 		Entry<PropertiesRestrictions, Object> value = new MdoEntry<PropertiesRestrictions, Object>(PropertiesRestrictions.PROJECTION, Projections.distinct(projectionList));
 		propertyValueMap.put(property, value);
 		result = super.findByPropertiesRestrictions(propertyValueMap, true);
-		return (List<MdoString>) result;
+		return result;
 	}
 }

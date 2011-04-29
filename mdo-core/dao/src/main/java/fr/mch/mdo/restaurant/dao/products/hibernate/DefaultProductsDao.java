@@ -79,4 +79,16 @@ public class DefaultProductsDao extends DefaultDaoServices implements IProductsD
 		result = super.findByPropertiesRestrictions(propertyValueMap, false);
 		return result;
 	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<IMdoBean> findByRestaurant(Long restaurantId) throws MdoException {
+		List<IMdoBean> result = new ArrayList<IMdoBean>();
+		Map<String, Entry<PropertiesRestrictions, Object>> propertyValueMap = new HashMap<String, Entry<PropertiesRestrictions, Object>>();
+		String property = "restaurant.id";
+		Entry<PropertiesRestrictions, Object> value = new MdoEntry<PropertiesRestrictions, Object>(PropertiesRestrictions.EQUALS, restaurantId);
+		propertyValueMap.put(property, value);
+		result = super.findByPropertiesRestrictions(propertyValueMap, false);
+		return result;
+	}
 }
