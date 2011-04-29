@@ -7,5 +7,5 @@ import fr.mch.mdo.restaurant.exception.MdoException;
 
 public interface ICategoriesManager extends IAdministrationManager
 {
-    public Map<String, String> getLabels(LocaleDto currentLocale) throws MdoException;
+    Map<Long, String> getLabels(LocaleDto currentLocale) throws MdoException;
 }
