@@ -14,4 +14,11 @@ public interface IProductsDao  extends IDaoServices
     
     List<IMdoBean> findAllByPrefixCode(Long restaurantId, String prefixProductCode) throws MdoException;
 
+    /**
+     * Find list of products by restaurant id.
+     * @param restaurantId the restaurant id.
+     * @return list of products by restaurant id.
+     * @throws MdoException when any exception occur.
+     */
+    List<IMdoBean> findByRestaurant(Long restaurantId) throws MdoException;
 }
