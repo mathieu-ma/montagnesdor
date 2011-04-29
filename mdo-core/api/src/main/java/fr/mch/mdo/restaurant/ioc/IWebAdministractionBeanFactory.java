@@ -4,6 +4,7 @@ import fr.mch.mdo.restaurant.authentication.IMdoAuthenticationService;
 import fr.mch.mdo.restaurant.authorization.IMdoAuthorizationService;
 import fr.mch.mdo.restaurant.services.business.managers.ICategoriesManager;
 import fr.mch.mdo.restaurant.services.business.managers.locales.ILocalesManager;
+import fr.mch.mdo.restaurant.services.business.managers.printings.IPrintingInformationsManager;
 import fr.mch.mdo.restaurant.services.business.managers.products.IMdoTableAsEnumsManager;
 import fr.mch.mdo.restaurant.services.business.managers.products.IProductPartsManager;
 import fr.mch.mdo.restaurant.services.business.managers.products.IProductSpecialCodesManager;
@@ -44,4 +45,7 @@ public interface IWebAdministractionBeanFactory extends IMdoBeanFactory
 	IMdoAuthorizationService getMdoAuthorizationService();
 
 	IMdoAuthenticationService getMdoAuthenticationService();
+
+    IPrintingInformationsManager getPrintingInformationsManager();
+
 }
