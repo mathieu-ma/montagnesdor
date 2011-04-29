@@ -1,8 +1,5 @@
 package fr.mch.mdo.restaurant.beans;
 
-public interface IMdoDtoBean extends IMdoBean
+public interface IMdoDtoBean extends IMdoBeanIdentifiable
 {
-    Long getId();
-
-    void setId(Long id);
 }

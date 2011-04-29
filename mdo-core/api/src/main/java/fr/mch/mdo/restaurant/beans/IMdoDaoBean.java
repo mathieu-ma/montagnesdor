@@ -1,11 +1,7 @@
 package fr.mch.mdo.restaurant.beans;
 
-public interface IMdoDaoBean extends IMdoBean
+public interface IMdoDaoBean extends IMdoBeanIdentifiable
 {
-    Long getId();
-
-    void setId(Long id);
-
     boolean isDeleted();
     
     void setDeleted(boolean deleted);
