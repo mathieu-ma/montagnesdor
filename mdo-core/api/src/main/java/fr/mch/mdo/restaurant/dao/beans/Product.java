@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import fr.mch.mdo.restaurant.beans.IBeanLabelable;
 import fr.mch.mdo.restaurant.beans.MdoDaoBean;
 
 /**
@@ -18,7 +19,7 @@ import fr.mch.mdo.restaurant.beans.MdoDaoBean;
  * 
  * @author Mathieu MA sous conrad
  */
-public class Product extends MdoDaoBean 
+public class Product extends MdoDaoBean implements IBeanLabelable
 {
 	/**
 	 * Default Serial Version UID
