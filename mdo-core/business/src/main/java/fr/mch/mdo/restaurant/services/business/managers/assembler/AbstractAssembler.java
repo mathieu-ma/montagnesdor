@@ -2,6 +2,7 @@ package fr.mch.mdo.restaurant.services.business.managers.assembler;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -63,7 +64,7 @@ public abstract class AbstractAssembler implements IManagerAssembler, ILoggerBea
 	}
 
 	protected Map<Long, String> getLabels(Map<Long, String> labels) {
-		Map<Long, String> result = null;
+		Map<Long, String> result = new HashMap<Long, String>();
 		
 		if (labels != null) {
 			result = new LinkedHashMap<Long, String>(labels.size());
