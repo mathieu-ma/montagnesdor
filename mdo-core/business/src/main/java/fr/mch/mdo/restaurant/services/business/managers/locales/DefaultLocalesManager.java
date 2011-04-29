@@ -124,7 +124,7 @@ public class DefaultLocalesManager extends AbstractAdministrationManager impleme
 	}
 
 	@Override
-	public Map<String, String> getLanguages(java.util.Locale currentLocale) throws MdoBusinessException {
+	public Map<Long, String> getLanguages(java.util.Locale currentLocale) throws MdoBusinessException {
 		List<IMdoBean> localesListFromDba;
 		try {
 			localesListFromDba = dao.findAll();
@@ -138,10 +138,10 @@ public class DefaultLocalesManager extends AbstractAdministrationManager impleme
 			currentLocale = java.util.Locale.getDefault();
 		}
 
-		Map<String, String> result = new HashMap<String, String>(localesListFromDba.size());
+		Map<Long, String> result = new HashMap<Long, String>(localesListFromDba.size());
 		for (int i = 0; i < localesListFromDba.size(); i++) {
 			Locale myLocale = (Locale) localesListFromDba.get(i);
-			result.put(myLocale.getId().toString(), (new java.util.Locale(myLocale.getLanguage())).getDisplayLanguage(currentLocale));
+			result.put(myLocale.getId(), (new java.util.Locale(myLocale.getLanguage())).getDisplayLanguage(currentLocale));
 		}
 
 		// Sort the map
@@ -149,7 +149,7 @@ public class DefaultLocalesManager extends AbstractAdministrationManager impleme
 	}
 
 	@Override
-	public Map<String, String> getLanguages(String languageCode) throws MdoBusinessException {
+	public Map<Long, String> getLanguages(String languageCode) throws MdoBusinessException {
 		return this.getLanguages(this.getLocale(languageCode));
 	}
 	
