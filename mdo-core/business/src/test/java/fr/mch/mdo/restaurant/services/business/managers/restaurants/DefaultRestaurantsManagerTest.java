@@ -309,6 +309,28 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 		}	
 	}
 	
+	public void testFindByReference() {
+		Long userId = 1L;
+		try {
+			List<IMdoDtoBean> list = ((IRestaurantsManager) this.getInstance()).findRestaurantsByUser(userId, DefaultAdministrationManagerTest.userContext);
+			assertNotNull("UserRestaurants list not be null", list);
+			assertFalse("UserRestaurants list must not be empty", list.isEmpty());
+			// Get the first bean
+			IMdoDtoBean returnedBean = list.get(0);
+			assertTrue("IMdoBean must be instance of " + RestaurantDto.class, returnedBean instanceof RestaurantDto);
+			RestaurantDto castedBean = (RestaurantDto) returnedBean;
+			assertNotNull("RestaurantDto name must not be null", castedBean.getReference());
+			
+			IMdoDtoBean foundBean = ((IRestaurantsManager) this.getInstance()).findByReference(castedBean.getReference(), DefaultAdministrationManagerTest.userContext);
+			assertNotNull("IMdoBean must not be null", foundBean);
+			assertTrue("IMdoBean must be instance of " + RestaurantDto.class, foundBean instanceof RestaurantDto);
+			
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+		
+	}
+
 	private IMdoDtoBean createNewBean(Date registrationDate, String reference, String name, String addressRoad, String addressZip, String addressCity, String phone, String vatRef,
 			String visaRef, String tripleDESKey, boolean vatByTakeaway, BigDecimal takeawayBasicReduction, BigDecimal takeawayMinAmountReduction, MdoTableAsEnumDto specificRound,
 			Set<RestaurantValueAddedTaxDto> vats, Set<RestaurantPrefixTableDto> prefixTableNames) {

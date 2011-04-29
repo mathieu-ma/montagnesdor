@@ -176,7 +176,7 @@ public class DefaultLocalesManagerTest extends DefaultAdministrationManagerTest
 		ILocalesManager manager = (ILocalesManager) this.getInstance();
 		// Locale null
 		java.util.Locale locale = null;
-		Map<String, String> map;
+		Map<Long, String> map;
 		try {
 			map = manager.getLanguages(locale);
 			checkLanguage(map, java.util.Locale.getDefault());
@@ -205,13 +205,13 @@ public class DefaultLocalesManagerTest extends DefaultAdministrationManagerTest
 		}
 	}
 
-	private void checkLanguage(Map<String, String> map, java.util.Locale selectedLocale) {
+	private void checkLanguage(Map<Long, String> map, java.util.Locale selectedLocale) {
 
 		// Check only sorted displayed languages
 		String[] values = new String[map.size()];
 		int index = 0;
-		for (Iterator<String> i = map.keySet().iterator(); i.hasNext();) {
-			String key = i.next();
+		for (Iterator<Long> i = map.keySet().iterator(); i.hasNext();) {
+			Long key = i.next();
 			values[index++] = (map.get(key));
 		}
 		// Get Available Locales

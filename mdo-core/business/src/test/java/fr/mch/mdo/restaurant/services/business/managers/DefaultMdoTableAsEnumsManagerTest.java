@@ -106,8 +106,10 @@ public class DefaultMdoTableAsEnumsManagerTest extends DefaultAdministrationMana
 		MdoTableAsEnumsManagerViewBean viewBean = new MdoTableAsEnumsManagerViewBean();
 		try {
 			this.getInstance().processList(viewBean, DefaultAdministrationManagerTest.userContext);
-			assertNotNull("Main list not be null", viewBean.getList());
-			assertFalse("Main list not be empty", viewBean.getList().isEmpty());
+			assertNotNull("Main list could not be null", viewBean.getList());
+			assertFalse("Main list could not be empty", viewBean.getList().isEmpty());
+			assertNotNull("Existing Types could not be null", viewBean.getExistingTypes());
+			assertFalse("Existing Types could not be empty", viewBean.getExistingTypes().isEmpty());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -277,6 +279,32 @@ public class DefaultMdoTableAsEnumsManagerTest extends DefaultAdministrationMana
 			assertEquals("The order must be equals to this expected value", order, mdoTableAsEnum.getOrder());
 			assertEquals("The defaultLabel must be equals to this expected value", defaultLabel, mdoTableAsEnum.getDefaultLabel());
 			assertEquals("The languageKeyLabel must be equals to this expected value", languageKeyLabel, mdoTableAsEnum.getLanguageKeyLabel());
+		}
+	}
+	
+	public void testFindByTypeAndName() {
+		IMdoDtoBean newBean = null;
+		MdoTableAsEnumTypeDao type = MdoTableAsEnumTypeDao.PREFIX_TABLE_NAME;
+		String name = "testFindByTypeAndName";
+		int order = 3;
+		String defaultLabel = "testFindByTypeAndName";
+		String languageKeyLabel = type.name() + "." + name + "." + order;
+		newBean = createNewBean(type, name, order, defaultLabel, languageKeyLabel);
+		try {
+			// Create new bean
+			IMdoDtoBean returnedBean = this.getInstance().insert(newBean, DefaultAdministrationManagerTest.userContext);
+			assertTrue("IMdoBean must be instance of " + MdoTableAsEnumDto.class, returnedBean instanceof MdoTableAsEnumDto);
+			MdoTableAsEnumDto castedBean = (MdoTableAsEnumDto) returnedBean;
+			assertNotNull("MdoTableAsEnumDto name must not be null", castedBean.getName());
+			assertEquals("MdoTableAsEnumDto name must be equals to the inserted value", name, castedBean.getName());
+			
+			IMdoDtoBean foundBean = ((DefaultMdoTableAsEnumsManager) this.getInstance()).findByTypeAndName(type.name(), name, DefaultAdministrationManagerTest.userContext);
+			assertNotNull("IMdoBean must not be null", foundBean);
+			assertTrue("IMdoBean must be instance of " + MdoTableAsEnumDto.class, foundBean instanceof MdoTableAsEnumDto);
+			
+			this.getInstance().delete(castedBean, DefaultAdministrationManagerTest.userContext);
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
 

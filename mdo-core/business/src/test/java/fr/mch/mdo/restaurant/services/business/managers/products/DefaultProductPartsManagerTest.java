@@ -145,6 +145,10 @@ public class DefaultProductPartsManagerTest extends DefaultAdministrationManager
 			this.getInstance().processList(viewBean, DefaultAdministrationManagerTest.userContext);
 			assertNotNull("Main list not be null", viewBean.getList());
 			assertFalse("Main list not be empty", viewBean.getList().isEmpty());
+			assertNotNull("Codes map not be null", viewBean.getCodes());
+			assertFalse("Codes map not be empty", viewBean.getCodes().isEmpty());
+			assertNotNull("Labels map not be null", viewBean.getLabels());
+			assertFalse("Labels map not be empty", viewBean.getLabels().isEmpty());
 			assertNotNull("Languages list not be null", viewBean.getLanguages());
 			assertFalse("Languages list not be empty", viewBean.getLanguages().isEmpty());
 		} catch (MdoException e) {

@@ -126,17 +126,33 @@ public class DefaultUserRolesManagerTest extends DefaultAdministrationManagerTes
 		UserRolesManagerViewBean viewBean = new UserRolesManagerViewBean();
 		try {
 			this.getInstance().processList(viewBean, DefaultAdministrationManagerTest.userContext);
-			assertNotNull("Main list not be null", viewBean.getList());
-			assertFalse("Main list not be empty", viewBean.getList().isEmpty());
-			assertNotNull("Restaurants list not be null", viewBean.getLabels());
-			assertFalse("Restaurants list not be empty", viewBean.getLabels().isEmpty());
-			assertNotNull("Languages map not be null", viewBean.getLanguages());
-			assertFalse("Languages map not be empty", viewBean.getLanguages().isEmpty());
+			assertNotNull("Main list must not be null", viewBean.getList());
+			assertFalse("Main list must not be empty", viewBean.getList().isEmpty());
+			assertNotNull("Restaurants list must not be null", viewBean.getLabels());
+			assertFalse("Restaurants list must not be empty", viewBean.getLabels().isEmpty());
+			assertNotNull("Languages map must not be null", viewBean.getLanguages());
+			assertFalse("Languages map must not be empty", viewBean.getLanguages().isEmpty());
+			assertNotNull("Roles List must not be null", viewBean.getCodes());
+			assertFalse("Roles List must not be empty", viewBean.getCodes().isEmpty());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getLocalizedMessage());
 		}
 	}
 
+	public void testFindByCode() {
+		IMdoBean dtoBean;
+		try {
+			dtoBean = this.getInstance().findByPrimaryKey(1L, DefaultAdministrationManagerTest.userContext);
+			assertTrue("IMdoBean must be instance of " + UserRoleDto.class, dtoBean instanceof UserRoleDto);
+			UserRoleDto castedBean = (UserRoleDto) dtoBean;
+			assertNotNull("Code is not null", castedBean.getCode());
+			dtoBean = ((IUserRolesManager) this.getInstance()).findByCode(castedBean.getCode().getName(), DefaultAdministrationManagerTest.userContext);
+			assertTrue("IMdoBean must be instance of " + UserRoleDto.class, dtoBean instanceof UserRoleDto);
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getLocalizedMessage());
+		}
+	}
+	
 	public void testGetInstance() {
 		assertTrue(this.getInstance() instanceof IUserRolesManager);
 		assertTrue(this.getInstance() instanceof DefaultUserRolesManager);

@@ -163,6 +163,8 @@ public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 			assertNotNull("Product labels must not be null", updatedBean.getLabels());
 			assertEquals("Check Product labels size", labels.size(), updatedBean.getLabels().size());
 			assertNotNull("Product categories must not be null", castedBean.getCategories());
+			// Because of ProductDto is a bean that is not attach to Hibernate session so the collection Categories is not too.
+			// Then Categories collection is never removed(but still updated) and the size must be the same as before updating the ProductDto
 			assertEquals("Check Product categories size", 2, castedBean.getCategories().size());
 			this.getInstance().delete(updatedBean, userContext);
 		} catch (Exception e) {
@@ -181,8 +183,8 @@ public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 			assertFalse("Languages list not be empty", viewBean.getLanguages().isEmpty());
 			assertNotNull("Restaurants list not be null", viewBean.getRestaurants());
 			assertFalse("Restaurants list not be empty", viewBean.getRestaurants().isEmpty());
-			assertNotNull("CategoryLabels list not be null", viewBean.getCategoryLabels());
-			assertFalse("CategoryLabels list not be empty", viewBean.getCategoryLabels().isEmpty());
+			assertNotNull("Categories list not be null", viewBean.getCategories());
+			assertFalse("Categories list not be empty", viewBean.getCategories().isEmpty());
 			assertNotNull("Vats list not be null", viewBean.getVats());
 			assertFalse("Vats list not be empty", viewBean.getVats().isEmpty());
 		} catch (MdoException e) {
@@ -205,5 +207,19 @@ public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 		newBean.setCategories(categories);
 		newBean.setLabels(labels);
 		return newBean;
+	}
+	
+	/**
+	 * Test the getList method.
+	 */
+	public void testGetList() {
+		Long restaurantId = 1L;
+		try {
+			List<IMdoDtoBean> list= ((IProductsManager) DefaultProductsManager.getInstance()).getList(restaurantId, userContext);
+			assertNotNull("List must not be null", list);
+			assertFalse("List must not be empty", list.isEmpty());
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}	
 	}
 }

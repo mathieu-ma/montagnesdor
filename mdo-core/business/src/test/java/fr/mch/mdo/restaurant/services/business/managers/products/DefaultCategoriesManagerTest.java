@@ -149,6 +149,10 @@ public class DefaultCategoriesManagerTest extends DefaultAdministrationManagerTe
 			this.getInstance().processList(viewBean, DefaultAdministrationManagerTest.userContext);
 			assertNotNull("Main list not be null", viewBean.getList());
 			assertFalse("Main list not be empty", viewBean.getList().isEmpty());
+			assertNotNull("Codes list not be null", viewBean.getCodes());
+			assertFalse("Codes list not be empty", viewBean.getCodes().isEmpty());
+			assertNotNull("Labels map not be null", viewBean.getLabels());
+			assertFalse("Labels map not be empty", viewBean.getLabels().isEmpty());
 			assertNotNull("Languages list not be null", viewBean.getLanguages());
 			assertFalse("Languages list not be empty", viewBean.getLanguages().isEmpty());
 		} catch (MdoException e) {
@@ -160,7 +164,7 @@ public class DefaultCategoriesManagerTest extends DefaultAdministrationManagerTe
 		LocaleDto currentLocale = new LocaleDto();
 		currentLocale.setId(1L);
 		try {
-			Map<String, String> labels = ((DefaultCategoriesManager) this.getInstance()).getLabels(currentLocale);
+			Map<Long, String> labels = ((DefaultCategoriesManager) this.getInstance()).getLabels(currentLocale);
 			assertNotNull("Check labels not null", labels);
 			assertTrue("Check labels size", labels.size()>0);
 		} catch (Exception e) {

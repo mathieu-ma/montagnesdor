@@ -163,7 +163,7 @@ public class DefaultUserAuthenticationsManagerTest extends DefaultAdministration
 			UserAuthenticationDto castedBean = (UserAuthenticationDto) beanToBeUpdated;
 			assertEquals("UserAuthentication login must be equals to the inserted value", login, castedBean.getLogin());
 			assertNotNull("UserAuthentication locales must not be null", castedBean.getLocales());
-			assertEquals("Check UserAuthentication locales size", locales.size(), castedBean.getLocales().size());
+			assertEquals("Check UserAuthentication locales size 1", locales.size(), castedBean.getLocales().size());
 			// Update the created bean
 			login = "kiki";
 			castedBean.setLogin(login);
@@ -191,7 +191,7 @@ public class DefaultUserAuthenticationsManagerTest extends DefaultAdministration
 			updatedBean = (UserAuthenticationDto) this.getInstance().load(updatedBean, userContext);
 			assertEquals("UserAuthentication login must be equals to the updated value", login, updatedBean.getLogin());
 			assertNotNull("UserAuthentication locales must not be null", updatedBean.getLocales());
-			assertEquals("Check UserAuthentication locales size", castedBean.getLocales().size(), updatedBean.getLocales().size());
+			assertEquals("Check UserAuthentication locales size 2", locales.size(), updatedBean.getLocales().size());
 			this.getInstance().delete(updatedBean, userContext);
 		} catch (Exception e) {
 			fail(e.getLocalizedMessage());
