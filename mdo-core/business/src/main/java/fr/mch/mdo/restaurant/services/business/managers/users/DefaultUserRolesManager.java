@@ -1,33 +1,33 @@
 package fr.mch.mdo.restaurant.services.business.managers.users;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import fr.mch.mdo.logs.ILogger;
-import fr.mch.mdo.restaurant.beans.IMdoBean;
+import fr.mch.mdo.restaurant.beans.IBeanLabelable;
+import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.beans.UserRole;
 import fr.mch.mdo.restaurant.dao.users.IUserRolesDao;
 import fr.mch.mdo.restaurant.dao.users.hibernate.DefaultUserRolesDao;
 import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
-import fr.mch.mdo.restaurant.dto.beans.LocaleDto;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.UserRoleDto;
 import fr.mch.mdo.restaurant.dto.beans.UserRolesManagerViewBean;
 import fr.mch.mdo.restaurant.exception.MdoBusinessException;
 import fr.mch.mdo.restaurant.exception.MdoException;
-import fr.mch.mdo.restaurant.services.business.managers.AbstractAdministrationManager;
+import fr.mch.mdo.restaurant.services.business.managers.AbstractAdministrationManagerLabelable;
+import fr.mch.mdo.restaurant.services.business.managers.DefaultMdoTableAsEnumsManager;
 import fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultUserRolesAssembler;
 import fr.mch.mdo.restaurant.services.business.managers.locales.DefaultLocalesManager;
 import fr.mch.mdo.restaurant.services.business.managers.locales.ILocalesManager;
+import fr.mch.mdo.restaurant.services.business.managers.products.IMdoTableAsEnumsManager;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 import fr.mch.mdo.utils.IManagerAssembler;
 
-public class DefaultUserRolesManager extends AbstractAdministrationManager implements IUserRolesManager 
+public class DefaultUserRolesManager extends AbstractAdministrationManagerLabelable implements IUserRolesManager 
 {
+	private IMdoTableAsEnumsManager mdoTableAsEnumsManager;
 	private ILocalesManager localesManager;
 	
 	private static class LazyHolder {
@@ -39,6 +39,7 @@ public class DefaultUserRolesManager extends AbstractAdministrationManager imple
 		super.logger = logger;
 		super.dao = dao;
 		super.assembler = assembler;
+		this.mdoTableAsEnumsManager = DefaultMdoTableAsEnumsManager.getInstance();
 		this.localesManager = DefaultLocalesManager.getInstance();
 	}
 
@@ -66,6 +67,31 @@ public class DefaultUserRolesManager extends AbstractAdministrationManager imple
 		return localesManager;
 	}
 
+	/**
+	 * @return the mdoTableAsEnumsManager
+	 */
+	public IMdoTableAsEnumsManager getMdoTableAsEnumsManager() {
+		return mdoTableAsEnumsManager;
+	}
+
+	/**
+	 * @param mdoTableAsEnumsManager the mdoTableAsEnumsManager to set
+	 */
+	public void setMdoTableAsEnumsManager(
+			IMdoTableAsEnumsManager mdoTableAsEnumsManager) {
+		this.mdoTableAsEnumsManager = mdoTableAsEnumsManager;
+	}
+
+	@Override
+	protected String getDefaultLabel(IBeanLabelable mdoBean) {
+		String result = null;
+		UserRole mdoBeanCasted = (UserRole) mdoBean;
+		if (mdoBeanCasted != null && mdoBeanCasted.getCode() != null) {
+			result = mdoBeanCasted.getCode().getLanguageKeyLabel();
+		}
+		return result;
+	}
+	
 	@Override
 	public IMdoDtoBean save(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
 		UserRoleDto result = (UserRoleDto) super.save(dtoBean, userContext);
@@ -86,34 +112,6 @@ public class DefaultUserRolesManager extends AbstractAdministrationManager imple
 		return result;
 	}
 	
-	private Map<String, String> getLabels(LocaleDto currentLocale) throws MdoBusinessException {
-		List<IMdoBean> list = new ArrayList<IMdoBean>();
-		try {
-			list = dao.findAll();
-		} catch (MdoException e) {
-			logger.error("message.error.administration.business.find.all", e);
-			throw new MdoBusinessException("message.error.administration.business.find.all", e);
-		}
-		Map<String, String> result = new HashMap<String, String>(list.size());
-
-		for (Iterator<IMdoBean> iterator = list.iterator(); iterator.hasNext();) {
-			UserRole mdoBean = (UserRole) iterator.next();
-		
-			String label = null;
-			if (currentLocale != null && mdoBean.getLabels() != null && !mdoBean.getLabels().isEmpty()) {
-				label = mdoBean.getLabels().get(currentLocale.getId());
-				if (label == null) {
-					label = mdoBean.getLabels().values().iterator().next();
-				}
-			}
-			if (label == null) {
-				label = mdoBean.getCode().getLanguageKeyLabel();
-			}
-			result.put(mdoBean.getId().toString(), label);
-		}
-		return result;
-	}
-
 	@Override
 	public void processList(IAdministrationManagerViewBean viewBean, MdoUserContext userContext, boolean... lazy) throws MdoBusinessException {
 		super.processList(viewBean, userContext, lazy);
@@ -121,9 +119,46 @@ public class DefaultUserRolesManager extends AbstractAdministrationManager imple
 		try {
 			userRolesManagerViewBean.setLabels(this.getLabels(userContext.getCurrentLocale()));
 			userRolesManagerViewBean.setLanguages(this.localesManager.getLanguages(userContext.getCurrentLocale().getLanguageCode()));
+			userRolesManagerViewBean.setCodes(this.getRemainingList(mdoTableAsEnumsManager.getUserRoles(userContext), userContext));
 		} catch (Exception e) {
 			logger.error("message.error.administration.business.find.all", e);
 			throw new MdoBusinessException("message.error.administration.business.find.all", e);
+		}
+	}
+
+	/**
+	 * Remove already existing bean from listAll.
+	 * @param listAll list of bean to be removed.
+	 * @param userContext user context.
+	 * @return a restricted list.
+	 */
+	private List<IMdoDtoBean> getRemainingList(List<IMdoDtoBean> listAll, MdoUserContext userContext) {
+		List<IMdoDtoBean> result = new ArrayList<IMdoDtoBean>(listAll);
+		List<IMdoDtoBean> excludedList = new ArrayList<IMdoDtoBean>();
+		try {
+			excludedList = super.findAll(userContext);
+		} catch (MdoBusinessException e) {
+			logger.warn("message.error.administration.business.find.all", e);
+		}
+		for (IMdoDtoBean exlcudedBean : excludedList) {
+			UserRoleDto exlcudedBeanCasted = (UserRoleDto) exlcudedBean;
+			for (IMdoDtoBean tableAsEnum : listAll) {
+				if (tableAsEnum.getId() != null && exlcudedBeanCasted.getCode() != null && tableAsEnum.getId().equals(exlcudedBeanCasted.getCode().getId())) {
+					result.remove(tableAsEnum);
+				}
+			}
+		}
+
+		return result;
+	}
+
+	@Override
+	public IMdoDtoBean findByCode(String code, MdoUserContext userContext) throws MdoException {
+		try {
+			return assembler.marshal((IMdoDaoBean) dao.findByUniqueKey(code), userContext);
+		} catch (MdoException e) {
+			logger.error("message.error.administration.business.user.role.find.by.code", new Object[] {code},  e);
+			throw new MdoBusinessException("message.error.administration.business.user.role.find.by.code", new Object[] {code},  e);
 		}
 	}
 }

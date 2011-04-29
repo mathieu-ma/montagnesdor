@@ -1,6 +1,7 @@
 package fr.mch.mdo.restaurant.services.business.managers.users;
 
 import fr.mch.mdo.logs.ILogger;
+import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.beans.UserAuthentication;
 import fr.mch.mdo.restaurant.dao.users.IUserAuthenticationsDao;
@@ -54,6 +55,62 @@ public class DefaultUserAuthenticationsManager extends AbstractAdministrationMan
 		return LazyHolder.instance;
 	}
 
+	/**
+	 * @return the localesManager
+	 */
+	public ILocalesManager getLocalesManager() {
+		return localesManager;
+	}
+
+	/**
+	 * @param localesManager the localesManager to set
+	 */
+	public void setLocalesManager(ILocalesManager localesManager) {
+		this.localesManager = localesManager;
+	}
+
+	/**
+	 * @return the usersManager
+	 */
+	public IUsersManager getUsersManager() {
+		return usersManager;
+	}
+
+	/**
+	 * @param usersManager the usersManager to set
+	 */
+	public void setUsersManager(IUsersManager usersManager) {
+		this.usersManager = usersManager;
+	}
+
+	/**
+	 * @return the userRolesManager
+	 */
+	public IUserRolesManager getUserRolesManager() {
+		return userRolesManager;
+	}
+
+	/**
+	 * @param userRolesManager the userRolesManager to set
+	 */
+	public void setUserRolesManager(IUserRolesManager userRolesManager) {
+		this.userRolesManager = userRolesManager;
+	}
+
+	/**
+	 * @return the restaurantsManager
+	 */
+	public IRestaurantsManager getRestaurantsManager() {
+		return restaurantsManager;
+	}
+
+	/**
+	 * @param restaurantsManager the restaurantsManager to set
+	 */
+	public void setRestaurantsManager(IRestaurantsManager restaurantsManager) {
+		this.restaurantsManager = restaurantsManager;
+	}
+
 	@Override
 	public IMdoDtoBean findByLogin(String login, MdoUserContext userContext) throws MdoBusinessException {
 		IMdoDtoBean result = null;
@@ -90,5 +147,35 @@ public class DefaultUserAuthenticationsManager extends AbstractAdministrationMan
 			logger.error("message.error.administration.business.find.all", e);
 			throw new MdoBusinessException("message.error.administration.business.find.all", e);
 		}
+	}
+	
+	@Override
+	public IMdoDtoBean update(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
+		UserAuthenticationDto result = null;  
+		UserAuthentication daoBean = (UserAuthentication) assembler.unmarshal(dtoBean);
+		try {
+			if (daoBean != null && daoBean.getId() != null) {
+				// dummy is just used for updating daoBean.getLocales()
+				UserAuthentication dummy = (UserAuthentication) dao.findByPrimaryKey(daoBean.getId());
+				dummy.getLocales().clear();
+				dummy.getLocales().addAll(daoBean.getLocales());
+				daoBean.setLocales(dummy.getLocales());
+			}
+			result = (UserAuthenticationDto) assembler.marshal((IMdoDaoBean) dao.update(daoBean), userContext);
+		} catch (MdoException e) {
+			logger.error("message.error.administration.business.save", e);
+			throw new MdoBusinessException("message.error.administration.business.save", e);
+		}
+		return result;
+	}
+	
+	@Override
+	public IMdoDtoBean delete(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
+		// Load data
+		dtoBean = super.findByPrimaryKey(dtoBean.getId(), userContext);
+		// Delete Locales before
+		this.update(dtoBean, userContext);
+		// Delete dto
+		return super.delete(dtoBean, userContext);
 	}
 }

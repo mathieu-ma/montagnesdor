@@ -1,29 +1,32 @@
 package fr.mch.mdo.restaurant.services.business.managers.products;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import fr.mch.mdo.logs.ILogger;
-import fr.mch.mdo.restaurant.beans.IMdoBean;
+import fr.mch.mdo.restaurant.beans.IBeanLabelable;
+import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.beans.ProductPart;
 import fr.mch.mdo.restaurant.dao.products.IProductPartsDao;
 import fr.mch.mdo.restaurant.dao.products.hibernate.DefaultProductPartsDao;
 import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
-import fr.mch.mdo.restaurant.dto.beans.LocaleDto;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
+import fr.mch.mdo.restaurant.dto.beans.ProductPartDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductPartsManagerViewBean;
 import fr.mch.mdo.restaurant.exception.MdoBusinessException;
-import fr.mch.mdo.restaurant.exception.MdoException;
-import fr.mch.mdo.restaurant.services.business.managers.AbstractAdministrationManager;
+import fr.mch.mdo.restaurant.services.business.managers.AbstractAdministrationManagerLabelable;
+import fr.mch.mdo.restaurant.services.business.managers.DefaultMdoTableAsEnumsManager;
 import fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultProductPartsAssembler;
+import fr.mch.mdo.restaurant.services.business.managers.locales.DefaultLocalesManager;
+import fr.mch.mdo.restaurant.services.business.managers.locales.ILocalesManager;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 import fr.mch.mdo.utils.IManagerAssembler;
 
-public class DefaultProductPartsManager extends AbstractAdministrationManager implements IProductPartsManager
+public class DefaultProductPartsManager extends AbstractAdministrationManagerLabelable implements IProductPartsManager
 {
+	private IMdoTableAsEnumsManager mdoTableAsEnumsManager;
+	private ILocalesManager localesManager;
+
 	private static class LazyHolder {
 		private static IProductPartsManager instance = new DefaultProductPartsManager(
 				LoggerServiceImpl.getInstance().getLogger(DefaultProductPartsManager.class.getName()),
@@ -34,6 +37,8 @@ public class DefaultProductPartsManager extends AbstractAdministrationManager im
 		super.logger = logger;
 		super.dao = dao;
 		super.assembler = assembler;
+		this.mdoTableAsEnumsManager = DefaultMdoTableAsEnumsManager.getInstance();
+		this.localesManager = DefaultLocalesManager.getInstance();
 	}
 
 	/**
@@ -46,30 +51,40 @@ public class DefaultProductPartsManager extends AbstractAdministrationManager im
 		return LazyHolder.instance;
 	}
 
-	@Override
-	public Map<String, String> getLabels(LocaleDto currentLocale) throws MdoBusinessException {
-		List<IMdoBean> list = new ArrayList<IMdoBean>();
-		try {
-			list = dao.findAll();
-		} catch (MdoException e) {
-			logger.error("message.error.administration.business.find.all", e);
-			throw new MdoBusinessException("message.error.administration.business.find.all", e);
-		}
-		Map<String, String> result = new HashMap<String, String>(list.size());
+	/**
+	 * @param mdoTableAsEnumsManager the mdoTableAsEnumsManager to set
+	 */
+	public void setMdoTableAsEnumsManager(IMdoTableAsEnumsManager mdoTableAsEnumsManager) {
+		this.mdoTableAsEnumsManager = mdoTableAsEnumsManager;
+	}
 
-		for (Iterator<IMdoBean> iterator = list.iterator(); iterator.hasNext();) {
-			ProductPart mdoBean = (ProductPart) iterator.next();
-			String label = null;
-			if (currentLocale != null && mdoBean.getLabels() != null && !mdoBean.getLabels().isEmpty()) {
-				label = mdoBean.getLabels().get(currentLocale.getId());
-				if (label == null) {
-					label = mdoBean.getLabels().values().iterator().next();
-				}
-			}
-			if (label == null) {
-				label = mdoBean.getCode().getLanguageKeyLabel();
-			}
-			result.put(mdoBean.getId().toString(), label);
+	/**
+	 * @return the mdoTableAsEnumsManager
+	 */
+	public IMdoTableAsEnumsManager getMdoTableAsEnumsManager() {
+		return mdoTableAsEnumsManager;
+	}
+
+	/**
+	 * @param localesManager the localesManager to set
+	 */
+	public void setLocalesManager(ILocalesManager localesManager) {
+		this.localesManager = localesManager;
+	}
+
+	/**
+	 * @return the localesManager
+	 */
+	public ILocalesManager getLocalesManager() {
+		return localesManager;
+	}
+
+	@Override
+	protected String getDefaultLabel(IBeanLabelable mdoBean) {
+		String result = null;
+		ProductPart mdoBeanCasted = (ProductPart) mdoBean;
+		if (mdoBeanCasted != null && mdoBeanCasted.getCode() != null) {
+			result = mdoBeanCasted.getCode().getLanguageKeyLabel();
 		}
 		return result;
 	}
@@ -79,11 +94,39 @@ public class DefaultProductPartsManager extends AbstractAdministrationManager im
 		super.processList(viewBean, userContext, lazy);
 		ProductPartsManagerViewBean productPartsManagerViewBean = (ProductPartsManagerViewBean) viewBean;
 		try {
-//			MdoUserContext userContext = viewBean.getUserContext(); 
-			productPartsManagerViewBean.setLanguages(this.getLabels(userContext.getCurrentLocale()));
+			productPartsManagerViewBean.setLabels(super.getLabels(userContext.getCurrentLocale()));
+			productPartsManagerViewBean.setLanguages(this.localesManager.getLanguages(userContext.getCurrentLocale().getLanguageCode()));
+			productPartsManagerViewBean.setCodes(this.getRemainingList(mdoTableAsEnumsManager.getProductParts(userContext), userContext));
+			
 		} catch (Exception e) {
 			logger.error("message.error.administration.business.find.all", e);
 			throw new MdoBusinessException("message.error.administration.business.find.all", e);
 		}
+	}
+
+	/**
+	 * Remove already existing bean from listAll.
+	 * @param listAll list of bean to be removed.
+	 * @param userContext user context.
+	 * @return a restricted list.
+	 */
+	private List<IMdoDtoBean> getRemainingList(List<IMdoDtoBean> listAll, MdoUserContext userContext) {
+		List<IMdoDtoBean> result = new ArrayList<IMdoDtoBean>(listAll);
+		List<IMdoDtoBean> excludedList = new ArrayList<IMdoDtoBean>();
+		try {
+			excludedList = super.findAll(userContext);
+		} catch (MdoBusinessException e) {
+			logger.warn("message.error.administration.business.find.all", e);
+		}
+		for (IMdoDtoBean exlcudedBean : excludedList) {
+			ProductPartDto exlcudedBeanCasted = (ProductPartDto) exlcudedBean;
+			for (IMdoDtoBean tableAsEnum : listAll) {
+				if (tableAsEnum.getId() != null && exlcudedBeanCasted.getCode() != null && tableAsEnum.getId().equals(exlcudedBeanCasted.getCode().getId())) {
+					result.remove(tableAsEnum);
+				}
+			}
+		}
+
+		return result;
 	}
 }

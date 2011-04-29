@@ -178,4 +178,14 @@ public class DefaultRestaurantsManager extends AbstractAdministrationManager imp
 		// Delete dto
 		return super.delete(dtoBean, userContext);
 	}
+
+	@Override
+	public IMdoDtoBean findByReference(String reference, MdoUserContext userContext) throws MdoBusinessException {
+		try {
+			return assembler.marshal((IMdoDaoBean) dao.findByUniqueKey(reference), userContext);
+		} catch (MdoException e) {
+			logger.error("message.error.administration.business.restaurant.find.by.reference", new Object[] {reference},  e);
+			throw new MdoBusinessException("message.error.administration.business.restaurant.find.by.reference", new Object[] {reference},  e);
+		}
+	}
 }

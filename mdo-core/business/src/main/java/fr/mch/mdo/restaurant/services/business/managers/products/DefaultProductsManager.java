@@ -1,35 +1,37 @@
 package fr.mch.mdo.restaurant.services.business.managers.products;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import fr.mch.mdo.logs.ILogger;
+import fr.mch.mdo.restaurant.beans.IBeanLabelable;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
+import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
+import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.beans.Product;
 import fr.mch.mdo.restaurant.dao.products.IProductsDao;
 import fr.mch.mdo.restaurant.dao.products.hibernate.DefaultProductsDao;
 import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
-import fr.mch.mdo.restaurant.dto.beans.LocaleDto;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.ProductsManagerViewBean;
 import fr.mch.mdo.restaurant.exception.MdoBusinessException;
 import fr.mch.mdo.restaurant.exception.MdoException;
-import fr.mch.mdo.restaurant.services.business.managers.AbstractAdministrationManager;
+import fr.mch.mdo.restaurant.services.business.managers.AbstractAdministrationManagerLabelable;
 import fr.mch.mdo.restaurant.services.business.managers.ICategoriesManager;
 import fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultProductsAssembler;
+import fr.mch.mdo.restaurant.services.business.managers.locales.DefaultLocalesManager;
+import fr.mch.mdo.restaurant.services.business.managers.locales.ILocalesManager;
 import fr.mch.mdo.restaurant.services.business.managers.restaurants.DefaultRestaurantsManager;
 import fr.mch.mdo.restaurant.services.business.managers.restaurants.IRestaurantsManager;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 import fr.mch.mdo.utils.IManagerAssembler;
 
-public class DefaultProductsManager extends AbstractAdministrationManager implements IProductsManager
+public class DefaultProductsManager extends AbstractAdministrationManagerLabelable implements IProductsManager
 {
 	private IRestaurantsManager restaurantsManager;
 	private IValueAddedTaxesManager valueAddedTaxesManager;
 	private ICategoriesManager categoriesManager;
+	private ILocalesManager localesManager;
 	
 	private static class LazyHolder {
 		private static IProductsManager instance = new DefaultProductsManager(
@@ -44,6 +46,7 @@ public class DefaultProductsManager extends AbstractAdministrationManager implem
 		this.restaurantsManager = DefaultRestaurantsManager.getInstance();
 		this.valueAddedTaxesManager = DefaultValueAddedTaxesManager.getInstance();
 		this.categoriesManager = DefaultCategoriesManager.getInstance();
+		this.localesManager = DefaultLocalesManager.getInstance();
 	}
 
 	/**
@@ -56,32 +59,61 @@ public class DefaultProductsManager extends AbstractAdministrationManager implem
 		return LazyHolder.instance;
 	}
 
-	private Map<String, String> getLabels(LocaleDto currentLocale) throws MdoBusinessException {
-		List<IMdoBean> list = new ArrayList<IMdoBean>();
-		try {
-			list = dao.findAll();
-		} catch (MdoException e) {
-			logger.error("message.error.administration.business.find.all", e);
-			throw new MdoBusinessException("message.error.administration.business.find.all", e);
-		}
-		Map<String, String> result = new HashMap<String, String>(list.size());
+	/**
+	 * @return the restaurantsManager
+	 */
+	public IRestaurantsManager getRestaurantsManager() {
+		return restaurantsManager;
+	}
 
-		for (Iterator<IMdoBean> iterator = list.iterator(); iterator.hasNext();) {
-			Product mdoBean = (Product) iterator.next();
-		
-			String label = null;
-			if (currentLocale != null && mdoBean.getLabels() != null && !mdoBean.getLabels().isEmpty()) {
-				label = mdoBean.getLabels().get(currentLocale.getId());
-				if (label == null) {
-					label = mdoBean.getLabels().values().iterator().next();
-				}
-			}
-			if (label == null) {
-				label = mdoBean.getCode();
-			}
-			result.put(mdoBean.getId().toString(), label);
-		}
-		return result;
+	/**
+	 * @param restaurantsManager the restaurantsManager to set
+	 */
+	public void setRestaurantsManager(IRestaurantsManager restaurantsManager) {
+		this.restaurantsManager = restaurantsManager;
+	}
+
+	/**
+	 * @return the valueAddedTaxesManager
+	 */
+	public IValueAddedTaxesManager getValueAddedTaxesManager() {
+		return valueAddedTaxesManager;
+	}
+
+	/**
+	 * @param valueAddedTaxesManager the valueAddedTaxesManager to set
+	 */
+	public void setValueAddedTaxesManager(
+			IValueAddedTaxesManager valueAddedTaxesManager) {
+		this.valueAddedTaxesManager = valueAddedTaxesManager;
+	}
+
+	/**
+	 * @return the categoriesManager
+	 */
+	public ICategoriesManager getCategoriesManager() {
+		return categoriesManager;
+	}
+
+	/**
+	 * @param categoriesManager the categoriesManager to set
+	 */
+	public void setCategoriesManager(ICategoriesManager categoriesManager) {
+		this.categoriesManager = categoriesManager;
+	}
+
+	/**
+	 * @return the localesManager
+	 */
+	public ILocalesManager getLocalesManager() {
+		return localesManager;
+	}
+
+	/**
+	 * @param localesManager the localesManager to set
+	 */
+	public void setLocalesManager(ILocalesManager localesManager) {
+		this.localesManager = localesManager;
 	}
 
 	@Override
@@ -89,14 +121,70 @@ public class DefaultProductsManager extends AbstractAdministrationManager implem
 		super.processList(viewBean, userContext, lazy);
 		ProductsManagerViewBean productsManagerViewBean = (ProductsManagerViewBean) viewBean;
 		try {
-			//MdoUserContext userContext = viewBean.getUserContext(); 
-			productsManagerViewBean.setLanguages(this.getLabels(userContext.getCurrentLocale()));
+			productsManagerViewBean.setLabels(super.getLabels(userContext.getCurrentLocale()));
+			productsManagerViewBean.setLanguages(localesManager.getLanguages(userContext.getCurrentLocale().getLanguageCode()));
 			productsManagerViewBean.setRestaurants(restaurantsManager.findAll(userContext, lazy));
 			productsManagerViewBean.setVats(valueAddedTaxesManager.findAll(userContext, lazy));
-			productsManagerViewBean.setCategoryLabels(categoriesManager.getLabels(userContext.getCurrentLocale()));
+			productsManagerViewBean.setCategories(categoriesManager.findAll(userContext, lazy));
 		} catch (Exception e) {
 			logger.error("message.error.administration.business.find.all", e);
 			throw new MdoBusinessException("message.error.administration.business.find.all", e);
 		}
 	}
+
+	@Override
+	protected String getDefaultLabel(IBeanLabelable mdoBean) {
+		String result = null;
+		if (mdoBean != null) {
+			Product mdoBeanCasted = (Product) mdoBean;
+			result = mdoBeanCasted.getCode();
+		}
+		return result;
+	}
+
+	@Override
+	public List<IMdoDtoBean> getList(Long restaurantId, MdoUserContext userContext) throws MdoException {
+		List<IMdoDtoBean> result = new ArrayList<IMdoDtoBean>();
+		
+		try {
+			List<IMdoBean> list = ((IProductsDao) dao).findByRestaurant(restaurantId);
+			if (list != null) {
+				result = assembler.marshal(list, userContext);
+			}
+		} catch (MdoException e) {
+			logger.error("message.error.administration.business.products.by.restaurant", new Object[] {restaurantId}, e);
+			throw new MdoBusinessException("message.error.administration.business.products.by.restaurant", new Object[] {restaurantId}, e);
+		}
+
+		return result;
+	}
+	
+	@Override
+	public IMdoDtoBean update(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
+		Product daoBean = (Product) assembler.unmarshal(dtoBean);
+		try {
+			if (daoBean != null && daoBean.getId() != null) {
+				// dummy is just used for updating daoBean.getCategories()
+				Product dummy  = (Product) dao.findByPrimaryKey(daoBean.getId());
+				dummy.getCategories().clear();
+				dummy.getCategories().addAll(daoBean.getCategories());
+				daoBean.setCategories(dummy.getCategories());
+			}
+			return assembler.marshal((IMdoDaoBean) dao.update(daoBean), userContext);
+		} catch (MdoException e) {
+			logger.error("message.error.administration.business.save", e);
+			throw new MdoBusinessException("message.error.administration.business.save", e);
+		}
+	}
+	
+	@Override
+	public IMdoDtoBean delete(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
+		// Load data
+		dtoBean = super.findByPrimaryKey(dtoBean.getId(), userContext);
+		// Delete categories before
+		this.update(dtoBean, userContext);
+		// Delete dto
+		return super.delete(dtoBean, userContext);
+	}
+
 }
