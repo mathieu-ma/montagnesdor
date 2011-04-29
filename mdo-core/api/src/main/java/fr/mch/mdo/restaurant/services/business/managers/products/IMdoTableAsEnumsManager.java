@@ -137,4 +137,13 @@ public interface IMdoTableAsEnumsManager extends IAdministrationManager
      */
     List<IMdoDtoBean> getCashings(MdoUserContext userContext) throws MdoException;
 
+    /**
+     * This method find bean by unique key.
+     * @param type the type.
+     * @param name the name.
+     * @param userContext the user context.
+     * @return found bean.
+     * @throws MdoException when an exception occurs.
+     */
+    IMdoDtoBean findByTypeAndName(String type, String name, MdoUserContext userContext) throws MdoException;
 }

@@ -8,6 +8,6 @@ import fr.mch.mdo.restaurant.services.business.managers.IAdministrationManager;
 
 public interface IProductPartsManager extends IAdministrationManager
 {
-	public Map<String, String> getLabels(LocaleDto currentLocale) throws MdoException;
+	public Map<Long, String> getLabels(LocaleDto currentLocale) throws MdoException;
 }
 
