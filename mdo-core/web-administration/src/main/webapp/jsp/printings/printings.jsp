@@ -18,13 +18,13 @@
 			<tiles:addAttribute type="string" value="/javascript/jquery/plugins/jquery.validate.min.js" />
 		</tiles:putListAttribute>
 		<tiles:putAttribute name="title" value="${title}"/>
-		<c:set var="bodyInclude">/jsp/products/<c:out value="${actionName}"/></c:set>
+		<c:set var="bodyInclude">/jsp/printings</c:set>
 		<c:choose>
 			<c:when test="${method=='form' || method=='labels'}">
 				<c:set var="bodyInclude"><c:out value="${bodyInclude}"/>/form-body.jsp</c:set>
 			</c:when>
-			<c:when test="${method=='listProducts'}">
-				<c:set var="bodyInclude"><c:out value="${bodyInclude}"/>/list-products-body.jsp</c:set>
+			<c:when test="${method=='listPrintingInformations'}">
+				<c:set var="bodyInclude"><c:out value="${bodyInclude}"/>/list-printing-informations-body.jsp</c:set>
 			</c:when>
 			<c:otherwise>
 				<c:set var="bodyInclude"><c:out value="${bodyInclude}"/>/list-body.jsp</c:set>

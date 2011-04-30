@@ -10,7 +10,8 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 		
-		<link rel="SHORTCUT ICON" type="image/x-icon" href="<c:out value="${pageContext.request.contextPath}"/>/favicon.ico"/>				
+		<link rel="shortcut icon" type="image/x-icon" href="<c:out value="${pageContext.request.contextPath}"/>/favicon.ico" />
+		<link rel="shortcut icon" type="image/png" href="<c:out value="${pageContext.request.contextPath}"/>/favicon.png" />
 
 		<tiles:useAttribute id="styles" name="css-files-default" classname="java.util.List"/>
  		<c:forEach items="${styles}" var="style">
