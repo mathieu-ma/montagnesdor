@@ -1,59 +1,127 @@
 package fr.mch.mdo.restaurant.web.struts.actions;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import fr.mch.mdo.restaurant.Constants;
 import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
+import fr.mch.mdo.restaurant.dto.beans.ProductCategoryDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductDto;
+import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
+import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.ioc.spring.WebAdministractionBeanFactory;
+import fr.mch.mdo.restaurant.services.business.managers.products.IProductsManager;
+import fr.mch.mdo.restaurant.services.business.managers.restaurants.IRestaurantsManager;
 import fr.mch.mdo.restaurant.ui.forms.ProductsManagerForm;
 
-public class ProductsManagerWebAction extends AdministrationManagerAction 
+public class ProductsManagerWebAction extends AdministrationManagerLabelsAction 
 {
 	/**
-     * 
+     * Default Serial Version UID
      */
 	private static final long serialVersionUID = 1L;
-
+	
+	/**
+	 * Restaurants Manager
+	 */
+	private IRestaurantsManager restaurantsManager;
+	
 	public ProductsManagerWebAction() {
 		super(WebAdministractionBeanFactory.getInstance().getLogger(ProductsManagerWebAction.class.getName()), new ProductsManagerForm());
 		administrationManager = WebAdministractionBeanFactory.getInstance().getProductsManager();
+		restaurantsManager = WebAdministractionBeanFactory.getInstance().getRestaurantsManager();
 	}
 
-	public String form() throws Exception {
-		String result = Constants.ACTION_RESULT_LIST;
+	/**
+	 * @return the restaurantsManager
+	 */
+	public IRestaurantsManager getRestaurantsManager() {
+		return restaurantsManager;
+	}
 
+	/**
+	 * @param restaurantsManager the restaurantsManager to set
+	 */
+	public void setRestaurantsManager(IRestaurantsManager restaurantsManager) {
+		this.restaurantsManager = restaurantsManager;
+	}
+
+	public String listProducts() throws Exception {
+		String result = Constants.ACTION_RESULT_AFTER_SUCCESS_FORM_LIST;
 		ProductDto dtoBean = ((ProductDto) super.getForm().getDtoBean());
 		if (dtoBean != null) {
 			MdoUserContext userContext = (MdoUserContext) super.getForm().getUserContext();
 			if (userContext != null) {
-				super.getForm().setDtoBean(super.getAdministrationManager().findByPrimaryKey(dtoBean.getId(), userContext));
 				IAdministrationManagerViewBean viewBean = super.getForm().getViewBean();
-				if (viewBean != null) {
-					super.getAdministrationManager().processList(viewBean, userContext);
+				if (viewBean != null && dtoBean.getRestaurant() != null) {
+					IProductsManager manager = (IProductsManager) administrationManager;
+					viewBean.setList(manager.getList(dtoBean.getRestaurant().getId(), userContext));
 				}
 			}
 		}
-
 		return result;
 	}
+	
+	public String removeCategory() throws Exception {
+		String categoryIdToRemove = super.getRequest().getParameter("method:removeCategory");
+		this.processSave(categoryIdToRemove);
+		this.form();
+		return Constants.ACTION_RESULT_AFTER_CUD_CATEGORY;
+	}
 
+	public String addCategory() throws Exception {
+		this.processSave();
+		this.form();
+		return Constants.ACTION_RESULT_AFTER_CUD_CATEGORY;
+	}
+	
 	@Override
-	public String list() throws Exception {
+	public String save() {
+		this.processSave(new String[] {null});
+		
+		// Reload the restaurant bean
 		ProductDto dtoBean = ((ProductDto) super.getForm().getDtoBean());
-		if (dtoBean != null) {
-			MdoUserContext userContext = (MdoUserContext) super.getForm().getUserContext();
-			if (userContext != null) {
-				IAdministrationManagerViewBean viewBean = super.getForm().getViewBean();
-				if (viewBean != null) {
-					super.getAdministrationManager().processList(viewBean, userContext);
-				}
+		RestaurantDto restaurant = dtoBean.getRestaurant();
+		try {
+			restaurant = (RestaurantDto) restaurantsManager.findByPrimaryKey(dtoBean.getRestaurant().getId(), (MdoUserContext) super.getForm().getUserContext(), false);
+		} catch (MdoException e) {
+			super.addActionError(super.getText("error.action.technical", new String[] {this.getClass().getName(), "save"}));
+		}
+		dtoBean.setRestaurant(restaurant);
+		// Return to the products list
+		return Constants.ACTION_RESULT_AFTER_CUD_LIST_PRODUCTS;
+
+	}
+	
+	@Override
+	public String delete() {
+		super.delete();
+		// Return to the products list
+		return Constants.ACTION_RESULT_AFTER_CUD_LIST_PRODUCTS;
+	}
+	
+	private void processSave(String... categoryIdToRemove) {
+		
+		if (categoryIdToRemove != null && categoryIdToRemove.length == 1) {
+			removeCategoryBeforeSaving(categoryIdToRemove[0]);
+		}
+		
+		super.save();
+	}
+	
+	private void removeCategoryBeforeSaving(String categoryIdToRemove) {
+		ProductDto product = ((ProductDto) super.getForm().getDtoBean());
+		Set<ProductCategoryDto> productCategories = new HashSet<ProductCategoryDto>();
+		// Try to remove from product.getCategories() list 2 elements of ProductCategoryDto
+		// One of id null and one of id equals to categoryIdToRemove
+		for (ProductCategoryDto productCategoryDto : product.getCategories()) {
+			if (productCategoryDto.getId() != null && !productCategoryDto.getId().toString().equals(categoryIdToRemove)) {
+				productCategories.add(productCategoryDto);
 			}
 		}
-		return super.list();
+		product.setCategories(productCategories);
 	}
 
-	public String labels() throws Exception {
-		super.save();
-		return this.form();
-	}
+
 }

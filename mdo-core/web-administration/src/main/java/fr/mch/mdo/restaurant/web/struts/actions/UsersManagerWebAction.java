@@ -43,6 +43,18 @@ public class UsersManagerWebAction extends AdministrationManagerAction
 	}
 
 	@Override
+	public void validate() {
+		super.validate();
+		
+		if (super.hasErrors()) {
+			// In case of validation failed
+			// Remove the Restaurant with null id
+			removeRestaurantBeforeSaving(null);
+			processAvailableRestaurants();
+		}
+	}
+
+	@Override
 	public String save() {
 		
 		this.processSave(new String[] {null});
@@ -52,7 +64,7 @@ public class UsersManagerWebAction extends AdministrationManagerAction
 	}
 
 	/**
-	 * Process prefixTableNames list on element which is not already stored in database.
+	 * Process restaurants list on element which is not already stored in database.
 	 * Must be called after super.prepare because we have to use viewBean. 
 	 */
 	private void processAvailableRestaurants() {

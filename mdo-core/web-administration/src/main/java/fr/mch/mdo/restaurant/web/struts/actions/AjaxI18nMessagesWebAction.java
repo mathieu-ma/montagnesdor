@@ -38,13 +38,26 @@ public final class AjaxI18nMessagesWebAction extends AdministrationManagerAction
 		PipedOutputStream out = new PipedOutputStream(in);
 		MdoUserContext userContext = (MdoUserContext) super.getForm().getUserContext();
 		Locale currentLocale = new Locale(userContext.getCurrentLocale().getLanguageCode());
-		// thisForm.getResource() return "xxx.properties" and we want to retrieve xxx
-		String filePropertiesBaseName = IResources.class.getPackage().getName() + ".i18n." + thisForm.getResource().substring(0, thisForm.getResource().length()-".properties".length());
-		Properties poperties = convertResourceBundleToProperties(ResourceBundle.getBundle(filePropertiesBaseName, currentLocale));
+		Properties properties = new Properties();
+		// File resource part
+		if (thisForm.getResource() != null) {
+			// thisForm.getResource() return "xxx.properties" and we want to retrieve xxx
+			String filePropertiesBaseName = IResources.class.getPackage().getName() + ".i18n." + thisForm.getResource().substring(0, thisForm.getResource().length()-".properties".length());
+			properties = convertResourceBundleToProperties(ResourceBundle.getBundle(filePropertiesBaseName, currentLocale));
+		}
+		// List of keys part
+		if (thisForm.getKeys() != null) {
+			for (String key : thisForm.getKeys()) {
+				// getText will never return null
+				
+				String value = getText(key);
+				properties.put(key, value);
+			}
+		}		
 		// Additional properties from global bundle
-		poperties.put("error.validation.form.invalids.number", getText("error.validation.form.invalids.number"));
+		properties.put("error.validation.form.invalids.number", getText("error.validation.form.invalids.number"));
 		// Store data into outputstream and transfer into inputstream because of PipedOutputStream.
-		poperties.store(out, "comments");
+		properties.store(out, "comments");
 		thisForm.setFileInputStream(in);
 		
 		out.close();
@@ -66,9 +79,15 @@ public final class AjaxI18nMessagesWebAction extends AdministrationManagerAction
 	
 	public static void main(String[] args) {
 		
-		String resource = "MdoTableAsEnums.properties";
-		String filePropertiesBaseName = IResources.class.getPackage().getName() + ".i18n." +resource.substring(0, resource.length()-".properties".length());
+//		String resource = "MdoTableAsEnums.properties";
+//		String filePropertiesBaseName = IResources.class.getPackage().getName() + ".i18n." +resource.substring(0, resource.length()-".properties".length());
+//
+//		System.out.println(filePropertiesBaseName);
 
-		System.out.println(filePropertiesBaseName);
+		Properties properties = new Properties();
+System.out.println("1");
+		properties.put("Hi", null);
+System.out.println("2");
+		
 	}
 }

@@ -1,5 +1,7 @@
 package fr.mch.mdo.restaurant.web.struts.actions;
 
+import org.apache.commons.lang.xwork.StringUtils;
+
 import com.opensymphony.xwork2.Preparable;
 
 import fr.mch.mdo.logs.ILogger;
@@ -56,7 +58,11 @@ public class AdministrationManagerAction extends MdoAbstractWebAction implements
 			super.getForm().setDtoBean(newDtoBean);
 		} catch (Exception e) {
 			// Do not add action error because of validation
-			super.addActionMessage(super.getText(e.getLocalizedMessage()));
+			if (StringUtils.isEmpty(e.getLocalizedMessage())) {
+				super.addActionMessage(super.getText("error.save"));
+			} else {
+				super.addActionMessage(super.getText(e.getLocalizedMessage()));
+			}
 		}
 		
 		if (!super.hasActionMessages()) {
