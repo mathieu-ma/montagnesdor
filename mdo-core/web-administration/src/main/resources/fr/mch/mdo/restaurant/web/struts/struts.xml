@@ -10,9 +10,9 @@
 	<include file="struts-default.xml" />
 	<include file="struts-plugin.xml" />
 
-	<constant name="struts.devMode" value="true" />
+	<constant name="struts.devMode" value="false" />
 	<constant name="struts.ui.theme" value="css_xhtml" />
-	<constant name="struts.custom.i18n.resources" value="fr.mch.mdo.restaurant.resources.i18n.ApplicationMessagesResources" />
+	<constant name="struts.custom.i18n.resources" value="fr.mch.mdo.restaurant.resources.i18n.ApplicationMessagesResources, fr.mch.mdo.restaurant.resources.i18n.MdoTableAsEnumsManagerWebAction, fr.mch.mdo.restaurant.resources.i18n.RestaurantsManagerWebAction, fr.mch.mdo.restaurant.resources.i18n.UserAuthenticationsManagerWebAction, fr.mch.mdo.restaurant.resources.i18n.UsersManagerWebAction, fr.mch.mdo.restaurant.resources.i18n.ValueAddedTaxesManagerWebAction" />
 
 	<include file="fr/mch/mdo/restaurant/web/struts/struts-mdo-admin.xml" />
 

@@ -175,7 +175,7 @@
 		<action name="UsersManagerCUD" class="fr.mch.mdo.restaurant.web.struts.actions.UsersManagerWebAction" method="save">
 		   	<interceptor-ref name="mdoBasicInterceptorValStore" />
 			<result name="input">/jsp/users/users.jsp</result>
-			<!-- After CUD Prefix Table -->
+			<!-- After CUD Restaurant -->
 			<result name="acudrestaurant" type="redirectActionTab">
 				<param name="actionName">UsersManager</param>
 				<param name="method">form</param>
@@ -194,33 +194,152 @@
 		<action name="UserRolesManagerCUD" class="fr.mch.mdo.restaurant.web.struts.actions.UserRolesManagerWebAction" method="save">
 		   	<interceptor-ref name="mdoBasicInterceptorValStore" />
 			<result name="input">/jsp/users/users.jsp</result>
+			<!-- After CUD Labels -->
+			<result name="acudlabels" type="redirectAction">
+				<param name="actionName">UserRolesManager</param>
+				<param name="method">form</param>
+				<param name="form.dtoBean.id">${form.dtoBean.id}</param>
+			</result>
 			<!-- After CUD -->
 			<result name="acud" type="redirectAction">UserRolesManager</result>
 		</action>
 		
-		<action name="UserAuthenticationsManager" class="fr.mch.mdo.restaurant.web.struts.actions.UserAuthenticationsManagerAction" method="list">
-			<result name="list">/jsp/users/users.jsp</result>
-			<result name="ajax-response">/jsp/users/UserAuthenticationsManager/ajax-response.jsp</result>
+		<action name="UserAuthenticationsManager" class="fr.mch.mdo.restaurant.web.struts.actions.UserAuthenticationsManagerWebAction" method="list">
+		   	<interceptor-ref name="mdoBasicInterceptorValRetrieve" />
+			<!-- After Success form or list -->
+			<result name="asformlist">/jsp/users/users.jsp</result>
+		</action>
+		<action name="UserAuthenticationsManagerCUD" class="fr.mch.mdo.restaurant.web.struts.actions.UserAuthenticationsManagerWebAction" method="save">
+		   	<interceptor-ref name="mdoBasicInterceptorValStore" />
+			<result name="input">/jsp/users/users.jsp</result>
+			<!-- After CUD Languages -->
+			<result name="acudlanguage" type="redirectActionTab">
+				<param name="actionName">UserAuthenticationsManager</param>
+				<param name="method">form</param>
+				<param name="tab">#tabs-2</param>
+				<param name="form.dtoBean.id">${form.dtoBean.id}</param>
+			</result>
+			<!-- After CUD -->
+			<result name="acud" type="redirectAction">UserAuthenticationsManager</result>
 		</action>
 		
 		<action name="CategoriesManager" class="fr.mch.mdo.restaurant.web.struts.actions.CategoriesManagerWebAction" method="list">
-			<result name="list">/jsp/products/products.jsp</result>
+		   	<interceptor-ref name="mdoBasicInterceptorValRetrieve" />
+			<!-- After Success form or list -->
+			<result name="asformlist">/jsp/products/products.jsp</result>
 		</action>
+		<action name="CategoriesManagerCUD" class="fr.mch.mdo.restaurant.web.struts.actions.CategoriesManagerWebAction" method="save">
+		   	<interceptor-ref name="mdoBasicInterceptorValStore" />
+			<result name="input">/jsp/products/products.jsp</result>
+			<!-- After CUD Labels -->
+			<result name="acudlabels" type="redirectAction">
+				<param name="actionName">CategoriesManager</param>
+				<param name="method">form</param>
+				<param name="form.dtoBean.id">${form.dtoBean.id}</param>
+			</result>
+			<!-- After CUD -->
+			<result name="acud" type="redirectAction">CategoriesManager</result>
+		</action>
+		
 		<action name="ProductSpecialCodesManager" class="fr.mch.mdo.restaurant.web.struts.actions.ProductSpecialCodesManagerWebAction" method="list">
-			<result name="list">/jsp/products/products.jsp</result>
+		   	<interceptor-ref name="mdoBasicInterceptorValRetrieve" />
+			<!-- After Success form or list -->
+			<result name="asformlist">/jsp/products/products.jsp</result>
 			<result name="ajax-response">/jsp/products/ProductSpecialCodesManager/ajax-products-special-code-by-restaurant.jsp</result>
 		</action>		
+		<action name="ProductSpecialCodesManagerCUD" class="fr.mch.mdo.restaurant.web.struts.actions.ProductSpecialCodesManagerWebAction" method="save">
+		   	<interceptor-ref name="mdoBasicInterceptorValStore" />
+			<result name="input">/jsp/products/products.jsp</result>
+			<!-- After CUD Labels -->
+			<result name="acudlabels" type="redirectAction">
+				<param name="actionName">ProductSpecialCodesManager</param>
+				<param name="method">form</param>
+				<param name="form.dtoBean.id">${form.dtoBean.id}</param>
+			</result>
+			<!-- After CUD -->
+			<result name="acud" type="redirectAction">ProductSpecialCodesManager</result>
+		</action>
+		
 		<action name="ProductPartsManager" class="fr.mch.mdo.restaurant.web.struts.actions.ProductPartsManagerWebAction" method="list">
-			<result name="list">/jsp/products/products.jsp</result>
+		   	<interceptor-ref name="mdoBasicInterceptorValRetrieve" />
+			<!-- After Success form or list -->
+			<result name="asformlist">/jsp/products/products.jsp</result>
 		</action>		
+		<action name="ProductPartsManagerCUD" class="fr.mch.mdo.restaurant.web.struts.actions.ProductPartsManagerWebAction" method="save">
+		   	<interceptor-ref name="mdoBasicInterceptorValStore" />
+			<result name="input">/jsp/products/products.jsp</result>
+			<!-- After CUD Labels -->
+			<result name="acudlabels" type="redirectAction">
+				<param name="actionName">ProductPartsManager</param>
+				<param name="method">form</param>
+				<param name="form.dtoBean.id">${form.dtoBean.id}</param>
+			</result>
+			<!-- After CUD -->
+			<result name="acud" type="redirectAction">ProductPartsManager</result>
+		</action>		
+
 		<action name="ProductsManager" class="fr.mch.mdo.restaurant.web.struts.actions.ProductsManagerWebAction" method="list">
-			<result name="list">/jsp/products/products.jsp</result>
+		   	<interceptor-ref name="mdoBasicInterceptorValRetrieve" />
+			<!-- After Success form or list -->
+			<result name="asformlist">/jsp/products/products.jsp</result>
 		</action>
-<!--
-		<action name="TypeTablesManager" class="fr.mch.mdo.restaurant.web.struts.actions.TableTypesManagerWebAction" method="list">
-			<result name="list">/jsp/tables/tables.jsp</result>
+		<action name="ProductsManagerCUD" class="fr.mch.mdo.restaurant.web.struts.actions.ProductsManagerWebAction" method="save">
+		   	<interceptor-ref name="mdoBasicInterceptorValStore" />
+			<result name="input">/jsp/products/products.jsp</result>
+			<!-- After CUD Labels -->
+			<result name="acudlabels" type="redirectActionTab">
+				<param name="actionName">ProductsManager</param>
+				<param name="method">form</param>
+				<param name="tab">#tabs-2</param>
+				<param name="form.dtoBean.id">${form.dtoBean.id}</param>
+			</result>
+			<!-- After CUD Category -->
+			<result name="acudcategory" type="redirectActionTab">
+				<param name="actionName">ProductsManager</param>
+				<param name="method">form</param>
+				<param name="tab">#tabs-3</param>
+				<param name="form.dtoBean.id">${form.dtoBean.id}</param>
+			</result>
+			<!-- After CUD List Products -->
+			<result name="acudlistproducts" type="redirectAction">
+				<param name="actionName">ProductsManager</param>
+				<param name="method">listProducts</param>
+				<param name="form.dtoBean.restaurant.id">${form.dtoBean.restaurant.id}</param>
+				<param name="form.dtoBean.restaurant.reference">${form.dtoBean.restaurant.reference}</param>
+				<param name="form.dtoBean.restaurant.name">${form.dtoBean.restaurant.name}</param>
+			</result>
+			<!-- After CUD -->
+			<result name="acud" type="redirectAction">ProductsManager</result>
+			<!-- After Success form or list -->
+			<result name="asformlist">/jsp/products/products.jsp</result>
 		</action>
--->
+
+		<action name="PrintingInformationsManager" class="fr.mch.mdo.restaurant.web.struts.actions.PrintingInformationsManagerWebAction" method="list">
+		   	<interceptor-ref name="mdoBasicInterceptorValRetrieve" />
+			<!-- After Success form or list -->
+			<result name="asformlist">/jsp/printings/printings.jsp</result>
+		</action>
+		<action name="PrintingInformationsManagerCUD" class="fr.mch.mdo.restaurant.web.struts.actions.PrintingInformationsManagerWebAction" method="save">
+		   	<interceptor-ref name="mdoBasicInterceptorValStore" />
+			<result name="input">/jsp/printings/printings.jsp</result>
+			<!-- After CUD Labels -->
+			<result name="acudlabels" type="redirectAction">
+				<param name="actionName">PrintingInformationsManager</param>
+				<param name="method">form</param>
+				<param name="form.dtoBean.id">${form.dtoBean.id}</param>
+			</result>
+			<!-- After CUD List Printing Informations -->
+			<result name="acudlistprintinginformations" type="redirectAction">
+				<param name="actionName">PrintingInformationsManager</param>
+				<param name="method">listPrintingInformations</param>
+				<param name="form.dtoBean.restaurant.id">${form.dtoBean.restaurant.id}</param>
+				<param name="form.dtoBean.restaurant.reference">${form.dtoBean.restaurant.reference}</param>
+				<param name="form.dtoBean.restaurant.name">${form.dtoBean.restaurant.name}</param>
+			</result>
+			<!-- After CUD -->
+			<result name="acud" type="redirectAction">PrintingInformationsManager</result>
+		</action>
+
 	</package>
 
 </struts>

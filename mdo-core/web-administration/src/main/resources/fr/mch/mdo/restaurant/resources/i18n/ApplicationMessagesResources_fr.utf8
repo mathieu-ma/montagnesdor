@@ -15,6 +15,7 @@ alert.label.negative.price = Les prix ne peuvent pas être négatifs.
 #Admin Messages
 error.action.technical = Error technique dans l''action {0} et la méthode {1}
 error.create = Impossible de créer l''objet {0}
+error.save = Impossible de sauver l''object
 error.delete = Impossible de supprimer l''objet {0}-{1}
 info.success.data.creation = Donnée créée avec succes
 info.success.data.update = Donnée mise à jour successfully
@@ -60,8 +61,7 @@ admin.manager.back =  Retour
 admin.manager.ok = Ok
 
 
-language.remove.empty = Impossible de supprimer un libellé vide.
-language.add.empty = Impossible d'ajouter un libellé vide.
+language.add.label.empty = Impossible d'ajouter un libellé vide
 
 quantity.remove.empty = Impossible de supprimer une quantité vide.
 quantity.add.empty = Impossible d'ajouter une quantité vide.
@@ -138,14 +138,16 @@ user.roles.manager.code = RÃ´le
 user.roles.manager.label = Libellé rÃ´le
 user.roles.manager.language = Langage
 
+user.authentications.manager.tab.user.authentication = Utilisateur
 user.authentications.manager.login = Identifiant
 user.authentications.manager.password = Mot de passe
 user.authentications.manager.levelPass1 = Mot de passe niveau 1
 user.authentications.manager.levelPass2 = Mot de passe niveau 2
 user.authentications.manager.levelPass3 = Mot de passe niveau 3 
-user.authentications.manager.role = RÃ´le
+user.authentications.manager.role = Rôle
 user.authentications.manager.user = Utilisateur
 user.authentications.manager.restaurant = Restaurant
+user.authentications.manager.tab.languages = Langages
 user.authentications.manager.prefered.print.language = Langue Impression par défaut
 user.authentications.manager.locales = Langues affichées
 
