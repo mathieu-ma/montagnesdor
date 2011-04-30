@@ -177,7 +177,7 @@
 									<!-- This part is used for TOMCAT/ECLIPSE configuration -->
 									<!-- The buildOutputDirectory folder will be clean after the call 
 										of phase>process-resources -->
-									<buildOutputDirectory>src/main/webapp/WEB-INF/classes</buildOutputDirectory>
+									<buildOutputDirectory>target/classes</buildOutputDirectory>
 									<downloadSources>true</downloadSources>
 									<linkedResources>
 										<linkedResource>
@@ -254,27 +254,6 @@
 									<wtpContextName>/web-administration</wtpContextName>
 									<wtpversion>2.0</wtpversion>
 									<wtpdefaultserver>Apache Tomcat v6.0</wtpdefaultserver>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-dependency-plugin</artifactId>
-						<executions>
-							<execution>
-								<!-- This is used to copy all libs into the source WEB-INF lib folder -->
-								<!-- All libs will be deleted before install phase -->
-								<id>Generate-Libs-For-Tomcat-Eclipse-Integration</id>
-								<!-- goal eclipse is calling after generate-resources -->
-								<phase>generate-resources</phase>
-								<goals>
-									<goal>copy-dependencies</goal>
-								</goals>
-								<configuration>
-									<!-- This folder will be cleaned after the call of phase>process-classes -->
-									<excludeScope>provided</excludeScope>
-									<outputDirectory>src/main/webapp/WEB-INF/lib</outputDirectory>
 								</configuration>
 							</execution>
 						</executions>

@@ -11,6 +11,7 @@ import org.apache.struts2.StrutsStatics;
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.interceptor.I18nInterceptor;
 import com.opensymphony.xwork2.interceptor.Interceptor;
 
 import fr.mch.mdo.restaurant.Constants;
@@ -91,19 +92,29 @@ public class MdoUserContextInterceptor implements Interceptor
 		userContext.setCurrentNameSpace(invocation.getProxy().getNamespace());
 		userContext.setCurrentActionName(invocation.getProxy().getActionName());
 		userContext.setCurrentActionMethod(invocation.getProxy().getMethod());
-		userContext.setCurrentURLWithParameters(getCurrentURL(request, true));
-		userContext.setCurrentURL(getCurrentURL(request, false));
+		
+		userContext.setCurrentURLWithParameters(getCurrentURL(request, true, false));
+		userContext.setCurrentURLWithParametersWithoutLocale(getCurrentURL(request, true, true));
+		userContext.setCurrentURL(getCurrentURL(request, false, false));
 
 		return invocation.invoke();
 	}
 
-	private String getCurrentURL(HttpServletRequest request, boolean isIncludeParameters) {
+	private String getCurrentURL(HttpServletRequest request, boolean isIncludeParameters, boolean isRemoveLocale) {
 
 		StringBuilder result = new StringBuilder();
 
 		result.append(request.getRequestURL().toString());
-		if (isIncludeParameters && StringUtils.isNotEmpty(request.getQueryString())) {
-			result.append("?").append(request.getQueryString());
+		String queryString = request.getQueryString();
+		if (isIncludeParameters && StringUtils.isNotEmpty(queryString)) {
+			if (isRemoveLocale) {
+				// Remove all request_locale parameter: I18nInterceptor.DEFAULT_PARAMETER=xx& or &I18nInterceptor.DEFAULT_PARAMETER=xx
+				queryString = queryString.replaceAll(I18nInterceptor.DEFAULT_PARAMETER + "=..&|&" + I18nInterceptor.DEFAULT_PARAMETER + "=..", "");
+				queryString = queryString.replaceAll(I18nInterceptor.DEFAULT_PARAMETER + "=..", "");
+			}
+			if (StringUtils.isNotEmpty(queryString)) {
+				result.append("?").append(queryString);
+			}
 		}
 
 		return result.toString();

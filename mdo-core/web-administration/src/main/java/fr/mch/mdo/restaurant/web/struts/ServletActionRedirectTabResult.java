@@ -42,7 +42,7 @@ public class ServletActionRedirectTabResult extends ServletActionRedirectResult
 	@Override
     protected List<String> getProhibitedResultParams() {
     	List<String> result = new ArrayList<String>(super.getProhibitedResultParams());
-    	// Do not take into account "tab" parameter as request parameter
+    	// Do not take into account "tab" parameter as request parameter in the URL
     	result.add("tab");
         return result;
     }

@@ -59,22 +59,23 @@ public class MdoProcessLanguageInterceptor extends I18nInterceptor
 			if (language != null) {
 				// Change language
 				locale = new Locale(language, request.getLocale().getCountry());
+				this.processLanguage(session, locale, userContext);
 			} else {
 				if (userContext.getCurrentLocale().getLanguageCode() == null || userContext.getUserAuthentication().getLocales() == null
 						|| userContext.getUserAuthentication().getLocales().isEmpty()) {
 					// Once authentication done then
-					// userContext.getCurrentLocale().getLanguage()==null
+					// userContext.getCurrentLocale().getLanguageCode()==null
 					// Or no locale links to this user, so always set the
 					// request one
-					if (userContext.getUser() != null && userContext.getUserAuthentication().getPrintingLocale() != null
-							&& userContext.getUserAuthentication().getPrintingLocale().getLanguageCode() != null) {
-						locale = new Locale(userContext.getUserAuthentication().getPrintingLocale().getLanguageCode(), request.getLocale().getCountry());
-					}
+//					if (userContext.getUser() != null && userContext.getUserAuthentication().getPrintingLocale() != null
+//							&& userContext.getUserAuthentication().getPrintingLocale().getLanguageCode() != null) {
+//						locale = new Locale(userContext.getUserAuthentication().getPrintingLocale().getLanguageCode(), request.getLocale().getCountry());
+//					}
 					// Add language parameter in order to force the Struts2 to change the language 
 					invocation.getInvocationContext().getParameters().put(parameterName, locale);
+					this.processLanguage(session, locale, userContext);
 				}
 			}
-			this.processLanguage(session, locale, userContext);
 		}
 		return super.intercept(invocation);
 	}

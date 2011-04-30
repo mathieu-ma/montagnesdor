@@ -1,20 +1,12 @@
 package fr.mch.mdo.restaurant.ui.forms;
 
 import fr.mch.mdo.restaurant.dto.beans.ProductDto;
+import fr.mch.mdo.restaurant.dto.beans.ProductsManagerViewBean;
 
-public class ProductsManagerForm extends MdoForm 
+public class ProductsManagerForm extends MdoLabelsForm 
 {
-	private String selectedTab = "0";
-
 	public ProductsManagerForm() {
 		super(new ProductDto());
-	}
-
-	public String getSelectedTab() {
-		return selectedTab;
-	}
-
-	public void setSelectedTab(String selectedTab) {
-		this.selectedTab = selectedTab;
+		super.setViewBean(new ProductsManagerViewBean());
 	}
 }

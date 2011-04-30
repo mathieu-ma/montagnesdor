@@ -1,6 +1,8 @@
 package fr.mch.mdo.restaurant.ui.forms;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class AjaxI18nMessagesForm extends MdoForm 
@@ -10,6 +12,8 @@ public class AjaxI18nMessagesForm extends MdoForm
 
 	/** The resource properties name */
 	private String resource;
+	/** List of property keys */
+	private List<String> keys = new ArrayList<String>();
 	
 	/**
 	 * Constructor.
@@ -43,11 +47,27 @@ public class AjaxI18nMessagesForm extends MdoForm
 		this.resource = resource;
 	}
 
-
 	/**
 	 * @return the resource
 	 */
 	public String getResource() {
 		return resource;
 	}
+
+
+	/**
+	 * @param keys the keys to set
+	 */
+	public void setKeys(List<String> keys) {
+		this.keys = keys;
+	}
+
+
+	/**
+	 * @return the keys
+	 */
+	public List<String> getKeys() {
+		return keys;
+	}
+
 }

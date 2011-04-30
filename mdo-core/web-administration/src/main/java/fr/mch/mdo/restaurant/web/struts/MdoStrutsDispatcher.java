@@ -43,7 +43,7 @@ public class MdoStrutsDispatcher extends StrutsPrepareAndExecuteFilter
 
 		// This is required for UTF8 user setter parameters:
 		// Example:
-		// 1) User enters "tt" in HTML input type=text field named
+		// 1) User enters "tété" in HTML input type=text field named
 		// "bean.name".
 		// 2) Struts2 fills the name of bean with "t?t?" if we don't perform
 		// request.getParameter("foo");
