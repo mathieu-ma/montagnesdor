@@ -9,11 +9,11 @@
 	<br/>
 	<div class="hspacer-left-100p">	
 		<s:textfield cssClass="required" label="%{getText('restaurants.manager.name')}" name="form.dtoBean.name" size="84" maxlength="80" required="true" requiredposition="right" />
-		<div>
-			<label class="label"><fmt:message key="restaurants.manager.registration.date"/>:</label>
-			<input class="label mdo-date" style="color: maroon" readonly="readonly" type="text" id="form-dtoBean-registrationDate-datepicker" value="<s:date name="form.dtoBean.registrationDate" format="EEEE dd MMMM yyyy"/>"/>
-			<input type="text" id="form-dtoBean-registrationDate" name="form.dtoBean.registrationDate" value="<s:date name="form.dtoBean.registrationDate" format="yyyy-MM-dd"/>T00:00:00"/>
-		</div>
+	</div>
+	<div class="hspacer-left-100p">	
+		<label class="label"><fmt:message key="restaurants.manager.registration.date"/>:</label>
+		<input class="label mdo-date" style="color: maroon" readonly="readonly" type="text" id="form-dtoBean-registrationDate-datepicker" value="<s:date name="form.dtoBean.registrationDate" format="EEEE dd MMMM yyyy"/>"/>
+		<input type="text" id="form-dtoBean-registrationDate" name="form.dtoBean.registrationDate" value="<s:date name="form.dtoBean.registrationDate" format="yyyy-MM-dd"/>T00:00:00"/>
 	</div>
 	<div class="hspacer-left-50p">
 		<s:textfield label="%{getText('restaurants.manager.address.road')}" name="form.dtoBean.addressRoad"/>

@@ -5,7 +5,6 @@
 <script type="text/javascript" src="<c:out value="${pageContext.request.contextPath}"/>/javascript/mdo-table-as-enums.js"></script>
 
 <s:form action="MdoTableAsEnumsManager" method="post">
-	<s:hidden name="method:form"/>
 	<div class="scroll-table-outer-body" style="padding-top: 7em;">
 		<div class="scroll-table-inner-body">
 			<table class="sortable type">

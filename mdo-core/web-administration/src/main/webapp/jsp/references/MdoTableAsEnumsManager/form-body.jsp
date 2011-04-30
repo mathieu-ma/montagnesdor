@@ -15,8 +15,7 @@
 		<div class="hspacer-left-100p">	
 			<s:select label="%{getText('enums.manager.type')}" cssClass="required"
 		        name="form.dtoBean.type"
-		        list="form.viewBean.list"
-				listKey="type" listValue="type"
+		        list="form.viewBean.existingTypes"
 				value="form.dtoBean.type"
 				required="true"
 				headerKey=""
@@ -34,15 +33,16 @@
 		<div class="error" style="clear:both;">
 			<s:actionerror/>
 		</div>
+
 		<s:include value="/jsp/commons/form-actions.jsp">
-			<s:set var="paramMethod" value="%{'list'}" />
-			<c:if test="${not empty form.dtoBean.type}">
-				<s:set name="paramMethod" value="%{'listType'}"/>
-			</c:if>
-			<s:url id="cancelUrl" action="MdoTableAsEnumsManager" method="%{paramMethod}">
-				<c:if test="${not empty form.dtoBean.type}">
-					<s:param name="form.dtoBean.type" value="%{form.dtoBean.type}"/>
-				</c:if>
+			<s:set var="cancelUrlMethod" value="%{'list'}" />
+			<s:set name="cancelUrlParam" value="%{form.dtoBean.type}"/>
+			<s:if test="%{form.dtoBean.type!='' && form.viewBean.existingTypes.contains(form.dtoBean.type)}">
+				<s:set name="cancelUrlMethod" value="%{'listType'}"/>
+				<s:set name="cancelUrlParam" value="%{form.dtoBean.type}"/>
+			</s:if>
+			<s:url id="cancelUrl" action="MdoTableAsEnumsManager" method="%{cancelUrlMethod}">
+				<s:param name="form.dtoBean.type" value="%{cancelUrlParam}"/>
 			</s:url>
 			<s:param name="cancelUrl" value="%{cancelUrl}" />
 		</s:include>
