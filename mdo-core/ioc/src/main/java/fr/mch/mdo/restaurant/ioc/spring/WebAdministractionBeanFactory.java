@@ -27,6 +27,7 @@ import fr.mch.mdo.restaurant.ioc.IBeanFactory;
 import fr.mch.mdo.restaurant.ioc.IWebAdministractionBeanFactory;
 import fr.mch.mdo.restaurant.services.business.managers.ICategoriesManager;
 import fr.mch.mdo.restaurant.services.business.managers.locales.ILocalesManager;
+import fr.mch.mdo.restaurant.services.business.managers.printings.IPrintingInformationsManager;
 import fr.mch.mdo.restaurant.services.business.managers.products.IMdoTableAsEnumsManager;
 import fr.mch.mdo.restaurant.services.business.managers.products.IProductPartsManager;
 import fr.mch.mdo.restaurant.services.business.managers.products.IProductSpecialCodesManager;
@@ -92,32 +93,70 @@ public class WebAdministractionBeanFactory implements IWebAdministractionBeanFac
 			// Create the super admin
 			try {
 				LocaleDto locale = userGlobalAdmin.getLocales().iterator().next().getLocale();
-				locale = (LocaleDto) this.getLocalesManager().insert(locale, userContext);
+				// Check and save the existence of locale in database
+				try {
+					locale = (LocaleDto) this.getLocalesManager().findByLanguage(locale.getLanguageCode(), userContext);
+				} catch (MdoException e) {
+					logger.fatal("Could not retrieve locale " + locale.getLanguageCode(), e);
+					throw new MdoFunctionalException("Could not retrieve locale " + locale.getLanguageCode(), e);
+				}
+				if (locale == null || locale.getId() == null) {
+					locale = userGlobalAdmin.getLocales().iterator().next().getLocale();
+					locale = (LocaleDto) this.getLocalesManager().insert(locale, userContext);
+				}
 
 				RestaurantDto restaurant = userGlobalAdmin.getRestaurant();
 				MdoTableAsEnumDto specificRound = restaurant.getSpecificRound();
-				specificRound = (MdoTableAsEnumDto) this.getMdoTableAsEnumsManager().insert(restaurant.getSpecificRound(), userContext);
+				// Check the existence of Specific Round in database
+				specificRound = processMdoTableAsEnum(specificRound, userContext);
 				restaurant.setSpecificRound(specificRound);
-				// Save the restaurant
-				restaurant = (RestaurantDto) this.getRestaurantsManager().insert(userGlobalAdmin.getRestaurant(), userContext);
+				
+				// Check and save the existence of restaurant in database
+				try {
+					restaurant = (RestaurantDto) this.getRestaurantsManager().findByReference(restaurant.getReference(), userContext);
+					if (restaurant == null || restaurant.getId() == null) {
+						// Save the restaurant
+						restaurant = userGlobalAdmin.getRestaurant();
+						restaurant = (RestaurantDto) this.getRestaurantsManager().insert(userGlobalAdmin.getRestaurant(), userContext);
+					}
+				} catch (MdoException e) {
+					logger.fatal("Could not retrieve/save restaurant with reference " + restaurant.getReference(), e);
+					throw new MdoFunctionalException("Could not retrieve/save restaurant with reference " + restaurant.getReference(), e);
+				}
 
 				UserDto user = userGlobalAdmin.getUser();
 				MdoTableAsEnumDto title = user.getTitle();
-				title = (MdoTableAsEnumDto) this.getMdoTableAsEnumsManager().insert(title, userContext);
+				// Check and save the existence of title in database
+				title = processMdoTableAsEnum(title, userContext);
 				user.setTitle(title);
+				
 				Set<UserRestaurantDto> restaurants = user.getRestaurants();
 				UserRestaurantDto userRestaurant = restaurants.iterator().next(); 
 				userRestaurant.setRestaurant(restaurant);
+				// Merge with the one into the set because they have the same java reference
 				restaurants.add(userRestaurant);
 				// Save the user
+				// TODO : maybe add a functional unique reference ID
 				user = (UserDto) this.getUsersManager().insert(user, userContext);
 
 				UserRoleDto userRole = userGlobalAdmin.getUserRole();
 				MdoTableAsEnumDto code = userRole.getCode();
-				code = (MdoTableAsEnumDto) this.getMdoTableAsEnumsManager().insert(code, userContext);
+				// Check and save the existence of code in database
+				code = processMdoTableAsEnum(code, userContext);
 				userRole.setCode(code);
-				// Save the user role
-				userRole = (UserRoleDto) this.getUserRolesManager().insert(userRole, userContext);
+				
+				// Check and save the existence of user role in database
+				try {
+					userRole = (UserRoleDto) this.getUserRolesManager().findByCode(userRole.getCode().getName(), userContext);
+					if (userRole == null || userRole.getId() == null) {
+						// Save the User Role
+						userRole = userGlobalAdmin.getUserRole();
+						userRole = (UserRoleDto) this.getUserRolesManager().insert(userRole, userContext);
+					}
+				} catch (MdoException e) {
+					logger.fatal("Could not retrieve/save user role with code " + userRole.getCode(), e);
+					throw new MdoFunctionalException("Could not retrieve/save user role with code " + userRole.getCode(), e);
+				}
 				
 				userGlobalAdmin.setRestaurant(restaurant);
 				userGlobalAdmin.setUser(user);
@@ -136,6 +175,29 @@ public class WebAdministractionBeanFactory implements IWebAdministractionBeanFac
 		}
 	}
 
+	/**
+	 * Check and save the existence of the MdoTableAsEnumDto in database
+	 * @param dtBean
+	 * @param userContext
+	 * @return
+	 * @throws MdoFunctionalException
+	 */
+	private MdoTableAsEnumDto processMdoTableAsEnum(MdoTableAsEnumDto dtBean, MdoUserContext userContext) throws MdoFunctionalException {
+		MdoTableAsEnumDto result = dtBean;
+		// Check the existence of Specific Round in database
+		try {
+			result = (MdoTableAsEnumDto) this.getMdoTableAsEnumsManager().findByTypeAndName(result.getType(), result.getName(), userContext);
+			if (result == null || result.getId() == null) {
+				// Save the bean
+				result = (MdoTableAsEnumDto) this.getMdoTableAsEnumsManager().insert(dtBean, userContext);
+			}
+		} catch (MdoException e) {
+			logger.fatal("Could not retrieve/save MdoTableAsEnumDto with type(" + result.getType() + ") and name(" + result.getType() + ")", e);
+			throw new MdoFunctionalException("Could not retrieve/save MdoTableAsEnumDto with type(" + result.getType() + ") and name(" + result.getType() + ")", e);
+		}
+		return result;
+	}
+	
 	@Override
 	public ILocalesManager getLocalesManager() {
 		return ((ILocalesManager) this.getBean(IocBeanName.BEAN_LOCALES_MANAGER_NAME));
@@ -194,6 +256,11 @@ public class WebAdministractionBeanFactory implements IWebAdministractionBeanFac
 	@Override
 	public ITableTypesManager getTableTypesManager() {
 		return ((ITableTypesManager) this.getBean(IocBeanName.BEAN_TABLE_TYPES_MANAGER_NAME));
+	}
+
+	@Override
+	public IPrintingInformationsManager getPrintingInformationsManager() {
+		return ((IPrintingInformationsManager) this.getBean(IocBeanName.BEAN_PRINTING_INFORMATIONS_MANAGER_NAME));
 	}
 
 	@Override

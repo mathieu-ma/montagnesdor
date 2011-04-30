@@ -150,6 +150,15 @@
 		<property name="mdoTableAsEnumsAssembler" ref="MdoTableAsEnumsAssembler" />
 		<property name="restaurantsAssembler" ref="RestaurantsAssembler" />
 	</bean>
+	<bean id="PrintingInformationsAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultPrintingInformationsAssembler">
+		<property name="logger">
+			<bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultPrintingInformationsAssembler</value></constructor-arg>
+   		   	</bean>
+		</property>
+		<property name="mdoTableAsEnumsAssembler" ref="MdoTableAsEnumsAssembler" />
+		<property name="restaurantsAssembler" ref="RestaurantsAssembler" />
+	</bean>
 
 	<bean id="DaoSessionFactory" class="fr.mch.mdo.restaurant.dao.hibernate.DefaultSessionFactory">
 		<property name="logger">
@@ -299,6 +308,7 @@
 	</bean>
 
 	<bean id="UserRolesManager" class="fr.mch.mdo.restaurant.services.business.managers.users.DefaultUserRolesManager">
+		<property name="mdoTableAsEnumsManager" ref="MdoTableAsEnumsManager" />
 		<property name="localesManager" ref="LocalesManager" />
 		<property name="logger">
 			 <bean factory-bean="Logger" factory-method="getLogger">
@@ -322,6 +332,10 @@
 	</bean>
 		
 	<bean id="UserAuthenticationsManager" class="fr.mch.mdo.restaurant.services.business.managers.users.DefaultUserAuthenticationsManager">
+		<property name="localesManager" ref="LocalesManager" />
+		<property name="usersManager" ref="UsersManager" />
+		<property name="userRolesManager" ref="UserRolesManager" />
+		<property name="restaurantsManager" ref="RestaurantsManager" />
 		<property name="logger">
 			 <bean factory-bean="Logger" factory-method="getLogger">
 			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.users.DefaultUserAuthenticationsManager</value></constructor-arg>
@@ -344,6 +358,8 @@
 	</bean>		
 
 	<bean id="CategoriesManager" class="fr.mch.mdo.restaurant.services.business.managers.products.DefaultCategoriesManager">
+		<property name="mdoTableAsEnumsManager" ref="MdoTableAsEnumsManager" />
+		<property name="localesManager" ref="LocalesManager" />
 		<property name="logger">
 			 <bean factory-bean="Logger" factory-method="getLogger">
 			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.products.DefaultCategoriesManager</value></constructor-arg>
@@ -366,6 +382,8 @@
 	</bean>
 
 	<bean id="ProductPartsManager" class="fr.mch.mdo.restaurant.services.business.managers.products.DefaultProductPartsManager">
+		<property name="mdoTableAsEnumsManager" ref="MdoTableAsEnumsManager" />
+		<property name="localesManager" ref="LocalesManager" />
 		<property name="logger">
 			 <bean factory-bean="Logger" factory-method="getLogger">
 			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.products.DefaultProductPartsManager</value></constructor-arg>
@@ -388,6 +406,10 @@
 	</bean>
 
 	<bean id="ProductsManager" class="fr.mch.mdo.restaurant.services.business.managers.products.DefaultProductsManager">
+		<property name="restaurantsManager" ref="RestaurantsManager" />
+		<property name="valueAddedTaxesManager" ref="ValueAddedTaxesManager" />
+		<property name="categoriesManager" ref="CategoriesManager" />
+		<property name="localesManager" ref="LocalesManager" />
 		<property name="logger">
 			 <bean factory-bean="Logger" factory-method="getLogger">
 			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.products.DefaultProductsManager</value></constructor-arg>
@@ -410,6 +432,8 @@
 	</bean>
 
 	<bean id="ProductSpecialCodesManager" class="fr.mch.mdo.restaurant.services.business.managers.products.DefaultProductSpecialCodesManager">
+		<property name="mdoTableAsEnumsManager" ref="MdoTableAsEnumsManager" />
+		<property name="localesManager" ref="LocalesManager" />
 		<property name="logger">
 			 <bean factory-bean="Logger" factory-method="getLogger">
 			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.products.DefaultProductSpecialCodesManager</value></constructor-arg>
@@ -430,4 +454,30 @@
 			</bean>
 		</property>
 	</bean>
+
+	<bean id="PrintingInformationsManager" class="fr.mch.mdo.restaurant.services.business.managers.printings.DefaultPrintingInformationsManager">
+		<property name="restaurantsManager" ref="RestaurantsManager" />
+		<property name="mdoTableAsEnumsManager" ref="MdoTableAsEnumsManager" />
+		<property name="localesManager" ref="LocalesManager" />
+		<property name="logger">
+			 <bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.printings.DefaultPrintingInformationsManager</value></constructor-arg>
+   		   	</bean>
+		</property>	
+		<property name="assembler" ref="PrintingInformationsAssembler" />
+		<property name="dao">
+			<bean class="fr.mch.mdo.restaurant.dao.printings.hibernate.DefaultPrintingInformationsDao">
+				<property name="logger">
+					<bean factory-bean="Logger" factory-method="getLogger">
+					 	<constructor-arg><value>fr.mch.mdo.restaurant.dao.printings.hibernate.DefaultPrintingInformationsDao</value></constructor-arg>
+		   		   	</bean>
+				</property>
+				<property name="bean">
+					<bean class="fr.mch.mdo.restaurant.dao.beans.PrintingInformation"/>
+				</property>
+				<property name="sessionFactory" ref="DaoSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+
 </beans>       

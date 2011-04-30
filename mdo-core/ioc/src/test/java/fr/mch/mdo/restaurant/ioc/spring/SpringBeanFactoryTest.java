@@ -30,7 +30,8 @@ public class SpringBeanFactoryTest extends TestCase
 			factory = new SpringBeanFactory();
 			assertNotNull("The Spring bean factory must not null", factory);
 		} catch (MdoTechnicalException e) {
-			fail("Could not be there.");
+			fail("Could not be there. " + e);
+			e.printStackTrace();
 		}
 	}
 

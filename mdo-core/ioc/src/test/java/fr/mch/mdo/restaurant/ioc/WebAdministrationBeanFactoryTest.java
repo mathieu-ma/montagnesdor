@@ -7,6 +7,7 @@ import fr.mch.mdo.restaurant.authentication.IMdoAuthenticationService;
 import fr.mch.mdo.restaurant.ioc.spring.WebAdministractionBeanFactory;
 import fr.mch.mdo.restaurant.services.business.managers.ICategoriesManager;
 import fr.mch.mdo.restaurant.services.business.managers.locales.ILocalesManager;
+import fr.mch.mdo.restaurant.services.business.managers.printings.IPrintingInformationsManager;
 import fr.mch.mdo.restaurant.services.business.managers.products.IMdoTableAsEnumsManager;
 import fr.mch.mdo.restaurant.services.business.managers.products.IProductSpecialCodesManager;
 import fr.mch.mdo.restaurant.services.business.managers.products.IProductsManager;
@@ -131,4 +132,10 @@ public class WebAdministrationBeanFactoryTest extends MdoIocBasicTestCase
 		assertTrue("Check IProductSpecialCodesManager", manager instanceof IProductSpecialCodesManager);
 	}
 
+	public void testGetPrintingInformationsManager() {
+		IWebAdministractionBeanFactory iMdoBeanFactory = WebAdministractionBeanFactory.getInstance();
+		Object manager = iMdoBeanFactory.getPrintingInformationsManager();
+		assertNotNull("IPrintingInformationsManager not null", manager);
+		assertTrue("Check IPrintingInformationsManager", manager instanceof IPrintingInformationsManager);
+	}
 }
