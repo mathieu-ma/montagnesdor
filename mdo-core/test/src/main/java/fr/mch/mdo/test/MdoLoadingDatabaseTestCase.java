@@ -88,7 +88,7 @@ public abstract class MdoLoadingDatabaseTestCase extends MdoTestCase
 			}
 			finally {
 				try {
-					reader.close();
+					br.close();
 				} catch (Exception e) {
 					fail("Could not close the opened file: " + e.getMessage());
 				}
@@ -161,7 +161,15 @@ public abstract class MdoLoadingDatabaseTestCase extends MdoTestCase
 					fail("SQL file SqlToolError: " + e.getMessage());
 				} catch (SQLException e) {
 					fail("SQL file SQLException: " + e.getMessage());
-				}
+				} finally {
+		            try {
+		            	reader.close();
+		            } catch (Exception se) {
+		                // Purposefully ignoring.
+		                // We have done what we want and are now going to exit, so
+		                // who cares.
+		            }
+		        }
 			}
 		} finally {
             try {

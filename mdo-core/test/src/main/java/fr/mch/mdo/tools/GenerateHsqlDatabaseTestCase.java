@@ -40,13 +40,13 @@ public class GenerateHsqlDatabaseTestCase extends MdoLoadingDatabaseTestCase
 		String generatedDatabaseFolder = "/home/mathieu/tmp/database/montagnesdor";
 		
 		// Files to be loaded: Must be override here
-		fileURLs = new URL[] { ITestResources.class.getResource("montagnesdorStructure.sql")};
+		fileURLs = new URL[] { ITestResources.class.getResource("montagnesdorStructure.sql"), ITestResources.class.getResource("montagnesdorDatas.sql")};
 		
 		// Connection with standard SQL
 		Connection connection = null;
 		try {
 			Class.forName("org.hsqldb.jdbcDriver");
-			connection = DriverManager.getConnection("jdbc:hsqldb:file:" + generatedDatabaseFolder, "SA", "");
+			connection = DriverManager.getConnection("jdbc:hsqldb:file:" + generatedDatabaseFolder + ";shutdown=true", "SA", "");
 			assertNotNull("Check connection", connection);
 			// SQL dialect from Hibernate configuration
 			// Format the Hibernate SQL dialect string to java SqlDialect enum
@@ -68,5 +68,9 @@ public class GenerateHsqlDatabaseTestCase extends MdoLoadingDatabaseTestCase
 	 */
 	public void testDummy() {
 		assertTrue("This is a dummy test for generating HSQLDB files database.", true);
+	}
+	
+	public static void main(String[] args) {
+		new GenerateHsqlDatabaseTestCase(GenerateHsqlDatabaseTestCase.class.getName());
 	}
 }
