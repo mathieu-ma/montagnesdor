@@ -19,7 +19,7 @@
 		<tiles:putAttribute name="title" value="${title}"/>
 		<c:set var="bodyInclude">/jsp/users/<c:out value="${actionName}"/></c:set>
 		<c:choose>
-			<c:when test="${method=='form' || method=='addRestaurant' || method=='removeRestaurant'}">
+			<c:when test="${method=='form' || method=='addRestaurant' || method=='removeRestaurant' || method=='addLanguage' || method=='removeLanguage'}">
 				<c:set var="bodyInclude"><c:out value="${bodyInclude}"/>/form-body.jsp</c:set>
 			</c:when>
 			<c:when test="${method=='save' && (not empty actionErrors || not empty fieldErrors)}">

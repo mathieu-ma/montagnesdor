@@ -58,6 +58,6 @@
 	</menu-entry>
 	<menu-entry>
 		<label key="menu.manage.printing"/>
-		<link>/administration/LocalesManager.action</link>
+		<link>/administration/PrintingInformationsManager.action</link>
 	</menu-entry>
 </menu>
