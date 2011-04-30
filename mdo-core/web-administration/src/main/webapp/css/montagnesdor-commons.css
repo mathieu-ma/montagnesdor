@@ -374,25 +374,36 @@ div.scroll-table-outer-body th, div.scroll-table-outer-body td {
  	}
 
 
-/****************************/
-/*	START: JQuery Sortable   	*/
-/****************************/
-	table.sortable thead tr th.header {
+/****************************************************************************/
+/*	START: JQuery Sortable  												*/
+/*	The selector [class*='sortable'] means class name contains 'sortable'	*/
+/****************************************************************************/
+
+	table[class*='sortable'] thead tr th.header {
  		cursor: pointer;
 	}
-	table.sortable thead tr th > span.ui-icon {
+	table[class*='sortable'] thead tr th > span.ui-icon {
  		display: inline-block;
 	}
-	table.sortable thead tr th.headerSortDown span.ui-icon {
+	table[class*='sortable'] thead tr th.headerSortDown span.ui-icon {
 		background-position: 0 -16px;
 	}
-	table.sortable thead tr th.headerSortUp span.ui-icon {
+	table[class*='sortable'] thead tr th.headerSortUp span.ui-icon {
 		background-position: -64px -16px;
 	}
-/****************************/
-/*	END: JQuery Sortable   	*/
-/****************************/
+/****************************************************************************/
+/*	END: JQuery Sortable   													*/
+/****************************************************************************/
 
+/****************************************************************************/
+/*	START: JQuery mdoCrudList												*/
+/****************************************************************************/
+.crud-list-row-template {
+	display: none;
+}
+/****************************************************************************/
+/*	END: JQuery mdoCrudList													*/
+/****************************************************************************/
 
 /****************************/
 /*	START: JQuery Theme   	*/
@@ -449,11 +460,12 @@ div.scroll-table-outer-body th, div.scroll-table-outer-body td {
 		position: relative;
 		/position: static;
 		/zoom:1; /* for ie peekaboo bug */
-		padding: .8em 1em .8em 20px; 
+		padding: 0.8em 1em 0.84em 20px; 
 		/padding-left: 10px; 
 		text-decoration: none; 
 		border: 1px grey solid;
 		cursor: pointer;
+		margin: 3px;
 	}
 	
 	span.mdo-ui-button span.ui-icon 
@@ -582,7 +594,6 @@ div.scroll-table-outer-body th, div.scroll-table-outer-body td {
 		overflow-y: auto;
 	}
 	
-
 /****************************/
 /*	END: JQuery Theme   	*/
 /****************************/
@@ -715,16 +726,13 @@ table.admin-list-body tr:hover {
 	background: url(../jquery-ui/theme/images/select2.png);
 }
 
-div.colorpicker
-{
+div.colorpicker {
 	z-index: 1;
 }
 
-.colorpicker_submit
-{
+.colorpicker_submit {
 	cursor: pointer;
 }
-
 /****************************/
 /*	END: Color picker   	*/
 /****************************/

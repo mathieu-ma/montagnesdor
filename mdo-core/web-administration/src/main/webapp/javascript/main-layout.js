@@ -54,47 +54,41 @@ $(document).ready(function() {
 		});
 
 	  	$(window).bind("unload", function (e) {
-	  			$("#mdo-overlay").css('display', 'block');
-	  			//$('#waiting-dialog').dialog('open');
-	  			return false;
+  			$("#mdo-overlay").css('display', 'block');
+  			//$('#waiting-dialog').dialog('open');
+  			return false;
 	  	});
 	  	
 	  	$("a[href]").bindTop("click", function() {
-	  			$("#mdo-overlay").css('display', 'block');
+  			$("#mdo-overlay").css('display', 'block');
 
-	  			if(/^(#)/.test($(this).attr("href"))) {
-	  				//Prevent display block when using tabs for example
-	  				//$("#mdo-overlay").fadeOut(500);
-		  			$("#mdo-overlay").css('display', 'none');
-	  				return true;
-	  			}
-	  			
-	  			if($(this).parent().hasClass("mdo-ui-button")) {
-	  				//Call server by clicking parent element
-					$(this).parent().click();
-					//Don't call server with this link
-	  				return false;
-	  			} else {
-	  				window.location = $(this).attr("href");
-	  				return false;
-	  			}
+  			if(/^(#)/.test($(this).attr("href"))) {
+  				//Prevent display block when using tabs for example
+  				//$("#mdo-overlay").fadeOut(500);
+	  			$("#mdo-overlay").css('display', 'none');
+  				return true;
+  			}
+  			
+  			if($(this).parent().hasClass("mdo-ui-button")) {
+  				//Call server by clicking parent element
+				$(this).parent().click();
+				//Don't call server with this link
+  				return false;
+  			} else {
+  				window.location = $(this).attr("href");
+  				return false;
+  			}
 		});
 
-	  	$(".mdo-ui-button").bindTop("click",
-			function() 
-			{
-	  			$("#mdo-overlay").css('display', 'block');
-	  			//$("#mdo-overlay").fadeIn(500);
-	  			
-  				$("a[href]", $(this)).each(
-  					function()
-  					{
-  						window.location = $(this).attr("href");
-  						return true;
-  					}
-  				);
-			}
-		);
+	  	$(".mdo-ui-button[type!=reset]").bindTop("click", function() {
+  			$("#mdo-overlay").css('display', 'block');
+  			//$("#mdo-overlay").fadeIn(500);
+  			
+			$("a[href]", $(this)).each(function() {
+					window.location = $(this).attr("href");
+					return true;
+			});
+		});
 	  	
 		var jTempImageFlag = $("#temp-image-flag");
 		$("img.flag-unselected,img.flag-selected").each(

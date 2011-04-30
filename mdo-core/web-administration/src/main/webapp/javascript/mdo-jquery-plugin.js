@@ -153,11 +153,52 @@
 		}
 	});
 	//END mdoTablesorter
+	//START mdoI18nProperties
+	jQuery.mdoI18nProperties = function(options) {
+		options = options || {};
+		var action = "AjaxI18nMessages.action?";
+		var defaults = {
+				name: '',
+				path: '',
+				mode: 'map',
+		};
+		if(options.resourceMessages) {
+			var xArray = options.resourceMessages;
+			// Convert to array
+			xArray = (xArray && xArray.constructor == Array) ? xArray : [xArray];
+			for(i=0; i<xArray.length; i++) {
+				xArray[i] = action + "form.resource=" + xArray[i];
+			}
+			defaults.name = xArray;
+		}
+		if(options.keys) {
+			var name = action;
+			var xArray = options.keys;
+			// Convert to array
+			xArray = (xArray && xArray.constructor == Array) ? xArray : [xArray];
+			for(i=0; i<xArray.length; i++) {
+				name += "form.keys[" + i + "]=" + xArray[i] + "&";
+			}
+			name += "dummyResource=dummy";
+			defaults.name = defaults.name[0]?$.merge(defaults.name, [name]):name;
+		}
+		//Merge the two objects, modifying the first.
+		$.extend(defaults, options);
+		if (!options.browserLang) {
+			// Override the i18n method in order to get only one resource
+			// Because we presume that each resource in any language has the same pairs key/value
+			jQuery.i18n.browserLang = function() {
+				return null;
+			}
+		}
+		jQuery.i18n.properties(defaults);
+	}
+	//END mdoI18nProperties
 	//START mdoValidate
 	jQuery.fn.extend({
 		mdoValidate: function(options) {
 			var jAlert = jQuery.mdoDialog();
-			// set dialog not modal
+			// Set dialog not modal
 			jAlert.dialog("option", "modal", false);
 			// Set dialog draggable
 			jAlert.dialog("option", "draggable", true);
@@ -231,116 +272,116 @@
 		mdoCrudList: 
 		function() {
 			var jListPart = $(this.selector);
-			var jEntryData = $("input[type='text']", jListPart);
-			var jHiddenData = $(".crud-list input[type='hidden'][name]", jListPart);
-			var jAlert = jQuery.mdoDialog(jListPart);
 			
+			var jAlert = jQuery.mdoDialog();
 			jAlert.bind("dialogclose", function(event) {
 				window.setTimeout(function() {jQuery.mdoFocus(jEntryData);}, 100);
 				return false;
 			});
-  			
+
+			var jSortTable = $(".crud-list-sortable").mdoTablesorter({
+				headers: {2:{sorter: false}}
+			});
+
+			var jEntryData = $("input[type='text']", jListPart);
 			var jSelectList = $("select", jListPart).change(function(event, isHideOverlay) {
-				var storedLabelName = jEntryData.attr("name").replace(/\[(-)?[0-9]+\]/, "["+$(this).val()+"]");
-				jEntryData.attr("name", storedLabelName);
-				var jStoredData = $(":hidden[name='"+jQuery.mdoPreSelectorName(jEntryData.attr("name"))+"']");
-				var storedDataValue = "";
-				jHiddenData.each(function() {
-					$(this).removeAttr("disabled");
-				});
 				//Remove all background color first 
-				$("div.bg-color-selected", jListPart).each(function() {
+				$(".bg-color-selected", jListPart).each(function() {
 					$(this).toggleClass("bg-color-selected");
 				});
 
-				if($(this).val()==$(":hidden[name='select-list-header-key']", jListPart).val()) {
-					jEntryData.attr("disabled", "disabled");
-				} else {
-					jEntryData.removeAttr("disabled");
-					if(jStoredData.get(0)) {
+				//Default value is empty string because hidden input maybe not match
+				jEntryData.val("");
+				//Looking for the hidden input that matches the selected option
+				var selectedOptionValue = $(this).val();
+				var regexp = new RegExp(".+\\["+selectedOptionValue+"\\]$");
+				var jHiddenDataList = $(".crud-list input[type='hidden'][name]", jListPart);
+				jHiddenDataList.each(function() {
+					if (regexp.test($(this).attr("name"))) {
+						//Match the hidden input
+						jEditingHidden = $(this);
+						jEntryData.val(jEditingHidden.val());
 						//Set background color to the parent
-						jStoredData.parent().parent().toggleClass("bg-color-selected");
-						storedDataValue = jStoredData.val();
-						jStoredData.attr("disabled", "disabled");
+						jEditingHidden.parent().parent().toggleClass("bg-color-selected");
+						//Get out for speed
+						return false;
 					}
-				}
-					
-				jEntryData.val(storedDataValue);
-				if(!isHideOverlay) {
-					//$("#mdo-overlay").css('display', 'none');
-					$("#mdo-overlay").fadeOut(500);
-				}
+				});
 				jQuery.mdoFocus(jEntryData);
 			});
-
 			jSelectList.change();
-			
-			$(".crud-list-reset", jListPart).click(function() {
-				jSelectList.change();
-			});
-			
-			$(".crud-list-remove", jListPart).click(function() {
-				var selectedId = $("[name='selectedId']", $(this));
-				if(selectedId.val()) {
-					$("option[value='"+selectedId.val()+"']",jSelectList).attr("selected", "selected");
-					jSelectList.trigger("change", ["true"]);
-				}
-				if(prepareSubmit("remove")) {
-					$("form").submit();
-				}
-			});
-					
-			$(".crud-list-edit", jListPart).click(function() {
-				var selectedId = $("[name='selectedId']", $(this));
-				if(selectedId.val()) {
-					$("option[value='"+selectedId.val()+"']",jSelectList).attr("selected", "selected");
+
+			// For Editing
+			$("span.crud-list-edit").each(function() {
+				var thisSpan = $(this); 
+				// This is for prevent display overlay block
+				thisSpan.unbind("click");
+
+				var anchor = thisSpan.children(":nth-child(2)");
+				var href = anchor.attr("href");
+				// This is for prevent display overlay block
+				anchor.unbind("click").removeAttr("href");
+				// Click for editing
+				thisSpan.click(function() {
+					// Set the selected option
+					var hiddenChildName = $(this).parent().parent().children(":nth-child(2)").children(":nth-child(2)").attr("name");
+					jSelectList.val(hiddenChildName.replace(/.+\[(.+)\]/, "$1"));
+					// Set the selected value
 					jSelectList.change();
-				}
+					return false;
+				});
 			});
-
-			$(".crud-list-add", jListPart).click(function() {
-				if(prepareSubmit("add")) {
-					$("form").submit();
-				}
+			
+			// For Removing
+			$("button.crud-list-remove").each(function() {
+				var thisButton = $(this); 
+				// This is for prevent display overlay block
+				thisButton.unbind("click");
 			});
-
-			$("#hidden-submit-form").click(function(eventParam) {
-				prepareSubmit("add");
+			$("button.crud-list-remove").click(function() {
+				var thisButton = $(this); 
+				thisButton.parent().parent().remove();
+				thisButton.parent().parent().prev().remove();
+				// Update the sortable table
+				jSortTable.trigger("update");
 				return false;
 			});
 
-			function prepareSubmit(action) {
-				var isSubmit = false;
-				//Using when Tabs exists and this part is hidden by a parent
-				var parentHidden = jQuery.mdoParentByCss(jListPart, "display", "none");
-				if(!parentHidden) {
-					if(jEntryData.val()=="") {
-						$("#mdo-overlay").fadeOut(500);
-						jQuery.mdoFocus(jEntryData);
-						if(jSelectList.val()==$("input[type='hidden'][name='select-list-header-key']", jListPart).val()) {
-							return false;
+			// Used for alert popup
+			jQuery.mdoI18nProperties({
+				keys: ["language.add.label.empty"]
+			});
+			// For Adding
+			$("button.crud-list-add").each(function() {
+				var thisButton = $(this); 
+				// This is for prevent display overlay block
+				thisButton.unbind("click");
+				thisButton.click(function() {
+					if (jEntryData.val()) {
+						var addedRow = $("#"+jSelectList.val());
+						if (!addedRow.get(0)) {
+							addedRow = $(".crud-list-row-template").clone(true, true).removeAttr("class").attr("id", jSelectList.val());
+							$(".data-container").prepend(addedRow);
 						}
-			  			//$("#mdo-overlay").css('display', 'none');
-			  			var message = "data-remove-empty";
-						if(action=="add") {
-				  			message = "data-add-empty";
-						}
-			  			jAlert.html($(":hidden[name='"+message+"']", jListPart).val());
-			  			jAlert.dialog('open');
+						addedRow.children(":nth-child(1)").html($("option[value='"+jSelectList.val()+"']", jSelectList).html());
+						var secondChild = addedRow.children(":nth-child(2)");
+						// User entry data
+						secondChild.children(":nth-child(1)").html(jEntryData.val());
+						// Hidden value
+						var hiddenChild = secondChild.children(":nth-child(2)").val(jEntryData.val()).removeAttr("disabled");
+						// Change name
+						hiddenChild.attr("name", hiddenChild.attr("name").replace(/\[X\]/, "["+jSelectList.val()+"]"));
+						jSelectList.change();
+						// Update the sortable table
+						jSortTable.trigger("update");
 					} else {
-						if(action=="remove") {
-							jEntryData.attr("disabled", "disabled");
-						}
-						$("form").submit();	
-						isSubmit = true;
+			  			jAlert.html(jQuery.i18n.prop("language.add.label.empty"));
+			  			jAlert.dialog('open');
 					}
-				}
-				return isSubmit;
-			}
-			
-			jListPart.data("jSelectList", jSelectList);
-			jListPart.data("jEntryData", jEntryData);
-			jListPart.data("jHiddenData", jHiddenData);
+					return false;
+				});
+			});
+
 			return jListPart;
 		}
 	});	

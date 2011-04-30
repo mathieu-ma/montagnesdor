@@ -15,19 +15,12 @@ $(document).ready(function() {
 	});
 	
 	$("form").mdoValidate({
-		resourceMessages: 'MdoTableAsEnumsResources',
+		resourceMessages: 'MdoTableAsEnumsManagerWebAction',
 		rules: {
-			"form.userEntryType": {
-				required: {
-					depends: function(element) {
-						return jQuery.trim($("#" + $(this).attr("name") + "_form_dtoBean_type").val())=="";
-					}
-				}
-			},
 			"form.dtoBean.type": {
 				required: {
 					depends: function(element) {
-						return jQuery.trim($("#" + $(this).attr("name") + "_form_userEntryType").val())=="";
+						return jQuery.trim($(":text[name='"+jQuery.mdoPreSelectorName("form.userEntryType")+"']").val())=="";
 					}
 				}
 			}

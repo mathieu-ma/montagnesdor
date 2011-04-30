@@ -8,13 +8,13 @@ $(document).ready(function() {
 		$("#vatsortable").mdoTablesorter();
 
 		$("form").mdoValidate({
-			resourceMessages: 'RestaurantsResources',
+			resourceMessages: 'RestaurantsManagerWebAction',
 			messages: {
 				"form.dtoBean.name": "error.restaurant.name.required",
 			},
 		});
 		
-		$("#form-dtoBean-registrationDate").mdoDatePicker();
+		$("#form-dtoBean-registrationDate").hide().mdoDatePicker();
 
 		new UpsideDown();
 		

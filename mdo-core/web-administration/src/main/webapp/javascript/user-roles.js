@@ -1,11 +1,9 @@
-$(document).ready(
-	function()
-	{
-		$("#languages").mdoCrudList();
+$(document).ready(function() {
 
-		new UpsideDown();
+	// For sorting list
+	$(".sortable").mdoTablesorter({
+		headers: {1:{sorter: false}},
+	});
 
-	  	//Override the Struts validate function
-	  	jQuery.mdoSubmit();
-   	}
-);
+	$("#languages").mdoCrudList();
+});

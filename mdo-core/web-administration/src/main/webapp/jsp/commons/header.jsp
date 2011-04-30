@@ -25,20 +25,20 @@
 			<c:if test="${empty userSession.userAuthentication.locales}">
 				<img class="flag-selected" title='<c:out value="${userSession.systemAvailableLanguages[userSession.currentLocale.languageCode]}"/>' src="<c:out value="${pageContext.request.contextPath}"/>/images/flags/flag_<c:out value="${userSession.currentLocale.languageCode}"/>.jpg"/>
 			</c:if>
-			<c:forEach items="${userSession.userAuthentication.locales}" var="userLocale">
+			<s:iterator value="%{#session.userSession.userAuthentication.locales}" var="userLocale">
 				<c:if test="${userSession.currentLocale.languageCode==userLocale.locale.languageCode}">
 					<img class="flag-selected" alt='${userSession.systemAvailableLanguages[userLocale.locale.languageCode]}' title='${userSession.systemAvailableLanguages[userLocale.locale.languageCode]}' src="${pageContext.request.contextPath}/images/flags/flag_${userLocale.locale.languageCode}.jpg"/>
 				</c:if>
 				<c:if test="${userSession.currentLocale.languageCode!=userLocale.locale.languageCode}">
-					<c:url var="url" value="${userSession.currentURLWithParameters}">
-			    		<c:param name="request_locale" value="${userLocale.locale.languageCode}"/>
-			    	</c:url>
+					<s:url var="url" includeParams="all" value="%{#session.userSession.currentURLWithParametersWithoutLocale}">
+			    		<s:param name="request_locale" value="%{#userLocale.locale.languageCode}"/>
+			    	</s:url>
 			    	<a href="${url}" class="language" id="${userLocale.locale.languageCode}">
 						<img class="flag-unselected" alt="${userSession.systemAvailableLanguages[userLocale.locale.languageCode]}" title="${session.userSession.systemAvailableLanguages[userLocale.locale.languageCode]}" 
-						src="${pageContext.request.contextPath}/images/flags/flag_${locale.languageCode}.jpg"/>
+						src="${pageContext.request.contextPath}/images/flags/flag_${userLocale.locale.languageCode}.jpg"/>
 			    	</a>
 				</c:if>
-		 	</c:forEach>
+		 	</s:iterator>
 		 	<br/>
 		 	<label><fmt:message key="menu.welcome"><fmt:param value="${userSession.userAuthentication.restaurant.name}"/></fmt:message></label>
 		 	<img class="logo1" src="<c:out value="${pageContext.request.contextPath}"/>/images/logo1.gif"/>

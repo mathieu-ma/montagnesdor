@@ -7,7 +7,7 @@ $(document).ready(function() {
 	});
 
 	$("form").mdoValidate({
-		resourceMessages: 'ValueAddedTaxesResources',
+		resourceMessages: 'ValueAddedTaxesManagerWebAction',
 		messages: {
 			"form.dtoBean.rate": "error.vat.rate.double",
 		},

@@ -13,19 +13,20 @@ $(document).ready(function() {
   		$("object").css("visibility", "hidden");
   	}
 		
-	$("a.language").each(function () {
-		var languageId = $(this).attr("id");
-		var languageHref = $(this).attr("href");
-		if (languageHref.indexOf("language=")>0) {
-			// The parameter language could be appeared more than one
-			// So we remove all and then insert back again
-			// Remove language
-			languageHref = languageHref.replace(/&language=..|language=..&?/gi, "");
-			// Insert back again
-			languageHref += "&language=" + languageId;
-		}
-		$(this).attr("href", languageHref);
-	});
+//	$("a.language").each(function () {
+//		var language = "request_locale";
+//		var languageId = $(this).attr("id");
+//		var languageHref = $(this).attr("href");
+//		if (languageHref.indexOf(language+"=")>0) {
+//			// The parameter request_locale could be appeared more than one
+//			// So we remove all and then insert back again
+//			// Remove language
+//			languageHref = languageHref.replace(new RegExp("&"+language+"=..|"+language+"=..&?", "gi"), "");
+//			// Insert back again
+//			languageHref += "&"+language+"=" + languageId;
+//		}
+//		$(this).attr("href", languageHref);
+//	});
 
 	timer();
 });
@@ -58,7 +59,7 @@ function timer() {
 		}
 
 		window.status = dateTimeApplet.getDateTime().toString();
-		delay = 1000;
+		delay = 5000;
 	} catch(err) {
 		//alert("Appuyer sur OK pour continuer : "+err.message);
 		try {
