@@ -62,7 +62,14 @@ public interface ILocalesManager extends IAdministrationManager
      */
 	Map<Long, String> getLanguages(String languageCode) throws MdoException;
 
-	IMdoBean findByLanguage(Object id, MdoUserContext userContext) throws MdoException;
+	/**
+	 * Find the locale by language. 
+	 * @param language the ISO language.
+	 * @param userContext the user context.
+	 * @return a found locale.
+     * @throws MdoException if any exception occur.
+	 */
+	IMdoBean findByLanguage(Object language, MdoUserContext userContext) throws MdoException;
     
 	LocaleDto findLocale(Locale locale, MdoUserContext userContext) throws MdoException;
 
