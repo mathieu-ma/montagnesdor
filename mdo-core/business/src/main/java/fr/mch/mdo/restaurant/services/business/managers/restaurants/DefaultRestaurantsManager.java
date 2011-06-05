@@ -1,13 +1,17 @@
 package fr.mch.mdo.restaurant.services.business.managers.restaurants;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import fr.mch.mdo.logs.ILogger;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.beans.Restaurant;
+import fr.mch.mdo.restaurant.dao.beans.RestaurantPrefixTable;
+import fr.mch.mdo.restaurant.dao.beans.RestaurantValueAddedTax;
 import fr.mch.mdo.restaurant.dao.restaurants.IRestaurantsDao;
 import fr.mch.mdo.restaurant.dao.restaurants.hibernate.DefaultRestaurantsDao;
 import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
@@ -152,16 +156,17 @@ public class DefaultRestaurantsManager extends AbstractAdministrationManager imp
 	public IMdoDtoBean update(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
 		Restaurant daoBean = (Restaurant) assembler.unmarshal(dtoBean);
 		try {
-			if (daoBean != null && daoBean.getId() != null) {
-				// dummy is just used for updating daoBean.getVats() and daoBean.getPrefixTableNames()
-				Restaurant dummy  = (Restaurant) dao.findByPrimaryKey(daoBean.getId());
-				dummy.getVats().clear();
-				dummy.getVats().addAll(daoBean.getVats());
-				daoBean.setVats(dummy.getVats());
-				dummy.getPrefixTableNames().clear();
-				dummy.getPrefixTableNames().addAll(daoBean.getPrefixTableNames());
-				daoBean.setPrefixTableNames(dummy.getPrefixTableNames());
-			}
+			// Deleting daoBean.getVats() and daoBean.getPrefixTableNames() before inserting new ones
+			Set<RestaurantValueAddedTax> backupVats = new HashSet<RestaurantValueAddedTax>(daoBean.getVats());
+			Set<RestaurantPrefixTable> backupPrefixTableNames = new HashSet<RestaurantPrefixTable>(daoBean.getPrefixTableNames());
+			// Removing
+			daoBean.getVats().clear();
+			daoBean.getPrefixTableNames().clear();
+			dao.update(daoBean);
+			// Restoring
+			daoBean.getVats().addAll(backupVats);
+			daoBean.getPrefixTableNames().addAll(backupPrefixTableNames);
+			
 			return assembler.marshal((IMdoDaoBean) dao.update(daoBean), userContext);
 		} catch (MdoException e) {
 			logger.error("message.error.administration.business.save", e);
@@ -171,10 +176,7 @@ public class DefaultRestaurantsManager extends AbstractAdministrationManager imp
 	
 	@Override
 	public IMdoDtoBean delete(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
-		// Load data
-		dtoBean = super.findByPrimaryKey(dtoBean.getId(), userContext);
-		// Delete Vats/Prefix Table Names before
-		this.update(dtoBean, userContext);
+		// No need to Delete Vats/Prefix before Deleting user because of hibernate mapping all-delete-orphan in collection
 		// Delete dto
 		return super.delete(dtoBean, userContext);
 	}
