@@ -1,9 +1,13 @@
 package fr.mch.mdo.restaurant.services.business.managers.users;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import fr.mch.mdo.logs.ILogger;
 import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.beans.UserAuthentication;
+import fr.mch.mdo.restaurant.dao.beans.UserLocale;
 import fr.mch.mdo.restaurant.dao.users.IUserAuthenticationsDao;
 import fr.mch.mdo.restaurant.dao.users.hibernate.DefaultUserAuthenticationsDao;
 import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
@@ -154,13 +158,14 @@ public class DefaultUserAuthenticationsManager extends AbstractAdministrationMan
 		UserAuthenticationDto result = null;  
 		UserAuthentication daoBean = (UserAuthentication) assembler.unmarshal(dtoBean);
 		try {
-			if (daoBean != null && daoBean.getId() != null) {
-				// dummy is just used for updating daoBean.getLocales()
-				UserAuthentication dummy = (UserAuthentication) dao.findByPrimaryKey(daoBean.getId());
-				dummy.getLocales().clear();
-				dummy.getLocales().addAll(daoBean.getLocales());
-				daoBean.setLocales(dummy.getLocales());
-			}
+			// Deleting daoBean.getLocales() before inserting new ones
+			Set<UserLocale> backup = new HashSet<UserLocale>(daoBean.getLocales());
+			// Removing
+			daoBean.getLocales().clear();
+			dao.update(daoBean);
+			// Restoring
+			daoBean.getLocales().addAll(backup);
+
 			result = (UserAuthenticationDto) assembler.marshal((IMdoDaoBean) dao.update(daoBean), userContext);
 		} catch (MdoException e) {
 			logger.error("message.error.administration.business.save", e);
@@ -171,10 +176,7 @@ public class DefaultUserAuthenticationsManager extends AbstractAdministrationMan
 	
 	@Override
 	public IMdoDtoBean delete(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
-		// Load data
-		dtoBean = super.findByPrimaryKey(dtoBean.getId(), userContext);
-		// Delete Locales before
-		this.update(dtoBean, userContext);
+		// No need to Delete Locales before Deleting user because of hibernate mapping all-delete-orphan in collection
 		// Delete dto
 		return super.delete(dtoBean, userContext);
 	}
