@@ -1,5 +1,8 @@
 package fr.mch.mdo.restaurant.services.business.managers.products;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,8 +11,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jopendocument.dom.OOUtils;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import fr.mch.mdo.i18n.IMessageQuery;
+import fr.mch.mdo.i18n.MessageQueryResourceBundleImpl;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dto.beans.CategoryDto;
@@ -23,6 +30,7 @@ import fr.mch.mdo.restaurant.services.business.managers.DefaultAdministrationMan
 import fr.mch.mdo.restaurant.services.business.managers.IAdministrationManager;
 import fr.mch.mdo.restaurant.services.business.managers.restaurants.DefaultRestaurantsManager;
 import fr.mch.mdo.test.MdoTestCase;
+import fr.mch.mdo.test.resources.ITestResources;
 
 public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 {
@@ -141,6 +149,14 @@ public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 			assertNotNull("Product categories must not be null", castedBean.getCategories());
 			assertEquals("Check Product categories size", categories.size(), castedBean.getCategories().size());
 			// Update the created bean
+			castedBean.getCategories().clear();
+			productCategory = new ProductCategoryDto();
+			category = new CategoryDto();
+			category.setId(1L);
+			productCategory.setCategory(category);
+			quantity = new BigDecimal(3.14);
+			productCategory.setQuantity(quantity);
+			castedBean.getCategories().add(productCategory);
 			productCategory = new ProductCategoryDto();
 			category = new CategoryDto();
 			category.setId(2L);
@@ -166,7 +182,6 @@ public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 			// Because of ProductDto is a bean that is not attach to Hibernate session so the collection Categories is not too.
 			// Then Categories collection is never removed(but still updated) and the size must be the same as before updating the ProductDto
 			assertEquals("Check Product categories size", 2, castedBean.getCategories().size());
-			this.getInstance().delete(updatedBean, userContext);
 		} catch (Exception e) {
 			fail(e.getLocalizedMessage());
 		}
@@ -221,5 +236,48 @@ public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}	
+	}
+	
+	public void testImportData() {
+		File file = new File(ITestResources.class.getResource("inport-data-10203040506070-fr.ods").getFile());
+		 try {
+			((IProductsManager) DefaultProductsManager.getInstance()).importData(file, DefaultProductsManagerTest.userContext);
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+
+	public void testExportData() {
+		FileOutputStream fos = null;
+		final File file = new File("target/export-data.ods");
+		try {
+			fos = new FileOutputStream(file);
+
+			assertEquals("File must be empty", 0,file.length());
+			
+			String restaurantReference = "10203040506070";
+			
+			IMessageQuery messages = new MessageQueryResourceBundleImpl("fr.mch.mdo.restaurant.resources.i18n.ApplicationMessagesResources");
+			String[] headers = new String[] { messages.getMessage("products.manager.code"), 
+					messages.getMessage("products.manager.label"), messages.getMessage("products.manager.price"), 
+					messages.getMessage("products.manager.vat"),  messages.getMessage("products.manager.color") };
+
+			((IProductsManager) DefaultProductsManager.getInstance())
+					.exportData(fos, restaurantReference, headers, DefaultProductsManagerTest.userContext);
+			
+			fos.flush();
+
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		} finally {
+			try {
+				fos.close();
+				// Open with ooo
+		        OOUtils.open(file);
+			} catch (IOException e) {
+				fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+			}
+		}
+		assertTrue("File must be not empty", file.length() != 0);
 	}
 }
