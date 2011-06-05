@@ -247,9 +247,13 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 			// Update the created bean
 			castedBean.setName("E");
 			vat = castedBean.getVats().iterator().next();
+			// Id null then insert not update
+			vat.setId(null);
 			castedBean.getVats().clear();
 			castedBean.getVats().add(vat);
 			restaurantPrefixTable = castedBean.getPrefixTableNames().iterator().next();
+			// Id null then insert not update
+			restaurantPrefixTable.setId(null);
 			castedBean.getPrefixTableNames().clear();
 			castedBean.getPrefixTableNames().add(restaurantPrefixTable);
 			this.getInstance().update(castedBean, userContext);
