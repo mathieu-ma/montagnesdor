@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+	"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+	
+<hibernate-configuration>
+
+    <!-- a SessionFactory instance listed as /jndi/name -->
+    <session-factory>
+
+        <!-- properties -->
+		<!-- org.hsqldb.jdbc.JDBCDriver ==> HSQLDB 2.0 driver  -->
+		<!-- org.hsqldb.jdbcDriver ==> HSQLDB 1.8.X driver  -->
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+
+       	<property name="hibernate.connection.url">jdbc:postgresql://localhost/mdokimsan93?autoReconnect=true</property> 
+        <!-- 
+	        <property name="hibernate.connection.url">jdbc:postgresql://sql.free.fr:5432/montagnesdor?autoReconnect=true</property>
+        -->
+        
+        <property name="hibernate.connection.username">montagnesdor</property>
+        <property name="hibernate.connection.password">powermdo</property>
+        <property name="hibernate.connection.pool_size">10</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+        <!--  Défini la profondeur maximale d'un arbre de chargement par jointures ouverte pour les associations à cardinalité unitaire (un-à-un, plusieurs-à-un) -->
+        <property name="hibernate.max_fetch_depth">3</property>
+
+      	<!-- configuration pool via c3p0--> 
+		<property name="c3p0.acquire_increment">1</property> 
+		<property name="c3p0.idle_test_period">100</property> <!-- seconds --> 
+		<property name="c3p0.max_size">100</property> 
+		<property name="c3p0.max_statements">0</property> 
+		<property name="c3p0.min_size">10</property> 
+		<property name="c3p0.timeout">100</property> <!-- seconds --> 
+		<!-- DEPRECATED very expensive property name="c3p0.validate>--> 
+
+
+        <property name="hibernate.show_sql">true</property>        
+        <property name="hibernate.transaction.factory_class">
+             org.hibernate.transaction.JDBCTransactionFactory
+        </property>
+		<property name="hibernate.current_session_context_class">
+    		thread
+	   </property>
+        <property name="hibernate.cache.provider_class">
+             org.hibernate.cache.EhCacheProvider
+        </property>
+
+	</session-factory>
+
+</hibernate-configuration>
