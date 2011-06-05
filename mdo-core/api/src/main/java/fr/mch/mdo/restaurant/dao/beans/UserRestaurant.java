@@ -61,37 +61,37 @@ public class UserRestaurant extends MdoDaoBean
 
     @Override
     public int hashCode() {
-	final int prime = 31;
-	int result = 1; // DO NOT call super.hashCode(); because ID could be null.
-	result = prime * result	+ ((restaurant == null || restaurant.getId() == null) ? 0 : restaurant.getId().hashCode());
-	return result;
+		final int prime = 31;
+		int result = 1; // DO NOT call super.hashCode(); because ID could be null.
+		result = prime * result	+ ((restaurant == null || restaurant.getId() == null) ? 0 : restaurant.getId().hashCode());
+		return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-	if (this == obj) {
-	    return true;
-	}
-	// DO NOT call super.hashCode(); because ID could be null.
-//	if (!super.equals(obj)) {
-//	    return false;
-//	}
-	if (getClass() != obj.getClass()) {
-	    return false;
-	}
-	UserRestaurant other = (UserRestaurant) obj;
-	if (restaurant == null) {
-	    if (other.restaurant != null) {
-		return false;
-	    }
-	} else if (restaurant.getId() == null) {
-	    if (other.restaurant.getId() != null) {
-		return false;
-	    }
-	} else if (other.restaurant == null || !restaurant.getId().equals(other.restaurant.getId())) {
-	    return false;
-	}
-	return true;
+		if (this == obj) {
+		    return true;
+		}
+		// DO NOT call super.hashCode(); because ID could be null.
+	//	if (!super.equals(obj)) {
+	//	    return false;
+	//	}
+		if (getClass() != obj.getClass()) {
+		    return false;
+		}
+		UserRestaurant other = (UserRestaurant) obj;
+		if (restaurant == null) {
+		    if (other.restaurant != null) {
+			return false;
+		    }
+		} else if (restaurant.getId() == null) {
+		    if (other.restaurant.getId() != null) {
+			return false;
+		    }
+		} else if (other.restaurant == null || !restaurant.getId().equals(other.restaurant.getId())) {
+		    return false;
+		}
+		return true;
     }
     
     @Override

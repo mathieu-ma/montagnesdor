@@ -105,31 +105,31 @@ public class TableVat extends MdoDaoBean
     }
 
     @Override
-    public boolean equals(Object obj) {
-	if (this == obj) {
-	    return true;
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		// DO NOT call super.hashCode(); because ID could be null.
+		// if (!super.equals(obj)) {
+		// return false;
+		// }
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		TableVat other = (TableVat) obj;
+		if (vat == null) {
+			if (other.vat != null) {
+				return false;
+			}
+		} else if (vat.getId() == null) {
+			if (other.vat.getId() != null) {
+				return false;
+			}
+		} else if (other.vat == null || !vat.getId().equals(other.vat.getId())) {
+			return false;
+		}
+		return true;
 	}
-	// DO NOT call super.hashCode(); because ID could be null.
-//	if (!super.equals(obj)) {
-//	    return false;
-//	}
-	if (getClass() != obj.getClass()) {
-	    return false;
-	}
-	TableVat other = (TableVat) obj;
-	if (vat == null) {
-	    if (other.vat != null) {
-		return false;
-	    }
-	} else if (vat.getId() == null) {
-	    if (other.vat.getId() != null) {
-		return false;
-	    }
-	} else if (other.vat == null || !vat.getId().equals(other.vat.getId())) {
-	    return false;
-	}
-	return true;
-    }
 
     @Override
     public String toString() {
