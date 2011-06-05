@@ -35,8 +35,8 @@ public class DefaultLocalesManager extends AbstractAdministrationManager impleme
 	private static List<java.util.Locale> isoLanguagesList = Arrays.asList(java.util.Locale.getAvailableLocales());
 
 	private static class LazyHolder {
-		private static ILocalesManager instance = new DefaultLocalesManager(LoggerServiceImpl.getInstance().getLogger(DefaultLocalesManager.class.getName()), DefaultLocalesDao
-				.getInstance(), DefaultLocalesAssembler.getInstance());
+		private static ILocalesManager instance = new DefaultLocalesManager(LoggerServiceImpl.getInstance().getLogger(DefaultLocalesManager.class.getName()), 
+				DefaultLocalesDao.getInstance(), DefaultLocalesAssembler.getInstance());
 	}
 
 	private DefaultLocalesManager(ILogger logger, ILocalesDao dao, IManagerAssembler assembler) {
