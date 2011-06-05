@@ -169,13 +169,12 @@ public class DefaultUserAuthenticationsManagerTest extends DefaultAdministration
 			castedBean.setLogin(login);
 
 			locales.clear();
-			Long backupId = castedBean.getLocales().iterator().next().getId();
 			userLocale = new UserLocaleDto();
 			locale = new LocaleDto();
 			locale.setId(1L);
 			userLocale.setLocale(locale);
 			// For updating, if not Hibernate will insert
-			userLocale.setId(backupId);
+			// userLocale.setId(backupId);
 			locales.add(userLocale);
 			
 			userLocale = new UserLocaleDto();

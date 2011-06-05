@@ -168,6 +168,7 @@ public class DefaultUsersManagerTest extends DefaultAdministrationManagerTest
 			restaurant.setId(2L);
 			userRestaurant.setRestaurant(restaurant);
 			restaurants.add(userRestaurant);
+			castedBean.setRestaurants(restaurants);
 			this.getInstance().update(castedBean, userContext);
 			// Reload the modified bean
 			UserDto updatedBean = new UserDto();
@@ -175,6 +176,8 @@ public class DefaultUsersManagerTest extends DefaultAdministrationManagerTest
 			updatedBean = (UserDto) this.getInstance().load(updatedBean, userContext);
 			assertNotNull("User restaurants must not be null", updatedBean.getRestaurants());
 			assertEquals("User restaurants size must be 2", restaurants.size(), updatedBean.getRestaurants().size());
+			
+			this.getInstance().delete(updatedBean, userContext);
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
