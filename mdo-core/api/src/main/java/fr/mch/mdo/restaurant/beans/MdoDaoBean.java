@@ -41,24 +41,23 @@ public class MdoDaoBean implements IMdoDaoBean
 
     @Override
     public boolean equals(Object obj) {
-	if (this == obj) {
-	    return true;
-	}
-	if (obj == null) {
-	    return false;
-	}
-	if (getClass() != obj.getClass()) {
-	    return false;
-	}
-	MdoDaoBean other = (MdoDaoBean) obj;
-	if (id == null) {
-	    if (other.id != null) {
-		return false;
-	    }
-	} else if (!id.equals(other.id)) {
-	    return false;
-	}
-	return true;
+		if (this == obj) {
+		    return true;
+		}
+		if (obj == null) {
+		    return false;
+		}
+		if (getClass() != obj.getClass()) {
+		    return false;
+		}
+		MdoDaoBean other = (MdoDaoBean) obj;
+		if (id == null) {
+			// Whenever the value of other.id(maybe null)
+			return false;
+		} else if (!id.equals(other.id)) {
+			return false;
+		}
+		return true;
     }
 
     @Override

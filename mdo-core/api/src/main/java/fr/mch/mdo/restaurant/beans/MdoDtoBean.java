@@ -37,9 +37,8 @@ public class MdoDtoBean implements IMdoDtoBean
 		}
 		MdoDtoBean other = (MdoDtoBean) obj;
 		if (id == null) {
-			if (other.id != null) {
-				return false;
-			}
+			// Whenever the value of other.id(maybe null)
+			return false;
 		} else if (!id.equals(other.id)) {
 			return false;
 		}
