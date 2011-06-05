@@ -69,9 +69,12 @@
 							<outputDirectory>
 								src/main/resources
 							</outputDirectory>
-							<includeArtifacIds>security</includeArtifacIds>
 							<includeGroupIds>${project.groupId}</includeGroupIds>
+							<includeArtifacIds>security</includeArtifacIds>
+							<excludeArtifactIds>test</excludeArtifactIds>
 							<excludeTransitive>false</excludeTransitive>
+							<overWriteSnapshots>true</overWriteSnapshots>
+							<overWriteReleases>true</overWriteReleases>
 							<includes>
 								**\/mdo-keystore.pkcs12
 							</includes>
