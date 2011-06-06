@@ -265,7 +265,7 @@ CREATE TABLE t_printing_information (
 -- COMMENT Statement is used for PostGresql but this is also compatible with HSQLDB 2.0.
 COMMENT ON TABLE t_printing_information IS 'This table is used for printing custom informations on specific restaurant.';
 COMMENT ON COLUMN t_printing_information.pin_id IS 'This is primary key of this table.';
-COMMENT ON COLUMN t_printing_information.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant. This field and the other enm_id field consist of a unique field.';
+COMMENT ON COLUMN t_printing_information.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant.';
 COMMENT ON COLUMN t_printing_information.pin_order IS 'It is used to specify the order of the printing information.';
 COMMENT ON COLUMN t_printing_information.pin_alignment_enm_id IS 'This is a foreign key that refers to t_enum. It is used to specify the alignment of the printing information.';
 COMMENT ON COLUMN t_printing_information.pin_size_enm_id IS 'This is a foreign key that refers to t_enum. It is used to specify the size of the printing information.';
@@ -742,7 +742,7 @@ COMMENT ON COLUMN t_dinner_table.dtb_amount_pay IS 'This is used to specify the 
 COMMENT ON COLUMN t_dinner_table.dtb_registration_date IS 'This is used to specify the registration/creation date.';
 COMMENT ON COLUMN t_dinner_table.dtb_printing_date IS 'This is used to specify the printing date.';
 COMMENT ON COLUMN t_dinner_table.dtb_reduction_ratio_changed IS 'This is used to specify if user has changed the reduction ratio.';
-COMMENT ON COLUMN t_dinner_table.tbt_id IS 'This is used to specify the type of dinner table. Could be TAKE-AWAY, EAT-IN ...';
+COMMENT ON COLUMN t_dinner_table.tbt_id IS 'This is used to specify the type of dinner table. Could be TAKE-AWAY, EAT-IN ... This is a foreign key that refers to t_table_type.';
 COMMENT ON COLUMN t_dinner_table.dtb_deleted IS 'This is used for logical deletion.';
 -- For PostGresql, the sequence is marked as "*{OWNED BY" the column, so that it will be dropped if the column or table is dropped.
 ALTER SEQUENCE t_dinner_table_dtb_id_seq *{OWNED BY t_dinner_table.dtb_id};
