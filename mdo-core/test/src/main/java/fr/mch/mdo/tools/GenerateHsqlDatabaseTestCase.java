@@ -41,6 +41,14 @@ public class GenerateHsqlDatabaseTestCase extends MdoLoadingDatabaseTestCase
 		
 		// Files to be loaded: Must be override here
 		fileURLs = new URL[] { ITestResources.class.getResource("montagnesdorStructure.sql"), ITestResources.class.getResource("montagnesdorDatas.sql")};
+		fileURLs = new URL[] { ITestResources.class.getResource("montagnesdorStructure.sql"),
+				ITestResources.class.getResource("DataMigrationKimsan93.sql"),
+				ITestResources.class.getResource("DataMigrationProductWork.sql"),
+				ITestResources.class.getResource("DataMigrationProductCategoryWork.sql"),
+				ITestResources.class.getResource("DataMigrationDinnerTableWork.sql"),
+				ITestResources.class.getResource("DataMigrationRevenueWork.sql"),
+				ITestResources.class.getResource("DataMigrationProductSoldWork.sql"), // Will take a very long time
+		};
 		
 		// Connection with standard SQL
 		Connection connection = null;
