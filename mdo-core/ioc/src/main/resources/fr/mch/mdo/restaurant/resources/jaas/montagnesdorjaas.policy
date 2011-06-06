@@ -50,6 +50,9 @@ grant Principal fr.mch.mdo.restaurant.services.authorization.jaas.TypedPrincipal
   	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/ProductsManager";  	
   	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/ProductsManagerCUD";  	
 
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/PrintingInformationsManager";  	
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/PrintingInformationsManagerCUD";  	
+
 };
 
 
