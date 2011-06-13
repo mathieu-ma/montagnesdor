@@ -28,98 +28,72 @@ import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 /**
  * @author Mathieu MA sous conrad
  * 
- * To change the template for this generated type comment go to Window -
- * Preferences - Java - Code Generation - Code and Comments
+ *         To change the template for this generated type comment go to Window -
+ *         Preferences - Java - Code Generation - Code and Comments
  */
-public class HibernateUtil
+public class HibernateUtil 
 {
-    private static ILogger logger;
+	private static ILogger logger;
 
-    private static final SessionFactory sessionFactory;
-    private static final ThreadLocal<Session> session = new ThreadLocal<Session>();
+	private static final SessionFactory sessionFactory;
+	private static final ThreadLocal<Session> session = new ThreadLocal<Session>();
 
-    static
-    {
-	try
-	{
-	    logger = LoggerServiceImpl.getInstance().getLogger(
-		    HibernateUtil.class.getName());
+	static {
+		try {
+			logger = LoggerServiceImpl.getInstance().getLogger(HibernateUtil.class.getName());
 
-	    // Configuration with configuration path file
-	    InputStream is = IResources.class.getResourceAsStream(IResources.HIBERNATE_CONFIGURATION_FILE);
-	    if (is != null)
-	    {
-		    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		    DocumentBuilder builder = factory.newDocumentBuilder();
+			// Configuration with configuration path file
+			InputStream is = IResources.class.getResourceAsStream(IResources.HIBERNATE_CONFIGURATION_FILE);
+			if (is != null) {
+				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder builder = factory.newDocumentBuilder();
 
-		    // Use Hibernate Entity Resolver in case of off-line application
-		    builder.setEntityResolver(new DTDEntityResolver());
-		    Document document = builder.parse(is);
-		    Configuration configuration = new Configuration().configure(document);
+				// Use Hibernate Entity Resolver in case of off-line application
+				builder.setEntityResolver(new DTDEntityResolver());
+				Document document = builder.parse(is);
+				Configuration configuration = new Configuration().configure(document);
 
-		if (configuration != null)
-		{
-		    // Create the SessionFactory
-		    sessionFactory = configuration.buildSessionFactory();
+				if (configuration != null) {
+					// Create the SessionFactory
+					sessionFactory = configuration.buildSessionFactory();
+				} else {
+					logger.error("Could not initialize Hibernate configuration");
+					throw new RuntimeException("Could not initialize Hibernate configuration");
+				}
+			} else {
+				logger.error("Could not initialize Hibernate configuration");
+				throw new RuntimeException("Could not initialize Hibernate configuration");
+			}
+		} catch (HibernateException e) {
+			logger.error(e.getMessage(), e);
+			throw new RuntimeException("Configuration problem: " + e.getMessage(), e);
+		} catch (SAXException e) {
+			logger.error(e.getMessage(), e);
+			throw new RuntimeException("Configuration problem: " + e.getMessage(), e);
+		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
+			throw new RuntimeException("Configuration problem: " + e.getMessage(), e);
+		} catch (ParserConfigurationException e) {
+			logger.error(e.getMessage(), e);
+			throw new RuntimeException("Configuration problem: " + e.getMessage(), e);
 		}
-		else
-		{
-		    logger
-			    .error("Could not initialize Hibernate configuration");
-		    throw new RuntimeException(
-			    "Could not initialize Hibernate configuration");
+	}
+
+	public static Session currentSession() throws HibernateException {
+		Session s = (Session) session.get();
+		// Open a new Session, if this Thread has none yet
+		if (s == null) {
+			s = sessionFactory.openSession();
+			session.set(s);
 		}
-	    }
-	    else
-	    {
-		logger.error("Could not initialize Hibernate configuration");
-		throw new RuntimeException(
-			"Could not initialize Hibernate configuration");
-	    }
+		return s;
 	}
-	catch (HibernateException e)
-	{
-	    logger.error(e.getMessage(), e);
-	    throw new RuntimeException("Configuration problem: "
-		    + e.getMessage(), e);
-	}
-	catch (SAXException e)
-	{
-	    logger.error(e.getMessage(), e);
-	    throw new RuntimeException("Configuration problem: "
-		    + e.getMessage(), e);
-	}
-	catch (IOException e)
-	{
-	    logger.error(e.getMessage(), e);
-	    throw new RuntimeException("Configuration problem: "
-		    + e.getMessage(), e);
-	}
-	catch (ParserConfigurationException e)
-	{
-	    logger.error(e.getMessage(), e);
-	    throw new RuntimeException("Configuration problem: "
-		    + e.getMessage(), e);
-	}
-    }
 
-    public static Session currentSession() throws HibernateException {
-	Session s = (Session) session.get();
-	// Open a new Session, if this Thread has none yet
-	if (s == null)
-	{
-	    s = sessionFactory.openSession();
-	    session.set(s);
+	public static void closeSession() throws HibernateException {
+		Session s = (Session) session.get();
+		session.set(null);
+		if (s != null) {
+			s.close();
+		}
 	}
-	return s;
-    }
-
-    public static void closeSession() throws HibernateException {
-	Session s = (Session) session.get();
-	session.set(null);
-	if (s != null)
-	{
-	    s.close();
-	}
-    }
 }

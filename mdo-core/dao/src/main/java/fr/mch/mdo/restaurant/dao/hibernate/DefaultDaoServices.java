@@ -182,9 +182,13 @@ public abstract class DefaultDaoServices extends MdoDaoBase implements IDaoServi
 			
 			Session session = transactionSession.getSession();
 			// Merge is like update but not take into the result into cache
-			//session.merge(result);
-			session.saveOrUpdate(result);
-
+			session.merge(result);
+			//session.saveOrUpdate(result);
+			
+			// Flush here because of AOP and collection mapping.
+			// In AOP, the commit is done in a global transaction between business method.
+			session.flush();
+			
 			super.endTransaction(transactionSession, result, isLazy);
 		} catch (HibernateException e) {
 			super.getLogger().error("message.error.dao.save", new Object[] { super.getBean().getClass().getName(), result }, e);

@@ -10,12 +10,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -27,6 +29,7 @@ import org.hibernate.collection.PersistentSet;
 import org.hibernate.collection.PersistentSortedMap;
 import org.hibernate.collection.PersistentSortedSet;
 import org.hibernate.connection.ConnectionProvider;
+import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.util.DTDEntityResolver;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -35,9 +38,12 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.collections.CollectionConverter;
 import com.thoughtworks.xstream.converters.collections.MapConverter;
-import com.thoughtworks.xstream.converters.reflection.CGLIBEnhancedConverter;
+import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
+import com.thoughtworks.xstream.converters.reflection.ReflectionConverter;
+import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.CGLIBMapper;
+import com.thoughtworks.xstream.mapper.Mapper;
 import com.thoughtworks.xstream.mapper.MapperWrapper;
 
 import fr.mch.mdo.logs.ILogger;
@@ -57,13 +63,21 @@ public class DefaultSessionFactory implements ISessionFactory, ILoggerBean
 {
 	private ILogger logger;
 
-	private SessionFactory sessionFactory;
+	/**
+	 * The session factories cache with files configuration as key. 
+	 *	Maybe we have to change the computing key. 
+	 */
+	private Map<String, SessionFactory> sessionFactoryCache = new HashMap<String, SessionFactory>();
 
-	private String sqlDialect = null;
+	/**
+	 * The configurations cache with files configuration as key.
+	 *	Maybe we have to change the computing key. 
+	 */
+	private Map<String, Configuration> configurationCache = new HashMap<String, Configuration>();
 
 	private boolean xstreamRegistered = false;
 
-	private Configuration configuration;
+	//private Configuration configuration;
 	
 	private final XStream xstream = new XStream() {
 		protected MapperWrapper wrapMapper(MapperWrapper next) {
@@ -77,11 +91,6 @@ public class DefaultSessionFactory implements ISessionFactory, ILoggerBean
 
 	private DefaultSessionFactory(ILogger logger) {
 		this.logger = logger;
-		try {
-			sessionFactory = getSessionFactory();
-		} catch (MdoDataBeanException e) {
-			throw new ExceptionInInitializerError(e);
-		}
 	}
 
 	public static ISessionFactory getInstance() {
@@ -147,26 +156,54 @@ public class DefaultSessionFactory implements ISessionFactory, ILoggerBean
 		return result;
 	}
 
-	private SessionFactory getSessionFactory() throws MdoDataBeanException {
+	/**
+	 * This method will sort the configFiles array will be changed and return a string from the sorted array.
+	 * @param configFiles the configuration files to be converted.
+	 * @return a converted string.
+	 */
+	private String getCacheKey(final String... configFiles) {
+		String result = null;
+		// Sort the array: the original configFiles array will be changed.
+		Arrays.sort(configFiles);
+		// Get the string array.
+		result = Arrays.toString(configFiles);
+		return result;
+	}
+	
+	public SessionFactory getSessionFactory() throws MdoDataBeanException {
 		return getSessionFactory(IResources.HIBERNATE_CONFIGURATION_FILE);
 	}
 
+	/**
+	 * Be careful, the array of configuration files maybe not contain a file with <session-factory> tag.
+	 * If all files are in this case then the session factory could not be built. 
+	 * @param configFiles the array of configuration files.
+	 * @return a session factory.
+	 * @throws MdoDataBeanException when any exception occur.
+	 */
 	public SessionFactory getSessionFactory(String... configFiles) throws MdoDataBeanException {
-
+		
+		// Create key for sessionFactoryCache and configurationCache.
+		String cacheKey = this.getCacheKey(configFiles);
+		// Get the sessionFactory in cache
+		SessionFactory sessionFactory = sessionFactoryCache.get(cacheKey);
+		
 		if (sessionFactory == null) {
+			// The sessionFactory is not yet in cache
 			try {
-				Configuration config = null;
+				Configuration configuration = null;
 				// Loop to load all configuration files
 				for (String configFile : configFiles) {
-					config = loadConfiguration(configFile, config);
+					configuration = loadConfiguration(configFile, configuration);
 				}
-				if (config != null) {
-					// Get the SQL dialect
-					sqlDialect = config.getProperty("hibernate.dialect");
-					config.setInterceptor(MdoHibernateInterceptor.getInstance());
+				if (configuration != null) {
+					// Define Hibernate Interceptor
+					configuration.setInterceptor(MdoHibernateInterceptor.getInstance());
 					// Create the SessionFactory
-					sessionFactory = config.buildSessionFactory();
-					this.configuration = config;
+					sessionFactory = configuration.buildSessionFactory();
+					// Put in the cache
+					sessionFactoryCache.put(cacheKey, sessionFactory);
+					configurationCache.put(cacheKey, configuration);
 
 				} else {
 					logger.error("message.error.dao.configuration.initialize");
@@ -184,7 +221,23 @@ public class DefaultSessionFactory implements ISessionFactory, ILoggerBean
 	 * @return the sqlDialect
 	 */
 	public String getSqlDialect() {
-		return sqlDialect;
+		return getSqlDialect(IResources.HIBERNATE_CONFIGURATION_FILE);
+	}
+
+	/**
+	 * @return the sqlDialect
+	 */
+	public String getSqlDialect(String... configFiles) {
+		String result = null;
+		// Create key for sessionFactoryCache and configurationCache.
+		String cacheKey = this.getCacheKey(configFiles);
+		// Get the configuration in cache
+		Configuration configuration = configurationCache.get(cacheKey);
+		if (configuration != null) {
+			// Get the SQL dialect
+			result = configuration.getProperty("hibernate.dialect");
+		}
+		return result;
 	}
 
 	/**
@@ -275,13 +328,15 @@ public class DefaultSessionFactory implements ISessionFactory, ILoggerBean
 		});
 		xstream.aliasType("java.util.SortedSet", PersistentSortedSet.class);
 
-		xstream.registerConverter(new CGLIBEnhancedConverter(xstream.getMapper(), xstream.getReflectionProvider()) {
-			public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
-				Hibernate.initialize(source);
-		        // The CGLIBEnhancedConverter of Xstream version 1.3.1 is changed by MMA to be compliant with Hibernate CGLIB lazy loading 
-				super.marshal(source, writer, context);
-			}
-		});
+		xstream.registerConverter(new HibernateProxyConverter(xstream.getMapper(), new PureJavaReflectionProvider()), XStream.PRIORITY_VERY_HIGH);
+
+//		xstream.registerConverter(new CGLIBEnhancedConverter(xstream.getMapper(), xstream.getReflectionProvider()) {
+//			public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+//				Hibernate.initialize(source);
+//		        // The CGLIBEnhancedConverter of Xstream version 1.3.1 is changed by MMA to be compliant with Hibernate CGLIB lazy loading 
+//				super.marshal(source, writer, context);
+//			}
+//		});
 	}
 
 	public XStream getXstream() {
@@ -299,7 +354,20 @@ public class DefaultSessionFactory implements ISessionFactory, ILoggerBean
 	}
 	
 	public Connection getConnection() throws MdoDataBeanException {
+		return this.getConnection(IResources.HIBERNATE_CONFIGURATION_FILE);
+	}
+	
+	public Connection getConnection(String... configFiles) throws MdoDataBeanException {
+
 		Connection result = null;
+
+		this.getSessionFactory(configFiles);
+
+		// Create key for sessionFactoryCache and configurationCache.
+		String cacheKey = this.getCacheKey(configFiles);
+		// Get the configuration in cache
+		Configuration configuration = configurationCache.get(cacheKey);
+		
 		if (configuration != null) {
 			ConnectionProvider provider = configuration.buildSettings().getConnectionProvider();
 			try {
@@ -309,6 +377,28 @@ public class DefaultSessionFactory implements ISessionFactory, ILoggerBean
 				throw new MdoDataBeanException("message.error.dao.provider.connection");
 			}
 		}
+		
 		return result;
 	}
+    
+    class HibernateProxyConverter extends ReflectionConverter {
+
+		public HibernateProxyConverter(Mapper arg0, ReflectionProvider arg1) {
+			super(arg0, arg1);
+		}
+
+		/**
+		 * be responsible for hibernate proxy
+		 */
+		public boolean canConvert(Class clazz) {
+			logger.debug("Converter says can convert " + clazz + ":" + HibernateProxy.class.isAssignableFrom(clazz));
+			return HibernateProxy.class.isAssignableFrom(clazz);
+		}
+
+		public void marshal(Object arg0, HierarchicalStreamWriter arg1, MarshallingContext arg2) {	
+			logger.debug("Converter marshalls: "  + ((HibernateProxy) arg0).getHibernateLazyInitializer().getImplementation());
+			super.marshal(((HibernateProxy) arg0).getHibernateLazyInitializer().getImplementation(), arg1, arg2);
+		}
+    	
+    }
 }

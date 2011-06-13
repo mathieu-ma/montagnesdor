@@ -60,7 +60,9 @@ public abstract class MdoDaoBase implements IDaoBase
 
 	protected void closeSession() throws MdoDataBeanException {
 //		sessionFactory.currentSession().getTransaction().commit();
+		logger.debug("START You are in method closeSession of class " + this.getClass().getName());
 		sessionFactory.currentSession().close();
+		logger.debug("END You are in method closeSession of class " + this.getClass().getName());
 	}
 
 
@@ -73,14 +75,16 @@ public abstract class MdoDaoBase implements IDaoBase
 			logger.error("message.error.dao.session", e);
 		}
 		result.setTransaction(result.getSession().beginTransaction());
-		
+//		result.getTransaction().begin();
 		return result;
 	}
 
 	protected void endTransaction(TransactionSession transactionSession, Object bean, boolean... isLazy) {
+		logger.debug("START You are in method endTransaction of class " + this.getClass().getName());
 		checkLazyInitialization(bean, isLazy);
 
 		transactionSession.getTransaction().commit();
+		logger.debug("END You are in method endTransaction of class " + this.getClass().getName());
 	}
 
 	/**
