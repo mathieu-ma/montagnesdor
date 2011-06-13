@@ -324,7 +324,7 @@
 				// Click for editing
 				thisSpan.click(function() {
 					// Set the selected option
-					var hiddenChildName = $(this).parent().parent().children(":nth-child(2)").children(":nth-child(2)").attr("name");
+					var hiddenChildName = $(this).parent().parent().parent().children(":nth-child(2)").children(":nth-child(2)").attr("name");
 					jSelectList.val(hiddenChildName.replace(/.+\[(.+)\]/, "$1"));
 					// Set the selected value
 					jSelectList.change();

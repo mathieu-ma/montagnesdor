@@ -5,9 +5,10 @@ var timerID;
 var delay = 1000;
 
 $(document).ready(function() {
+	var dateTimeApplet = document.getElementById('embedDateTimeApplet') || document.getElementById('objectDateTimeApplet');
 	if($.browser.msie) {
 	  	//IE asks user to click on ActiveX before use it
-  		document.dateTimeApplet.click();
+  		dateTimeApplet.click();
   	} else if($.browser.mozilla) {
   		//Hide the object element
   		$("object").css("visibility", "hidden");
@@ -31,8 +32,22 @@ $(document).ready(function() {
 	timer();
 });
 
+function getApplet(name) {
+	var result = "";
+	var jApplets = $("[name="+name+"]", $("#applets")).each(function() {
+		try {
+			result = $(this).get(0);
+			if(result.isActive()) {
+				return false;
+			}
+		} catch(e) {}
+	});
+	
+	return result;
+}
+
 function timer() {
-	var dateTimeApplet = document.getElementById('dateTimeApplet');
+	var dateTimeApplet = getApplet("dateTimeApplet");
 	var entryDate = $("#header-date");
 	try {
 		var currentTableRegistrationDate = $("#currentTableRegistrationDate");
@@ -61,9 +76,7 @@ function timer() {
 		window.status = dateTimeApplet.getDateTime().toString();
 		delay = 5000;
 	} catch(err) {
-		//alert("Appuyer sur OK pour continuer : "+err.message);
 		try {
-//console.log("1=="+err);
 			//Variable waitLoadAppletsMessage définie dans la page header.jsp
 			entryDate.html(entryDate.html()+dot);
 		} catch(err) {

@@ -27,7 +27,7 @@ $(document).ready(function() {
 			container.css("z-index", "1");
 			if((/s|n/).test(handles)) {
 				//This is needed when handles is "s"
-				container.css("z-index", "2");
+				container.css("z-index", "3");
 				container.resize = container.height;
 			} else if((/e/).test(handles)) {
 				container.resizable('option', 'animate', true);
@@ -60,15 +60,15 @@ $(document).ready(function() {
 	  	});
 	  	
 	  	$("a[href]").bindTop("click", function() {
-  			$("#mdo-overlay").css('display', 'block');
+  			var jOverlay = $("#mdo-overlay").css('display', 'block');
 
   			if(/^(#)/.test($(this).attr("href"))) {
   				//Prevent display block when using tabs for example
   				//$("#mdo-overlay").fadeOut(500);
-	  			$("#mdo-overlay").css('display', 'none');
+  				$("#mdo-overlay").css('display', 'none');
   				return true;
   			}
-  			
+
   			if($(this).parent().hasClass("mdo-ui-button")) {
   				//Call server by clicking parent element
 				$(this).parent().click();
@@ -85,8 +85,13 @@ $(document).ready(function() {
   			//$("#mdo-overlay").fadeIn(500);
   			
 			$("a[href]", $(this)).each(function() {
-					window.location = $(this).attr("href");
-					return true;
+	  			if ($(this).hasClass("mdo-no-overlay")) {
+	  				//Prevent display block
+	  				//$("#mdo-overlay").fadeOut(500);
+	  				$("#mdo-overlay").css('display', 'none');
+	  			}
+				window.location = $(this).attr("href");
+				return true;
 			});
 		});
 	  	
