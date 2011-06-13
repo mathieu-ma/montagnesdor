@@ -225,10 +225,10 @@ public class DefaultProductsManager extends AbstractAdministrationManagerLabelab
 	}
 
 	@Override
-	public void importData(File file, MdoUserContext userContext) throws MdoBusinessException {
+	public void importData(String importedFileName, File file, MdoUserContext userContext) throws MdoBusinessException {
 		try {
 			Pattern pattern = Pattern.compile(IProductsManager.IMPORT_DATA_FILE_NAME_PATTERN);
-			Matcher matcher = pattern.matcher(file.getName());
+			Matcher matcher = pattern.matcher(importedFileName);
 			boolean matchFound = matcher.find();
 			String restaurantReference = null;
 			String language = null;
@@ -247,9 +247,9 @@ public class DefaultProductsManager extends AbstractAdministrationManagerLabelab
 				locale = (LocaleDto) localesManager.findByLanguage(language, userContext);
 				
 				if (locale != null) {
-					List vats = valueAddedTaxesManager.findAll(userContext);
+					List<IMdoDtoBean> vats = valueAddedTaxesManager.findAll(userContext);
 					Map<String, ValueAddedTaxDto> vatsRateId = new HashMap<String, ValueAddedTaxDto>();
-					for (Iterator iterator = vats.iterator(); iterator.hasNext();) {
+					for (Iterator<IMdoDtoBean> iterator = vats.iterator(); iterator.hasNext();) {
 						ValueAddedTaxDto vat = (ValueAddedTaxDto) iterator.next();
 						// The vat rate from database is never null
 						// If the vat rate is not unique then keep the last one
@@ -288,7 +288,8 @@ public class DefaultProductsManager extends AbstractAdministrationManagerLabelab
 								product.setCategories(productFromDatabase.getCategories());
 								
 								if (productFromDatabase.getLabels() != null) {
-									labels.putAll(productFromDatabase.getLabels());
+									// Merging labels
+									labels = this.mergeLabels(labels, productFromDatabase.getLabels());
 								}
 							}
 							
@@ -324,8 +325,21 @@ public class DefaultProductsManager extends AbstractAdministrationManagerLabelab
 		}
 	}
 
+	/**
+	 * Merge 2 maps into 1 by key map. The reference map is the second map but all data from the first map will erase the data from the second map.
+	 * @param labels1 first map.
+	 * @param labels2 second map.
+	 * @return a merged map.
+	 */
+	private Map<Long, String> mergeLabels(Map<Long, String> labels1, Map<Long, String> labels2) {
+		Map<Long, String> result = new HashMap<Long, String>(labels2);
+		result.putAll(labels1);
+		return result;
+	}
+
 	@Override
-	public void exportData(OutputStream out, String restaurantReference, String[] headers, MdoUserContext userContext) throws MdoBusinessException {
+	public String exportData(OutputStream out, String restaurantReference, String[] headers, MdoUserContext userContext) throws MdoBusinessException {
+		String exportFileName = this.buildExportFileName(restaurantReference, userContext.getCurrentLocale());
 		RestaurantDto restaurant;
 		try {
 			restaurant = (RestaurantDto) this.getRestaurantsManager().findByReference(restaurantReference, userContext);
@@ -364,11 +378,23 @@ public class DefaultProductsManager extends AbstractAdministrationManagerLabelab
 		} catch (IOException e) {
 			throw new MdoBusinessException("message.error.administration.business.products.export.data", new Object[]{restaurantReference});
 		}
+		return exportFileName;
 	}
 	
-	public static void main(String[] args) {
-		Map m = new HashMap();
-		m.put(null, null);
-		System.out.println(m.get(null));
+	/**
+	 * Build the export file name.
+	 * @param restaurantReference the restaurant reference.
+	 * @param locale the locale for language part.
+	 * @return the generated export file name.
+	 */
+	private String buildExportFileName(String restaurantReference, LocaleDto locale) {
+		String language = "xx";
+		if (locale != null) {
+			language = locale.getLanguageCode();
+		}
+		String result = IProductsManager.PREFIX_EXPORT_DATA_FILE_NAME + "-" + restaurantReference + "-" 
+		+ language + "." + IProductsManager.EXTENSION_EXPORT_IMPORT_DATA_FILE_NAME;
+		
+		return result;
 	}
 }

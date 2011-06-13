@@ -29,6 +29,7 @@ import fr.mch.mdo.restaurant.services.business.managers.products.IValueAddedTaxe
 import fr.mch.mdo.restaurant.services.business.managers.tables.DefaultTableTypesManager;
 import fr.mch.mdo.restaurant.services.business.managers.tables.ITableTypesManager;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
+import fr.mch.mdo.restaurant.services.util.RestaurantReferenceFactory;
 import fr.mch.mdo.utils.IManagerAssembler;
 
 public class DefaultRestaurantsManager extends AbstractAdministrationManager implements IRestaurantsManager 
@@ -138,16 +139,46 @@ public class DefaultRestaurantsManager extends AbstractAdministrationManager imp
 		}
 	}
 
-	private String generateReference(RestaurantDto restaurant, MdoUserContext userContext) {
-		StringBuilder result = new StringBuilder(restaurant.getName()).append(restaurant.getRegistrationDate());
-		
-		return result.toString();
+	private String generateReference(RestaurantDto restaurant, MdoUserContext userContext) throws MdoBusinessException {
+		String key = restaurant.getTripleDESKey();
+		String value = new Long(restaurant.getRegistrationDate().getTime()).toString();
+		String result = null;
+		try {
+			result = RestaurantReferenceFactory.getInstance().getReferenceFromValue(key, value);
+		} catch (MdoException e) {
+			throw new MdoBusinessException(e);
+		}
+		return result;
 	}
-	
+
+	private String generateKey(RestaurantDto restaurant, MdoUserContext userContext) throws MdoBusinessException {
+		String key = new StringBuilder(new Long(restaurant.getRegistrationDate().getTime()).toString()).append(restaurant.getName())
+		.append(restaurant.getVatRef()).append(restaurant.getVisaRef()).toString();
+		String value = "";
+		String result = null;
+		try {
+			result = RestaurantReferenceFactory.getInstance().getReferenceFromValue(key, value);
+		} catch (MdoException e) {
+			throw new MdoBusinessException(e);
+		}
+		return result;
+	}
+
 	@Override
 	public IMdoDtoBean save(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
 		RestaurantDto restaurant = (RestaurantDto) dtoBean;
-		restaurant.setReference(this.generateReference(restaurant, userContext));
+		// 1) Generate key
+		String key = restaurant.getTripleDESKey();
+		if (key == null || key.isEmpty()) {
+			key = this.generateKey(restaurant, userContext);
+		}
+		restaurant.setTripleDESKey(key);
+		// 1) Generate reference using generated key
+		String reference = restaurant.getReference();
+		if (reference == null || reference.isEmpty()) {
+			reference = this.generateReference(restaurant, userContext);
+		}
+		restaurant.setReference(reference);
 
 		return super.save(dtoBean, userContext);
 	}
