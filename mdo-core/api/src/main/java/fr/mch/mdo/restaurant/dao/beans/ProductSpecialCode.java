@@ -27,7 +27,7 @@ public class ProductSpecialCode extends MdoDaoBean implements IBeanLabelable
 	/**
 	 * This is used to specify the short code enter by user.
 	 */
-	private Character shortCode;
+	private String shortCode;
 	/**
 	 * This is a foreign key that refers to t_restaurant. It is used to specify
 	 * the restaurant.
@@ -46,7 +46,7 @@ public class ProductSpecialCode extends MdoDaoBean implements IBeanLabelable
 	/**
 	 * @return the shortCode
 	 */
-	public Character getShortCode() {
+	public String getShortCode() {
 		return shortCode;
 	}
 
@@ -54,7 +54,7 @@ public class ProductSpecialCode extends MdoDaoBean implements IBeanLabelable
 	 * @param shortCode
 	 *            the shortCode to set
 	 */
-	public void setShortCode(Character shortCode) {
+	public void setShortCode(String shortCode) {
 		this.shortCode = shortCode;
 	}
 

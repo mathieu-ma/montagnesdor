@@ -12,8 +12,12 @@ import fr.mch.mdo.restaurant.services.business.managers.IAdministrationManager;
 
 public interface IProductsManager extends IAdministrationManager
 {
+	/** Export Data File Name */
+	String EXTENSION_EXPORT_IMPORT_DATA_FILE_NAME = "ods";
 	/** Import Data File Name Pattern */
-	String IMPORT_DATA_FILE_NAME_PATTERN = ".+-(\\w+)-(\\w\\w)\\.ods";
+	String IMPORT_DATA_FILE_NAME_PATTERN = ".+-(\\w+)-(\\w\\w)\\." + EXTENSION_EXPORT_IMPORT_DATA_FILE_NAME;
+	/** Export Data File Name */
+	String PREFIX_EXPORT_DATA_FILE_NAME = "export-product";
 
 	/**
 	 * Get list a list of products by restaurant id.
@@ -37,20 +41,22 @@ public interface IProductsManager extends IAdministrationManager
 	
 	/**
 	 * Import data into database.
+	 * @param importedFileName the imported file name.
 	 * @param file that contains data to be stored.
 	 * @param userContext the user context.
 	 * @throws MdoException when any exception occur.
 	 */
-	void importData(File file, MdoUserContext userContext) throws MdoException;
+	void importData(String importedFileName, File file, MdoUserContext userContext) throws MdoException;
 
 	/**
 	 * Export products of specific restaurant from database.
 	 * @param out the output stream.
 	 * @param restaurantReference the specific restaurant reference.
+	 * @param headers the export headers.
 	 * @param userContext the user context.
-	 * @return the file that contains data.
+	 * @return the generated file name.
 	 * @throws MdoException when any exception occur.
 	 */
-	void exportData(OutputStream out, String restaurantReference, String[] headers, MdoUserContext userContext) throws MdoException;
+	String exportData(OutputStream out, String restaurantReference, String[] headers, MdoUserContext userContext) throws MdoException;
 }
 

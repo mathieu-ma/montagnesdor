@@ -1,5 +1,6 @@
 package fr.mch.mdo.restaurant.services.business;
 
+
 public enum ManagedProductSpecialCode 
 {
 	NOTHING(""), OFFERED_PRODUCT("#"), DISCOUNT_ORDER("-"), USER_ORDER("/");
@@ -15,5 +16,16 @@ public enum ManagedProductSpecialCode
 
 	public String getName() {
 		return this.name();
+	}
+	
+	public static ManagedProductSpecialCode getProductSpecialCode(String shortCode) {
+		ManagedProductSpecialCode result = null;
+
+		for (ManagedProductSpecialCode mpsc : ManagedProductSpecialCode.values()) {
+			if (mpsc.getShortCode().equals(shortCode)) {
+				return mpsc;
+			}
+		}
+		return result;
 	}
 }

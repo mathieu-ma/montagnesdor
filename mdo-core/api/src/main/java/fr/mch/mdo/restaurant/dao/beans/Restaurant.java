@@ -72,7 +72,7 @@ public class Restaurant extends MdoDaoBean {
 	 * This is the restaurant triple DES key. Utiliser poue créer des référence
 	 * de facture
 	 */
-	private String tripleDESKey = "12345678ABCDDCBA12345678";
+	private String tripleDESKey;
 	/**
 	 * This is used to know if we have to apply the V.A.T(Value Added Taxes)
 	 * when it is a takeaway table. The default value is true. Permet de savoir

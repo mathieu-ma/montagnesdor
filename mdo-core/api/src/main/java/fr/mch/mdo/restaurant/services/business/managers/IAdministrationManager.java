@@ -7,8 +7,8 @@ import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.exception.MdoException;
 
-public interface IAdministrationManager extends IMdoManager {
-	
+public interface IAdministrationManager extends IMdoManager 
+{
     void processList(IAdministrationManagerViewBean viewBean, MdoUserContext userContext, boolean... lazy) throws MdoException;
 
     List<IMdoDtoBean> findAll(MdoUserContext userContext, boolean... lazy) throws MdoException;

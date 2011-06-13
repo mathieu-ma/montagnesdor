@@ -69,7 +69,7 @@ public class RestaurantDto extends MdoDtoBean
      * This is the restaurant triple DES key.
      * Used to create bill references.
      */
-    private String tripleDESKey = "12345678ABCDDCBA12345678";
+    private String tripleDESKey;
     /**
      * This is used to know if we have to apply the V.A.T(Value Added Taxes) when it is a takeaway table.
      * The default value is true.
