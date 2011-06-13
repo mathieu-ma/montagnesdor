@@ -46,30 +46,6 @@
 	</head>
 	<body>
 		<div id="global-transparent" class="global-transparent-hidden">&nbsp;</div>
-		<div class="applets">
-			<!-- WARNING: Applet must not be inside the JQuery resizable plugin -->
-			<!-- Default value for Internet Explorer -->
-			<c:set var="classid" scope="request" value="clsid:8AD9C840-044E-11D1-B3E9-00805F499D93"/>
-			<c:if test="${not fn:contains(header['user-agent'], 'MSIE')}">
-				<c:set var="classid" scope="request" value="java:fr.mch.mdo.applets.DateTimeApplet.class"/>
-			</c:if>
-			<!-- For Google Chrome change object to applet and add code attribute -->
-			<object id="dateTimeApplet" name="dateTimeApplet" type="application/x-java-applet" classid="${classid}" archive="SDateTimeApplet.jar" codebase="<c:out value="${pageContext.request.contextPath}"/>/jsp/commons" width="1" height="1">
-				<param name="code" value="fr.mch.mdo.applets.DateTimeApplet"/>
-				<param name="archive" value="SDateTimeApplet.jar"/>							
-				<param name="codebase" value="<c:out value="${pageContext.request.contextPath}"/>/jsp/commons"/>
-				<param name='localeLanguage' value='<c:out value="${sessionScope.userSession.currentLocale.languageCode}"/>'></param>
-				<param name='patternDate' value='<fmt:message key="applets.DateTimeApplet.param.patternDate.value"/>'></param>
-				<param name='patternDateShort' value='<fmt:message key="applets.DateTimeApplet.param.patternDateShort.value"/>'></param>
-				<param name='patternTime' value='<fmt:message key="applets.DateTimeApplet.param.patternTime.value"/>'></param>
-				<param name='patternDateTime' value='<fmt:message key="applets.DateTimeApplet.param.patternDateTime.value"/>'></param>		
-				<!--		
-				<param NAME="MAYSCRIPT" VALUE="true"></param>
-				<param name='startJavascriptFunction' value='timer'></param>
-				-->
-				<param name='debug' value='false'></param>
-			</object>
-		</div>	
 		<tiles:useAttribute id="divPart" name="header" classname="java.lang.String"/>
 		<c:if test="${divPart!='none'}">
 			<div id="header">
