@@ -120,8 +120,6 @@ public class DefaultValueAddedTaxesManagerTest extends DefaultAdministrationMana
 			this.getInstance().processList(viewBean, DefaultAdministrationManagerTest.userContext);
 			assertNotNull("Main list not be null", viewBean.getList());
 			assertFalse("Main list not be empty", viewBean.getList().isEmpty());
-//			assertNotNull("Restaurants list not be null", viewBean.getRestaurants());
-//			assertFalse("Restaurants list not be empty", viewBean.getRestaurants().isEmpty());
 			assertNotNull("Code list not be null", viewBean.getCodes());
 			assertTrue("Codes list be empty because all available table types are already set into database", viewBean.getCodes().isEmpty());
 		} catch (MdoException e) {

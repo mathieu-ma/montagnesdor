@@ -151,11 +151,32 @@ public class DefaultLocalesManagerTest extends DefaultAdministrationManagerTest
 		assertEquals("Check Available Languages size", isoLanguages.size() - locales.size(), map.size());
 	}
 
+	public void testGetSystemAvailableLanguages() {
+		ILocalesManager manager = (ILocalesManager) this.getInstance();
+		java.util.Locale locale = null;
+		Map<String, String> map = null;
+		try {
+			map = manager.getSystemAvailableLanguages(locale);
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+		assertNotNull("Check Available Languages size", map);
+
+		Set<String> isoLanguages = new HashSet<String>();
+		if (locale == null) {
+			locale = java.util.Locale.getDefault();
+		}
+		for (java.util.Locale isoLanguageCode : java.util.Locale.getAvailableLocales()) {
+			isoLanguages.add(isoLanguageCode.getLanguage());
+		}
+		assertEquals("Check Available Languages size", isoLanguages.size(), map.size());
+	}
+
 	public void testGetLanguages() {
 		ILocalesManager manager = (ILocalesManager) this.getInstance();
 		// Locale null
 		java.util.Locale locale = null;
-		Map<String, String> map;
+		Map<Long, String> map;
 		try {
 			map = manager.getLanguages(locale);
 			checkLanguage(map, java.util.Locale.getDefault());
@@ -177,18 +198,20 @@ public class DefaultLocalesManagerTest extends DefaultAdministrationManagerTest
 		try {
 			map = manager.getLanguages(locale);
 			checkLanguage(map, java.util.Locale.FRENCH);
+			map = manager.getLanguages(locale.getLanguage());
+			checkLanguage(map, java.util.Locale.FRENCH);
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
 
-	private void checkLanguage(Map<String, String> map, java.util.Locale selectedLocale) {
+	private void checkLanguage(Map<Long, String> map, java.util.Locale selectedLocale) {
 
 		// Check only sorted displayed languages
 		String[] values = new String[map.size()];
 		int index = 0;
-		for (Iterator<String> i = map.keySet().iterator(); i.hasNext();) {
-			String key = i.next();
+		for (Iterator<Long> i = map.keySet().iterator(); i.hasNext();) {
+			Long key = i.next();
 			values[index++] = (map.get(key));
 		}
 		// Get Available Locales
@@ -367,11 +390,7 @@ public class DefaultLocalesManagerTest extends DefaultAdministrationManagerTest
 		// && UserLocaleDto not null
 		// && LocaleDto not null
 		// && languageCode not null && equals to the current locale
-		if (currentLocale == null) {
-			languageCode = java.util.Locale.getDefault().getLanguage();
-		} else {
-			languageCode = currentLocale.getLanguage();
-		}
+		languageCode = currentLocale.getLanguage();
 		localeDto.setLanguageCode(languageCode);
 		try {
 			dto = manager.findLocale(currentLocale, userContextX);

@@ -152,24 +152,50 @@ public class DefaultUsersManagerTest extends DefaultAdministrationManagerTest
 			assertTrue("IMdoBean must be instance of " + UserDto.class, beanToBeUpdated instanceof UserDto);
 			UserDto castedBean = (UserDto) beanToBeUpdated;
 			assertNotNull("User ID must not be null", castedBean.getId());
+			assertNotNull("User restaurants must not be null", castedBean.getRestaurants());
+			assertEquals("User restaurants size must be 1", restaurants.size(), castedBean.getRestaurants().size());
 			// Update the created bean
 			castedBean.setPicture(picture);
 			// Use the existing data in database
+			restaurants.clear();
 			userRestaurant = new UserRestaurantDto();
 			restaurant = new RestaurantDto();
 			restaurant.setId(1L);
 			userRestaurant.setRestaurant(restaurant);
 			restaurants.add(userRestaurant);
+			userRestaurant = new UserRestaurantDto();
+			restaurant = new RestaurantDto();
+			restaurant.setId(2L);
+			userRestaurant.setRestaurant(restaurant);
+			restaurants.add(userRestaurant);
+			castedBean.setRestaurants(restaurants);
 			this.getInstance().update(castedBean, userContext);
 			// Reload the modified bean
 			UserDto updatedBean = new UserDto();
 			updatedBean.setId(castedBean.getId());
 			updatedBean = (UserDto) this.getInstance().load(updatedBean, userContext);
 			assertNotNull("User restaurants must not be null", updatedBean.getRestaurants());
-			assertEquals("User restaurants size must be 1", restaurants.size(), updatedBean.getRestaurants().size());
+			assertEquals("User restaurants size must be 2", restaurants.size(), updatedBean.getRestaurants().size());
+			
+			this.getInstance().delete(updatedBean, userContext);
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
+	}
+	
+	public static void main(String[] args) {
+		Set<UserRestaurantDto> restaurants = new HashSet<UserRestaurantDto>();
+		UserRestaurantDto userRestaurant = new UserRestaurantDto();
+		RestaurantDto restaurant = new RestaurantDto();
+		restaurant.setId(1L);
+		userRestaurant.setRestaurant(restaurant);
+		restaurants.add(userRestaurant);
+		userRestaurant = new UserRestaurantDto();
+		restaurant = new RestaurantDto();
+		restaurant.setId(2L);
+		userRestaurant.setRestaurant(restaurant);
+		restaurants.add(userRestaurant);
+		System.out.println(restaurants.size());
 	}
 
 	@Override
@@ -181,6 +207,8 @@ public class DefaultUsersManagerTest extends DefaultAdministrationManagerTest
 			assertFalse("Main list not be empty", viewBean.getList().isEmpty());
 			assertNotNull("Restaurants list not be null", viewBean.getRestaurants());
 			assertFalse("Restaurants list not be empty", viewBean.getRestaurants().isEmpty());
+			assertNotNull("Titles list not be null", viewBean.getTitles());
+			assertFalse("Titles list not be empty", viewBean.getTitles().isEmpty());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}

@@ -96,14 +96,14 @@ public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 		// Use the existing data in database
 		RestaurantDto restaurant = null;
 		try {
-			restaurant = (RestaurantDto) DefaultRestaurantsManager.getInstance().findByPrimaryKey(1L, userContext, true);
+			restaurant = (RestaurantDto) DefaultRestaurantsManager.getInstance().findByPrimaryKey(1L, userContext);
 		} catch (MdoException e) {
 			fail("Could not found the restaurant.");
 		}
 		assertNotNull("Restaurant must not be null", restaurant);
 		ValueAddedTaxDto vat = new ValueAddedTaxDto();
 		try {
-			vat = (ValueAddedTaxDto) DefaultValueAddedTaxesManager.getInstance().findByPrimaryKey(1L, userContext, true);
+			vat = (ValueAddedTaxDto) DefaultValueAddedTaxesManager.getInstance().findByPrimaryKey(1L, userContext);
 		} catch (MdoException e) {
 			fail("Could not found the vat.");
 		}
@@ -141,6 +141,14 @@ public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 			assertNotNull("Product categories must not be null", castedBean.getCategories());
 			assertEquals("Check Product categories size", categories.size(), castedBean.getCategories().size());
 			// Update the created bean
+			castedBean.getCategories().clear();
+			productCategory = new ProductCategoryDto();
+			category = new CategoryDto();
+			category.setId(1L);
+			productCategory.setCategory(category);
+			quantity = new BigDecimal(3.14);
+			productCategory.setQuantity(quantity);
+			castedBean.getCategories().add(productCategory);
 			productCategory = new ProductCategoryDto();
 			category = new CategoryDto();
 			category.setId(2L);
@@ -157,14 +165,15 @@ public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 			// Reload the modified bean
 			ProductDto updatedBean = new ProductDto();
 			updatedBean.setId(castedBean.getId());
-			updatedBean = (ProductDto) this.getInstance().load(updatedBean, userContext, true);
+			updatedBean = (ProductDto) this.getInstance().load(updatedBean, userContext);
 			assertNotNull("Product code must not be null", updatedBean.getCode());
 			assertEquals("Product name must be equals to the updated value", code.toString(), updatedBean.getCode().toString());
 			assertNotNull("Product labels must not be null", updatedBean.getLabels());
 			assertEquals("Check Product labels size", labels.size(), updatedBean.getLabels().size());
 			assertNotNull("Product categories must not be null", castedBean.getCategories());
+			// Because of ProductDto is a bean that is not attach to Hibernate session so the collection Categories is not too.
+			// Then Categories collection is never removed(but still updated) and the size must be the same as before updating the ProductDto
 			assertEquals("Check Product categories size", 2, castedBean.getCategories().size());
-			this.getInstance().delete(updatedBean, userContext);
 		} catch (Exception e) {
 			fail(e.getLocalizedMessage());
 		}
@@ -174,15 +183,15 @@ public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 	public void doProcessList() {
 		ProductsManagerViewBean viewBean = new ProductsManagerViewBean();
 		try {
-			this.getInstance().processList(viewBean, DefaultAdministrationManagerTest.userContext, true);
+			this.getInstance().processList(viewBean, DefaultAdministrationManagerTest.userContext);
 			assertNotNull("Main list not be null", viewBean.getList());
 			assertFalse("Main list not be empty", viewBean.getList().isEmpty());
 			assertNotNull("Languages list not be null", viewBean.getLanguages());
 			assertFalse("Languages list not be empty", viewBean.getLanguages().isEmpty());
 			assertNotNull("Restaurants list not be null", viewBean.getRestaurants());
 			assertFalse("Restaurants list not be empty", viewBean.getRestaurants().isEmpty());
-			assertNotNull("CategoryLabels list not be null", viewBean.getCategoryLabels());
-			assertFalse("CategoryLabels list not be empty", viewBean.getCategoryLabels().isEmpty());
+			assertNotNull("Categories list not be null", viewBean.getCategories());
+			assertFalse("Categories list not be empty", viewBean.getCategories().isEmpty());
 			assertNotNull("Vats list not be null", viewBean.getVats());
 			assertFalse("Vats list not be empty", viewBean.getVats().isEmpty());
 		} catch (MdoException e) {
@@ -205,5 +214,19 @@ public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 		newBean.setCategories(categories);
 		newBean.setLabels(labels);
 		return newBean;
+	}
+	
+	/**
+	 * Test the getList method.
+	 */
+	public void testGetList() {
+		Long restaurantId = 1L;
+		try {
+			List<IMdoDtoBean> list= ((IProductsManager) DefaultProductsManager.getInstance()).getList(restaurantId, userContext);
+			assertNotNull("List must not be null", list);
+			assertFalse("List must not be empty", list.isEmpty());
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}	
 	}
 }

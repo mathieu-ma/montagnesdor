@@ -60,7 +60,7 @@ public class DefaultUserAuthenticationsManagerTest extends DefaultAdministration
 		// Use the existing data in database
 		UserRoleDto userRole = new UserRoleDto();
 		try {
-			userRole = (UserRoleDto) DefaultUserRolesManager.getInstance().findByPrimaryKey(1L, userContext, true);
+			userRole = (UserRoleDto) DefaultUserRolesManager.getInstance().findByPrimaryKey(1L, userContext);
 		} catch (MdoException e) {
 			fail("Could not found the user role.");
 		}
@@ -87,28 +87,28 @@ public class DefaultUserAuthenticationsManagerTest extends DefaultAdministration
 		// Use the existing data in database
 		LocaleDto printingLocale = null;
 		try {
-			printingLocale = (LocaleDto) DefaultLocalesManager.getInstance().findByPrimaryKey(1L, userContext, true);
+			printingLocale = (LocaleDto) DefaultLocalesManager.getInstance().findByPrimaryKey(1L, userContext);
 		} catch (MdoException e) {
 			fail("Could not found the printing locale.");
 		}
 		// Use the existing data in database
 		UserDto user = null;
 		try {
-			user = (UserDto) DefaultUsersManager.getInstance().findByPrimaryKey(1L, userContext, true);
+			user = (UserDto) DefaultUsersManager.getInstance().findByPrimaryKey(1L, userContext);
 		} catch (MdoException e) {
 			fail("Could not found the user.");
 		}
 		// Use the existing data in database
 		RestaurantDto restaurant = null;
 		try {
-			restaurant = (RestaurantDto) DefaultRestaurantsManager.getInstance().findByPrimaryKey(1L, userContext, true);
+			restaurant = (RestaurantDto) DefaultRestaurantsManager.getInstance().findByPrimaryKey(1L, userContext);
 		} catch (MdoException e) {
 			fail("Could not found the restaurant.");
 		}
 		// Use the existing data in database
 		UserRoleDto userRole = new UserRoleDto();
 		try {
-			userRole = (UserRoleDto) DefaultUserRolesManager.getInstance().findByPrimaryKey(1L, userContext, true);
+			userRole = (UserRoleDto) DefaultUserRolesManager.getInstance().findByPrimaryKey(1L, userContext);
 		} catch (MdoException e) {
 			fail("Could not found the user role.");
 		}
@@ -163,19 +163,18 @@ public class DefaultUserAuthenticationsManagerTest extends DefaultAdministration
 			UserAuthenticationDto castedBean = (UserAuthenticationDto) beanToBeUpdated;
 			assertEquals("UserAuthentication login must be equals to the inserted value", login, castedBean.getLogin());
 			assertNotNull("UserAuthentication locales must not be null", castedBean.getLocales());
-			assertEquals("Check UserAuthentication locales size", locales.size(), castedBean.getLocales().size());
+			assertEquals("Check UserAuthentication locales size 1", locales.size(), castedBean.getLocales().size());
 			// Update the created bean
 			login = "kiki";
 			castedBean.setLogin(login);
 
 			locales.clear();
-			Long backupId = castedBean.getLocales().iterator().next().getId();
 			userLocale = new UserLocaleDto();
 			locale = new LocaleDto();
 			locale.setId(1L);
 			userLocale.setLocale(locale);
 			// For updating, if not Hibernate will insert
-			userLocale.setId(backupId);
+			// userLocale.setId(backupId);
 			locales.add(userLocale);
 			
 			userLocale = new UserLocaleDto();
@@ -188,10 +187,10 @@ public class DefaultUserAuthenticationsManagerTest extends DefaultAdministration
 			// Reload the modified bean
 			UserAuthenticationDto updatedBean = new UserAuthenticationDto();
 			updatedBean.setId(castedBean.getId());
-			updatedBean = (UserAuthenticationDto) this.getInstance().load(updatedBean, userContext, true);
+			updatedBean = (UserAuthenticationDto) this.getInstance().load(updatedBean, userContext);
 			assertEquals("UserAuthentication login must be equals to the updated value", login, updatedBean.getLogin());
 			assertNotNull("UserAuthentication locales must not be null", updatedBean.getLocales());
-			assertEquals("Check UserAuthentication locales size", castedBean.getLocales().size(), updatedBean.getLocales().size());
+			assertEquals("Check UserAuthentication locales size 2", locales.size(), updatedBean.getLocales().size());
 			this.getInstance().delete(updatedBean, userContext);
 		} catch (Exception e) {
 			fail(e.getLocalizedMessage());
@@ -202,9 +201,25 @@ public class DefaultUserAuthenticationsManagerTest extends DefaultAdministration
 	public void doProcessList() {
 		UserAuthenticationsManagerViewBean viewBean = new UserAuthenticationsManagerViewBean();
 		try {
-			this.getInstance().processList(viewBean, DefaultAdministrationManagerTest.userContext, true);
+			this.getInstance().processList(viewBean, DefaultAdministrationManagerTest.userContext);
 			assertNotNull("Main list not be null", viewBean.getList());
-			assertFalse("Main list not be empty", viewBean.getList().isEmpty());
+			assertFalse("Main list must not be empty", viewBean.getList().isEmpty());
+
+			assertNotNull("Languages list not be null", viewBean.getLanguages());
+			assertFalse("setLanguages list must not be empty", viewBean.getLanguages().isEmpty());
+
+			assertNotNull("Languages list not be null", viewBean.getLanguages());
+			assertFalse("Languages list must not be empty", viewBean.getLanguages().isEmpty());
+
+			assertNotNull("Users list not be null", viewBean.getUsers());
+			assertFalse("Users list must not be empty", viewBean.getUsers().isEmpty());
+
+			assertNotNull("UserRoles list not be null", viewBean.getUserRoles());
+			assertFalse("UserRoles list must not be empty", viewBean.getUserRoles().isEmpty());
+
+			assertNotNull("UserRestaurants list not be null", viewBean.getUserRestaurants());
+			assertFalse("UserRestaurants list must not be empty", viewBean.getUserRestaurants().isEmpty());
+
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getLocalizedMessage());
 		}
@@ -216,7 +231,23 @@ public class DefaultUserAuthenticationsManagerTest extends DefaultAdministration
 	}
 
 	public void testFindByLogin() {
-
+		IUserAuthenticationsManager manager = (IUserAuthenticationsManager) this.getInstance();
+		String login = null;
+		try {
+			manager.findByLogin(login, DefaultAdministrationManagerTest.userContext);
+		} catch (MdoException e) {
+			assertTrue("Login must not be null", true); 
+		}
+		try {
+			login = "toto";
+			assertNull("User Authentication must be null", manager.findByLogin(login, DefaultAdministrationManagerTest.userContext));
+			login = "mch";
+			IMdoDtoBean dtoBean = manager.findByLogin(login, DefaultAdministrationManagerTest.userContext);
+			assertNotNull("User Authentication must NOT be null", dtoBean);
+			assertTrue("User Authentication must be instance of UserAuthenticationDto", dtoBean instanceof UserAuthenticationDto);
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getLocalizedMessage());
+		}
 	}
 
 	private IMdoDtoBean createNewBean(LocaleDto printingLocale, UserDto user, RestaurantDto restaurant, UserRoleDto userRole, 

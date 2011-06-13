@@ -85,7 +85,7 @@ public abstract class DefaultAdministrationManagerTest extends MdoBusinessBasicT
 			IMdoDtoBean bean = createNewBean();
 			assertNull("Bean id is null", bean.getId());
 			bean.setId(primaryKey);
-			bean = getInstance().load(bean, userContext, true);
+			bean = getInstance().load(bean, userContext);
 			assertNotNull("bean must not be null", bean);
 			assertNotNull("Bean id is not null", bean.getId());
 		} catch (Exception e) {
@@ -95,7 +95,7 @@ public abstract class DefaultAdministrationManagerTest extends MdoBusinessBasicT
 
 	public void doFindByPrimaryKey(boolean... lazy) {
 		try {
-			IMdoDtoBean bean = getInstance().findByPrimaryKey(primaryKey, userContext, true);
+			IMdoDtoBean bean = getInstance().findByPrimaryKey(primaryKey, userContext);
 			assertNotNull("Bean is not null", bean);
 			assertNotNull("Bean id is not null", bean.getId());
 			assertEquals("Bean id is equals to the searched id", primaryKey, bean.getId());
@@ -103,7 +103,7 @@ public abstract class DefaultAdministrationManagerTest extends MdoBusinessBasicT
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getLocalizedMessage());
 		}
 		if (lazy.length == 0) {
-			doFindByPrimaryKey(true);
+			doFindByPrimaryKey(false);
 		}
 	}
 
@@ -118,7 +118,7 @@ public abstract class DefaultAdministrationManagerTest extends MdoBusinessBasicT
 					// Create
 					insertedBeans.add(getInstance().insert((IMdoDtoBean) bean, userContext));
 				}
-				List<IMdoDtoBean> list = getInstance().findAll(userContext, true);
+				List<IMdoDtoBean> list = getInstance().findAll(userContext);
 				assertNotNull("list must not be null", list);
 				assertFalse("list must not be empty", list.isEmpty());
 				assertTrue("The findAll list size must be greateror equals than beans list size", list.size() >= beans.size());

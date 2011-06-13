@@ -104,7 +104,7 @@ public class DefaultTableTypesManagerTest extends DefaultAdministrationManagerTe
 			// Reload the modified bean
 			TableTypeDto updatedBean = new TableTypeDto();
 			updatedBean.setId(castedBean.getId());
-			IMdoBean loadedBean = this.getInstance().load(updatedBean, DefaultAdministrationManagerTest.userContext, true);
+			IMdoBean loadedBean = this.getInstance().load(updatedBean, DefaultAdministrationManagerTest.userContext);
 			assertTrue("IMdoBean must be instance of " + TableTypeDto.class, loadedBean instanceof TableTypeDto);
 			updatedBean = (TableTypeDto) loadedBean;
 			assertNotNull("TableTypeDto code must not be null", updatedBean.getCode());
@@ -118,9 +118,11 @@ public class DefaultTableTypesManagerTest extends DefaultAdministrationManagerTe
 	public void doProcessList() {
 		TableTypesManagerViewBean viewBean = new TableTypesManagerViewBean();
 		try {
-			this.getInstance().processList(viewBean, DefaultAdministrationManagerTest.userContext, true);
+			this.getInstance().processList(viewBean, DefaultAdministrationManagerTest.userContext);
 			assertNotNull("Main list not be null", viewBean.getList());
 			assertFalse("Main list not be empty", viewBean.getList().isEmpty());
+			assertNotNull("Codes list not be null", viewBean.getCodes());
+			assertTrue("Codes list be empty because all available table types are already set into database", viewBean.getCodes().isEmpty());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}

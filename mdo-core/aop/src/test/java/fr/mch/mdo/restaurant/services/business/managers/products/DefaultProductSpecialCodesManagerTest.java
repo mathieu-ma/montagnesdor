@@ -120,10 +120,12 @@ public class DefaultProductSpecialCodesManagerTest extends DefaultAdministration
 			this.getInstance().processList(viewBean, DefaultAdministrationManagerTest.userContext);
 			assertNotNull("Main list not be null", viewBean.getList());
 			assertFalse("Main list not be empty", viewBean.getList().isEmpty());
+			assertNotNull("Labels list not be null", viewBean.getLabels());
+			assertFalse("Labels list not be empty", viewBean.getLabels().isEmpty());
 			assertNotNull("Languages list not be null", viewBean.getLanguages());
 			assertFalse("Languages list not be empty", viewBean.getLanguages().isEmpty());
-			assertNotNull("Languages list not be null", viewBean.getRestaurants());
-			assertFalse("Languages list not be empty", viewBean.getRestaurants().isEmpty());
+			assertNotNull("Codes list not be null", viewBean.getCodes());
+			assertFalse("Codes list not be empty", viewBean.getCodes().isEmpty());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getLocalizedMessage());
 		}

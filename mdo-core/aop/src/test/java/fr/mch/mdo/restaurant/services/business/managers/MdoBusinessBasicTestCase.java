@@ -4,7 +4,6 @@ import java.sql.Connection;
 
 import fr.mch.mdo.restaurant.dao.ISessionFactory;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultSessionFactory;
-import fr.mch.mdo.restaurant.exception.MdoDataBeanException;
 import fr.mch.mdo.test.MdoLoadingDatabaseTestCase;
 import fr.mch.mdo.test.MdoTestCase;
 
@@ -47,7 +46,7 @@ public abstract class MdoBusinessBasicTestCase extends MdoLoadingDatabaseTestCas
 			// name
 			sqlDialectName = sqlDialectString.toUpperCase().substring(sqlDialectString.lastIndexOf(".") + 1);
 			assertNotNull("Check SQL Dialect", sqlDialectName);
-		} catch (MdoDataBeanException e1) {
+		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE);
 		}
 		return connection;
