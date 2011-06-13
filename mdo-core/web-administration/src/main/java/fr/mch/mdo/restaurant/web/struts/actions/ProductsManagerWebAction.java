@@ -1,5 +1,7 @@
 package fr.mch.mdo.restaurant.web.struts.actions;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -123,5 +125,38 @@ public class ProductsManagerWebAction extends AdministrationManagerLabelsAction
 		product.setCategories(productCategories);
 	}
 
+	public String importData() {
+		ProductsManagerForm form = (ProductsManagerForm) super.getForm();  
+		try {
+			((IProductsManager) administrationManager).importData(form.getImportedFileFileName(), form.getImportedFile(), (MdoUserContext) super.getForm().getUserContext());
+		} catch (Exception e) {
+			super.addActionError(super.getText("error.action.technical", new String[] {this.getClass().getName(), "importData"}));
+		}
+		// Return to the products list
+		return Constants.ACTION_RESULT_AFTER_SUCCESS_FORM_LIST;
+	}
+	
+	public String exportData() {
+		ProductsManagerForm thisForm = (ProductsManagerForm) super.getForm();
+		ProductDto dtoBean = ((ProductDto) thisForm.getDtoBean());
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		String reference = null;
+		if (dtoBean.getRestaurant() !=  null) {
+			reference = dtoBean.getRestaurant().getReference();
+		}
 
+		String exportFileName = "exportFileName";
+		String[] headers = {super.getText("products.manager.code"), super.getText("products.manager.label"), super.getText("products.manager.price"), 
+				super.getText("products.manager.vat"), super.getText("products.manager.color")};
+		try {
+			exportFileName = ((IProductsManager) administrationManager).exportData(out, reference, headers, (MdoUserContext) thisForm.getUserContext());
+		} catch (Exception e) {
+			super.addActionError(super.getText("error.action.technical", new String[] {this.getClass().getName(), "exportData"}));
+		}
+		ByteArrayInputStream bis = new ByteArrayInputStream(out.toByteArray());
+		thisForm.setExportInputStream(bis);
+		thisForm.setExportFileName(exportFileName);
+		// Return to the products list
+		return Constants.ACTION_RESULT_AFTER_EXPORT_PRODUCTS_LIST;
+	}
 }
