@@ -166,6 +166,6 @@ public class DefaultProductSoldsDaoTest extends DefaultDaoServicesTestCase
 	}
 	
 	public void testGetByYear() {
-		((DefaultProductSoldsDao) this.getInstance()).getByYear(1970);
+		((DefaultProductSoldsDao) this.getInstance()).findByYear(1970);
 	}
 }

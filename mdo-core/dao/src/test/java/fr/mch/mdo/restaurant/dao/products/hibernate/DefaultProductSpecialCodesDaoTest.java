@@ -41,7 +41,7 @@ public class DefaultProductSpecialCodesDaoTest extends DefaultDaoServicesTestCas
 	}
 
 	protected IMdoBean createNewBean() {
-		Character shortCode = '-';
+		String shortCode = "-";
 		Restaurant restaurant = new Restaurant();
 		restaurant.setId(1L);
 		MdoTableAsEnum code = new MdoTableAsEnum();
@@ -53,7 +53,7 @@ public class DefaultProductSpecialCodesDaoTest extends DefaultDaoServicesTestCas
 
 	protected List<IMdoBean> createListBeans() {
 		List<IMdoBean> list = new ArrayList<IMdoBean>();
-		Character shortCode = '/';
+		String shortCode = "/";
 		Restaurant restaurant = new Restaurant();
 		restaurant.setId(1L);
 		MdoTableAsEnum code = new MdoTableAsEnum();
@@ -61,7 +61,7 @@ public class DefaultProductSpecialCodesDaoTest extends DefaultDaoServicesTestCas
 		Map<Long, String> labels = new HashMap<Long, String>();
 		labels.put(1L, "Commande personnalisée");
 		list.add(createNewBean(shortCode, restaurant, code, labels));
-		shortCode = '<';
+		shortCode = "<";
 		restaurant = new Restaurant();
 		restaurant.setId(1L);
 		code = new MdoTableAsEnum();
@@ -95,7 +95,7 @@ public class DefaultProductSpecialCodesDaoTest extends DefaultDaoServicesTestCas
 
 	@Override
 	public void doUpdate() {
-		Character shortCode = '?';
+		String shortCode = "?";
 		Restaurant restaurant = new Restaurant();
 		restaurant.setId(1L);
 		MdoTableAsEnum code = new MdoTableAsEnum();
@@ -112,7 +112,7 @@ public class DefaultProductSpecialCodesDaoTest extends DefaultDaoServicesTestCas
 			assertEquals("Check ProductSpecialCode labels size", labels.size(), castedBean.getLabels().size());
 			assertFalse("ProductSpecialCode must not be deleted", castedBean.isDeleted());
 			// Update the created bean
-			shortCode = '@';
+			shortCode = "@";
 			castedBean.setShortCode(shortCode);
 			labels.put(2L, "Test 2 ES");
 			castedBean.setLabels(labels);
@@ -131,7 +131,7 @@ public class DefaultProductSpecialCodesDaoTest extends DefaultDaoServicesTestCas
 		}
 	}
 
-	private IMdoBean createNewBean(Character shortCode, Restaurant restaurant, MdoTableAsEnum code, Map<Long, String> labels) {
+	private IMdoBean createNewBean(String shortCode, Restaurant restaurant, MdoTableAsEnum code, Map<Long, String> labels) {
 		ProductSpecialCode newBean = new ProductSpecialCode();
 		newBean.setShortCode(shortCode);
 		newBean.setRestaurant(restaurant);
