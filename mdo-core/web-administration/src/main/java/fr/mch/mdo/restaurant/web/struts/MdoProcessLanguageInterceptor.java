@@ -57,8 +57,10 @@ public class MdoProcessLanguageInterceptor extends I18nInterceptor
 			String language = request.getParameter(super.parameterName);
 			Locale locale = request.getLocale();
 			if (language != null) {
-				// Change language
-				locale = new Locale(language, request.getLocale().getCountry());
+				// Change language, do set the country from request locale.
+				// For example, if request locale is (fr_FR) and the language is (en) then if we set the country,
+				// we will have a new locale(en_FR) but this locale is equals to the locale(fr_FR) in the java.util.Locale.getAvailableLocales() list 
+				locale = new Locale(language);
 				this.processLanguage(session, locale, userContext);
 			} else {
 				if (userContext.getCurrentLocale().getLanguageCode() == null || userContext.getUserAuthentication().getLocales() == null
