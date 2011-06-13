@@ -72,7 +72,7 @@
 		</interceptors>
 	
 		<default-interceptor-ref name="mdoBasicInterceptor"/>
-
+		
 		<action name="AjaxI18nMessages" class="fr.mch.mdo.restaurant.web.struts.actions.AjaxI18nMessagesWebAction">
 			<result name="success" type="stream">
 				<param name="contentType">text/plain</param>
@@ -279,9 +279,18 @@
 		</action>		
 
 		<action name="ProductsManager" class="fr.mch.mdo.restaurant.web.struts.actions.ProductsManagerWebAction" method="list">
+			<interceptor-ref name="fileUpload" />
 		   	<interceptor-ref name="mdoBasicInterceptorValRetrieve" />
+			<result name="input">/jsp/products/products.jsp</result>
 			<!-- After Success form or list -->
 			<result name="asformlist">/jsp/products/products.jsp</result>
+			<!-- After export product list -->
+			<result name="aepl" type="stream">
+				<param name="contentType">application/octet-stream</param>
+				<param name="inputName">form.exportInputStream</param>
+				<param name="contentDisposition">attachment;filename="${form.exportFileName}"</param>
+				<param name="bufferSize">1024</param>
+			</result>
 		</action>
 		<action name="ProductsManagerCUD" class="fr.mch.mdo.restaurant.web.struts.actions.ProductsManagerWebAction" method="save">
 		   	<interceptor-ref name="mdoBasicInterceptorValStore" />
