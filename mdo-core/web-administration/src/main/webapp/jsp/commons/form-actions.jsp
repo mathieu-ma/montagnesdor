@@ -14,10 +14,7 @@
 		<s:set var="cancelUrl"><c:out value="${param.cancelUrl}" /></s:set>
 	</c:if>
 
-	<button id="submit" class="mdo-ui-button ui-state-default ui-corner-all">
-		<span class="ui-icon ui-icon-disk"></span>
-		<fmt:message key="admin.manager.save"/>
-	</button>
+	<button id="submit" class="mdo-ui-button ui-state-default ui-corner-all"><span class="ui-icon ui-icon-disk"></span><fmt:message key="admin.manager.save"/></button>
 	<span style="width: 25%; display: inline-block;">&nbsp;</span>
 	<span class="mdo-ui-button ui-state-default ui-corner-all">
 		<span class="ui-icon ui-icon-closethick"></span>

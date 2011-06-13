@@ -41,15 +41,18 @@
 					<tr>
 						<th><s:property value="%{getText(request.getParameter('labelSelectList'))}" /></th>
 						<th><s:property value="%{getText(request.getParameter('labelData'))}" /></th>
-						<th style="width: 40em;; text-align: left">
-							<span class="mdo-ui-button ui-state-default ui-corner-all">
-								<span class="ui-icon ui-icon-arrowthick-1-w"></span>
-								<s:set id="url" value="%{request.getParameter('backUrl')}"/>
-								<c:if test="${empty url}">
-									<s:url id="url" action="%{request.getParameter('action')}" method="list" includeParams="none"/>
-								</c:if>
-					 			<s:a href="%{url}" cssClass="admin-manager-cancel"><fmt:message key="admin.manager.back"/></s:a>
-							</span>
+						<th style="width: 40em; text-align: left">
+							<div style="padding-top: 0.9em; float: left;">
+								<span class="mdo-ui-button ui-state-default ui-corner-all">
+									<span class="ui-icon ui-icon-arrowthick-1-w"></span>
+									<s:set id="url" value="%{request.getParameter('backUrl')}"/>
+									<c:if test="${empty url}">
+										<s:url id="url" action="%{request.getParameter('action')}" method="list" includeParams="none"/>
+									</c:if>
+						 			<s:a href="%{url}" cssClass="admin-manager-cancel"><fmt:message key="admin.manager.back"/></s:a>
+								</span>
+							</div>
+						
 							<button class="mdo-ui-button ui-state-default ui-corner-all crud-list-reset" type="reset">
 								<span class="ui-icon ui-icon-closethick"></span><fmt:message key="admin.manager.reset" />
 							</button>
@@ -77,10 +80,12 @@
 							</s:else>
 			   			</td>
 			   			<td style="width: 40em;">
-							<span class="mdo-ui-button ui-state-default ui-corner-all crud-list-edit">
-								<span class="ui-icon ui-icon-tag"></span>
-								<s:a href="#"><fmt:message key="admin.manager.edit"/></s:a>
-							</span>
+							<div style="padding-top: 0.9em; float: left;">
+								<span class="mdo-ui-button ui-state-default ui-corner-all crud-list-edit">
+									<span class="ui-icon ui-icon-tag"></span>
+									<s:a href="#"><fmt:message key="admin.manager.edit"/></s:a>
+								</span>
+							</div>
 							<button class="mdo-ui-button ui-state-default ui-corner-all crud-list-remove" name="method:removeLabel">
 								<span class="ui-icon ui-icon-minusthick"></span><fmt:message key="admin.manager.remove"/>
 							</button>
@@ -101,15 +106,17 @@
 							</s:else>
 			   			</td>
 			   			<td style="width: 40em;">
-							<span class="mdo-ui-button ui-state-default ui-corner-all crud-list-edit">
-								<s:url id="url" action="%{request.getParameter('action')}" method="form">
-									<s:param name="form.dtoBean.id" value="%{form.dtoBean.id}" />
-									<s:param name="form.updatingLanguage" value="%{key}"/>
-									<s:param name="form.updatingLabel" value="%{value}"/>
-								</s:url>
-								<span class="ui-icon ui-icon-tag"></span>
-								<s:a href="%{url}"><fmt:message key="admin.manager.edit"/></s:a>
-							</span>
+							<div style="padding-top: 0.9em; float: left;">
+								<span class="mdo-ui-button ui-state-default ui-corner-all crud-list-edit">
+									<s:url id="url" action="%{request.getParameter('action')}" method="form">
+										<s:param name="form.dtoBean.id" value="%{form.dtoBean.id}" />
+										<s:param name="form.updatingLanguage" value="%{key}"/>
+										<s:param name="form.updatingLabel" value="%{value}"/>
+									</s:url>
+									<span class="ui-icon ui-icon-tag"></span>
+									<s:a href="%{url}"><fmt:message key="admin.manager.edit"/></s:a>
+								</span>
+							</div>
 							<button class="mdo-ui-button ui-state-default ui-corner-all crud-list-remove" name="method:removeLabel" value="${key}">
 								<span class="ui-icon ui-icon-minusthick"></span><fmt:message key="admin.manager.remove"/>
 							</button>
