@@ -455,8 +455,7 @@ div.scroll-table-outer-body th, div.scroll-table-outer-body td {
 		cursor: row-resize;
 	}
 	
-	span.mdo-ui-button
-	{
+	span.mdo-ui-button,	span.mdo-ui-button-file {
 		position: relative;
 		/position: static;
 		/zoom:1; /* for ie peekaboo bug */
@@ -468,11 +467,10 @@ div.scroll-table-outer-body th, div.scroll-table-outer-body td {
 		margin: 3px;
 	}
 	
-	span.mdo-ui-button span.ui-icon 
-	{
+	span.mdo-ui-button span.ui-icon, span.mdo-ui-button-file span.ui-icon {
 		position: absolute;
 		/position: inherit;
-		/float: left; 
+		/*float: left;*/ 
 		margin: -8px 5px 0 0;
 		/margin-top: 0px;
 		left: .2em;
