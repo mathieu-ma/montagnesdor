@@ -45,6 +45,8 @@
 	<modules>
 		<module>date-time</module>
 		<module>color-picker</module>
+<!-- 		
 		<module>serial-port-printer</module>
-	</modules>
+ -->	
+ 		</modules>
 </project>
