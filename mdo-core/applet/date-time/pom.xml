@@ -11,8 +11,8 @@
 	<groupId>fr.mch.mdo</groupId>
 	<artifactId>date-time</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0-SNAPSHOT</version>
 	<name>date-time</name>
+	<version>1.0-SNAPSHOT</version>
 	<url>http://maven.apache.org</url>
 
 	<!--
