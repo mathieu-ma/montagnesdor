@@ -241,7 +241,7 @@ public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 	public void testImportData() {
 		File file = new File(ITestResources.class.getResource("inport-data-10203040506070-fr.ods").getFile());
 		 try {
-			((IProductsManager) DefaultProductsManager.getInstance()).importData(file, DefaultProductsManagerTest.userContext);
+			((IProductsManager) DefaultProductsManager.getInstance()).importData(file.getName(), file, DefaultProductsManagerTest.userContext);
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}

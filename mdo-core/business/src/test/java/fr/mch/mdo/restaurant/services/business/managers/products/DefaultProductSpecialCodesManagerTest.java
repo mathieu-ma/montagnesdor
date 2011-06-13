@@ -44,7 +44,7 @@ public class DefaultProductSpecialCodesManagerTest extends DefaultAdministration
 
 	@Override
 	protected IMdoDtoBean createNewBean() {
-		Character shortCode = '-';
+		String shortCode = "-";
 		RestaurantDto restaurant = new RestaurantDto();
 		restaurant.setId(1L);
 		MdoTableAsEnumDto code = new MdoTableAsEnumDto();
@@ -57,7 +57,7 @@ public class DefaultProductSpecialCodesManagerTest extends DefaultAdministration
 	@Override
 	protected List<IMdoBean> createListBeans() {
 		List<IMdoBean> list = new ArrayList<IMdoBean>();
-		Character shortCode = '/';
+		String shortCode = "/";
 		RestaurantDto restaurant = new RestaurantDto();
 		restaurant.setId(1L);
 		MdoTableAsEnumDto code = new MdoTableAsEnumDto();
@@ -66,7 +66,7 @@ public class DefaultProductSpecialCodesManagerTest extends DefaultAdministration
 		labels.put(1L, "Commande personnalisée");
 		list.add(createNewBean(shortCode, restaurant, code, labels));
 		
-		shortCode = '<';
+		shortCode = "<";
 		restaurant = new RestaurantDto();
 		restaurant.setId(1L);
 		code = new MdoTableAsEnumDto();
@@ -79,7 +79,7 @@ public class DefaultProductSpecialCodesManagerTest extends DefaultAdministration
 
 	@Override
 	public void doUpdate() {
-		Character shortCode = '?';
+		String shortCode = "?";
 		RestaurantDto restaurant = new RestaurantDto();
 		restaurant.setId(1L);
 		MdoTableAsEnumDto code = new MdoTableAsEnumDto();
@@ -95,7 +95,7 @@ public class DefaultProductSpecialCodesManagerTest extends DefaultAdministration
 			assertNotNull("ProductSpecialCode labels must not be null", castedBean.getLabels());
 			assertEquals("Check ProductSpecialCode labels size", labels.size(), castedBean.getLabels().size());
 			// Update the created bean
-			shortCode = '@';
+			shortCode = "@";
 			castedBean.setShortCode(shortCode);
 			labels.put(2L, "Test 2 ES");
 			castedBean.setLabels(labels);
@@ -136,7 +136,7 @@ public class DefaultProductSpecialCodesManagerTest extends DefaultAdministration
 		assertTrue(this.getInstance() instanceof DefaultProductSpecialCodesManager);
 	}
 
-	private IMdoDtoBean createNewBean(Character shortCode, RestaurantDto restaurant, MdoTableAsEnumDto code, Map<Long, String> labels) {
+	private IMdoDtoBean createNewBean(String shortCode, RestaurantDto restaurant, MdoTableAsEnumDto code, Map<Long, String> labels) {
 		ProductSpecialCodeDto newBean = new ProductSpecialCodeDto();
 		newBean.setShortCode(shortCode);
 		newBean.setRestaurant(restaurant);
