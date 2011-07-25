@@ -4,14 +4,15 @@ import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.dao.IDaoServices;
 import fr.mch.mdo.restaurant.exception.MdoException;
 
-public interface ITableTypesDao extends IDaoServices
+public interface ITableCashingsDao extends IDaoServices
 {
 	/**
 	 * Find by Unique Keys.
-	 * @param code the type of table. Could be TAKE_AWAY, EAT_IN.
+	 * @param dinnerTableId the dinner table ID.
+	 * @param order the order.
 	 * @param isLazy lazy loading ?
-	 * @return a Table Type.
+	 * @return a table bill.
 	 * @throws MdoException when any exceptions occur. 
 	 */
-	IMdoBean findByUniqueKey(String code, boolean... isLazy) throws MdoException;
+	IMdoBean findByUniqueKey(Long dinnerTableId, boolean... isLazy) throws MdoException;
 }
