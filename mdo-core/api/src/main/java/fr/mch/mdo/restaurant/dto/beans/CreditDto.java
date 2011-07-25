@@ -4,12 +4,12 @@
  * To change the template for this generated file go to
  * Window - Preferences - Java - Code Generation - Code and Comments
  */
-package fr.mch.mdo.restaurant.dao.beans;
+package fr.mch.mdo.restaurant.dto.beans;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
-import fr.mch.mdo.restaurant.beans.MdoDaoBean;
+import fr.mch.mdo.restaurant.beans.MdoDtoBean;
 
 /**
  * This class is used for t_credit mapping. This table is used for restaurant
@@ -17,7 +17,7 @@ import fr.mch.mdo.restaurant.beans.MdoDaoBean;
  * 
  * @author Mathieu MA sous conrad
  */
-public class Credit extends MdoDaoBean
+public class CreditDto extends MdoDtoBean
 {
 	/**
 	 * Default Serial Version UID.
@@ -29,7 +29,7 @@ public class Credit extends MdoDaoBean
 	 * the restaurant where the credit belongs. This field and the others
 	 * cre_reference consist of a unique field.
 	 */
-	private Restaurant restaurant;
+	private RestaurantDto restaurant;
 	/**
 	 * This is the reference of the credit. This field and the others res_id
 	 * consist of a unique field.
@@ -56,7 +56,7 @@ public class Credit extends MdoDaoBean
 	/**
 	 * @return the restaurant
 	 */
-	public Restaurant getRestaurant() {
+	public RestaurantDto getRestaurant() {
 		return restaurant;
 	}
 
@@ -64,7 +64,7 @@ public class Credit extends MdoDaoBean
 	 * @param restaurant
 	 *            the restaurant to set
 	 */
-	public void setRestaurant(Restaurant restaurant) {
+	public void setRestaurant(RestaurantDto restaurant) {
 		this.restaurant = restaurant;
 	}
 
@@ -163,7 +163,7 @@ public class Credit extends MdoDaoBean
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		Credit other = (Credit) obj;
+		CreditDto other = (CreditDto) obj;
 		if (reference == null) {
 			if (other.reference != null) {
 				return false;
@@ -184,7 +184,7 @@ public class Credit extends MdoDaoBean
 	@Override
 	public String toString() {
 		return "Credit [amount=" + amount + ", closingDate=" + closingDate + ", createdDate=" + createdDate + ", printed=" + printed + ", reference=" + reference + ", restaurant=" + restaurant
-				+ ", deleted=" + deleted + ", id=" + id + "]";
+				+ ", id=" + id + "]";
 	}
 
 }

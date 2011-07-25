@@ -4,11 +4,11 @@
  * To change the template for this generated file go to
  * Window - Preferences - Java - Code Generation - Code and Comments
  */
-package fr.mch.mdo.restaurant.dao.beans;
+package fr.mch.mdo.restaurant.dto.beans;
 
 import java.math.BigDecimal;
 
-import fr.mch.mdo.restaurant.beans.MdoDaoBean;
+import fr.mch.mdo.restaurant.beans.MdoDtoBean;
 
 /**
  * This class is used for t_table_vat mapping. This table is used for amounts
@@ -16,7 +16,7 @@ import fr.mch.mdo.restaurant.beans.MdoDaoBean;
  * 
  * @author Mathieu MA sous conrad
  */
-public class TableVat extends MdoDaoBean
+public class TableVatDto extends MdoDtoBean
 {
 	/**
 	 * Default Serial Version UID.
@@ -28,13 +28,13 @@ public class TableVat extends MdoDaoBean
 	 * specify the dinner table. This field and the other vat_id field consist
 	 * of a unique field.
 	 */
-	private DinnerTable dinnerTable;
+	private DinnerTableDto dinnerTable;
 	/**
 	 * This is a foreign key that refers to t_value_added_tax. It is used to
 	 * specify the Value Added Tax. This field and the other dtb_id field
 	 * consist of a unique field.
 	 */
-	private ValueAddedTax vat;
+	private ValueAddedTaxDto vat;
 	/**
 	 * This is the amount of the dinner table depending on the specific Value
 	 * Added Tax. If the dinner table has order lines with Value Added Tax rate
@@ -52,7 +52,7 @@ public class TableVat extends MdoDaoBean
 	/**
 	 * @return the dinnerTable
 	 */
-	public DinnerTable getDinnerTable() {
+	public DinnerTableDto getDinnerTable() {
 		return dinnerTable;
 	}
 
@@ -60,14 +60,14 @@ public class TableVat extends MdoDaoBean
 	 * @param dinnerTable
 	 *            the dinnerTable to set
 	 */
-	public void setDinnerTable(DinnerTable dinnerTable) {
+	public void setDinnerTable(DinnerTableDto dinnerTable) {
 		this.dinnerTable = dinnerTable;
 	}
 
 	/**
 	 * @return the vat
 	 */
-	public ValueAddedTax getVat() {
+	public ValueAddedTaxDto getVat() {
 		return vat;
 	}
 
@@ -75,7 +75,7 @@ public class TableVat extends MdoDaoBean
 	 * @param vat
 	 *            the vat to set
 	 */
-	public void setVat(ValueAddedTax vat) {
+	public void setVat(ValueAddedTaxDto vat) {
 		this.vat = vat;
 	}
 
@@ -130,7 +130,7 @@ public class TableVat extends MdoDaoBean
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		TableVat other = (TableVat) obj;
+		TableVatDto other = (TableVatDto) obj;
 		if (vat == null) {
 			if (other.vat != null) {
 				return false;
@@ -147,7 +147,7 @@ public class TableVat extends MdoDaoBean
 
 	@Override
 	public String toString() {
-		return "VatTable [amount=" + amount + ", value=" + value + ", vat=" + vat + ", deleted=" + deleted + ", id=" + id + "]";
+		return "VatTable [amount=" + amount + ", value=" + value + ", vat=" + vat + ", id=" + id + "]";
 	}
 
 }

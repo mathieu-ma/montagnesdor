@@ -27,6 +27,7 @@
 		<property name="takeawayMinAmountReduction" column="res_takeaway_min_amount_reduction" type="big_decimal" />
 
 		<many-to-one name="specificRound" column="res_specific_round" />
+		<many-to-one name="defaultTableType" column="tbt_id" />
 
 		<set name="prefixTableNames" cascade="all-delete-orphan" inverse="true" table="t_restaurant_prefix_table">
 			<key column="res_id" />
@@ -36,6 +37,11 @@
 		<set name="vats" cascade="all-delete-orphan" inverse="true" table="t_restaurant_vat">
 			<key column="res_id" />
 			<one-to-many class="fr.mch.mdo.restaurant.dao.beans.RestaurantValueAddedTax" />
+		</set>
+
+		<set name="productSpecialCodes" inverse="true" table="t_product_special_code">
+			<key column="res_id" />
+			<one-to-many class="fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode" />
 		</set>
 	</class>
 

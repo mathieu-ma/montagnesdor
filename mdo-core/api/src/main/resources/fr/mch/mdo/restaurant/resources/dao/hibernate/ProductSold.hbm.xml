@@ -11,7 +11,10 @@
 		</id>
 		<property name="deleted" column="pds_deleted" />
 
-		<property name="soldDate" column="pds_sold_date" type="date" />
+		<property name="soldYear" column="pds_sold_year" type="int" />
+		<property name="soldMonth" column="pds_sold_month" type="int" />
+		<property name="soldDay" column="pds_sold_day" type="int" />
+
 		<property name="quantity" column="pds_quantity" type="big_decimal" />
 
 		<many-to-one name="product" column="pdt_id" />

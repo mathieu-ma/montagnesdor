@@ -16,12 +16,11 @@ import fr.mch.mdo.restaurant.beans.MdoDaoBean;
  */
 public class ProductLanguage extends MdoDaoBean
 {
-
-	/*
-		pdt_id varchar(5) NOT NULL,
-	  	pdl_label varchar(60) NOT NULL,
-	  	loc_id varchar(3) NOT NULL DEFAULT 'fr',  
+	/**
+	 * Default Serial Version UID.
 	 */
+	private static final long serialVersionUID = 1L;
+
 	private Locale locale;
 	private Product product;
 	private String label;

@@ -10,7 +10,6 @@ import javax.security.auth.Subject;
 
 import fr.mch.mdo.restaurant.Constants;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
-import fr.mch.mdo.restaurant.dao.beans.DinnerTable;
 
 public class MdoUserContext implements IMdoBean 
 {
@@ -22,7 +21,7 @@ public class MdoUserContext implements IMdoBean
 	private Subject subject = null;
 	private UserAuthenticationDto userAuthentication = null;
 	private LocaleDto currentLocale = new LocaleDto();
-	private DinnerTable currentTable;
+	private DinnerTableDto currentTable;
 
 	/* Navigation part */
 	private String currentURLWithParameters;
@@ -137,7 +136,7 @@ public class MdoUserContext implements IMdoBean
 	/**
 	 * @param currentTable
 	 */
-	public void setCurrentTable(DinnerTable currentTable) {
+	public void setCurrentTable(DinnerTableDto currentTable) {
 		this.currentTable = currentTable;
 	}
 

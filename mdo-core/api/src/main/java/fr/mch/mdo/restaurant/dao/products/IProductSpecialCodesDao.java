@@ -10,5 +10,7 @@ public interface IProductSpecialCodesDao extends IDaoServices
 {
     List<IMdoBean> findProductSpecialCodesByRestaurant(Long restaurantId) throws MdoException;
     
-    IMdoBean findByRestaurantAndShortCode(Long restaurantId, Character shortCode) throws MdoException;
+    IMdoBean findByShortCode(Long restaurantId, String shortCode) throws MdoException;
+
+    IMdoBean findByCodeName(Long restaurantId, String codeName) throws MdoException;
 }

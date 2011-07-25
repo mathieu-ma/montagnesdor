@@ -3,7 +3,9 @@ package fr.mch.mdo.restaurant.services.business.managers.products;
 import java.io.File;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Map;
 
+import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.ProductDto;
@@ -58,5 +60,16 @@ public interface IProductsManager extends IAdministrationManager
 	 * @throws MdoException when any exception occur.
 	 */
 	String exportData(OutputStream out, String restaurantReference, String[] headers, MdoUserContext userContext) throws MdoException;
+
+    /**
+     * This method tries to get products from product code prefix
+     * 
+     * @param userContext user context
+     * @param prefixProductCode prefix table name to look up
+     * @return map with key equals to product id and value equals to product
+     * @throws Exception any exception occurs
+     */
+    Map<Long, String> lookupProductsCodesByPrefixCode(IMdoBean userContext, String prefixProductCode) throws Exception;
+
 }
 

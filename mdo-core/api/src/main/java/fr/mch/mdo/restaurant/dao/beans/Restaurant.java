@@ -96,6 +96,13 @@ public class Restaurant extends MdoDaoBean {
 	 */
 	private MdoTableAsEnum specificRound;
 	/**
+	 * This is the default table type.
+	 * It is a foreign that refers to the t_table_type table.
+	 * It is used to specify the dinner table type which can be EAT_IN, TAKEAWAY, ....
+	 */
+	private TableType defaultTableType;
+	
+	/**
 	 * List of prefixes table name for take-away table
 	 */
 	private Set<RestaurantPrefixTable> prefixTableNames;
@@ -104,8 +111,13 @@ public class Restaurant extends MdoDaoBean {
 	 */
 	private Set<RestaurantValueAddedTax> vats;
 
-	/**
-	 * @return Renvoie addressCity.
+    /**
+     * Map of ProductSpecialCode with key == short code and value == ProductSpecialCode
+     */
+    private Set<ProductSpecialCode> productSpecialCodes;
+
+    /**
+	 * @return the address City.
 	 */
 	public String getAddressCity() {
 		return addressCity;
@@ -375,6 +387,34 @@ public class Restaurant extends MdoDaoBean {
 	 */
 	public MdoTableAsEnum getSpecificRound() {
 		return specificRound;
+	}
+
+	/**
+	 * @param defaultTableType the defaultTableType to set
+	 */
+	public void setDefaultTableType(TableType defaultTableType) {
+		this.defaultTableType = defaultTableType;
+	}
+
+	/**
+	 * @return the defaultTableType
+	 */
+	public TableType getDefaultTableType() {
+		return defaultTableType;
+	}
+
+	/**
+	 * @param productSpecialCodes the productSpecialCodes to set
+	 */
+	public void setProductSpecialCodes(Set<ProductSpecialCode> productSpecialCodes) {
+		this.productSpecialCodes = productSpecialCodes;
+	}
+
+	/**
+	 * @return the productSpecialCodes
+	 */
+	public Set<ProductSpecialCode> getProductSpecialCodes() {
+		return productSpecialCodes;
 	}
 
 	@Override

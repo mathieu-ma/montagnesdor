@@ -4,14 +4,14 @@
  * To change the template for this generated file go to
  * Window - Preferences - Java - Code Generation - Code and Comments
  */
-package fr.mch.mdo.restaurant.dao.beans;
+package fr.mch.mdo.restaurant.dto.beans;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import fr.mch.mdo.restaurant.beans.MdoDaoBean;
+import fr.mch.mdo.restaurant.beans.MdoDtoBean;
 
 /**
  * This class is used for t_dinner_table mapping. This table is used for dinner
@@ -19,7 +19,7 @@ import fr.mch.mdo.restaurant.beans.MdoDaoBean;
  * 
  * @author Mathieu MA sous conrad
  */
-public class DinnerTable extends MdoDaoBean
+public class DinnerTableDto extends MdoDtoBean
 {
 	/**
 	 * Default Serial Version UID.
@@ -33,17 +33,17 @@ public class DinnerTable extends MdoDaoBean
 	 * But this field is used for the unicity of the dinner table.
 	 * So this field and the others dtb_code and dtb_registration_date consist of a unique field.
 	 */
-	private Restaurant restaurant;
+	private RestaurantDto restaurant;
 	/**
 	 * This is the code number of the dinner table. 
 	 * This field and the others res_id and dtb_registration_date consist of a unique field.
 	 */
 	private String number;
 	/**
-	 * This is a foreign key that refers to t_user_authentication. 
-	 * It is used to specify the user authentication that created this dinner table.
+	 * This is a foreign key that refers to t_user_authentication. It is used to
+	 * specify the user authentication that created this dinner table.
 	 */
-	private UserAuthentication user;
+	private UserAuthenticationDto user;
 	/**
 	 * This is an id for the room where the dinner table is. It is not currently
 	 * used.
@@ -54,36 +54,23 @@ public class DinnerTable extends MdoDaoBean
 	 */
 	private Integer customersNumber;
 	/**
-	 * This is used to specify the sum of the order lines quantities. 
-	 * This value could be calculated from order lines table.
+	 * This is used to specify the sum of the order lines quantities. This value
+	 * could be calculated from order lines table.
 	 */
 	private BigDecimal quantitiesSum;
 	/**
-	 * This is used to specify the sum of the order lines quantities by SQL Formula.
-	 */
-	private BigDecimal quantitiesSumByFormula;
-	/**
-	 * This is used to specify the sum of the order lines amounts.
-	 * This value could be calculated from order lines table.
+	 * This is used to specify the sum of the order lines amounts. This value
+	 * could be calculated from order lines table.
 	 */
 	private BigDecimal amountsSum;
-	/**
-	 * This is used to specify the sum of the order lines amounts by SQL Formula.
-	 */
-	private BigDecimal amountsSumByFormula;
 	/**
 	 * This is used to specify the reduction ratio.
 	 */
 	private BigDecimal reductionRatio;
 	/**
 	 * This is used to specify the amount to pay.
-	 * This value could be calculated with value of dtb_reduction_ratio and dtb_amounts_sum. amountPay = dtb_amounts_sum-dtb_amounts_sum*dtb_reduction_ratio/100.
 	 */
 	private BigDecimal amountPay;
-	/**
-	 * This is used to specify the amount to pay by SQL Formula.
-	 */
-	private BigDecimal amountPayByFormula;
 	/**
 	 * This is used to specify the registration/creation date. 
 	 * This field and the others res_id and dtb_code consist of a unique field.
@@ -101,37 +88,37 @@ public class DinnerTable extends MdoDaoBean
 	 * This is used to specify the type of dinner table. Could be TAKE-AWAY,
 	 * EAT-IN ...
 	 */
-	private TableType type;
+	private TableTypeDto type;
 
 	/**
 	 * Set of order lines.
 	 */
-	private Set<OrderLine> orders;
+	private Set<OrderLineDto> orders = new HashSet<OrderLineDto>();
 
 	/**
 	 * Set of bills == factures.
 	 */
-	private Set<TableBill> bills;
+	private Set<TableBillDto> bills = new HashSet<TableBillDto>();
 
 	/**
 	 * Set of credit == avoirs.
 	 */
-	private Set<TableCredit> credits;
+	private Set<TableCreditDto> credits = new HashSet<TableCreditDto>();
 
 	/**
 	 * Set of VAT amount for this table.
 	 */
-	private Set<TableVat> vats;
+	private Set<TableVatDto> vats = new HashSet<TableVatDto>();
 
 	/**
 	 * The one-to-one Cashing for this table.
 	 */
-	private TableCashing cashing;
+	private TableCashingDto cashing;
 
 	/**
 	 * @return the restaurant
 	 */
-	public Restaurant getRestaurant() {
+	public RestaurantDto getRestaurant() {
 		return restaurant;
 	}
 
@@ -139,7 +126,7 @@ public class DinnerTable extends MdoDaoBean
 	 * @param restaurant
 	 *            the restaurant to set
 	 */
-	public void setRestaurant(Restaurant restaurant) {
+	public void setRestaurant(RestaurantDto restaurant) {
 		this.restaurant = restaurant;
 	}
 
@@ -161,7 +148,7 @@ public class DinnerTable extends MdoDaoBean
 	/**
 	 * @return the user
 	 */
-	public UserAuthentication getUser() {
+	public UserAuthenticationDto getUser() {
 		return user;
 	}
 
@@ -169,7 +156,7 @@ public class DinnerTable extends MdoDaoBean
 	 * @param user
 	 *            the user to set
 	 */
-	public void setUser(UserAuthentication user) {
+	public void setUser(UserAuthenticationDto user) {
 		this.user = user;
 	}
 
@@ -311,7 +298,7 @@ public class DinnerTable extends MdoDaoBean
 	/**
 	 * @return the type
 	 */
-	public TableType getType() {
+	public TableTypeDto getType() {
 		return type;
 	}
 
@@ -319,14 +306,14 @@ public class DinnerTable extends MdoDaoBean
 	 * @param takeaway
 	 *            the type to set
 	 */
-	public void setType(TableType type) {
+	public void setType(TableTypeDto type) {
 		this.type = type;
 	}
 
 	/**
 	 * @return the orders
 	 */
-	public Set<OrderLine> getOrders() {
+	public Set<OrderLineDto> getOrders() {
 		return orders;
 	}
 
@@ -334,19 +321,19 @@ public class DinnerTable extends MdoDaoBean
 	 * @param orders
 	 *            the orders to set
 	 */
-	public void setOrders(Set<OrderLine> orders) {
+	public void setOrders(Set<OrderLineDto> orders) {
 		this.orders = orders;
 	}
 
 	/**
 	 * Add order line to orders
 	 * 
-	 * @param orderLine
+	 * @param OrderLineDto
 	 *            the order line
 	 */
-	public void addOrderLine(OrderLine orderLine) {
+	public void addOrderLine(OrderLineDto orderLine) {
 		if (orders == null) {
-			orders = new HashSet<OrderLine>();
+			orders = new HashSet<OrderLineDto>();
 		}
 		if (orderLine != null) {
 			orderLine.setDinnerTable(this);
@@ -357,7 +344,7 @@ public class DinnerTable extends MdoDaoBean
 	/**
 	 * @return the bills
 	 */
-	public Set<TableBill> getBills() {
+	public Set<TableBillDto> getBills() {
 		return bills;
 	}
 
@@ -365,7 +352,7 @@ public class DinnerTable extends MdoDaoBean
 	 * @param bills
 	 *            the bills to set
 	 */
-	public void setBills(Set<TableBill> bills) {
+	public void setBills(Set<TableBillDto> bills) {
 		this.bills = bills;
 	}
 
@@ -375,20 +362,20 @@ public class DinnerTable extends MdoDaoBean
 	 * @param bill
 	 *            the bill
 	 */
-	public void addBill(TableBill tableBill) {
+	public void addBill(TableBillDto TableBillDto) {
 		if (bills == null) {
-			bills = new HashSet<TableBill>();
+			bills = new HashSet<TableBillDto>();
 		}
-		if (tableBill != null) {
-			tableBill.setDinnerTable(this);
+		if (TableBillDto != null) {
+			TableBillDto.setDinnerTable(this);
 		}
-		bills.add(tableBill);
+		bills.add(TableBillDto);
 	}
 
 	/**
 	 * @return the credits
 	 */
-	public Set<TableCredit> getCredits() {
+	public Set<TableCreditDto> getCredits() {
 		return credits;
 	}
 
@@ -396,7 +383,7 @@ public class DinnerTable extends MdoDaoBean
 	 * @param credits
 	 *            the credits to set
 	 */
-	public void setCredits(Set<TableCredit> credits) {
+	public void setCredits(Set<TableCreditDto> credits) {
 		this.credits = credits;
 	}
 
@@ -406,9 +393,9 @@ public class DinnerTable extends MdoDaoBean
 	 * @param credit
 	 *            the credit
 	 */
-	public void addCredit(TableCredit credit) {
+	public void addCredit(TableCreditDto credit) {
 		if (credits == null) {
-			credits = new HashSet<TableCredit>();
+			credits = new HashSet<TableCreditDto>();
 		}
 		if (credit != null) {
 			credit.setDinnerTable(this);
@@ -419,7 +406,7 @@ public class DinnerTable extends MdoDaoBean
 	/**
 	 * @return the vats
 	 */
-	public Set<TableVat> getVats() {
+	public Set<TableVatDto> getVats() {
 		return vats;
 	}
 
@@ -427,93 +414,48 @@ public class DinnerTable extends MdoDaoBean
 	 * @param vats
 	 *            the vats to set
 	 */
-	public void setVats(Set<TableVat> vats) {
+	public void setVats(Set<TableVatDto> vats) {
 		this.vats = vats;
 	}
 
 	/**
 	 * Add VAT Table to vats
 	 * 
-	 * @param TableVat
+	 * @param TableVatDto
 	 *            the VAT table
 	 */
-	public void addTableVat(TableVat tableVat) {
-		if (vats == null) {
-			vats = new HashSet<TableVat>();
+	public void addTableVatDto(TableVatDto vat) {
+		if (this.vats == null) {
+			this.vats = new HashSet<TableVatDto>();
 		}
-		if (tableVat != null) {
-			tableVat.setDinnerTable(this);
+		if (vat != null) {
+			vat.setDinnerTable(this);
 		}
-		vats.add(tableVat);
+		vats.add(vat);
 	}
 
 	/**
 	 * @param cashing
-	 *            the cashing
+	 *            the cashing to set
 	 */
-	public void setCashing(TableCashing cashing) {
+	public void setCashing(TableCashingDto cashing) {
 		this.cashing = cashing;
-		if (this.cashing != null) {
-			this.cashing.setDinnerTable(this);
-		}
 	}
 
 	/**
 	 * @return the cashing
 	 */
-	public TableCashing getCashing() {
+	public TableCashingDto getCashing() {
 		return cashing;
-	}
-
-	/**
-	 * @return the quantitiesSumByFormula
-	 */
-	public BigDecimal getQuantitiesSumByFormula() {
-		return quantitiesSumByFormula;
-	}
-
-	/**
-	 * @param quantitiesSumByFormula the quantitiesSumByFormula to set
-	 */
-	public void setQuantitiesSumByFormula(BigDecimal quantitiesSumByFormula) {
-		this.quantitiesSumByFormula = quantitiesSumByFormula;
-	}
-
-	/**
-	 * @return the amountsSumByFormula
-	 */
-	public BigDecimal getAmountsSumByFormula() {
-		return amountsSumByFormula;
-	}
-
-	/**
-	 * @param amountsSumByFormula the amountsSumByFormula to set
-	 */
-	public void setAmountsSumByFormula(BigDecimal amountsSumByFormula) {
-		this.amountsSumByFormula = amountsSumByFormula;
-	}
-
-	/**
-	 * @param amountPayByFormula the amountPayByFormula to set
-	 */
-	public void setAmountPayByFormula(BigDecimal amountPayByFormula) {
-		this.amountPayByFormula = amountPayByFormula;
-	}
-
-	/**
-	 * @return the amountPayByFormula
-	 */
-	public BigDecimal getAmountPayByFormula() {
-		return amountPayByFormula;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((registrationDate == null) ? 0 : registrationDate.hashCode());
+		result = prime * result + ((registrationDate == null) ? 0 : new Long(registrationDate.getTime()).hashCode());
 		result = prime * result + ((number == null) ? 0 : number.hashCode());
-		result = prime * result + ((restaurant == null) ? 0 : restaurant.hashCode());
+		result = prime * result + ((restaurant == null || restaurant.getId() == null) ? 0 : restaurant.getId().hashCode());
 		return result;
 	}
 
@@ -525,7 +467,7 @@ public class DinnerTable extends MdoDaoBean
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		DinnerTable other = (DinnerTable) obj;
+		DinnerTableDto other = (DinnerTableDto) obj;
 		if (registrationDate == null) {
 			if (other.registrationDate != null)
 				return false;
@@ -539,8 +481,12 @@ public class DinnerTable extends MdoDaoBean
 		if (restaurant == null) {
 			if (other.restaurant != null)
 				return false;
-		} else if (!restaurant.equals(other.restaurant))
+		} else if (restaurant.getId() == null) {
+			if (other.restaurant.getId() != null)
+				return false;
+		} else if (!restaurant.getId().equals(other.getRestaurant().getId())) {
 			return false;
+		}
 		return true;
 	}
 
@@ -549,7 +495,7 @@ public class DinnerTable extends MdoDaoBean
 		return "DinnerTable [amountPay=" + amountPay + ", amountsSum=" + amountsSum + ", bills=" + bills + ", cashing=" + cashing + ", credits=" + credits
 				+ ", customersNumber=" + customersNumber + ", number=" + number + ", orders=" + orders + ", printingDate=" + printingDate + ", quantitiesSum=" + quantitiesSum + ", reductionRatio="
 				+ reductionRatio + ", reductionRatioChanged=" + reductionRatioChanged + ", registrationDate=" + registrationDate + ", restaurant=" + restaurant + ", roo_id=" + roo_id + ", type="
-				+ type + ", user=" + user + ", vats=" + vats + ", deleted=" + deleted + ", id=" + id + "]";
+				+ type + ", user=" + user + ", vats=" + vats + ", id=" + id + "]";
 	}
 
 }

@@ -14,8 +14,8 @@
 
 		<property name="shortCode" column="psc_short_code" />
 	
-		<many-to-one name="restaurant" column="res_id"/>
-		<many-to-one name="code" column="psc_code_enm_id"/>
+		<many-to-one name="restaurant" column="res_id" />
+		<many-to-one name="code" column="psc_code_enm_id" />
 
 		<map name="labels" table="t_product_special_code_language">
 			<key column="psc_id" />

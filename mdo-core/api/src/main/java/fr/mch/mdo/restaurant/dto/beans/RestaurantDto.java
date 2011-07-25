@@ -92,6 +92,13 @@ public class RestaurantDto extends MdoDtoBean
      * <!--2 = TENTH ROUND-->
      */
     private MdoTableAsEnumDto specificRound;
+	/**
+	 * This is the default table type.
+	 * It is a foreign that refers to the t_table_type table.
+	 * It is used to specify the dinner table type which can be EAT_IN, TAKEAWAY, ....
+	 */
+	private TableTypeDto defaultTableType;
+
     /**
      * List of vats for this restaurant
      */
@@ -100,6 +107,12 @@ public class RestaurantDto extends MdoDtoBean
      * List of prefix table names for this restaurant
      */
     private Set<RestaurantPrefixTableDto> prefixTableNames = new HashSet<RestaurantPrefixTableDto>();
+
+    /**
+     * Map of ProductSpecialCode with key == short code and value == ProductSpecialCodeDto
+     */
+    private Set<ProductSpecialCodeDto> productSpecialCodes = new HashSet<ProductSpecialCodeDto>();
+
     /**
      * @return the registrationDate
      */
@@ -268,7 +281,19 @@ public class RestaurantDto extends MdoDtoBean
     public void setSpecificRound(MdoTableAsEnumDto specificRound) {
         this.specificRound = specificRound;
     }
-    /**
+	/**
+	 * @param defaultTableType the defaultTableType to set
+	 */
+	public void setDefaultTableType(TableTypeDto defaultTableType) {
+		this.defaultTableType = defaultTableType;
+	}
+	/**
+	 * @return the defaultTableType
+	 */
+	public TableTypeDto getDefaultTableType() {
+		return defaultTableType;
+	}
+	/**
      * @return the vats
      */
     public Set<RestaurantValueAddedTaxDto> getVats() {
@@ -292,6 +317,19 @@ public class RestaurantDto extends MdoDtoBean
 	 */
 	public Set<RestaurantPrefixTableDto> getPrefixTableNames() {
 		return prefixTableNames;
+	}
+
+	/**
+	 * @param productSpecialCodes the productSpecialCodes to set
+	 */
+	public void setProductSpecialCodes(Set<ProductSpecialCodeDto> productSpecialCodes) {
+		this.productSpecialCodes = productSpecialCodes;
+	}
+	/**
+	 * @return the productSpecialCodes
+	 */
+	public Set<ProductSpecialCodeDto> getProductSpecialCodes() {
+		return productSpecialCodes;
 	}
 	@Override
     public String toString() {

@@ -2,7 +2,6 @@ package fr.mch.mdo.restaurant.ui.forms;
 
 import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
-import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
 
 public interface IMdoForm
 {
@@ -14,7 +13,4 @@ public interface IMdoForm
 
     IMdoDtoBean getDtoBean();
     
-    IAdministrationManagerViewBean getViewBean();
-    
-    void setViewBean(IAdministrationManagerViewBean viewBean);
 }
