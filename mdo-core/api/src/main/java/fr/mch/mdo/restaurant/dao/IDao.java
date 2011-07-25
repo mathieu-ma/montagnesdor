@@ -1,7 +1,6 @@
 package fr.mch.mdo.restaurant.dao;
 
 import fr.mch.mdo.logs.ILoggerBean;
-import fr.mch.mdo.restaurant.exception.MdoException;
 
 
 
