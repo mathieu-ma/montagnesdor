@@ -12,6 +12,16 @@
 		<property name="order" value="0" />
 		<property name="type" value="SPECIFIC_ROUND" />
 	</bean>
+	<bean id="MdoTableType" class="fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto">
+		<property name="defaultLabel" value="Eat in" />
+		<property name="languageKeyLabel" value="TABLE_TYPE.EAT_IN.0" />
+		<property name="name" value="EAT_IN" />
+		<property name="order" value="0" />
+		<property name="type" value="TABLE_TYPE" />
+	</bean>
+	<bean id="TableType" class="fr.mch.mdo.restaurant.dto.beans.TableTypeDto">
+		<property name="code" ref="MdoTableType" />
+	</bean>
 	<bean id="RestaurantGlobalAdmin" class="fr.mch.mdo.restaurant.dto.beans.RestaurantDto">
 		<property name="reference" value="RESTAURANT_GLOBAL_ADMIN" />
 		<property name="name" value="RESTAURANT GLOBAL ADMIN" />
@@ -30,6 +40,7 @@
 		<property name="takeawayMinAmountReduction" value="15" />
 
 		<property name="specificRound" ref="SpecificRound" />
+		<property name="defaultTableType" ref="TableType" />
 	</bean>
 
 	<bean id="UserRoleCode" class="fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto">

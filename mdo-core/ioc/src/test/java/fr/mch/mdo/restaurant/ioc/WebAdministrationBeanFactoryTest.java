@@ -4,6 +4,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import fr.mch.mdo.logs.ILogger;
 import fr.mch.mdo.restaurant.authentication.IMdoAuthenticationService;
+import fr.mch.mdo.restaurant.ioc.spring.MdoBeanFactory;
 import fr.mch.mdo.restaurant.ioc.spring.WebAdministractionBeanFactory;
 import fr.mch.mdo.restaurant.services.business.managers.ICategoriesManager;
 import fr.mch.mdo.restaurant.services.business.managers.locales.ILocalesManager;
@@ -37,8 +38,14 @@ public class WebAdministrationBeanFactoryTest extends MdoIocBasicTestCase
 	}
 
 	public void testGetInstance() {
-		IWebAdministractionBeanFactory iMdoBeanFactory = WebAdministractionBeanFactory.getInstance();
-		assertTrue(iMdoBeanFactory instanceof WebAdministractionBeanFactory);
+		IWebAdministractionBeanFactory iWebAdministractionBeanFactory = WebAdministractionBeanFactory.getInstance();
+		assertTrue(iWebAdministractionBeanFactory instanceof WebAdministractionBeanFactory);
+
+		IMdoBeanFactory iMdoBeanFactory = MdoBeanFactory.getInstance();
+		assertTrue(iMdoBeanFactory instanceof MdoBeanFactory);
+
+		// The following bean is singleton scope
+		assertTrue("Check reference equality of IOC beans", iWebAdministractionBeanFactory.getMessageQuery() == iMdoBeanFactory.getMessageQuery());
 	}
 
 	public void testGetLogger() {

@@ -25,7 +25,7 @@
  		<property name="loggerMessage"><ref bean="LoggerI18Message"/></property>
  	</bean>
 
-	<bean id="LoggerService" class="fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl">
+	<bean id="LoggerService" class="fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl" scope="singleton">
  		<property name="logger"><ref bean="Logger"/></property>
  	</bean>
 

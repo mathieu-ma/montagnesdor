@@ -52,6 +52,15 @@
 		</property>
 		<property name="vatsAssembler" ref="VatsAssembler" />
 	</bean>
+	<bean id="ProductSpecialCodesAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultProductSpecialCodesAssembler">
+		<property name="logger">
+			<bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultProductSpecialCodesAssembler</value></constructor-arg>
+   		   	</bean>
+		</property>
+		<property name="mdoTableAsEnumsAssembler" ref="MdoTableAsEnumsAssembler" />
+		<property name="restaurantsAssembler" ref="RestaurantsAssembler" />
+	</bean>
 	<bean id="RestaurantsAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultRestaurantsAssembler">
 		<property name="logger">
 			<bean factory-bean="Logger" factory-method="getLogger">
@@ -59,8 +68,10 @@
    		   	</bean>
 		</property>
 		<property name="mdoTableAsEnumsAssembler" ref="MdoTableAsEnumsAssembler" />
+		<property name="tableTypesAssembler" ref="TableTypesAssembler" />
 		<property name="restaurantVatsAssembler" ref="RestaurantVatsAssembler" />
 		<property name="restaurantPrefixTablesAssembler" ref="RestaurantPrefixTablesAssembler" />
+		<property name="productSpecialCodesAssembler" ref="ProductSpecialCodesAssembler" />
 	</bean>
 	<bean id="UserRestaurantsAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultUserRestaurantsAssembler">
 		<property name="logger">
@@ -140,15 +151,6 @@
 		<property name="productCategoriesAssembler" ref="ProductCategoriesAssembler" />
 		<property name="restaurantsAssembler" ref="RestaurantsAssembler" />
 		<property name="vatsAssembler" ref="VatsAssembler" />
-	</bean>
-	<bean id="ProductSpecialCodesAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultProductSpecialCodesAssembler">
-		<property name="logger">
-			<bean factory-bean="Logger" factory-method="getLogger">
-			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultProductSpecialCodesAssembler</value></constructor-arg>
-   		   	</bean>
-		</property>
-		<property name="mdoTableAsEnumsAssembler" ref="MdoTableAsEnumsAssembler" />
-		<property name="restaurantsAssembler" ref="RestaurantsAssembler" />
 	</bean>
 	<bean id="PrintingInformationsAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultPrintingInformationsAssembler">
 		<property name="logger">

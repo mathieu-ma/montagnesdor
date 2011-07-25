@@ -2,19 +2,14 @@ package fr.mch.mdo.restaurant.ioc.spring;
 
 import java.util.Set;
 
-import fr.mch.mdo.i18n.IMessageQuery;
-import fr.mch.mdo.i18n.MessageQueryResourceBundleImpl;
 import fr.mch.mdo.logs.ILogger;
-import fr.mch.mdo.logs.ILoggerService;
-import fr.mch.mdo.restaurant.Constants;
 import fr.mch.mdo.restaurant.IocBeanName;
-import fr.mch.mdo.restaurant.authentication.IMdoAuthenticationService;
-import fr.mch.mdo.restaurant.authorization.IMdoAuthorizationService;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.dto.beans.LocaleDto;
 import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
+import fr.mch.mdo.restaurant.dto.beans.TableTypeDto;
 import fr.mch.mdo.restaurant.dto.beans.UserAuthenticationDto;
 import fr.mch.mdo.restaurant.dto.beans.UserDto;
 import fr.mch.mdo.restaurant.dto.beans.UserLocaleDto;
@@ -22,8 +17,6 @@ import fr.mch.mdo.restaurant.dto.beans.UserRestaurantDto;
 import fr.mch.mdo.restaurant.dto.beans.UserRoleDto;
 import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.exception.MdoFunctionalException;
-import fr.mch.mdo.restaurant.exception.MdoTechnicalException;
-import fr.mch.mdo.restaurant.ioc.IBeanFactory;
 import fr.mch.mdo.restaurant.ioc.IWebAdministractionBeanFactory;
 import fr.mch.mdo.restaurant.services.business.managers.ICategoriesManager;
 import fr.mch.mdo.restaurant.services.business.managers.locales.ILocalesManager;
@@ -39,10 +32,9 @@ import fr.mch.mdo.restaurant.services.business.managers.users.IUserAuthenticatio
 import fr.mch.mdo.restaurant.services.business.managers.users.IUserRolesManager;
 import fr.mch.mdo.restaurant.services.business.managers.users.IUsersManager;
 
-public class WebAdministractionBeanFactory implements IWebAdministractionBeanFactory 
+public class WebAdministractionBeanFactory extends MdoBeanFactory implements IWebAdministractionBeanFactory 
 {
 	private ILogger logger;
-	private IBeanFactory beanFactory;
 	
 	private static class LazyHolder {
 		private static IWebAdministractionBeanFactory instance = new WebAdministractionBeanFactory();
@@ -52,23 +44,16 @@ public class WebAdministractionBeanFactory implements IWebAdministractionBeanFac
 	}
 
 	private WebAdministractionBeanFactory() {
+		// Load IOC file configuration
+		super();
 		try {
-			this.beanFactory = new SpringBeanFactory(Constants.SPRING_CONFIGURATION_FILE.split(","));
 			logger = this.getLogger(WebAdministractionBeanFactory.class.getName());
 			initGlobalAdminUser();
 		} catch (MdoFunctionalException e) {
 			logger.error("message.error.ioc.init.admin", e);
-		} catch (MdoTechnicalException e) {
-			// Could not use IOC
-			throw new ExceptionInInitializerError(MessageQueryResourceBundleImpl.getInstance().getMessage("message.error.ioc.init.spring"));
 		}
 	}
 	
-	@Override
-	public Object getBean(IocBeanName beanName) {
-		return beanFactory.getBean(beanName);
-	}
-
 	/**
 	 * Maybe this method has to be transactional by AspectJ.
 	 * @throws MdoFunctionalException
@@ -111,6 +96,11 @@ public class WebAdministractionBeanFactory implements IWebAdministractionBeanFac
 				specificRound = processMdoTableAsEnum(specificRound, userContext);
 				restaurant.setSpecificRound(specificRound);
 				
+				TableTypeDto defaultTableType = restaurant.getDefaultTableType();
+				// Check the existence of Table Type in database
+				defaultTableType = processTableType(defaultTableType, userContext);
+				restaurant.setDefaultTableType(defaultTableType);
+
 				// Check and save the existence of restaurant in database
 				try {
 					restaurant = (RestaurantDto) this.getRestaurantsManager().findByReference(restaurant.getReference(), userContext);
@@ -197,7 +187,30 @@ public class WebAdministractionBeanFactory implements IWebAdministractionBeanFac
 		}
 		return result;
 	}
-	
+
+	/**
+	 * Check and save the existence of the TableTypeDto in database
+	 * @param dtBean
+	 * @param userContext
+	 * @return
+	 * @throws MdoFunctionalException
+	 */
+	private TableTypeDto processTableType(TableTypeDto dtBean, MdoUserContext userContext) throws MdoFunctionalException {
+		TableTypeDto result = dtBean;
+		// Check the existence of Specific Round in database
+		try {
+			result = (TableTypeDto) this.getTableTypesManager().findByCodeName(result.getCode().getName(), userContext);
+			if (result == null || result.getId() == null) {
+				// Save the bean
+				result = (TableTypeDto) this.getTableTypesManager().insert(dtBean, userContext);
+			}
+		} catch (MdoException e) {
+			logger.fatal("Could not retrieve/save MdoTableAsEnumDto with type(" + result.getCode().getType() + ") and name(" + result.getCode().getType() + ")", e);
+			throw new MdoFunctionalException("Could not retrieve/save MdoTableAsEnumDto with type(" + result.getCode().getType() + ") and name(" + result.getCode().getType() + ")", e);
+		}
+		return result;
+	}
+
 	@Override
 	public ILocalesManager getLocalesManager() {
 		return ((ILocalesManager) this.getBean(IocBeanName.BEAN_LOCALES_MANAGER_NAME));
@@ -261,30 +274,5 @@ public class WebAdministractionBeanFactory implements IWebAdministractionBeanFac
 	@Override
 	public IPrintingInformationsManager getPrintingInformationsManager() {
 		return ((IPrintingInformationsManager) this.getBean(IocBeanName.BEAN_PRINTING_INFORMATIONS_MANAGER_NAME));
-	}
-
-	@Override
-	public IMdoAuthenticationService getMdoAuthenticationService() {
-		return ((IMdoAuthenticationService) this.getBean(IocBeanName.BEAN_AUTHENTICATION_JAAS_NAME));
-	}
-
-	@Override
-	public IMdoAuthorizationService getMdoAuthorizationService() {
-		return ((IMdoAuthorizationService) this.getBean(IocBeanName.BEAN_AUTHORIZATION_JAAS_NAME));
-	}
-
-	@Override
-	public IMessageQuery getMessageQuery() {
-		return ((IMessageQuery) getBean(IocBeanName.BEAN_I18N_NAME));
-	}
-
-	@Override
-	public ILogger getLogger() {
-		return ((ILoggerService) getBean(IocBeanName.BEAN_LOG_NAME)).getLogger();
-	}
-
-	@Override
-	public ILogger getLogger(String className) {
-		return ((ILoggerService) getBean(IocBeanName.BEAN_LOG_NAME)).getLogger(className);
 	}
 }
