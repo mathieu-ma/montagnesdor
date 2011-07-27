@@ -1,6 +1,7 @@
 DELETE FROM t_revenue_vat;
 DELETE FROM t_revenue_cashing;
 DELETE FROM t_revenue;
+DELETE FROM t_cashing_type;
 DELETE FROM t_table_cashing;
 DELETE FROM t_table_vat;
 DELETE FROM t_table_bill;
@@ -39,7 +40,7 @@ DELETE FROM t_enum;
 --COMMENT ON COLUMN t_locale.loc_language IS 'This is language ISO code.';
 --COMMENT ON COLUMN t_locale.loc_deleted IS 'This is used for logical deletion.';
 INSERT INTO t_locale VALUES(1, 'fr', false);
-INSERT INTO t_locale VALUES(2, 'es', false);
+INSERT INTO t_locale VALUES(2, 'zh', false);
 
 --COMMENT ON TABLE t_enum IS 'This table is used for enumeration type for other tables.';
 --COMMENT ON COLUMN t_enum.enm_id IS 'This is primary key of this table.';
@@ -49,52 +50,62 @@ INSERT INTO t_locale VALUES(2, 'es', false);
 --COMMENT ON COLUMN t_enum.enm_default_label IS 'This field is a default label to display to user.';
 --COMMENT ON COLUMN t_enum.enm_language_key_label IS 'This field is used for java i18n. We can map this field with java properties files as a properties key in order to find the label value.';
 --COMMENT ON COLUMN t_enum.enm_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_enum VALUES(1, 'PREFIX_TABLE_NAME', 'A', 0, 'A', 'PREFIX_TABLE_NAME.A.0', false);
-INSERT INTO t_enum VALUES(2, 'SPECIFIC_ROUND', 'HALF_ROUND', 0, 'HALF_ROUND', 'SPECIFIC_ROUND.HALF_ROUND.0', false);
-INSERT INTO t_enum VALUES(3, 'SPECIFIC_ROUND', 'TENTH_ROUND', 1, 'TENTH_ROUND', 'SPECIFIC_ROUND.TENTH_ROUND.1', false);
-INSERT INTO t_enum VALUES(4, 'PRINTING_INFORMATION_ALIGNMENT', 'RIGHT', 0, 'Right', 'PRINTING_INFORMATION_ALIGNMENT.RIGHT.0', false);
-INSERT INTO t_enum VALUES(5, 'PRINTING_INFORMATION_ALIGNMENT', 'CENTER', 1, 'Center', 'PRINTING_INFORMATION_ALIGNMENT.CENTER.1', false);
-INSERT INTO t_enum VALUES(6, 'PRINTING_INFORMATION_ALIGNMENT', 'LEFT', 2, 'Left', 'PRINTING_INFORMATION_ALIGNMENT.LEFT.2', false);
-INSERT INTO t_enum VALUES(7, 'PRINTING_INFORMATION_SIZE', 'SMALL', 0, 'Small', 'PRINTING_INFORMATION_SIZE.SMALL.0', false);
-INSERT INTO t_enum VALUES(8, 'PRINTING_INFORMATION_SIZE', 'MEDIUM', 1, 'Medium', 'PRINTING_INFORMATION_SIZE.MEDIUM.1', false);
-INSERT INTO t_enum VALUES(9, 'PRINTING_INFORMATION_SIZE', 'LARGE', 2, 'Large', 'PRINTING_INFORMATION_SIZE.LARGE.2', false);
-INSERT INTO t_enum VALUES(10, 'PRINTING_INFORMATION_PART', 'HEADER', 0, 'Header', 'PRINTING_INFORMATION_PART.HEADER.0', false);
-INSERT INTO t_enum VALUES(11, 'PRINTING_INFORMATION_PART', 'FOOTER', 1, 'Footer', 'PRINTING_INFORMATION_PART.FOOTER.1', false);
-INSERT INTO t_enum VALUES(12, 'USER_ROLE', 'GLOBAL_ADMINISTRATOR', 0, 'Global Administrator', 'USER_ROLE.GLOBAL_ADMINISTRATOR.0', false);
-INSERT INTO t_enum VALUES(13, 'USER_ROLE', 'ADMINISTRATOR', 1, 'Administrator', 'USER_ROLE.ADMINISTRATOR.1', false);
-INSERT INTO t_enum VALUES(14, 'USER_ROLE', 'EMPLOYEE', 2, 'Employee', 'USER_ROLE.EMPLOYEE.2', false);
-INSERT INTO t_enum VALUES(15, 'USER_ROLE', 'CUSTOMER', 3, 'Customer', 'USER_ROLE.CUSTOMER.3', false);
-INSERT INTO t_enum VALUES(16, 'CATEGORY', 'MEAT', 0, 'Meat', 'CATEGORY.MEAT.0', false);
-INSERT INTO t_enum VALUES(17, 'CATEGORY', 'FISH', 1, 'Fish', 'CATEGORY.FISH.1', false);
-INSERT INTO t_enum VALUES(18, 'CATEGORY', 'WATER', 2, 'Water', 'CATEGORY.WATER.2', false);
-INSERT INTO t_enum VALUES(19, 'CATEGORY', 'WHITE_WINE', 3, 'White Wine', 'CATEGORY.WHITE_WINE.3', false);
-INSERT INTO t_enum VALUES(20, 'PRODUCT_SPECIAL_CODE', 'OFFERED_PRODUCT', 0, 'Offered product', 'PRODUCT_SPECIAL_CODE.OFFERED_PRODUCT.0', false);
-INSERT INTO t_enum VALUES(21, 'PRODUCT_SPECIAL_CODE', 'DISCOUNT_ORDER', 1, 'Reduced order', 'PRODUCT_SPECIAL_CODE.DISCOUNT_ORDER.1', false);
-INSERT INTO t_enum VALUES(22, 'PRODUCT_SPECIAL_CODE', 'USER_ORDER', 2, 'User order', 'PRODUCT_SPECIAL_CODE.USER_ORDER.2', false);
-INSERT INTO t_enum VALUES(23, 'PRODUCT_SPECIAL_CODE', 'TEST1', 3, 'Test 1', 'PRODUCT_SPECIAL_CODE.TEST1.3', false);
-INSERT INTO t_enum VALUES(24, 'PRODUCT_SPECIAL_CODE', 'TEST2', 4, 'Test 2', 'PRODUCT_SPECIAL_CODE.TEST2.4', false);
-INSERT INTO t_enum VALUES(25, 'PRODUCT_PART', 'ENTRY', 0, 'Test 1', 'PRODUCT_PART.ENTRY.0', false);
-INSERT INTO t_enum VALUES(26, 'PRODUCT_PART', 'DESSERT', 1, 'Test 2', 'PRODUCT_PART.DESSERT.1', false);
-INSERT INTO t_enum VALUES(27, 'CATEGORY', 'RED_WINE', 4, 'Red Wine', 'CATEGORY.RED_WINE.4', false);
-INSERT INTO t_enum VALUES(28, 'USER_TITLE', 'MISTER', 0, 'Mister', 'USER_TITLE.MISTER.0', false);
-INSERT INTO t_enum VALUES(29, 'USER_TITLE', 'MISS', 1, 'Miss', 'USER_TITLE.MISS.1', false);
-INSERT INTO t_enum VALUES(30, 'USER_TITLE', 'DOCTOR', 2, 'Doctor', 'USER_TITLE.DOCTOR.2', false);
-INSERT INTO t_enum VALUES(31, 'VALUE_ADDED_TAX', 'ALCOHOL', 0, '19.60', 'VALUE_ADDED_TAX.ALCOHOL.0', false);
-INSERT INTO t_enum VALUES(32, 'VALUE_ADDED_TAX', 'DEFAULT', 1, '5.50', 'VALUE_ADDED_TAX.DEFAULT.1', false);
-INSERT INTO t_enum VALUES(33, 'TABLE_TYPE', 'TAKE_AWAY', 0, 'Take away', 'TABLE_TYPE.TAKE_AWAY.0', false);
-INSERT INTO t_enum VALUES(34, 'TABLE_TYPE', 'EAT_IN', 1, 'Eat in', 'TABLE_TYPE.EAT_IN.1', false);
-INSERT INTO t_enum VALUES(35, 'CASHING_TYPE', 'GENERIC_CASH', 0, 'Generic Cash', 'CASHING_TYPE.GENERIC_CASH.0', false);
-INSERT INTO t_enum VALUES(36, 'CASHING_TYPE', 'EURO_CASH', 1, 'Euro Cash', 'CASHING_TYPE.EURO_CASH.1', false);
-INSERT INTO t_enum VALUES(37, 'CASHING_TYPE', 'DOLLAR_CASH', 2, 'Euro Cash', 'CASHING_TYPE.DOLLAR_CASH.2', false);
-INSERT INTO t_enum VALUES(38, 'CASHING_TYPE', 'GENERIC_TICKET', 3, 'Euro Cash', 'CASHING_TYPE.GENERIC_TICKET.3', false);
-INSERT INTO t_enum VALUES(39, 'CASHING_TYPE', 'MEAL_TICKET', 4, 'Euro Cash', 'CASHING_TYPE.MEAL_TICKET.4', false);
-INSERT INTO t_enum VALUES(40, 'CASHING_TYPE', 'HOLIDAYS_TICKET', 5, 'Euro Cash', 'CASHING_TYPE.HOLIDAYS_TICKET.5', false);
-INSERT INTO t_enum VALUES(41, 'CASHING_TYPE', 'GENERIC_CHECK', 6, 'Euro Cash', 'CASHING_TYPE.GENERIC_CHECK.6', false);
-INSERT INTO t_enum VALUES(42, 'CASHING_TYPE', 'BNP_CHECK', 7, 'Euro Cash', 'CASHING_TYPE.BNP_CHECK.7', false);
-INSERT INTO t_enum VALUES(43, 'CASHING_TYPE', 'GENERIC_CARD', 8, 'Euro Cash', 'CASHING_TYPE.GENERIC_CARD.8', false);
-INSERT INTO t_enum VALUES(44, 'CASHING_TYPE', 'VISA_CARD', 9, 'Euro Cash', 'CASHING_TYPE.VISA_CARD.9', false);
-INSERT INTO t_enum VALUES(45, 'CASHING_TYPE', 'MASTER_CARD', 10, 'Euro Cash', 'CASHING_TYPE.MASTER_CARD.10', false);
-INSERT INTO t_enum VALUES(46, 'CASHING_TYPE', 'UNPAID', 11, 'Euro Cash', 'CASHING_TYPE.UNPAID.11', false);
+-- The first value of generated id is 0
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('PREFIX_TABLE_NAME', 'A', 0, 'A', 'PREFIX_TABLE_NAME.A.0', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('PREFIX_TABLE_NAME', 'B', 1, 'B', 'PREFIX_TABLE_NAME.B.1', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('SPECIFIC_ROUND', 'HALF_ROUND', 0, 'HALF_ROUND', 'SPECIFIC_ROUND.HALF_ROUND.0', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('SPECIFIC_ROUND', 'TENTH_ROUND', 1, 'TENTH_ROUND', 'SPECIFIC_ROUND.TENTH_ROUND.1', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('PRINTING_INFORMATION_ALIGNMENT', 'RIGHT', 0, 'Right', 'PRINTING_INFORMATION_ALIGNMENT.RIGHT.0', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('PRINTING_INFORMATION_ALIGNMENT', 'CENTER', 1, 'Center', 'PRINTING_INFORMATION_ALIGNMENT.CENTER.1', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('PRINTING_INFORMATION_ALIGNMENT', 'LEFT', 2, 'Left', 'PRINTING_INFORMATION_ALIGNMENT.LEFT.2', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('PRINTING_INFORMATION_SIZE', 'SMALL', 0, 'Small', 'PRINTING_INFORMATION_SIZE.SMALL.0', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('PRINTING_INFORMATION_SIZE', 'MEDIUM', 1, 'Medium', 'PRINTING_INFORMATION_SIZE.MEDIUM.1', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('PRINTING_INFORMATION_SIZE', 'LARGE', 2, 'Large', 'PRINTING_INFORMATION_SIZE.LARGE.2', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('PRINTING_INFORMATION_PART', 'HEADER', 0, 'Header', 'PRINTING_INFORMATION_PART.HEADER.0', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('PRINTING_INFORMATION_PART', 'FOOTER', 1, 'Footer', 'PRINTING_INFORMATION_PART.FOOTER.1', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('USER_ROLE', 'GLOBAL_ADMINISTRATOR', 0, 'Global Administrator', 'USER_ROLE.GLOBAL_ADMINISTRATOR.0', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('USER_ROLE', 'ADMINISTRATOR', 1, 'Administrator', 'USER_ROLE.ADMINISTRATOR.1', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('USER_ROLE', 'EMPLOYEE', 2, 'Employee', 'USER_ROLE.EMPLOYEE.2', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('USER_ROLE', 'CUSTOMER', 3, 'Customer', 'USER_ROLE.CUSTOMER.3', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('CATEGORY', 'MEAT', 0, 'Meat', 'CATEGORY.MEAT.0', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('CATEGORY', 'FISH', 1, 'Fish', 'CATEGORY.FISH.1', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('CATEGORY', 'WATER', 2, 'Water', 'CATEGORY.WATER.2', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('CATEGORY', 'WHITE_WINE', 3, 'White Wine', 'CATEGORY.WHITE_WINE.3', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('PRODUCT_SPECIAL_CODE', 'DEFAULT', 0, 'Default product', 'PRODUCT_SPECIAL_CODE.DEFAULT.0', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('PRODUCT_SPECIAL_CODE', 'OFFERED_PRODUCT', 1, 'Offered product', 'PRODUCT_SPECIAL_CODE.OFFERED_PRODUCT.1', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('PRODUCT_SPECIAL_CODE', 'DISCOUNT_ORDER', 2, 'Reduced order', 'PRODUCT_SPECIAL_CODE.DISCOUNT_ORDER.2', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('PRODUCT_SPECIAL_CODE', 'USER_ORDER', 3, 'User order', 'PRODUCT_SPECIAL_CODE.USER_ORDER.3', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('PRODUCT_SPECIAL_CODE', 'TEST1', 4, 'Test 1', 'PRODUCT_SPECIAL_CODE.TEST1.4', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('PRODUCT_SPECIAL_CODE', 'TEST2', 5, 'Test 2', 'PRODUCT_SPECIAL_CODE.TEST2.5', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('PRODUCT_PART', 'ENTRY', 0, 'Test 1', 'PRODUCT_PART.ENTRY.0', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('PRODUCT_PART', 'DESSERT', 1, 'Test 2', 'PRODUCT_PART.DESSERT.1', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('CATEGORY', 'RED_WINE', 4, 'Red Wine', 'CATEGORY.RED_WINE.4', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('USER_TITLE', 'MISTER', 0, 'Mister', 'USER_TITLE.MISTER.0', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('USER_TITLE', 'MISS', 1, 'Miss', 'USER_TITLE.MISS.1', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('USER_TITLE', 'DOCTOR', 2, 'Doctor', 'USER_TITLE.DOCTOR.2', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('VALUE_ADDED_TAX', 'ALCOHOL', 0, '19.60', 'VALUE_ADDED_TAX.ALCOHOL.0', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('VALUE_ADDED_TAX', 'DEFAULT', 1, '5.50', 'VALUE_ADDED_TAX.DEFAULT.1', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('TABLE_TYPE', 'TAKE_AWAY', 0, 'Take away', 'TABLE_TYPE.TAKE_AWAY.0', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('TABLE_TYPE', 'EAT_IN', 1, 'Eat in', 'TABLE_TYPE.EAT_IN.1', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('CASHING_TYPE', 'GENERIC_CASH', 0, 'Generic Cash', 'CASHING_TYPE.GENERIC_CASH.0', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('CASHING_TYPE', 'EURO_CASH', 1, 'Euro Cash', 'CASHING_TYPE.EURO_CASH.1', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('CASHING_TYPE', 'DOLLAR_CASH', 2, 'Dollar Cash', 'CASHING_TYPE.DOLLAR_CASH.2', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('CASHING_TYPE', 'GENERIC_TICKET', 3, 'Tcket Cash', 'CASHING_TYPE.GENERIC_TICKET.3', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('CASHING_TYPE', 'MEAL_TICKET', 4, 'Meal Ticket Cash', 'CASHING_TYPE.MEAL_TICKET.4', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('CASHING_TYPE', 'HOLIDAYS_TICKET', 5, 'Holidays Ticket Cash', 'CASHING_TYPE.HOLIDAYS_TICKET.5', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('CASHING_TYPE', 'GENERIC_CHECK', 6, 'Check Cash', 'CASHING_TYPE.GENERIC_CHECK.6', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('CASHING_TYPE', 'BNP_CHECK', 7, 'BNP Cash', 'CASHING_TYPE.BNP_CHECK.7', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('CASHING_TYPE', 'GENERIC_CARD', 8, 'Card Cash', 'CASHING_TYPE.GENERIC_CARD.8', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('CASHING_TYPE', 'VISA_CARD', 9, 'VISA Card Cash', 'CASHING_TYPE.VISA_CARD.9', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('CASHING_TYPE', 'MASTER_CARD', 10, 'Master Card Cash', 'CASHING_TYPE.MASTER_CARD.10', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('CASHING_TYPE', 'UNPAID', 11, 'Unpaid Cash', 'CASHING_TYPE.UNPAID.11', false);
+
+--COMMENT ON TABLE t_table_type IS 'This table is used for table type.';
+--COMMENT ON COLUMN t_table_type.tbt_id IS 'This is primary key of this table.';
+--COMMENT ON COLUMN t_table_type.tbt_code_enm_id IS 'This is the code of the table type. This is a unique field. It is a foreign that refers to the t_enum table for type TABLE_TYPE.';
+--COMMENT ON COLUMN t_table_type.tbt_deleted IS 'This is used for logical deletion.';
+INSERT INTO t_table_type VALUES(1, 34, false);
+INSERT INTO t_table_type VALUES(2, 35, false);
 
 --COMMENT ON TABLE t_restaurant IS 'This table contains the restaurants informations.';
 --COMMENT ON COLUMN t_restaurant.res_id IS 'This is primary key of this table.';
@@ -112,23 +123,16 @@ INSERT INTO t_enum VALUES(46, 'CASHING_TYPE', 'UNPAID', 11, 'Euro Cash', 'CASHIN
 --COMMENT ON COLUMN t_restaurant.res_takeaway_basic_reduction IS 'This is the restaurant reduction for takeaway table we have to apply. This field depends on the field res_takeaway_min_amount_reduction.';
 --COMMENT ON COLUMN t_restaurant.res_takeaway_min_amount_reduction IS 'This is the minimum amount value to apply a reduction for takeaway table.';
 --COMMENT ON COLUMN t_restaurant.res_specific_round IS 'This is the specific round to apply on all amounts calculations. It is a foreign that refers to the t_enum table for type SPECIFIC_ROUND_CALCULATION.';
+--COMMENT ON COLUMN t_restaurant.tbt_id IS 'This is the default table type. It is a foreign that refers to the t_table_type table. It is used to specify the dinner table type which can be EAT_IN, TAKEAWAY, ....';
 --COMMENT ON COLUMN t_restaurant.res_deleted IS 'This is used for logical deletion.';
 INSERT INTO t_restaurant VALUES(1, '1970-08-15 15:08:19', '10203040506070', 
 'Kim-San', '11 allée Clémencet', '93340', 'Le Raincy', '01 43 02 50 90', 
 '1234567890', '0987654321', 'F5E4D3C2B1A0',
-true, 10, 15, 2, false);
+true, 10, 15, 2, 1, false);
 INSERT INTO t_restaurant VALUES(2, '1970-08-15 15:08:19', '10203040506070B0', 
 'Kim-San', '11 allée Clémencet', '93340', 'Le Raincy', '01 43 02 50 90', 
 '1234567890', '0987654321', 'F5E4D3C2B1A0',
-true, 10, 15, 2, false);
-
---COMMENT ON TABLE t_table_type IS 'This table is used for table type.';
---COMMENT ON COLUMN t_table_type.tbt_id IS 'This is primary key of this table.';
---COMMENT ON COLUMN t_table_type.tbt_code_enm_id IS 'This is the code of the table type. This is a unique field. It is a foreign that refers to the t_enum table for type TABLE_TYPE.';
---COMMENT ON COLUMN t_table_type.tbt_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_table_type VALUES(1, 33, false);
-INSERT INTO t_table_type VALUES(2, 34, false);
-
+true, 10, 15, 2, 2, false);
 
 --COMMENT ON TABLE t_restaurant_prefix_table IS 'This table is a association table. This table is used to store the list of restaurant table prefix names. These prefix names is used to know that a table is considered as a takeaway table.';
 --COMMENT ON COLUMN t_restaurant_prefix_table.rpt_id IS 'This is primary key of this table.';
@@ -143,8 +147,8 @@ INSERT INTO t_restaurant_prefix_table VALUES(1, 1, 1, 1, false);
 --COMMENT ON COLUMN t_value_added_tax.vat_code_enm_id IS 'This is the code of the value added tax. This is a unique field. It is a foreign that refers to the t_enum table for type VAT.';
 --COMMENT ON COLUMN t_value_added_tax.vat_rate IS 'This is rate of value added tax. This is a unique field.';
 --COMMENT ON COLUMN t_value_added_tax.vat_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_value_added_tax VALUES(1, 31, 19.60, false);
-INSERT INTO t_value_added_tax VALUES(2, 32, 5.50, false);
+INSERT INTO t_value_added_tax VALUES(1, 32, 19.60, false);
+INSERT INTO t_value_added_tax VALUES(2, 33, 5.50, false);
 
 --COMMENT ON TABLE t_restaurant_vat IS 'This table is used for restaurant value added tax. Each restaurant has a list of value added tax.';
 --COMMENT ON COLUMN t_restaurant_vat.rvt_id IS 'This is primary key of this table.';
@@ -212,7 +216,7 @@ INSERT INTO t_product_special_code VALUES(1, 1, '#', 20, false);
 --COMMENT ON COLUMN t_product_part.prp_id IS 'This is primary key of this table.';
 --COMMENT ON COLUMN t_product_part.prp_code_enm_id IS 'This is a foreign key that refers to t_enum. It is used to specify the product part: ENTREE, PLAT DE RESISTANCE, DESSERT, CAFE...';
 --COMMENT ON COLUMN t_product_part.prp_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_product_part VALUES(1, 25, false);
+INSERT INTO t_product_part VALUES(1, 26, false);
 
 
 --COMMENT ON TABLE t_product IS 'This table is used for product.';
@@ -245,11 +249,13 @@ INSERT INTO t_product_category (pdt_id, cat_id, pdc_quantity, pdc_deleted) VALUE
 
 --COMMENT ON TABLE t_product_sold IS 'This table is used for reporting of sold product.';
 --COMMENT ON COLUMN t_product_sold.pds_id IS 'This is primary key of this table.';
---COMMENT ON COLUMN t_product_sold.pds_sold_date IS 'This is the sold date of the product. This field and the other pdt_id field consist of a unique field.';
+--COMMENT ON COLUMN t_product_sold.pds_sold_year IS 'This is the sold year of the product. This field and the others pdt_id, pds_sold_month, and pds_sold_day consist of a unique field.';
+--COMMENT ON COLUMN t_product_sold.pds_sold_month IS 'This is the sold month of the product. This field and the others pdt_id, pds_sold_year, and pds_sold_day consist of a unique field.';
+--COMMENT ON COLUMN t_product_sold.pds_sold_day IS 'This is the sold day of the product. This field and the others pdt_id, pds_sold_year, and pds_sold_month consist of a unique field.';
 --COMMENT ON COLUMN t_product_sold.pdt_id IS 'This is a foreign key that refers to t_product. It is used to specify the sold product. This field and the others pds_updated_date fields consist of a unique field.';
 --COMMENT ON COLUMN t_product_sold.pds_quantity IS 'This is the quantity of the sold product for a specific date.';
 --COMMENT ON COLUMN t_product_sold.pds_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_product_sold VALUES(1, '1970-08-15', 1, 2, false);
+INSERT INTO t_product_sold VALUES(1, 1970, 8, 15, 1, 2, false);
 
 --COMMENT ON TABLE t_credit IS 'This table is used for restaurant credits. One credit must belong to a restaurant.';
 --COMMENT ON COLUMN t_credit.cre_id IS 'This is primary key of this table.';
@@ -264,22 +270,28 @@ INSERT INTO t_credit VALUES(1, 1, '123456789', 1.9, '1970-08-15 15:08:19', null,
 
 --COMMENT ON TABLE t_dinner_table IS 'This table is used for dinner tables.';
 --COMMENT ON COLUMN t_dinner_table.dtb_id IS 'This is primary key of this table.';
---COMMENT ON COLUMN t_dinner_table.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant where the dinner table belongs. Notice that this information is already known with the aut_id field. But this field is used for the unicity of the dinner table. So this field and the others dtb_code and dtb_cashing_date consist of a unique field.';
---COMMENT ON COLUMN t_dinner_table.dtb_code IS 'This is the code number of the dinner table. This field and the others res_id and dtb_cashing_date consist of a unique field.';
---COMMENT ON COLUMN t_dinner_table.dtb_cashing_date IS 'This is the dinner table cashing date. It is used to know if the dinner table has already payed. If not then this field is null and we can not create a new dinner table with the same code in the same restaurant. This field and the others res_id and dtb_cashing_date consist of a unique field.';
+--COMMENT ON COLUMN t_dinner_table.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant where the dinner table belongs. Notice that this information is already known with the aut_id field. But this field is used for the unicity of the dinner table. So this field and the others dtb_code and dtb_registration_date consist of a unique field.';
+--COMMENT ON COLUMN t_dinner_table.dtb_code IS 'This is the code number of the dinner table. This field and the others res_id and dtb_registration_date consist of a unique field.';
 --COMMENT ON COLUMN t_dinner_table.aut_id IS 'This is a foreign key that refers to t_user_authentication. It is used to specify the user authentication that created this dinner table.';
 --COMMENT ON COLUMN t_dinner_table.roo_id IS 'This is an id for the room where the dinner table is. It is not currently used.';
 --COMMENT ON COLUMN t_dinner_table.dtb_customers_number IS 'This is used to specify the number of customers.';
 --COMMENT ON COLUMN t_dinner_table.dtb_quantities_sum IS 'This is used to specify the sum of the order lines quantities. This value could be calculated from order lines table.';
 --COMMENT ON COLUMN t_dinner_table.dtb_amounts_sum IS 'This is used to specify the sum of the order lines amounts. This value could be calculated from order lines table.';
 --COMMENT ON COLUMN t_dinner_table.dtb_reduction_ratio IS 'This is used to specify the reduction ratio.';
---COMMENT ON COLUMN t_dinner_table.dtb_amount_pay IS 'This is used to specify the amount to pay.';
---COMMENT ON COLUMN t_dinner_table.dtb_registration_date IS 'This is used to specify the registration/creation date.';
+--COMMENT ON COLUMN t_dinner_table.dtb_amount_pay IS 'This is used to specify the amount to pay. This value could be calculated with value of dtb_reduction_ratio and dtb_amounts_sum. amountPay = dtb_amounts_sum-dtb_amounts_sum*dtb_reduction_ratio/100.';
+--COMMENT ON COLUMN t_dinner_table.dtb_registration_date IS 'This is used to specify the registration/creation date. This field and the others res_id and dtb_code consist of a unique field.';
 --COMMENT ON COLUMN t_dinner_table.dtb_printing_date IS 'This is used to specify the printing date.';
 --COMMENT ON COLUMN t_dinner_table.dtb_reduction_ratio_changed IS 'This is used to specify if user has changed the reduction ratio.';
---COMMENT ON COLUMN t_dinner_table.tbt_id IS 'This is used to specify the type of dinner table. Could be TAKE-AWAY, EAT-IN ...';
+--COMMENT ON COLUMN t_dinner_table.tbt_id IS 'This is used to specify the type of dinner table. Could be TAKE-AWAY, EAT-IN ... This is a foreign key that refers to t_table_type.';
 --COMMENT ON COLUMN t_dinner_table.dtb_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_dinner_table VALUES(1, 1, '12', null, 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:19', null, false, 1, false);
+INSERT INTO t_dinner_table VALUES(1, 1, '12', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:19', null, false, 1, false);
+INSERT INTO t_dinner_table VALUES(2, 1, '12', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:20', null, false, 1, false);
+INSERT INTO t_dinner_table VALUES(3, 1, '123', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:21', null, false, 1, false);
+INSERT INTO t_dinner_table VALUES(4, 2, '123', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:22', null, false, 1, false);
+INSERT INTO t_dinner_table VALUES(5, 2, '124', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:23', null, false, 1, false);
+INSERT INTO t_dinner_table VALUES(6, 1, '23', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:21', null, false, 1, false);
+INSERT INTO t_dinner_table VALUES(7, 2, '24', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:22', null, false, 1, false);
+INSERT INTO t_dinner_table VALUES(8, 2, '25', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:23', null, false, 1, false);
 
 --COMMENT ON TABLE t_order_line IS 'This table is used for order lines depending on the specific dinner table.';
 --COMMENT ON COLUMN t_order_line.orl_id IS 'This is primary key of this table.';
@@ -294,6 +306,7 @@ INSERT INTO t_dinner_table VALUES(1, 1, '12', null, 1, null, 2, 3, 23, 0, 23, '1
 --COMMENT ON COLUMN t_order_line.orl_amount IS 'This is the amount of the order line. The value is equals to orl_quantity multiply by orl_unit_price.';
 --COMMENT ON COLUMN t_order_line.orl_deleted IS 'This is used for logical deletion.';
 INSERT INTO t_order_line VALUES(1, 1, 1, 1, 1, 1, 2.5, 'Nems', 5.4, 13.5, false);
+INSERT INTO t_order_line VALUES(2, 1, 1, 1, 1, 1, 5, 'Nems', 5, 25, false);
 
 --COMMENT ON TABLE t_table_credit IS 'This table is used for dinner table credits. This table is used for credits dinner tables association. For a given dinner table, we could have several credits but often just one. These credits must have the cre_closing_date value equals to null.';
 --COMMENT ON COLUMN t_table_credit.tcr_id IS 'This is primary key of this table.';
@@ -324,13 +337,22 @@ INSERT INTO t_table_bill VALUES(1, 1, 'reference1', 1, 2, 3, false, false);
 INSERT INTO t_table_vat VALUES(1, 1, 1, 1, 2, false);
 
 
---COMMENT ON TABLE t_table_cashing IS 'This table is used for cashing of dinner table depending on type of cashing.';
+--COMMENT ON TABLE t_table_cashing IS 'This table is used for cashing of dinner table.';
 --COMMENT ON COLUMN t_table_cashing.tcs_id IS 'This is primary key of this table.';
---COMMENT ON COLUMN t_table_cashing.dtb_id IS 'This is a foreign key that refers to t_dinner_table. It is used to specify the dinner table. This field and the other tcs_type_enum_id fields consist of a unique field.';
---COMMENT ON COLUMN t_table_cashing.tcs_type_enum_id IS 'This is a foreign key that refers to t_enum. It is used to specify the type of cashing. It could be GENERIC_CASH, EURO_CASH, DOLLAR_CASH, GENERIC_TICKET, MEAL_TICKET, HOLIDAYS_TICKET, GENERIC_CHECK, BNP_CHECK, GENERIC_CARD, VISA_CARD, MASTER_CARD, UNPAID... This field and the other dtb_id fields consist of a unique field.';
---COMMENT ON COLUMN t_table_cashing.tcs_value IS 'This is the value of the dinner table depending on the specific type of cashing.';
+--COMMENT ON COLUMN t_table_cashing.dtb_id IS 'This is a foreign key that refers to t_dinner_table. It is used to specify the dinner table. There is only one dinner table for one cashing. This field consist of a unique field.';
+--COMMENT ON COLUMN t_table_cashing.tcs_cashing_date IS 'This is the date of the dinner table cashing.';
 --COMMENT ON COLUMN t_table_cashing.tcs_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_table_cashing VALUES(1, 1, 35, 115.12, false);
+INSERT INTO t_table_cashing VALUES(1, 2, '1970-08-15', false);
+INSERT INTO t_table_cashing VALUES(2, 3, '1970-08-15', false);
+INSERT INTO t_table_cashing VALUES(3, 5, '1970-08-15', false);
+
+--COMMENT ON TABLE t_cashing_type IS 'This table is used for cashing of dinner table depending on type of cashing.';
+--COMMENT ON COLUMN t_cashing_type.cst_id IS 'This is primary key of this table.';
+--COMMENT ON COLUMN t_cashing_type.tcs_id IS 'This is a foreign key that refers to t_table_cashing. It is used to specify the cashed table. This field and the other cst_type_enum_id fields consist of a unique field.';
+--COMMENT ON COLUMN t_cashing_type.cst_type_enum_id IS 'This is a foreign key that refers to t_enum. It is used to specify the type of cashing. It could be GENERIC_CASH, EURO_CASH, DOLLAR_CASH, GENERIC_TICKET, MEAL_TICKET, HOLIDAYS_TICKET, GENERIC_CHECK, BNP_CHECK, GENERIC_CARD, VISA_CARD, MASTER_CARD, UNPAID... This field and the other tcs_id fields consist of a unique field.';
+--COMMENT ON COLUMN t_cashing_type.cst_amount IS 'This is the amount of the dinner table depending on the specific type of cashing.';
+--COMMENT ON COLUMN t_cashing_type.cst_deleted IS 'This is used for logical deletion.';
+INSERT INTO t_cashing_type VALUES(1, 1, 35, 115.12, false);
 
 
 --COMMENT ON TABLE t_revenue IS 'This table is used for reporting day revenue depending on the type of table.';
@@ -343,6 +365,7 @@ INSERT INTO t_table_cashing VALUES(1, 1, 35, 115.12, false);
 --COMMENT ON COLUMN t_revenue.rev_amount IS 'This is the amount of the day revenue depending on the type of table.';
 --COMMENT ON COLUMN t_revenue.rev_deleted IS 'This is used for logical deletion.';
 INSERT INTO t_revenue VALUES(1, 1, '1970-08-15', 1, null, null, 345.6789, false);
+INSERT INTO t_revenue VALUES(2, 1, '1970-08-16', 1, null, null, 987.6543, false);
 
 -- COMMENT Statement is used for PostGresql but this is also compatible with HSQLDB 2.0.
 --COMMENT ON TABLE t_revenue_cashing IS 'This table is used for cashing revenue depending on type of cashing.';
