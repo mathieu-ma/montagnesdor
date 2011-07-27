@@ -5,6 +5,8 @@ import fr.mch.mdo.logs.ILogger;
 
 import fr.mch.mdo.restaurant.authentication.IMdoAuthenticationService;
 import fr.mch.mdo.restaurant.authorization.IMdoAuthorizationService;
+import fr.mch.mdo.restaurant.services.business.managers.locales.ILocalesManager;
+import fr.mch.mdo.restaurant.services.business.managers.users.IUserAuthenticationsManager;
 
 public interface IMdoBeanFactory extends IBeanFactory
 {
@@ -17,4 +19,8 @@ public interface IMdoBeanFactory extends IBeanFactory
     IMdoAuthorizationService getMdoAuthorizationService();
 
     IMdoAuthenticationService getMdoAuthenticationService();
+    
+    IUserAuthenticationsManager getUserAuthenticationsManager();
+    
+    ILocalesManager getLocalesManager();
 }

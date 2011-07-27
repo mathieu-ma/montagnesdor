@@ -3,7 +3,6 @@ package fr.mch.mdo.restaurant.ioc;
 import fr.mch.mdo.restaurant.authentication.IMdoAuthenticationService;
 import fr.mch.mdo.restaurant.authorization.IMdoAuthorizationService;
 import fr.mch.mdo.restaurant.services.business.managers.ICategoriesManager;
-import fr.mch.mdo.restaurant.services.business.managers.locales.ILocalesManager;
 import fr.mch.mdo.restaurant.services.business.managers.printings.IPrintingInformationsManager;
 import fr.mch.mdo.restaurant.services.business.managers.products.IMdoTableAsEnumsManager;
 import fr.mch.mdo.restaurant.services.business.managers.products.IProductPartsManager;
@@ -12,14 +11,11 @@ import fr.mch.mdo.restaurant.services.business.managers.products.IProductsManage
 import fr.mch.mdo.restaurant.services.business.managers.products.IValueAddedTaxesManager;
 import fr.mch.mdo.restaurant.services.business.managers.restaurants.IRestaurantsManager;
 import fr.mch.mdo.restaurant.services.business.managers.tables.ITableTypesManager;
-import fr.mch.mdo.restaurant.services.business.managers.users.IUserAuthenticationsManager;
 import fr.mch.mdo.restaurant.services.business.managers.users.IUserRolesManager;
 import fr.mch.mdo.restaurant.services.business.managers.users.IUsersManager;
 
-public interface IWebAdministractionBeanFactory extends IMdoBeanFactory
+public interface IWebAdministrationBeanFactory extends IMdoBeanFactory
 {
-    ILocalesManager getLocalesManager();
-    
     IMdoTableAsEnumsManager getMdoTableAsEnumsManager();
 
     IRestaurantsManager getRestaurantsManager();
@@ -27,8 +23,6 @@ public interface IWebAdministractionBeanFactory extends IMdoBeanFactory
     IUsersManager getUsersManager();
 
     IUserRolesManager getUserRolesManager();
-
-    IUserAuthenticationsManager getUserAuthenticationsManager();
 
     IProductsManager getProductsManager();
 
