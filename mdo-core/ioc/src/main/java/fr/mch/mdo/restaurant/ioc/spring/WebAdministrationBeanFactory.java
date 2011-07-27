@@ -17,9 +17,8 @@ import fr.mch.mdo.restaurant.dto.beans.UserRestaurantDto;
 import fr.mch.mdo.restaurant.dto.beans.UserRoleDto;
 import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.exception.MdoFunctionalException;
-import fr.mch.mdo.restaurant.ioc.IWebAdministractionBeanFactory;
+import fr.mch.mdo.restaurant.ioc.IWebAdministrationBeanFactory;
 import fr.mch.mdo.restaurant.services.business.managers.ICategoriesManager;
-import fr.mch.mdo.restaurant.services.business.managers.locales.ILocalesManager;
 import fr.mch.mdo.restaurant.services.business.managers.printings.IPrintingInformationsManager;
 import fr.mch.mdo.restaurant.services.business.managers.products.IMdoTableAsEnumsManager;
 import fr.mch.mdo.restaurant.services.business.managers.products.IProductPartsManager;
@@ -28,26 +27,25 @@ import fr.mch.mdo.restaurant.services.business.managers.products.IProductsManage
 import fr.mch.mdo.restaurant.services.business.managers.products.IValueAddedTaxesManager;
 import fr.mch.mdo.restaurant.services.business.managers.restaurants.IRestaurantsManager;
 import fr.mch.mdo.restaurant.services.business.managers.tables.ITableTypesManager;
-import fr.mch.mdo.restaurant.services.business.managers.users.IUserAuthenticationsManager;
 import fr.mch.mdo.restaurant.services.business.managers.users.IUserRolesManager;
 import fr.mch.mdo.restaurant.services.business.managers.users.IUsersManager;
 
-public class WebAdministractionBeanFactory extends MdoBeanFactory implements IWebAdministractionBeanFactory 
+public class WebAdministrationBeanFactory extends MdoBeanFactory implements IWebAdministrationBeanFactory 
 {
 	private ILogger logger;
 	
 	private static class LazyHolder {
-		private static IWebAdministractionBeanFactory instance = new WebAdministractionBeanFactory();
+		private static IWebAdministrationBeanFactory instance = new WebAdministrationBeanFactory();
 	}
-	public static IWebAdministractionBeanFactory getInstance() {
+	public static IWebAdministrationBeanFactory getInstance() {
 		return LazyHolder.instance;
 	}
 
-	private WebAdministractionBeanFactory() {
+	private WebAdministrationBeanFactory() {
 		// Load IOC file configuration
 		super();
 		try {
-			logger = this.getLogger(WebAdministractionBeanFactory.class.getName());
+			logger = this.getLogger(WebAdministrationBeanFactory.class.getName());
 			initGlobalAdminUser();
 		} catch (MdoFunctionalException e) {
 			logger.error("message.error.ioc.init.admin", e);
@@ -212,11 +210,6 @@ public class WebAdministractionBeanFactory extends MdoBeanFactory implements IWe
 	}
 
 	@Override
-	public ILocalesManager getLocalesManager() {
-		return ((ILocalesManager) this.getBean(IocBeanName.BEAN_LOCALES_MANAGER_NAME));
-	}
-
-	@Override
 	public IMdoTableAsEnumsManager getMdoTableAsEnumsManager() {
 		return ((IMdoTableAsEnumsManager) this.getBean(IocBeanName.BEAN_MDO_TABLE_AS_ENUMS_MANAGER_NAME));
 	}
@@ -234,11 +227,6 @@ public class WebAdministractionBeanFactory extends MdoBeanFactory implements IWe
 	@Override
 	public IUserRolesManager getUserRolesManager() {
 		return ((IUserRolesManager) this.getBean(IocBeanName.BEAN_USER_ROLES_MANAGER_NAME));
-	}
-
-	@Override
-	public IUserAuthenticationsManager getUserAuthenticationsManager() {
-		return ((IUserAuthenticationsManager) this.getBean(IocBeanName.BEAN_USER_AUTHENTICATIONS_MANAGER_NAME));
 	}
 
 	@Override

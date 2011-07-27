@@ -11,6 +11,8 @@ import fr.mch.mdo.restaurant.authorization.IMdoAuthorizationService;
 import fr.mch.mdo.restaurant.exception.MdoTechnicalException;
 import fr.mch.mdo.restaurant.ioc.IBeanFactory;
 import fr.mch.mdo.restaurant.ioc.IMdoBeanFactory;
+import fr.mch.mdo.restaurant.services.business.managers.locales.ILocalesManager;
+import fr.mch.mdo.restaurant.services.business.managers.users.IUserAuthenticationsManager;
 
 public class MdoBeanFactory implements IMdoBeanFactory 
 {
@@ -47,6 +49,16 @@ public class MdoBeanFactory implements IMdoBeanFactory
 	@Override
 	public IMdoAuthorizationService getMdoAuthorizationService() {
 		return ((IMdoAuthorizationService) this.getBean(IocBeanName.BEAN_AUTHORIZATION_JAAS_NAME));
+	}
+
+	@Override
+	public IUserAuthenticationsManager getUserAuthenticationsManager() {
+		return ((IUserAuthenticationsManager) this.getBean(IocBeanName.BEAN_USER_AUTHENTICATIONS_MANAGER_NAME));
+	}
+
+	@Override
+	public ILocalesManager getLocalesManager() {
+		return ((ILocalesManager) this.getBean(IocBeanName.BEAN_LOCALES_MANAGER_NAME));
 	}
 
 	@Override
