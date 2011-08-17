@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.mch.mdo.logs.ILogger;
+import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.tables.ITableTypesDao;
 import fr.mch.mdo.restaurant.dao.tables.hibernate.DefaultTableTypesDao;
@@ -98,6 +99,18 @@ public class DefaultTableTypesManager extends AbstractAdministrationManager impl
 			}
 		}
 
+		return result;
+	}
+
+	@Override
+	public TableTypeDto findByCodeName(String codeName, MdoUserContext userContext) throws MdoBusinessException {
+		TableTypeDto result = null;
+		try {
+			result = (TableTypeDto) assembler.marshal((IMdoDaoBean) super.dao.findByUniqueKey(codeName), userContext);
+		} catch (MdoException e) {
+			logger.error("message.error.business.DefaultTableTypesManager.findByCodeName", new Object[]{codeName}, e);
+			throw new MdoBusinessException("message.error.business.DefaultTableTypesManager.findByCodeName", new Object[]{codeName}, e);
+		}
 		return result;
 	}
 }

@@ -65,8 +65,12 @@ public class DefaultProductSpecialCodesAssembler extends AbstractAssembler imple
 			dto = new ProductSpecialCodeDto();
 			dto.setId(bean.getId());
 			dto.setShortCode(bean.getShortCode());
-			RestaurantDto restaurant = (RestaurantDto) restaurantsAssembler.marshal(bean.getRestaurant(), userContext);  
-			dto.setRestaurant(restaurant);
+//			RestaurantDto restaurant = (RestaurantDto) restaurantsAssembler.marshal(bean.getRestaurant(), userContext);
+			if(bean.getRestaurant() != null) {
+				RestaurantDto restaurant = new RestaurantDto();
+				restaurant.setId(bean.getRestaurant().getId());
+				dto.setRestaurant(restaurant);
+			}
 			MdoTableAsEnumDto code = (MdoTableAsEnumDto) mdoTableAsEnumsAssembler.marshal(bean.getCode(), userContext);
 			dto.setCode(code);
 			dto.setLabels(bean.getLabels());
@@ -83,7 +87,16 @@ public class DefaultProductSpecialCodesAssembler extends AbstractAssembler imple
 		ProductSpecialCodeDto dto = (ProductSpecialCodeDto) dtoBean;
 		bean.setId(dto.getId());
 		bean.setShortCode(dto.getShortCode());
-		Restaurant restaurant = (Restaurant) restaurantsAssembler.unmarshal(dto.getRestaurant());  
+//		Restaurant restaurant = (Restaurant) restaurantsAssembler.unmarshal(dto.getRestaurant());
+		Restaurant restaurant = null;
+		if (parents != null && parents.length == 1) {
+			restaurant = (Restaurant) parents[0];
+		} 
+		if (restaurant == null && dto.getRestaurant() != null) {
+			dto.getRestaurant().setProductSpecialCodes(null);
+			restaurant = new Restaurant();
+			restaurant.setId(dto.getRestaurant().getId());
+		}
 		bean.setRestaurant(restaurant);
 		MdoTableAsEnum code = (MdoTableAsEnum) mdoTableAsEnumsAssembler.unmarshal(dto.getCode());
 		bean.setCode(code);

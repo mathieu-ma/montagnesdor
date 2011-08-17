@@ -150,7 +150,8 @@ public class DefaultProductsManager extends AbstractAdministrationManagerLabelab
 
 	@Override
 	public void processList(IAdministrationManagerViewBean viewBean, MdoUserContext userContext, boolean... lazy) throws MdoBusinessException {
-		super.processList(viewBean, userContext, lazy);
+		// Do not have to call find all products because we want list of products by restaurants
+		//super.processList(viewBean, userContext, lazy);
 		ProductsManagerViewBean productsManagerViewBean = (ProductsManagerViewBean) viewBean;
 		try {
 			productsManagerViewBean.setLabels(super.getLabels(userContext.getCurrentLocale()));
@@ -179,7 +180,7 @@ public class DefaultProductsManager extends AbstractAdministrationManagerLabelab
 		List<IMdoDtoBean> result = new ArrayList<IMdoDtoBean>();
 		
 		try {
-			List<IMdoBean> list = ((IProductsDao) dao).findByRestaurant(restaurantId);
+			List<IMdoBean> list = ((IProductsDao) dao).findAllByRestaurant(restaurantId);
 			if (list != null) {
 				result = assembler.marshal(list, userContext);
 			}
@@ -395,6 +396,19 @@ public class DefaultProductsManager extends AbstractAdministrationManagerLabelab
 		String result = IProductsManager.PREFIX_EXPORT_DATA_FILE_NAME + "-" + restaurantReference + "-" 
 		+ language + "." + IProductsManager.EXTENSION_EXPORT_IMPORT_DATA_FILE_NAME;
 		
+		return result;
+	}
+	
+	@Override
+	public Map<Long, String> lookupProductsCodesByPrefixCode(IMdoBean userContext, String prefixProductCode) throws Exception {
+		Map<Long, String> result = new HashMap<Long, String>();
+		MdoUserContext userContextX = (MdoUserContext) userContext;
+		IProductsDao daoX = (IProductsDao) dao;
+
+		Long restaurantId = userContextX.getUserAuthentication().getRestaurant().getId();
+		if (prefixProductCode != null) {
+			result = daoX.findCodesByPrefixCode(restaurantId, prefixProductCode);
+		}
 		return result;
 	}
 }

@@ -1,5 +1,6 @@
 package fr.mch.mdo.restaurant.services.business.managers.assembler;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import fr.mch.mdo.logs.ILogger;
@@ -7,6 +8,7 @@ import fr.mch.mdo.logs.ILoggerBean;
 import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.beans.Locale;
+import fr.mch.mdo.restaurant.dao.beans.ProductCategory;
 import fr.mch.mdo.restaurant.dao.beans.Restaurant;
 import fr.mch.mdo.restaurant.dao.beans.User;
 import fr.mch.mdo.restaurant.dao.beans.UserAuthentication;
@@ -120,7 +122,7 @@ public class DefaultUserAuthenticationsAssembler extends AbstractAssembler imple
 		return dto;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public IMdoDaoBean unmarshal(IMdoDtoBean dtoBean, IMdoDaoBean... parents) {
 		if (dtoBean == null) {
@@ -143,7 +145,10 @@ public class DefaultUserAuthenticationsAssembler extends AbstractAssembler imple
 		bean.setUser(user);
 		UserRole userRole = (UserRole) userRolesAssembler.unmarshal(dto.getUserRole());
 		bean.setUserRole(userRole);
-		Set<UserLocale> locales = (Set) userLocalesAssembler.unmarshal(dto.getLocales(), bean); 
+		Set<UserLocale> locales = new HashSet<UserLocale>(); 
+		if (dto.getLocales() != null) {
+			locales = (Set) userLocalesAssembler.unmarshal(dto.getLocales(), bean);
+		}
 		bean.setLocales(locales);
 		return bean;
 	}

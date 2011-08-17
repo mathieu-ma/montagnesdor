@@ -59,7 +59,7 @@ public class DefaultLocalesManagerTest extends DefaultAdministrationManagerTest
 	protected List<IMdoBean> createListBeans() {
 		List<IMdoBean> list = new ArrayList<IMdoBean>();
 		list.add(createNewBean(java.util.Locale.JAPANESE.getLanguage()));
-		list.add(createNewBean(java.util.Locale.CHINESE.getLanguage()));
+		list.add(createNewBean(java.util.Locale.KOREAN.getLanguage()));
 		return list;
 	}
 

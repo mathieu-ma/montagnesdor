@@ -1,5 +1,6 @@
 package fr.mch.mdo.restaurant.services.business.managers.assembler;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import fr.mch.mdo.logs.ILogger;
@@ -7,6 +8,7 @@ import fr.mch.mdo.logs.ILoggerBean;
 import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.beans.MdoTableAsEnum;
+import fr.mch.mdo.restaurant.dao.beans.RestaurantValueAddedTax;
 import fr.mch.mdo.restaurant.dao.beans.User;
 import fr.mch.mdo.restaurant.dao.beans.UserRestaurant;
 import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto;
@@ -76,7 +78,7 @@ public class DefaultUsersAssembler extends AbstractAssembler implements IManager
 		return dto;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public IMdoDaoBean unmarshal(IMdoDtoBean dtoBean, IMdoDaoBean... parents) {
 		if (dtoBean == null) {
@@ -92,7 +94,10 @@ public class DefaultUsersAssembler extends AbstractAssembler implements IManager
 		bean.setSex(dto.isSex());
 		MdoTableAsEnum title = (MdoTableAsEnum) mdoTableAsEnumsAssembler.unmarshal(dto.getTitle());
 		bean.setTitle(title);
-		Set<UserRestaurant> restaurants = (Set) userRestaurantsAssembler.unmarshal(dto.getRestaurants(), bean);
+		Set<UserRestaurant> restaurants = new HashSet<UserRestaurant>();
+		if (dto.getRestaurants() != null) {
+			restaurants = (Set) userRestaurantsAssembler.unmarshal(dto.getRestaurants(), bean);
+		}
 		bean.setRestaurants(restaurants);
 		return bean;
 	}

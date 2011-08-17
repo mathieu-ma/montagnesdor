@@ -11,9 +11,9 @@
         <!-- properties -->
 		<!-- org.hsqldb.jdbc.JDBCDriver ==> HSQLDB 2.0 driver  -->
 		<!-- org.hsqldb.jdbcDriver ==> HSQLDB 1.8.X driver  -->
-        <property name="hibernate.connection.driver_class">org.hsqldb.jdbcDriver</property>
+        <property name="hibernate.connection.driver_class">org.hsqldb.jdbc.JDBCDriver</property>
 
-       	<property name="hibernate.connection.url">jdbc:hsqldb:mem:montagnesdordao</property> 
+       	<property name="hibernate.connection.url">jdbc:hsqldb:mem:montagnesdorbusiness</property> 
         <!-- 
 	        <property name="hibernate.connection.url">jdbc:postgresql://sql.free.fr:5432/montagnesdor?autoReconnect=true</property>
         -->
@@ -86,6 +86,7 @@
         <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/TableCredit.hbm.xml"/>
         <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/TableVat.hbm.xml"/>
         <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/TableCashing.hbm.xml"/>
+        <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/CashingType.hbm.xml"/>
 
         <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/Revenue.hbm.xml"/>
         <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/RevenueCashing.hbm.xml"/>

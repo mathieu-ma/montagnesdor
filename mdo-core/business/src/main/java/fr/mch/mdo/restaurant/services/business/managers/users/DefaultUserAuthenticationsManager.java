@@ -4,8 +4,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import fr.mch.mdo.logs.ILogger;
+import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
+import fr.mch.mdo.restaurant.dao.authentication.AuthenticationPasswordLevel;
 import fr.mch.mdo.restaurant.dao.beans.UserAuthentication;
 import fr.mch.mdo.restaurant.dao.beans.UserLocale;
 import fr.mch.mdo.restaurant.dao.users.IUserAuthenticationsDao;
@@ -179,5 +181,11 @@ public class DefaultUserAuthenticationsManager extends AbstractAdministrationMan
 		// No need to Delete Locales before Deleting user because of hibernate mapping all-delete-orphan in collection
 		// Delete dto
 		return super.delete(dtoBean, userContext);
+	}
+
+	@Override
+	public void changePassword(Long id, String levelPassword, String newPassword, IMdoBean userContext) throws MdoException {
+		IUserAuthenticationsDao castedDao = (IUserAuthenticationsDao) dao;
+		castedDao.changePassword(id, AuthenticationPasswordLevel.valueOf(levelPassword), newPassword);
 	}
 }

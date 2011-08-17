@@ -1,5 +1,6 @@
 package fr.mch.mdo.restaurant.services.business.managers.assembler;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import fr.mch.mdo.logs.ILogger;
@@ -83,6 +84,7 @@ public class DefaultProductsAssembler extends AbstractAssembler implements IMana
 			dto.setRestaurant(restaurant);
 			ValueAddedTaxDto vat = (ValueAddedTaxDto) vatsAssembler.marshal(bean.getVat(), userContext); 
 			dto.setVat(vat);
+			@SuppressWarnings("rawtypes")
 			Set<ProductCategoryDto> categories = (Set) productCategoriesAssembler.marshal(bean.getCategories(), userContext);
 			dto.setCategories(categories);
 			dto.setLabels(super.getLabels(bean.getLabels()));
@@ -90,7 +92,7 @@ public class DefaultProductsAssembler extends AbstractAssembler implements IMana
 		return dto;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public IMdoDaoBean unmarshal(IMdoDtoBean dtoBean, IMdoDaoBean... parents) {
 		if (dtoBean == null) {
@@ -107,7 +109,10 @@ public class DefaultProductsAssembler extends AbstractAssembler implements IMana
 		bean.setRestaurant(restaurant);
 		ValueAddedTax vat = (ValueAddedTax) vatsAssembler.unmarshal(dto.getVat());
 		bean.setVat(vat);
-		Set<ProductCategory> categories = (Set) productCategoriesAssembler.unmarshal(dto.getCategories(), bean);
+		Set<ProductCategory> categories = new HashSet<ProductCategory>();
+		if (dto.getCategories() != null) {
+			categories = (Set) productCategoriesAssembler.unmarshal(dto.getCategories(), bean);
+		}
 		bean.setCategories(categories);
 		
 		return bean;
