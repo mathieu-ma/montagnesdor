@@ -48,4 +48,20 @@
 	<target name="mvn2-tree">
 		<ant antfile="../build.xml" target="mvn2-tree" />
 	</target>
+	
+	<target name="copy-business-tests">
+		<copy todir="./src/test/java" overwrite="true" verbose="true">
+		  	<fileset dir="../business/src/test/java">
+		        <include name="**/*.java" />
+			</fileset>
+		</copy>
+		<copy todir="./src/test/resources" overwrite="true" verbose="true">
+		  	<fileset dir="../business/src/test/resources">
+		        <include name="**/*.xml" />
+		        <include name="**/*.properties" />
+			    <include name="**/*.sql" />
+			    <include name="**/*.ods" />
+			</fileset>
+		</copy>
+	</target>
 </project>
