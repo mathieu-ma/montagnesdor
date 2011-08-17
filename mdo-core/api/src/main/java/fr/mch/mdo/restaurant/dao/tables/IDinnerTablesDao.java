@@ -65,4 +65,14 @@ public interface IDinnerTablesDao extends IDaoServices
     void updateOrderLine(OrderLine orderLine) throws MdoException;
 
     void removeOrderLine(OrderLine orderLine) throws MdoException;
+    
+    /**
+     *	This method tries to get tables whose cashing date is null.
+     * 
+     * @param restaurantId the restaurant id.
+     * @return list of tables whose cashing date is null
+     * @throws MdoException any exception occurs
+     */
+    List<IMdoBean> findAllFreeTables(Long restaurantId) throws MdoException;
+    
 }

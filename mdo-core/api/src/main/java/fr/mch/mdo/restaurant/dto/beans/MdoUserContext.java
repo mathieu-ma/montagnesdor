@@ -19,6 +19,9 @@ public class MdoUserContext implements IMdoBean
 	private static final long serialVersionUID = 1L;
 
 	private Subject subject = null;
+	
+	private Date entryDate = new Date();
+	
 	private UserAuthenticationDto userAuthentication = null;
 	private LocaleDto currentLocale = new LocaleDto();
 	private DinnerTableDto currentTable;
@@ -56,6 +59,20 @@ public class MdoUserContext implements IMdoBean
 	 */
 	public void setSubject(Subject subject) {
 		this.subject = subject;
+	}
+
+	/**
+	 * @return the entryDate
+	 */
+	public Date getEntryDate() {
+		return entryDate;
+	}
+
+	/**
+	 * @param entryDate the entryDate to set
+	 */
+	public void setEntryDate(Date entryDate) {
+		this.entryDate = entryDate;
 	}
 
 	/**

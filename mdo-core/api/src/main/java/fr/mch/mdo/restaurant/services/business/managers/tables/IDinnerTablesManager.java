@@ -1,8 +1,10 @@
 package fr.mch.mdo.restaurant.services.business.managers.tables;
 
+import java.util.List;
 import java.util.Map;
 
 import fr.mch.mdo.restaurant.beans.IMdoBean;
+import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dto.beans.DinnerTableDto;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.OrderLineDto;
@@ -88,5 +90,14 @@ public interface IDinnerTablesManager extends IAdministrationManager
      * @throws Exception any exception occurs.
      */
 	void addOrderLine(IMdoBean userContext, OrderLineDto orderLine) throws MdoException;
+
+    /**
+     * This method tries to get free tables.
+     * 
+     * @param userContext user context.
+     * @return list of free dinner tables.
+     * @throws MdoException any exception occurs.
+     */
+	List<IMdoDtoBean> findAllFreeTables(MdoUserContext userContext) throws MdoException;
 
 }
