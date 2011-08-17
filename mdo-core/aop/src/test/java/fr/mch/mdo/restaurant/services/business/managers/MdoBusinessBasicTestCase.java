@@ -15,7 +15,6 @@ import fr.mch.mdo.test.MdoTestCase;
  */
 public abstract class MdoBusinessBasicTestCase extends MdoLoadingDatabaseTestCase 
 {
-
 	private String sqlDialectName = "HSQLDIALECT";
 
 	/**

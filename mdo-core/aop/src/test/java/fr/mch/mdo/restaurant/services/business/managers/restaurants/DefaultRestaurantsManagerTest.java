@@ -69,10 +69,12 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 		BigDecimal takeawayMinAmountReduction = new BigDecimal(10);
 		MdoTableAsEnumDto specificRound = new MdoTableAsEnumDto();
 		specificRound.setId(2L);
+		TableTypeDto defaultTableType = new TableTypeDto();
+		defaultTableType.setId(1L);
 		Set<RestaurantValueAddedTaxDto> vats = null;
 		Set<RestaurantPrefixTableDto> prefixTableNames = new HashSet<RestaurantPrefixTableDto>();
 		RestaurantDto restaurant = (RestaurantDto) createNewBean(registrationDate, reference, name, addressRoad, addressZip, addressCity, phone, vatRef, visaRef, tripleDESKey,
-				vatByTakeaway, takeawayBasicReduction, takeawayMinAmountReduction, specificRound, vats, prefixTableNames);
+				vatByTakeaway, takeawayBasicReduction, takeawayMinAmountReduction, specificRound, defaultTableType, vats, prefixTableNames);
 
 		RestaurantPrefixTableDto restaurantPrefixTable = new RestaurantPrefixTableDto();
 		MdoTableAsEnumDto prefix = new MdoTableAsEnumDto();
@@ -116,10 +118,12 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 		BigDecimal takeawayMinAmountReduction = new BigDecimal(10);
 		MdoTableAsEnumDto specificRound = new MdoTableAsEnumDto();
 		specificRound.setId(3L);
+		TableTypeDto defaultTableType = new TableTypeDto();
+		defaultTableType.setId(2L);
 		Set<RestaurantValueAddedTaxDto> vats = new HashSet<RestaurantValueAddedTaxDto>();
 		Set<RestaurantPrefixTableDto> prefixTableNames = new HashSet<RestaurantPrefixTableDto>();
 		newBean = createNewBean(registrationDate, reference, name, addressRoad, addressZip, addressCity, phone, vatRef, visaRef, tripleDESKey, vatByTakeaway,
-				takeawayBasicReduction, takeawayMinAmountReduction, specificRound, vats, prefixTableNames);
+				takeawayBasicReduction, takeawayMinAmountReduction, specificRound, defaultTableType, vats, prefixTableNames);
 
 		RestaurantValueAddedTaxDto vat = new RestaurantValueAddedTaxDto();
 		ValueAddedTaxDto valueAddedTax = new ValueAddedTaxDto();
@@ -148,10 +152,12 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 		} catch (MdoException e) {
 			fail("Could not found the Specific Round.");
 		}
+		defaultTableType = new TableTypeDto();
+		defaultTableType.setId(1L);
 		vats = new HashSet<RestaurantValueAddedTaxDto>();
 		prefixTableNames = null;
 		newBean = createNewBean(registrationDate, reference, name, addressRoad, addressZip, addressCity, phone, vatRef, visaRef, tripleDESKey, vatByTakeaway,
-				takeawayBasicReduction, takeawayMinAmountReduction, specificRound, vats, prefixTableNames);
+				takeawayBasicReduction, takeawayMinAmountReduction, specificRound, defaultTableType, vats, prefixTableNames);
 
 		vat = new RestaurantValueAddedTaxDto();
 		valueAddedTax = new ValueAddedTaxDto();
@@ -187,10 +193,12 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 		} catch (MdoException e) {
 			fail("Could not found the Specific Round.");
 		}
+		TableTypeDto defaultTableType = new TableTypeDto();
+		defaultTableType.setId(2L);
 		Set<RestaurantValueAddedTaxDto> vats = new HashSet<RestaurantValueAddedTaxDto>();
 		Set<RestaurantPrefixTableDto> prefixTableNames = new HashSet<RestaurantPrefixTableDto>();
 		newBean = createNewBean(registrationDate, reference, name, addressRoad, addressZip, addressCity, phone, vatRef, visaRef, tripleDESKey, vatByTakeaway,
-				takeawayBasicReduction, takeawayMinAmountReduction, specificRound, vats, prefixTableNames);
+				takeawayBasicReduction, takeawayMinAmountReduction, specificRound, defaultTableType, vats, prefixTableNames);
 
 		// VATs part
 		RestaurantValueAddedTaxDto vat = new RestaurantValueAddedTaxDto();
@@ -335,9 +343,30 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 		
 	}
 
+	public void testUpdateNotModifiedProductSpecialCodesList() {
+		try {
+			RestaurantDto restaurant = (RestaurantDto) this.getInstance().findByPrimaryKey(super.primaryKey, DefaultAdministrationManagerTest.userContext);
+			assertNotNull("Restaurant not null", restaurant);
+			assertNotNull("List of Product Special Code not null", restaurant.getProductSpecialCodes());
+			assertFalse("List of Product Special Code not empty", restaurant.getProductSpecialCodes().isEmpty());
+			String backupedName = restaurant.getName();
+			String newName = "restaurant.getName()";
+			restaurant.setName(newName);
+			this.getInstance().update(restaurant, DefaultAdministrationManagerTest.userContext);
+			restaurant = (RestaurantDto) this.getInstance().findByPrimaryKey(super.primaryKey, DefaultAdministrationManagerTest.userContext);
+			assertNotNull("Restaurant not null", restaurant);
+			assertNotNull("List of Product Special Code not null", restaurant.getProductSpecialCodes());
+			assertFalse("List of Product Special Code not empty", restaurant.getProductSpecialCodes().isEmpty());
+			assertEquals("Check restaurant name", newName, restaurant.getName());
+			assertFalse("Restaurant name is changed", backupedName.equals(restaurant.getName()));
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+
 	private IMdoDtoBean createNewBean(Date registrationDate, String reference, String name, String addressRoad, String addressZip, String addressCity, String phone, String vatRef,
 			String visaRef, String tripleDESKey, boolean vatByTakeaway, BigDecimal takeawayBasicReduction, BigDecimal takeawayMinAmountReduction, MdoTableAsEnumDto specificRound,
-			Set<RestaurantValueAddedTaxDto> vats, Set<RestaurantPrefixTableDto> prefixTableNames) {
+			TableTypeDto defaultTableType, Set<RestaurantValueAddedTaxDto> vats, Set<RestaurantPrefixTableDto> prefixTableNames) {
 
 		RestaurantDto newBean = new RestaurantDto();
 		newBean.setRegistrationDate(registrationDate);
@@ -354,6 +383,7 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 		newBean.setTakeawayBasicReduction(takeawayBasicReduction);
 		newBean.setTakeawayMinAmountReduction(takeawayMinAmountReduction);
 		newBean.setSpecificRound(specificRound);
+		newBean.setDefaultTableType(defaultTableType);
 		newBean.setVats(vats);
 		newBean.setPrefixTableNames(prefixTableNames);
 		return newBean;

@@ -1,5 +1,8 @@
 package fr.mch.mdo.restaurant.services.business.managers.products;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,8 +11,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jopendocument.dom.OOUtils;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import fr.mch.mdo.i18n.IMessageQuery;
+import fr.mch.mdo.i18n.MessageQueryResourceBundleImpl;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dto.beans.CategoryDto;
@@ -17,12 +24,15 @@ import fr.mch.mdo.restaurant.dto.beans.ProductCategoryDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductsManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
+import fr.mch.mdo.restaurant.dto.beans.UserAuthenticationDto;
 import fr.mch.mdo.restaurant.dto.beans.ValueAddedTaxDto;
 import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.services.business.managers.DefaultAdministrationManagerTest;
 import fr.mch.mdo.restaurant.services.business.managers.IAdministrationManager;
 import fr.mch.mdo.restaurant.services.business.managers.restaurants.DefaultRestaurantsManager;
+import fr.mch.mdo.restaurant.services.business.managers.users.DefaultUserAuthenticationsManager;
 import fr.mch.mdo.test.MdoTestCase;
+import fr.mch.mdo.test.resources.ITestResources;
 
 public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 {
@@ -184,8 +194,8 @@ public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 		ProductsManagerViewBean viewBean = new ProductsManagerViewBean();
 		try {
 			this.getInstance().processList(viewBean, DefaultAdministrationManagerTest.userContext);
-			assertNotNull("Main list not be null", viewBean.getList());
-			assertFalse("Main list not be empty", viewBean.getList().isEmpty());
+			// Do not have to call find all products because we want list of products by restaurants
+			assertNull("Main list not null", viewBean.getList());
 			assertNotNull("Languages list not be null", viewBean.getLanguages());
 			assertFalse("Languages list not be empty", viewBean.getLanguages().isEmpty());
 			assertNotNull("Restaurants list not be null", viewBean.getRestaurants());
@@ -228,5 +238,67 @@ public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}	
+	}
+	
+	public void testImportData() {
+		File file = new File(ITestResources.class.getResource("inport-data-10203040506070-fr.ods").getFile());
+		 try {
+			((IProductsManager) DefaultProductsManager.getInstance()).importData(file.getName(), file, DefaultProductsManagerTest.userContext);
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+
+	public void testExportData() {
+		FileOutputStream fos = null;
+		final File file = new File("target/export-data.ods");
+		try {
+			fos = new FileOutputStream(file);
+
+			assertEquals("File must be empty", 0,file.length());
+			
+			String restaurantReference = "10203040506070";
+			
+			IMessageQuery messages = new MessageQueryResourceBundleImpl("fr.mch.mdo.restaurant.resources.i18n.ApplicationMessagesResources");
+			String[] headers = new String[] { messages.getMessage("products.manager.code"), 
+					messages.getMessage("products.manager.label"), messages.getMessage("products.manager.price"), 
+					messages.getMessage("products.manager.vat"),  messages.getMessage("products.manager.color") };
+
+			((IProductsManager) DefaultProductsManager.getInstance())
+					.exportData(fos, restaurantReference, headers, DefaultProductsManagerTest.userContext);
+			
+			fos.flush();
+
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		} finally {
+			try {
+				fos.close();
+				// Open with ooo
+		        OOUtils.open(file);
+			} catch (IOException e) {
+				fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+			}
+		}
+		assertTrue("File must be not empty", file.length() != 0);
+	}
+	
+	public void testLookupProductsCodesByPrefixCode() {
+		// Used for finding restaurant
+		Long userId = 1L;
+		try {
+			UserAuthenticationDto user = (UserAuthenticationDto) DefaultUserAuthenticationsManager.getInstance().findByPrimaryKey(userId, null);
+			DefaultProductsManagerTest.userContext.setUserAuthentication(user);
+		} catch(Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+		String prefixProductCode = "1";
+		try {
+			Map<Long, String> codes = ((IProductsManager) DefaultProductsManager.getInstance()).lookupProductsCodesByPrefixCode(userContext, prefixProductCode);
+			assertNotNull("Map of codes must not be null", codes);
+			assertFalse("Map of codes must not be empty", codes.isEmpty());
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
 	}
 }

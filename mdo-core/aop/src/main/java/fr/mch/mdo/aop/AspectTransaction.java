@@ -60,14 +60,19 @@ public class AspectTransaction
 	 */
 	@Around("bussinessMethod() && target(manager) && !this(fr.mch.mdo.restaurant.services.business.managers.IMdoManager)")
 	public Object aroundBussinessMethod(ProceedingJoinPoint pjp, IMdoManager manager) throws Throwable {
-		logger.debug("START AOP aroundTransaction");
+		logger.debug("START AOP aroundTransaction with " + manager);
 		Object result = null;
 		// The true parameter value is used to specify that we are in service layer transaction
 //		Session session = (Session) manager.getDao().getCurrentSession();
 		session = DefaultSessionFactory.getInstance().currentSession();
+		logger.debug("AOP aroundTransaction Hibernate session " + session);
 		Transaction t = session.beginTransaction();
+		logger.debug("AOP aroundTransaction Hibernate Transaction " + t);
 		try {
+			t.begin();
+			logger.debug("AOP aroundTransaction before proceed ");
 			result = pjp.proceed();
+			logger.debug("AOP aroundTransaction after proceed ");
 			// The commit from this session(Hibernate.currentSession) is auto close 
 			t.commit();
 		} catch (Throwable e) {
@@ -85,7 +90,7 @@ public class AspectTransaction
 				logger.error("message.error.dao.session.close", e);
 			}
 		}
-		logger.debug("END AOP aroundTransaction");
+		logger.debug("END AOP aroundTransaction with " + manager);
 		return result;
 	}
 
@@ -111,12 +116,6 @@ public class AspectTransaction
 		logger.debug("START AOP aroundCloseSessionCall");
 		// Call proceed method in this around advice
 		// Because we want to call closeSession only on aroundBussinessMethod advice
-		try {
-			pjp.proceed();
-		} catch (Throwable e) {
-			logger.error("message.error.dao.aop.around.close.session", e);
-			throw e;
-		}
 		logger.debug("END AOP aroundCloseSessionCall");
 	}
 	
@@ -128,16 +127,27 @@ public class AspectTransaction
 		logger.debug("START AOP aroundCloseSessionExecution");
 		// Do not call proceed method in this around advice
 		// Because we want to call closeSession only on aroundBussinessMethod advice
+//		try {
+//			pjp.proceed();
+//		} catch (Throwable e) {
+//			logger.error("message.error.dao.aop.around.close.session", e);
+//		}
+		
 		logger.debug("END AOP aroundCloseSessionExecution");
 	}
 
-	@Pointcut("execution(protected void fr.mch.mdo.restaurant.dao.hibernate.MdoDaoBase.endTransaction(..))")
+	@Pointcut("execution(* fr.mch.mdo.restaurant.dao.hibernate.MdoDaoBase.endTransaction(..))")
 	public void endTransaction() {
 	}
 	@Around("endTransaction()")
-	public void aroundEndTransaction() {
+	public void aroundEndTransaction(ProceedingJoinPoint pjp) {
 		logger.debug("START AOP aroundEndTransaction");
 		// Do not call proceed method in this around advice
+//		try {
+//			pjp.proceed();
+//		} catch (Throwable e) {
+//			logger.error("message.error.dao.aop.around.close.session", e);
+//		}
 		logger.debug("END AOP aroundEndTransaction");
 	}
 	

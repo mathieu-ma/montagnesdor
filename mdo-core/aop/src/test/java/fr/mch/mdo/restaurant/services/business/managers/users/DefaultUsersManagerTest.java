@@ -182,21 +182,6 @@ public class DefaultUsersManagerTest extends DefaultAdministrationManagerTest
 			fail(e.getMessage());
 		}
 	}
-	
-	public static void main(String[] args) {
-		Set<UserRestaurantDto> restaurants = new HashSet<UserRestaurantDto>();
-		UserRestaurantDto userRestaurant = new UserRestaurantDto();
-		RestaurantDto restaurant = new RestaurantDto();
-		restaurant.setId(1L);
-		userRestaurant.setRestaurant(restaurant);
-		restaurants.add(userRestaurant);
-		userRestaurant = new UserRestaurantDto();
-		restaurant = new RestaurantDto();
-		restaurant.setId(2L);
-		userRestaurant.setRestaurant(restaurant);
-		restaurants.add(userRestaurant);
-		System.out.println(restaurants.size());
-	}
 
 	@Override
 	public void doProcessList() {

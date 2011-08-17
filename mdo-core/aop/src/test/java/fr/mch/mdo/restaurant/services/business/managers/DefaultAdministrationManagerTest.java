@@ -12,6 +12,9 @@ import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dto.beans.LocaleDto;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
+import fr.mch.mdo.restaurant.dto.beans.UserAuthenticationDto;
+import fr.mch.mdo.restaurant.exception.MdoException;
+import fr.mch.mdo.restaurant.services.business.managers.users.DefaultUserAuthenticationsManager;
 import fr.mch.mdo.test.MdoTestCase;
 
 public abstract class DefaultAdministrationManagerTest extends MdoBusinessBasicTestCase 
@@ -30,11 +33,22 @@ public abstract class DefaultAdministrationManagerTest extends MdoBusinessBasicT
 	/** This value MUST exist in database. */
 	protected Long primaryKey = 1L;
 
-	protected static MdoUserContext userContext = new MdoUserContext(new Subject());
-	static {
-		LocaleDto currentLocale = new LocaleDto();
-		currentLocale.setLanguageCode(Locale.FRANCE.getLanguage());
-		userContext.setCurrentLocale(currentLocale);
+	protected static MdoUserContext userContext = null;
+	protected static MdoUserContext getUserContext() {
+		if (userContext == null) {
+			userContext = new MdoUserContext(new Subject());
+			LocaleDto currentLocale = new LocaleDto();
+			currentLocale.setLanguageCode(Locale.FRANCE.getLanguage());
+			userContext.setCurrentLocale(currentLocale);
+			UserAuthenticationDto user = null;
+			try {
+				user = (UserAuthenticationDto) DefaultUserAuthenticationsManager.getInstance().findByPrimaryKey(1L, userContext, false);
+			} catch (MdoException e) {
+				fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+			}
+			userContext.setUserAuthentication(user);
+		}
+		return userContext;
 	}
 
 	protected abstract IAdministrationManager getInstance();
@@ -53,6 +67,7 @@ public abstract class DefaultAdministrationManagerTest extends MdoBusinessBasicT
 	 */
 	public DefaultAdministrationManagerTest(String testName) {
 		super(testName);
+		getUserContext();
 	}
 
 	public void testAll() {
