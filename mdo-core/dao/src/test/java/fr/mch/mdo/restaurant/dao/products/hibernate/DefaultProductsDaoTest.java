@@ -21,6 +21,7 @@ import fr.mch.mdo.restaurant.dao.beans.ValueAddedTax;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServicesTestCase;
 import fr.mch.mdo.restaurant.dao.products.IProductsDao;
 import fr.mch.mdo.restaurant.exception.MdoException;
+import fr.mch.mdo.test.MdoTestCase;
 
 public class DefaultProductsDaoTest extends DefaultDaoServicesTestCase 
 {
@@ -118,7 +119,7 @@ public class DefaultProductsDaoTest extends DefaultDaoServicesTestCase
 					.getReference());
 			assertFalse("Product must not be deleted", castedBean.isDeleted());
 		} catch (Exception e) {
-			fail(e.getMessage());
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
 
@@ -202,7 +203,7 @@ public class DefaultProductsDaoTest extends DefaultDaoServicesTestCase
 			assertTrue("Product must be deleted", castedBean.isDeleted());
 			this.getInstance().delete(updatedBean);
 		} catch (Exception e) {
-			fail(e.getMessage());
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
 
@@ -238,7 +239,7 @@ public class DefaultProductsDaoTest extends DefaultDaoServicesTestCase
 					.getReference());
 			assertFalse("Product must not be deleted", castedBean.isDeleted());
 		} catch (Exception e) {
-			fail(e.getMessage());
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
 
@@ -270,7 +271,7 @@ public class DefaultProductsDaoTest extends DefaultDaoServicesTestCase
 					.getReference());
 			assertFalse("Product must not be deleted", castedBean.isDeleted());
 		} catch (Exception e) {
-			fail(e.getMessage());
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
 	
@@ -283,11 +284,26 @@ public class DefaultProductsDaoTest extends DefaultDaoServicesTestCase
 		try {
 			IProductsDao productsDao = (IProductsDao) this.getInstance();
 
-			List<IMdoBean> list = productsDao.findByRestaurant(restaurantId);
+			List<IMdoBean> list = productsDao.findAllByRestaurant(restaurantId);
 			assertNotNull("List of IMdoBean must not be null", list);
 			assertFalse("List of IMdoBean must not be empty", list.isEmpty());
 		} catch (Exception e) {
-			fail(e.getMessage());
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+	
+	public void testFindCodesByPrefixCode() {
+		// 1 restaurant was created at HSQLDB startup
+		Long restaurantId = 1L;
+		String prefixProductCode = "1";
+		try {
+			IProductsDao productsDao = (IProductsDao) this.getInstance();
+
+			Map<Long, String> map = productsDao.findCodesByPrefixCode(restaurantId, prefixProductCode);
+			assertNotNull("Map of product code must not be null", map);
+			assertFalse("Map of product code must not be empty", map.isEmpty());
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
 }

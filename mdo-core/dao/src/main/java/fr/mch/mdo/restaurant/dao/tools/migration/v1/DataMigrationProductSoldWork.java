@@ -10,10 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import fr.mch.mdo.logs.ILogger;
@@ -21,7 +18,6 @@ import fr.mch.mdo.restaurant.dao.beans.Product;
 import fr.mch.mdo.restaurant.dao.beans.ProductSold;
 import fr.mch.mdo.restaurant.dao.beans.Restaurant;
 import fr.mch.mdo.restaurant.dao.beans.UserAuthentication;
-import fr.mch.mdo.restaurant.dao.tools.migration.v1.DataMigrationWork;
 
 public class DataMigrationProductSoldWork extends DataMigrationWork 
 {
@@ -36,7 +32,6 @@ public class DataMigrationProductSoldWork extends DataMigrationWork
 		
 		String restaurantReference = super.restaurant.getReference();
 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		List<ProductSold> productSolds = new ArrayList<ProductSold>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -56,7 +51,6 @@ public class DataMigrationProductSoldWork extends DataMigrationWork
 				ProductSold productSold = new ProductSold();
 				Product product = new Product();
 				productSold.setProduct(product);
-				productSold.setSoldDate(new Date());
 				for (int i = 1; i <= maxColumn; i++) {
 					String columnLabel = rsMetaData.getColumnLabel(i).toUpperCase();
 					Object value = rs.getString(i);
@@ -82,7 +76,7 @@ public class DataMigrationProductSoldWork extends DataMigrationWork
 			int maxSize = productSolds.size();
 			for (;index<maxSize;) {
 				ProductSold productSold = productSolds.get(index);
-				final String insertProductCategory = "INSERT INTO t_product_sold (pds_sold_date, pdt_id, pds_quantity, pds_deleted) SELECT '" + sdf.format(productSold.getSoldDate()) + "', t_product.pdt_id, " + productSold.getQuantity() + ", false" +
+				final String insertProductCategory = "INSERT INTO t_product_sold (pds_sold_year, pds_sold_month, pds_sold_day, pdt_id, pds_quantity, pds_deleted) SELECT " + productSold.getSoldYear() + ", " + productSold.getSoldMonth() + ", " + productSold.getSoldDay() + ", t_product.pdt_id, " + productSold.getQuantity() + ", false" +
 						" FROM t_product JOIN t_restaurant ON t_restaurant.res_id=t_product.res_id" +
 						" WHERE t_product.pdt_code = '" + productSold.getProduct().getCode() + "' AND t_restaurant.res_reference = '" + restaurantReference + "';";
 				out.println(insertProductCategory);
@@ -143,32 +137,23 @@ public class DataMigrationProductSoldWork extends DataMigrationWork
 		},  
 		SCP_UPDATED_DAY() {
 			public void fillValue(ProductSold productSold, Object value) {
-				Calendar calendar = Calendar.getInstance();
-				calendar.setTime(productSold.getSoldDate());
 				if (value != null) {
-					calendar.set(Calendar.DAY_OF_MONTH, new Integer(value.toString()).intValue());
+					productSold.setSoldDay(new Integer(value.toString()));
 				}
-				productSold.setSoldDate(calendar.getTime());
 			}
 		},  
 		SCP_UPDATED_MONTH() {
 			public void fillValue(ProductSold productSold, Object value) {
-				Calendar calendar = Calendar.getInstance();
-				calendar.setTime(productSold.getSoldDate());
 				if (value != null) {
-					calendar.set(Calendar.MONTH, new Integer(value.toString()).intValue());
+					productSold.setSoldMonth(new Integer(value.toString()));
 				}
-				productSold.setSoldDate(calendar.getTime());
 			}
 		},  
 		SCP_UPDATED_YEAR() {
 			public void fillValue(ProductSold productSold, Object value) {
-				Calendar calendar = Calendar.getInstance();
-				calendar.setTime(productSold.getSoldDate());
 				if (value != null) {
-					calendar.set(Calendar.YEAR, new Integer(value.toString()).intValue());
+					productSold.setSoldYear(new Integer(value.toString()));
 				}
-				productSold.setSoldDate(calendar.getTime());
 			}
 		};
 		

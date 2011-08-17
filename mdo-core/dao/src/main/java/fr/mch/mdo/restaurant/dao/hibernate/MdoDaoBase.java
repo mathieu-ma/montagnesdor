@@ -81,6 +81,7 @@ public abstract class MdoDaoBase implements IDaoBase
 
 	protected void endTransaction(TransactionSession transactionSession, Object bean, boolean... isLazy) {
 		logger.debug("START You are in method endTransaction of class " + this.getClass().getName());
+		
 		checkLazyInitialization(bean, isLazy);
 
 		transactionSession.getTransaction().commit();

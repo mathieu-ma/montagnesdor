@@ -10,6 +10,7 @@ import fr.mch.mdo.restaurant.dao.IDaoServices;
 import fr.mch.mdo.restaurant.dao.beans.Locale;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServicesTestCase;
 import fr.mch.mdo.restaurant.dao.locales.ILocalesDao;
+import fr.mch.mdo.test.MdoTestCase;
 
 public class DefaultLocalesDaoTest extends DefaultDaoServicesTestCase 
 {
@@ -44,7 +45,7 @@ public class DefaultLocalesDaoTest extends DefaultDaoServicesTestCase
 	protected List<IMdoBean> createListBeans() {
 		List<IMdoBean> list = new ArrayList<IMdoBean>();
 		list.add(createNewBean(java.util.Locale.JAPANESE.getLanguage()));
-		list.add(createNewBean(java.util.Locale.CHINESE.getLanguage()));
+		list.add(createNewBean(java.util.Locale.GERMAN.getLanguage()));
 		return list;
 	}
 
@@ -65,7 +66,7 @@ public class DefaultLocalesDaoTest extends DefaultDaoServicesTestCase
 			assertEquals("Locale language must be equals to unique key", localeCode, castedBean.getLanguage());
 			assertFalse("Locale must not be deleted", castedBean.isDeleted());
 		} catch (Exception e) {
-			fail(e.getMessage());
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
 
@@ -92,7 +93,7 @@ public class DefaultLocalesDaoTest extends DefaultDaoServicesTestCase
 			assertEquals("Locale language must be equals to unique key", java.util.Locale.ITALIAN.getLanguage(), updatedBean.getLanguage());
 			assertTrue("Locale must be deleted", updatedBean.isDeleted());
 		} catch (Exception e) {
-			fail(e.getMessage());
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
 

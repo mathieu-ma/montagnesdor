@@ -87,7 +87,6 @@ public abstract class DefaultDaoServicesTestCase extends MdoDaoBasicTestCase
 					boolean beanInFindAllList = false;
 					int indexList = 0;
 					for (IMdoBean iMdoBean : list) {
-						System.out.println("The iMdoBean must be an instance of IMdoDaoBean " + indexList);
 						assertTrue("The iMdoBean must be an instance of IMdoDaoBean " + indexList, iMdoBean instanceof IMdoDaoBean);
 						indexList++;
 						if (iMdoBean.equals(bean)) {

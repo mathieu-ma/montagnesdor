@@ -77,20 +77,23 @@ public class DefaultProductSpecialCodesDaoTest extends DefaultDaoServicesTestCas
 		assertTrue(this.getInstance() instanceof DefaultProductSpecialCodesDao);
 	}
 
-	public void testFindByRestaurantAndShortCode() {
+	@Override
+	public void doFindByUniqueKey() {
 		IProductSpecialCodesDao dao = (IProductSpecialCodesDao) this.getInstance();
 		try {
-			IMdoBean bean = dao.findByRestaurantAndShortCode(1L, '#');
+			IMdoBean bean = dao.findByShortCode(1L, "#");
 			assertNotNull(bean);
 			assertTrue(bean instanceof ProductSpecialCode);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getLocalizedMessage());
 		}
-	}
-
-	@Override
-	public void doFindByUniqueKey() {
-		assertTrue("Nothing to check", Boolean.TRUE);
+		try {
+			IMdoBean bean = dao.findByCodeName(1L, "OFFERED_PRODUCT");
+			assertNotNull(bean);
+			assertTrue(bean instanceof ProductSpecialCode);
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getLocalizedMessage());
+		}
 	}
 
 	@Override

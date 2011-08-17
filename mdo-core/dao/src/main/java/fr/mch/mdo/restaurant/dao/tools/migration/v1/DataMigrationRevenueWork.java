@@ -56,11 +56,11 @@ public class DataMigrationRevenueWork extends DataMigrationWork
 		try {
 			out = new PrintWriter(new FileWriter(output));
 
-			// Key = Type label in V1
-			// Value = Type code in V2
+			// Key = true or false in V1
+			// Value = Enum enm_language_key_label in V2
 			Map<String, String> typeV1ToV2 = new HashMap<String, String>();
-			typeV1ToV2.put("false", "TABLE_TYPE.EAT_IN.1");
-			typeV1ToV2.put("true", "TABLE_TYPE.TAKE_AWAY.0");
+			typeV1ToV2.put("false", "TABLE_TYPE.EAT_IN.0");
+			typeV1ToV2.put("true", "TABLE_TYPE.TAKE_AWAY.1");
 
 			// Fill t_day_revenue
 			ps = connection.prepareStatement("SELECT drv_id, drv_revenue_date, drv_print_date, drv_closing_date, drv_cash, drv_ticket, drv_cheque," +

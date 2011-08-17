@@ -33,16 +33,26 @@ public class DefaultTableTypesDao extends DefaultDaoServices implements ITableTy
 	}
 
 	@Override
-	public IMdoBean findByUniqueKey(Object propertyValue, boolean... isLazy) throws MdoDataBeanException {
+	public IMdoBean findByUniqueKey(Object[] propertyValues, boolean... isLazy) throws MdoDataBeanException {
 		// Checking exception
-		super.findByUniqueKey(propertyValue, isLazy);
+		super.findByUniqueKey(propertyValues, isLazy);
+
+		// Checking exception
+		if (propertyValues.length != 1) {
+			super.getLogger().error("message.error.dao.unique.fields.1");
+			throw new MdoDataBeanException("message.error.dao.unique.fields.1");
+		}
 
 		Map<String, Object> propertyValueMap = new HashMap<String, Object>();
-		propertyValueMap.put("code.name", propertyValue);
+		propertyValueMap.put("code.name", propertyValues[0]);
 		propertyValueMap.put("code.type", MdoTableAsEnumTypeDao.TABLE_TYPE.name());
 		propertyValueMap.put("code.deleted", Boolean.FALSE);
 
 		return (IMdoBean) super.findByUniqueKey(propertyValueMap, isLazy);
 	}
 
+	@Override
+	public IMdoBean findByUniqueKey(String code, boolean... isLazy) throws MdoDataBeanException {
+		return super.findByUniqueKey(new Object[] {code}, isLazy);
+	}
 }

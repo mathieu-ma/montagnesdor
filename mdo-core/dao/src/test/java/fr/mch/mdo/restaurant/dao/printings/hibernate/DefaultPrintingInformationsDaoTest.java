@@ -149,7 +149,7 @@ public class DefaultPrintingInformationsDaoTest extends DefaultDaoServicesTestCa
 
 	@Override
 	public void doFindByUniqueKey() {
-		assertTrue("There is no field for unique key", true);
+		assertTrue("The only unique key is the primaray key", true);	
 	}
 
 	@Override

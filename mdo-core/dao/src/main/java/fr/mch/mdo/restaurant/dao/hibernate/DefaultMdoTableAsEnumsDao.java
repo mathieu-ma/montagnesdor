@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 
@@ -17,6 +18,8 @@ import fr.mch.mdo.restaurant.dao.IMdoTableAsEnumsDao;
 import fr.mch.mdo.restaurant.dao.MdoTableAsEnumTypeDao;
 import fr.mch.mdo.restaurant.dao.beans.MdoString;
 import fr.mch.mdo.restaurant.dao.beans.MdoTableAsEnum;
+import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServices.MdoCriteria;
+import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServices.PropertiesRestrictions;
 import fr.mch.mdo.restaurant.exception.MdoDataBeanException;
 import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
@@ -134,17 +137,22 @@ public class DefaultMdoTableAsEnumsDao extends DefaultDaoServices implements IMd
 	private List<MdoTableAsEnum> getMdoTableAsEnumByType(String type) throws MdoDataBeanException {
 		List<? super MdoTableAsEnum> result = null;
 
-		Map<String, Entry<PropertiesRestrictions, Object>> propertyValueRestrictionMap = new HashMap<String, Entry<PropertiesRestrictions, Object>>();
-		String property = "type";
-		Entry<PropertiesRestrictions, Object> value = new MdoEntry<PropertiesRestrictions, Object>(PropertiesRestrictions.EQUALS, type);
-		propertyValueRestrictionMap.put(property, value);
-		property = "deleted";
-		value = new MdoEntry<PropertiesRestrictions, Object>(PropertiesRestrictions.EQUALS, Boolean.FALSE);
-		propertyValueRestrictionMap.put(property, value);
-		property = "order";
-		value = new MdoEntry<PropertiesRestrictions, Object>(PropertiesRestrictions.ORDER, null);
-		propertyValueRestrictionMap.put(property, value);
-		result = super.findByPropertiesRestrictions(propertyValueRestrictionMap);
+		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
+		criterias.add(new MdoCriteria("type", PropertiesRestrictions.EQUALS, type));
+		criterias.add(new MdoCriteria("order", PropertiesRestrictions.ORDER, null));
+
+//		Map<String, Entry<PropertiesRestrictions, Object>> propertyValueRestrictionMap = new HashMap<String, Entry<PropertiesRestrictions, Object>>();
+//		String property = "type";
+//		Entry<PropertiesRestrictions, Object> value = new MdoEntry<PropertiesRestrictions, Object>(PropertiesRestrictions.EQUALS, type);
+//		propertyValueRestrictionMap.put(property, value);
+//		property = "deleted";
+//		value = new MdoEntry<PropertiesRestrictions, Object>(PropertiesRestrictions.EQUALS, Boolean.FALSE);
+//		propertyValueRestrictionMap.put(property, value);
+//		property = "order";
+//		value = new MdoEntry<PropertiesRestrictions, Object>(PropertiesRestrictions.ORDER, null);
+//		propertyValueRestrictionMap.put(property, value);
+
+		result = super.findByPropertiesRestrictions(criterias);
 		return (List<MdoTableAsEnum>) result;
 	}
 
@@ -153,13 +161,22 @@ public class DefaultMdoTableAsEnumsDao extends DefaultDaoServices implements IMd
 	public List<MdoString> findAllTypes() throws MdoException {
 		List<MdoString> result = new ArrayList<MdoString>();
 		//result = super.findAllByQuery(Constants.HQL_MDO_TABLE_AS_ENUM_SELECT_ALL_TYPES, null, true);
-		Map<String, Entry<PropertiesRestrictions, Object>> propertyValueMap = new HashMap<String, Entry<PropertiesRestrictions,Object>>();
+
+		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
 		String property = "type";
 		ProjectionList projectionList = Projections.projectionList();
 		projectionList.add(Projections.property(property));
-		Entry<PropertiesRestrictions, Object> value = new MdoEntry<PropertiesRestrictions, Object>(PropertiesRestrictions.PROJECTION, Projections.distinct(projectionList));
-		propertyValueMap.put(property, value);
-		result = super.findByPropertiesRestrictions(propertyValueMap, true);
+		criterias.add(new MdoCriteria(property, PropertiesRestrictions.PROJECTION, Projections.distinct(projectionList)));
+
+//		Map<String, Entry<PropertiesRestrictions, Object>> propertyValueMap = new HashMap<String, Entry<PropertiesRestrictions,Object>>();
+//		String property = "type";
+//		ProjectionList projectionList = Projections.projectionList();
+//		projectionList.add(Projections.property(property));
+//		Entry<PropertiesRestrictions, Object> value = new MdoEntry<PropertiesRestrictions, Object>(PropertiesRestrictions.PROJECTION, Projections.distinct(projectionList));
+//		propertyValueMap.put(property, value);
+//		result = super.findByPropertiesRestrictions(propertyValueMap, true);
+
+		result = super.findByPropertiesRestrictions(criterias, true);
 		return result;
 	}
 }

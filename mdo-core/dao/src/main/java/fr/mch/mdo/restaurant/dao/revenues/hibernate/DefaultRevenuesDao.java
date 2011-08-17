@@ -7,6 +7,7 @@ import java.util.Map;
 import fr.mch.mdo.logs.ILogger;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
+import fr.mch.mdo.restaurant.dao.MdoTableAsEnumTypeDao;
 import fr.mch.mdo.restaurant.dao.beans.Revenue;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServices;
 import fr.mch.mdo.restaurant.dao.revenues.IRevenuesDao;
@@ -46,14 +47,16 @@ public class DefaultRevenuesDao extends DefaultDaoServices implements IRevenuesD
 		Map<String, Object> propertyValueMap = new HashMap<String, Object>();
 		propertyValueMap.put("restaurant.id", propertyValues[0]);
 		propertyValueMap.put("revenueDate", propertyValues[1]);
-		propertyValueMap.put("tableType.id", propertyValues[2]);
-
+		propertyValueMap.put("tableType.code.name", propertyValues[2]);
+		propertyValueMap.put("tableType.code.type", MdoTableAsEnumTypeDao.TABLE_TYPE.name());
+		propertyValueMap.put("tableType.code.deleted", Boolean.FALSE);
+		
 		return (IMdoBean) super.findByUniqueKey(propertyValueMap, isLazy);
 	}
 
 	@Override
-	public IMdoBean findByUniqueKey(Long restaurantId, Date revenueDate, Long typeTableId, boolean... isLazy) throws MdoDataBeanException {
-		return this.findByUniqueKey(new Object[] { restaurantId, revenueDate, typeTableId }, isLazy);
+	public IMdoBean findByUniqueKey(Long restaurantId, Date revenueDate, String type, boolean... isLazy) throws MdoDataBeanException {
+		return this.findByUniqueKey(new Object[] { restaurantId, revenueDate, type }, isLazy);
 	}
 
 }

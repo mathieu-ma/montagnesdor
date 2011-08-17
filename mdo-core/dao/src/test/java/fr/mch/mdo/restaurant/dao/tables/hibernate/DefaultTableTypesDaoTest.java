@@ -79,7 +79,7 @@ public class DefaultTableTypesDaoTest extends DefaultDaoServicesTestCase
 			assertEquals("TableType code must be equals to unique key", codeName, castedBean.getCode().getName());
 			assertFalse("TableType must not be deleted", castedBean.isDeleted());
 		} catch (Exception e) {
-			fail(e.getMessage());
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
 

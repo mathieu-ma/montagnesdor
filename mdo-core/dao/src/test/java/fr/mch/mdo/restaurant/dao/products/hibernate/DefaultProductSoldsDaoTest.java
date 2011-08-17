@@ -14,9 +14,11 @@ import fr.mch.mdo.restaurant.dao.beans.Product;
 import fr.mch.mdo.restaurant.dao.beans.ProductSold;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServicesTestCase;
 import fr.mch.mdo.restaurant.dao.products.IProductSoldsDao;
+import fr.mch.mdo.restaurant.exception.MdoDataBeanException;
+import fr.mch.mdo.test.MdoTestCase;
 
 public class DefaultProductSoldsDaoTest extends DefaultDaoServicesTestCase
- {
+{
 	/**
 	 * Create the test case
 	 * 
@@ -75,30 +77,26 @@ public class DefaultProductSoldsDaoTest extends DefaultDaoServicesTestCase
 			for (int i = 0; i < 2; i++) {
 				IMdoBean bean = null;
 				if (i == 0) {
-					bean = ((IProductSoldsDao) this.getInstance())
-							.findByUniqueKey(soldDate, productId);
+					bean = ((IProductSoldsDao) this.getInstance()).findByUniqueKey(soldDate, productId);
 				} else {
-					bean = this.getInstance().findByUniqueKey(
-							new Object[] { soldDate, productId });
+					bean = this.getInstance().findByUniqueKey(new Object[] { soldDate, productId });
 				}
 				assertNotNull("Product Sold must not be null", bean);
-				assertTrue("IMdoBean must be instance of " + ProductSold.class,
-						bean instanceof ProductSold);
+				assertTrue("IMdoBean must be instance of " + ProductSold.class, bean instanceof ProductSold);
 				ProductSold castedBean = (ProductSold) bean;
-				assertNotNull("ProductSold product Id must not be null",
-						castedBean.getProduct().getId());
-				assertEquals(
-						"ProductSold product Id must be equals to unique key",
-						productId, castedBean.getProduct().getId());
-				assertEquals(
-						"ProductSold sold date must be equals to unique key",
-						soldDate, castedBean.getSoldDate());
-				assertFalse("ProductSold must not be deleted",
-						castedBean.isDeleted());
+				assertNotNull("ProductSold product Id must not be null", castedBean.getProduct().getId());
+				assertEquals("ProductSold product Id must be equals to unique key", productId, castedBean.getProduct().getId());
+				assertNotNull("ProductSold sold year must not be null", castedBean.getSoldYear());
+				assertEquals("ProductSold sold year must be equals to unique key", new Integer(calendar.get(Calendar.YEAR)), castedBean.getSoldYear());
+				assertNotNull("ProductSold sold month must not be null", castedBean.getSoldMonth());
+				assertEquals("ProductSold sold month must be equals to unique key", new Integer(calendar.get(Calendar.MONTH) + 1), castedBean.getSoldMonth());
+				assertNotNull("ProductSold sold day must not be null", castedBean.getSoldDay());
+				assertEquals("ProductSold sold day must be equals to unique key", new Integer(calendar.get(Calendar.DAY_OF_MONTH)), castedBean.getSoldDay());
+				assertFalse("ProductSold must not be deleted", castedBean.isDeleted());
 
 			}
 		} catch (Exception e) {
-			fail(e.getMessage());
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
 
@@ -116,19 +114,17 @@ public class DefaultProductSoldsDaoTest extends DefaultDaoServicesTestCase
 		try {
 			// Create new bean to be updated
 			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean);
-			assertTrue("IMdoBean must be instance of " + ProductSold.class,
-					beanToBeUpdated instanceof ProductSold);
+			assertTrue("IMdoBean must be instance of " + ProductSold.class, beanToBeUpdated instanceof ProductSold);
 			ProductSold castedBean = (ProductSold) beanToBeUpdated;
-			assertNotNull("Product Sold Id must not be null", castedBean
-					.getProduct().getId());
-			assertFalse("ProductSold must not be deleted",
-					castedBean.isDeleted());
+			assertNotNull("Product Sold Id must not be null", castedBean.getProduct().getId());
+			assertFalse("ProductSold must not be deleted", castedBean.isDeleted());
 
 			// Update the created bean
 			calendar.set(1970, 7, 18);
-			soldDate = calendar.getTime();
 			quantity = BigDecimal.TEN;
-			castedBean.setSoldDate(soldDate);
+			castedBean.setSoldYear(calendar.get(Calendar.YEAR));
+			castedBean.setSoldMonth(calendar.get(Calendar.MONTH));
+			castedBean.setSoldDay(calendar.get(Calendar.DAY_OF_MONTH));
 			castedBean.setQuantity(quantity);
 			castedBean.setDeleted(true);
 			this.getInstance().update(castedBean);
@@ -137,35 +133,43 @@ public class DefaultProductSoldsDaoTest extends DefaultDaoServicesTestCase
 			ProductSold updatedBean = new ProductSold();
 			updatedBean.setId(castedBean.getId());
 			this.getInstance().load(updatedBean);
-			assertNotNull("ProductSold code must not be null", updatedBean
-					.getProduct().getCode());
-			assertNotNull("ProductSold sold date must not be null",
-					updatedBean.getSoldDate());
-			assertEquals("Check ProductSold sold date", soldDate,
-					updatedBean.getSoldDate());
-			assertNotNull("ProductSold quantity must not be null",
-					updatedBean.getQuantity());
-			assertEquals("Check ProductSold quantity",
-					super.decimalFormat.format(quantity),
-					super.decimalFormat.format(updatedBean.getQuantity()));
+			assertNotNull("ProductSold code must not be null", updatedBean.getProduct().getCode());
+			assertNotNull("ProductSold sold year must not be null", updatedBean.getSoldYear());
+			assertEquals("Check ProductSold sold year", new Integer(calendar.get(Calendar.YEAR)), updatedBean.getSoldYear());
+			assertNotNull("ProductSold sold month must not be null", updatedBean.getSoldMonth());
+			assertEquals("Check ProductSold sold month", new Integer(calendar.get(Calendar.MONTH)), updatedBean.getSoldMonth());
+			assertNotNull("ProductSold sold day must not be null", updatedBean.getSoldDay());
+			assertEquals("Check ProductSold sold day", new Integer(calendar.get(Calendar.DAY_OF_MONTH)), updatedBean.getSoldDay());
+			assertNotNull("ProductSold quantity must not be null", updatedBean.getQuantity());
+			assertEquals("Check ProductSold quantity", super.decimalFormat.format(quantity), super.decimalFormat.format(updatedBean.getQuantity()));
 			assertTrue("ProductSold must be deleted", castedBean.isDeleted());
 
 			this.getInstance().delete(updatedBean);
 		} catch (Exception e) {
-			fail(e.getMessage());
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
 
-	private IMdoBean createNewBean(Date soldDate, Product product,
-			BigDecimal quantity) {
+	private IMdoBean createNewBean(Date soldDate, Product product, BigDecimal quantity) {
 		ProductSold newBean = new ProductSold();
-		newBean.setSoldDate(soldDate);
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(soldDate);
+		Integer soldYear = new Integer(calendar.get(Calendar.YEAR));
+		Integer soldMonth = new Integer(calendar.get(Calendar.MONTH));
+		Integer soldDay = new Integer(calendar.get(Calendar.DAY_OF_MONTH));
+		newBean.setSoldYear(soldYear);
+		newBean.setSoldMonth(soldMonth);
+		newBean.setSoldDay(soldDay);
 		newBean.setProduct(product);
 		newBean.setQuantity(quantity);
 		return newBean;
 	}
-	
+
 	public void testGetByYear() {
-		((DefaultProductSoldsDao) this.getInstance()).findByYear(1970);
+		try {
+			((DefaultProductSoldsDao) this.getInstance()).findByYear(1970);
+		} catch (MdoDataBeanException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
 	}
 }

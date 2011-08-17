@@ -42,9 +42,9 @@ public class DefaultMdoTableAsEnumsDaoTest extends DefaultDaoServicesTestCase
 
 	protected IMdoBean createNewBean() {
 		MdoTableAsEnumTypeDao type = MdoTableAsEnumTypeDao.PREFIX_TABLE_NAME;
-		String name = "B";
-		int order = 1;
-		String defaultLabel = "B";
+		String name = "C";
+		int order = 2;
+		String defaultLabel = "C";
 		String languageKeyLabel = type.name() + "." + name + "." + order;
 
 		return createNewBean(type, name, order, defaultLabel, languageKeyLabel);
@@ -53,15 +53,15 @@ public class DefaultMdoTableAsEnumsDaoTest extends DefaultDaoServicesTestCase
 	protected List<IMdoBean> createListBeans() {
 		List<IMdoBean> list = new ArrayList<IMdoBean>();
 		MdoTableAsEnumTypeDao type = MdoTableAsEnumTypeDao.PREFIX_TABLE_NAME;
-		String name = "C";
-		int order = 2;
-		String defaultLabel = "C";
+		String name = "D";
+		int order = 3;
+		String defaultLabel = "D";
 		String languageKeyLabel = type.name() + "." + name + "." + order;
 		list.add(createNewBean(type, name, order, defaultLabel, languageKeyLabel));
 		type = MdoTableAsEnumTypeDao.PREFIX_TABLE_NAME;
-		name = "D";
-		order = 3;
-		defaultLabel = "D";
+		name = "E";
+		order = 4;
+		defaultLabel = "E";
 		languageKeyLabel = type.name() + "." + name + "." + order;
 		list.add(createNewBean(type, name, order, defaultLabel, languageKeyLabel));
 		return list;
@@ -128,30 +128,28 @@ public class DefaultMdoTableAsEnumsDaoTest extends DefaultDaoServicesTestCase
 	}
 
 	public void testGetBeans() throws MdoException {
-		// There is already data inserted into database with id 1
-		// INSERT INTO t_enum VALUES(1, 'PREFIX_TABLE_NAME', 'A', 0, 'A',
-		// 'PREFIX_TABLE_NAME.A.0', false);
+		// There is already data inserted into database with id 0 and 1
 		MdoTableAsEnumTypeDao type = MdoTableAsEnumTypeDao.PREFIX_TABLE_NAME;
 		List<MdoTableAsEnum> list = ((DefaultMdoTableAsEnumsDao) this.getInstance()).getBeans(type.name());
 		// Only 1 elements
-		int expectedSize = 1;
+		int expectedSize = 2;
 		Map<String, String> expectedData = new LinkedHashMap<String, String>();
 		expectedData.put("A", "A");
-		int expectedBeginId = 1;
+		expectedData.put("B", "B");
+		int expectedBeginId = 0;
 		checkList(type, list, expectedSize, expectedData, expectedBeginId);
 	}
 
 	public void testGetRestaurantPrefixTakeawayNames() throws MdoException {
-		// There is already data inserted into database with id 1
-		// INSERT INTO t_enum VALUES(1, 'PREFIX_TABLE_NAME', 'A', 0, 'A',
-		// 'PREFIX_TABLE_NAME.A.0', false);
+		// There is already data inserted into database with id 0 and 1
 		MdoTableAsEnumTypeDao type = MdoTableAsEnumTypeDao.PREFIX_TABLE_NAME;
 		List<MdoTableAsEnum> list = ((DefaultMdoTableAsEnumsDao) this.getInstance()).getRestaurantPrefixTakeawayNames();
 		// Only 1 elements
-		int expectedSize = 1;
+		int expectedSize = 2;
 		Map<String, String> expectedData = new LinkedHashMap<String, String>();
 		expectedData.put("A", "A");
-		int expectedBeginId = 1;
+		expectedData.put("B", "B");
+		int expectedBeginId = 0;
 		checkList(type, list, expectedSize, expectedData, expectedBeginId);
 	}
 

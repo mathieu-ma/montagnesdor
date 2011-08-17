@@ -46,8 +46,8 @@ DELETE FROM t_enum;
 INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('VALUE_ADDED_TAX', 'DEFAULT', 0, '5.50', 'VALUE_ADDED_TAX.DEFAULT.0', false);
 INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('VALUE_ADDED_TAX', 'ALCOHOL', 1, '19.60', 'VALUE_ADDED_TAX.ALCOHOL.1', false);
 
-INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('TABLE_TYPE', 'TAKE_AWAY', 0, 'Take away', 'TABLE_TYPE.TAKE_AWAY.0', false);
-INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('TABLE_TYPE', 'EAT_IN', 1, 'Eat in', 'TABLE_TYPE.EAT_IN.1', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('TABLE_TYPE', 'EAT_IN', 0, 'Eat in', 'TABLE_TYPE.EAT_IN.0', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('TABLE_TYPE', 'TAKE_AWAY', 1, 'Take away', 'TABLE_TYPE.TAKE_AWAY.1', false);
 
 INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('SPECIFIC_ROUND', 'HALF_ROUND', 0, 'HALF_ROUND', 'SPECIFIC_ROUND.HALF_ROUND.0', false);
 INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('SPECIFIC_ROUND', 'TENTH_ROUND', 1, 'TENTH_ROUND', 'SPECIFIC_ROUND.TENTH_ROUND.1', false);
@@ -130,8 +130,8 @@ INSERT INTO t_value_added_tax (vat_code_enm_id, vat_rate, vat_deleted) SELECT en
 --COMMENT ON COLUMN t_table_type.tbt_id IS 'This is primary key of this table.';
 --COMMENT ON COLUMN t_table_type.tbt_code_enm_id IS 'This is the code of the table type. This is a unique field. It is a foreign that refers to the t_enum table for type TABLE_TYPE.';
 --COMMENT ON COLUMN t_table_type.tbt_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_table_type (tbt_code_enm_id, tbt_deleted) SELECT enm_id, false FROM t_enum WHERE t_enum.enm_language_key_label='TABLE_TYPE.TAKE_AWAY.0';
-INSERT INTO t_table_type (tbt_code_enm_id, tbt_deleted) SELECT enm_id, false FROM t_enum WHERE t_enum.enm_language_key_label='TABLE_TYPE.EAT_IN.1';
+INSERT INTO t_table_type (tbt_code_enm_id, tbt_deleted) SELECT enm_id, false FROM t_enum WHERE t_enum.enm_language_key_label='TABLE_TYPE.EAT_IN.0';
+INSERT INTO t_table_type (tbt_code_enm_id, tbt_deleted) SELECT enm_id, false FROM t_enum WHERE t_enum.enm_language_key_label='TABLE_TYPE.TAKE_AWAY.1';
 
 
 -- Step 2.2
@@ -151,8 +151,14 @@ INSERT INTO t_table_type (tbt_code_enm_id, tbt_deleted) SELECT enm_id, false FRO
 --COMMENT ON COLUMN t_restaurant.res_takeaway_basic_reduction IS 'This is the restaurant reduction for takeaway table we have to apply. This field depends on the field res_takeaway_min_amount_reduction.';
 --COMMENT ON COLUMN t_restaurant.res_takeaway_min_amount_reduction IS 'This is the minimum amount value to apply a reduction for takeaway table.';
 --COMMENT ON COLUMN t_restaurant.res_specific_round IS 'This is the specific round to apply on all amounts calculations. It is a foreign that refers to the t_enum table for type SPECIFIC_ROUND_CALCULATION.';
+--COMMENT ON COLUMN t_restaurant.tbt_id IS 'This is the default table type. It is a foreign that refers to the t_table_type table. It is used to specify the dinner table type which can be EAT_IN, TAKEAWAY, ....';
 --COMMENT ON COLUMN t_restaurant.res_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_restaurant (res_registration_date, res_reference, res_name, res_address_road, res_address_zip, res_address_city, res_phone, res_vat_ref, res_visa_ref, res_triple_DES_key, res_vat_by_takeaway, res_takeaway_basic_reduction, res_takeaway_min_amount_reduction, res_specific_round, res_deleted) SELECT CURRENT_TIMESTAMP, '10203040506070', 'Kim-San', '11 allée Clémencet', '93340', 'Le Raincy', '01 43 02 50 90', 'FR 19 313 105 397 000 19', '313 105 397', 'F5E4D3C2B1A0', true, 10, 15, t_enum.enm_id, false FROM t_enum WHERE t_enum.enm_language_key_label='SPECIFIC_ROUND.HALF_ROUND.0';
+INSERT INTO t_restaurant (res_registration_date, res_reference, res_name, res_address_road, res_address_zip, res_address_city, res_phone, res_vat_ref, res_visa_ref, res_triple_DES_key, res_vat_by_takeaway, res_takeaway_basic_reduction, res_takeaway_min_amount_reduction, res_specific_round, tbt_id, res_deleted) 
+SELECT CURRENT_TIMESTAMP, '10203040506070', 'Kim-San', '11 allée Clémencet', '93340', 'Le Raincy', '01 43 02 50 90', 'FR 19 313 105 397 000 19', '313 105 397', 'F5E4D3C2B1A0', true, 10, 15, 
+t_enum.enm_id, t_table_type.tbt_id, false 
+FROM t_enum, t_table_type JOIN t_enum enm_table_type ON enm_table_type.enm_id = t_table_type.tbt_code_enm_id  
+WHERE t_enum.enm_language_key_label='SPECIFIC_ROUND.HALF_ROUND.0'
+AND enm_table_type.enm_language_key_label='TABLE_TYPE.EAT_IN.0';
 
 --COMMENT ON TABLE t_restaurant_prefix_table IS 'This table is a association table. This table is used to store the list of restaurant table prefix names. These prefix names is used to know that a table is considered as a takeaway table.';
 --COMMENT ON COLUMN t_restaurant_prefix_table.rpt_id IS 'This is primary key of this table.';

@@ -23,6 +23,7 @@ import fr.mch.mdo.restaurant.dao.beans.ValueAddedTax;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServicesTestCase;
 import fr.mch.mdo.restaurant.dao.revenues.IRevenuesDao;
 import fr.mch.mdo.restaurant.exception.MdoException;
+import fr.mch.mdo.test.MdoTestCase;
 
 public class DefaultRevenuesDaoTest extends DefaultDaoServicesTestCase 
 {
@@ -128,14 +129,14 @@ public class DefaultRevenuesDaoTest extends DefaultDaoServicesTestCase
 		calendar.clear();
 		calendar.set(1970, 7, 15);
 		Date revenueDate = calendar.getTime();
-		Long tableTypeId = 1L;
+		String type = "TAKE_AWAY";
 		try {
 			for (int i = 0; i < 2; i++) {
-				IMdoBean bean = this.getInstance().findByUniqueKey(new Object[] { restaurantId, revenueDate, tableTypeId });
+				IMdoBean bean = null;
 				if (i == 0) {
-					bean = this.getInstance().findByUniqueKey(new Object[] { restaurantId, revenueDate, tableTypeId });
+					bean = this.getInstance().findByUniqueKey(new Object[] { restaurantId, revenueDate, type });
 				} else {
-					bean = ((IRevenuesDao) this.getInstance()).findByUniqueKey(restaurantId, revenueDate, tableTypeId);
+					bean = ((IRevenuesDao) this.getInstance()).findByUniqueKey(restaurantId, revenueDate, type);
 				}
 				assertNotNull("IMdoBean must not be null", bean);
 				assertTrue("IMdoBean must be instance of " + Revenue.class, bean instanceof Revenue);
@@ -145,7 +146,7 @@ public class DefaultRevenuesDaoTest extends DefaultDaoServicesTestCase
 				assertNotNull("Revenue date must not be null", castedBean.getRevenueDate());
 				assertEquals("Revenue date must be equals to unique key", revenueDate, castedBean.getRevenueDate());
 				assertNotNull("Revenue Table Type must not be null", castedBean.getTableType());
-				assertEquals("Revenue Table Type Id must be equals to unique key", tableTypeId, castedBean.getTableType().getId());
+				assertEquals("Revenue Table Type Id must be equals to unique key", type, castedBean.getTableType().getCode().getName());
 				assertNotNull("Revenue cashings must not be null", castedBean.getCashings());
 				assertEquals("Check Revenue cashings size", 1, castedBean.getCashings().size());
 				assertNotNull("Revenue vats must not be null", castedBean.getVats());
@@ -153,7 +154,7 @@ public class DefaultRevenuesDaoTest extends DefaultDaoServicesTestCase
 				assertFalse("Revenue must not be deleted", castedBean.isDeleted());
 			}
 		} catch (Exception e) {
-			fail(e.getMessage());
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
 
@@ -225,7 +226,7 @@ public class DefaultRevenuesDaoTest extends DefaultDaoServicesTestCase
 			assertTrue("Revenue must be deleted", castedBean.isDeleted());
 			this.getInstance().delete(updatedBean);
 		} catch (Exception e) {
-			fail(e.getMessage());
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
 

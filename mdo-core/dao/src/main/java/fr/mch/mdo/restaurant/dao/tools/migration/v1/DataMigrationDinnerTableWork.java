@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 
 import fr.mch.mdo.logs.ILogger;
+import fr.mch.mdo.restaurant.dao.beans.CashingType;
 import fr.mch.mdo.restaurant.dao.beans.DinnerTable;
 import fr.mch.mdo.restaurant.dao.beans.MdoTableAsEnum;
 import fr.mch.mdo.restaurant.dao.beans.OrderLine;
@@ -34,7 +34,6 @@ import fr.mch.mdo.restaurant.dao.beans.TableType;
 import fr.mch.mdo.restaurant.dao.beans.TableVat;
 import fr.mch.mdo.restaurant.dao.beans.UserAuthentication;
 import fr.mch.mdo.restaurant.dao.beans.ValueAddedTax;
-import fr.mch.mdo.restaurant.dao.tools.migration.v1.DataMigrationWork;
 
 public class DataMigrationDinnerTableWork extends DataMigrationWork 
 {
@@ -68,11 +67,11 @@ public class DataMigrationDinnerTableWork extends DataMigrationWork
 		try {
 			out = new PrintWriter(new FileWriter(output));
 
-			// Key = Type label in V1
-			// Value = Type code in V2
+			// Key = true or false in V1
+			// Value = Enum enm_language_key_label in V2
 			Map<String, String> typeV1ToV2 = new HashMap<String, String>();
-			typeV1ToV2.put("false", "TABLE_TYPE.EAT_IN.1");
-			typeV1ToV2.put("true", "TABLE_TYPE.TAKE_AWAY.0");
+			typeV1ToV2.put("false", "TABLE_TYPE.EAT_IN.0");
+			typeV1ToV2.put("true", "TABLE_TYPE.TAKE_AWAY.1");
 
 			// Fill t_dinner_table
 			ps = connection.prepareStatement("SELECT dtb_id, dtb_number, dtb_customers_number, dtb_quantities_sum, dtb_amounts_sum, dtb_reduction_ratio," +
@@ -92,7 +91,7 @@ public class DataMigrationDinnerTableWork extends DataMigrationWork
 				for (int i = 1; i <= maxColumn; i++) {
 					String columnLabel = rsMetaData.getColumnLabel(i).toUpperCase();
 					Object value = rs.getObject(i);
-					logger.debug("Result " + columnLabel + " with Value " + value);
+					logger.debug("t_dinner_table Result " + columnLabel + " with Value " + value);
 					DinnerTableResultSetRow.valueOf(columnLabel).fillValue(table, value);
 				}
 				tables.add(table);
@@ -153,37 +152,39 @@ public class DataMigrationDinnerTableWork extends DataMigrationWork
 					logger.debug("END t_table_vat Row " + rs.getRow());
 				}
 				// Fill t_cashing
-				table.setCashings(new HashSet<TableCashing>());
-				ps = connection.prepareStatement("SELECT t_cashing.csh_cash, t_cashing.csh_ticket, t_cashing.csh_cheque, t_cashing.csh_card, t_cashing.csh_unpaid " +
-							" FROM t_cashing " +
-							" WHERE t_cashing.dtb_id=" + table.getId());
-				rs = ps.executeQuery();
-				rsMetaData = rs.getMetaData();
-				maxColumn = rsMetaData.getColumnCount();
-				logger.debug("t_cashing Max Columns " + maxColumn);
-				while (rs.next()) {
-					logger.debug("START t_cashing Row " + rs.getRow());
-					for (int i = 1; i <= maxColumn; i++) {
-						TableCashing tableCashing = new TableCashing();
-						String columnLabel = rsMetaData.getColumnLabel(i).toUpperCase();
-						Object value = rs.getObject(i);
-						logger.debug("t_cashing Result " + columnLabel + " with Value " + value);
-						TableCashingResultSetRow.valueOf(columnLabel).fillValue(tableCashing, value);
-						if (tableCashing.getValue().doubleValue() != 0) {
-							// Dummy Id in order to have unique element when adding into cashings Set 
-							tableCashing.getType().setId(new Long(i));
-							table.getCashings().add(tableCashing);
+				TableCashing tableCashing = table.getCashing();
+				if (tableCashing != null) {
+					ps = connection.prepareStatement("SELECT t_cashing.csh_cash, t_cashing.csh_ticket, t_cashing.csh_cheque, t_cashing.csh_card, t_cashing.csh_unpaid " +
+								" FROM t_cashing " +
+								" WHERE t_cashing.dtb_id=" + table.getId());
+					rs = ps.executeQuery();
+					rsMetaData = rs.getMetaData();
+					maxColumn = rsMetaData.getColumnCount();
+					logger.debug("t_cashing Max Columns " + maxColumn);
+					while (rs.next()) {
+						logger.debug("START t_cashing Row " + rs.getRow());
+						for (int i = 1; i <= maxColumn; i++) {
+							CashingType cashingType = new CashingType();
+							String columnLabel = rsMetaData.getColumnLabel(i).toUpperCase();
+							Object value = rs.getObject(i);
+							logger.debug("t_cashing Result " + columnLabel + " with Value " + value);
+							CashingTypeResultSetRow.valueOf(columnLabel).fillValue(cashingType, value);
+							if (cashingType.getAmount().doubleValue() != 0) {
+								// Dummy Id in order to have unique element when adding into cashings Set 
+								cashingType.getType().setId(new Long(i));
+								tableCashing.getCashingTypes().add(cashingType);
+							}
 						}
+						logger.debug("END t_cashing Row " + rs.getRow());
 					}
-					logger.debug("END t_cashing Row " + rs.getRow());
 				}
 			}
 
 			// t_dinner_table
 			for (Iterator<DinnerTable> iterator = tables.iterator(); iterator.hasNext();) {
 				DinnerTable table = iterator.next();
-				String insertProduct = "INSERT INTO t_dinner_table (res_id, dtb_code, dtb_cashing_date, aut_id, roo_id, dtb_customers_number, dtb_quantities_sum, dtb_amounts_sum, dtb_reduction_ratio, dtb_amount_pay, dtb_registration_date, dtb_printing_date, dtb_reduction_ratio_changed, tbt_id, dtb_deleted) SELECT t_restaurant.res_id, '" + table.getNumber()	+ "', " + 
-					this.formatDate(sdfTimes, table.getCashingDate()) + ", t_user_authentication.aut_id, null, " + table.getCustomersNumber() + ", " + table.getQuantitiesSum() + ", " + 
+				String insertProduct = "INSERT INTO t_dinner_table (res_id, dtb_code, aut_id, roo_id, dtb_customers_number, dtb_quantities_sum, dtb_amounts_sum, dtb_reduction_ratio, dtb_amount_pay, dtb_registration_date, dtb_printing_date, dtb_reduction_ratio_changed, tbt_id, dtb_deleted) SELECT t_restaurant.res_id, '" + table.getNumber()	+ "', " + 
+					" t_user_authentication.aut_id, null, " + table.getCustomersNumber() + ", " + table.getQuantitiesSum() + ", " + 
 					table.getAmountsSum() + ", " + table.getReductionRatio() + ", " + table.getAmountPay() + ", " + 
 					this.formatDate(sdfTimes, table.getRegistrationDate()) + ", " + this.formatDate(sdfTimes, table.getPrintingDate()) + ", " + 
 						table.getReductionRatioChanged() + ", t_table_type.tbt_id, false" +
@@ -214,16 +215,12 @@ public class DataMigrationDinnerTableWork extends DataMigrationWork
 							" AND product_special_code_enum.enm_language_key_label='" + this.getProductSpecialCodeV1ToV2(productSpecialCodeV1ToV2, orderLine.getProduct().getCode()) + "'" +
 							" AND restaurant_psc.res_reference = '" + restaurantReference + "'" +
 							" AND t_dinner_table.dtb_code='" + table.getNumber() + "'" +
-							" AND t_dinner_table.dtb_cashing_date=" + this.formatDate(sdfTimes, table.getCashingDate()) + "" +
+							" AND t_dinner_table.dtb_registration_date=" + this.formatDate(sdfTimes, table.getRegistrationDate()) + "" +
 							" AND restaurant_dinner_table.res_reference = '" + restaurantReference + "';";
 
 					if ("/".equals(orderLine.getProduct().getCode())) {
 						// Remove Product reference
 						insertProduct = insertProduct.replace("t_product.pdt_id", "null").replace("t_product,", "").replace("AND t_product.pdt_code= '/'", "");
-					}
-					if (table.getCashingDate() == null) {
-						// Remove Cashing date in where clause
-						insertProduct = insertProduct.replace("t_dinner_table.dtb_cashing_date=null", "t_dinner_table.dtb_cashing_date IS null");
 					}
 					out.println(insertProduct);
 				}
@@ -242,36 +239,42 @@ public class DataMigrationDinnerTableWork extends DataMigrationWork
 						" WHERE 1=1 " +
 							" AND t_value_added_tax.vat_rate=" + vatRateFormat.format(tableVat.getVat().getRate().doubleValue()) + " " +
 							" AND t_dinner_table.dtb_code='" + table.getNumber() + "'" +
-							" AND t_dinner_table.dtb_cashing_date=" + this.formatDate(sdfTimes, table.getCashingDate()) + "" +
+							" AND t_dinner_table.dtb_registration_date=" + this.formatDate(sdfTimes, table.getRegistrationDate()) + "" +
 							" AND restaurant_dinner_table.res_reference = '" + restaurantReference + "';";
-					if (table.getCashingDate() == null) {
-						// Remove Cashing date in where clause
-						insertTableVat = insertTableVat.replace("t_dinner_table.dtb_cashing_date=null", "t_dinner_table.dtb_cashing_date IS null");
-					}
 					out.println(insertTableVat);
 				}
 			}
 			out.flush();
-			// t_table_cashing
+			// t_table_cashing / t_cashing_type
 			for (Iterator<DinnerTable> iterator = tables.iterator(); iterator.hasNext();) {
 				DinnerTable table = iterator.next();
-				Set<TableCashing> cashings = table.getCashings(); 
-				for (Iterator<TableCashing> iterator2 = cashings.iterator(); iterator2.hasNext();) {
-					TableCashing tableCashing = iterator2.next();
-					String insertTableCashing = "INSERT INTO t_table_cashing (dtb_id, tcs_type_enum_id, tcs_value, tcs_deleted) SELECT t_dinner_table.dtb_id, t_enum.enm_id, " +
-							tableCashing.getValue() + ", false " +    
-							" FROM t_dinner_table JOIN t_restaurant restaurant_dinner_table ON restaurant_dinner_table.res_id=t_dinner_table.res_id," +
-							" t_enum " +
-						" WHERE 1=1 " +
-							" AND t_enum.enm_language_key_label = '" + tableCashing.getType().getLanguageKeyLabel() + "' " +
-							" AND t_dinner_table.dtb_code='" + table.getNumber() + "'" +
-							" AND t_dinner_table.dtb_cashing_date=" + this.formatDate(sdfTimes, table.getCashingDate()) + "" +
-							" AND restaurant_dinner_table.res_reference = '" + restaurantReference + "';";
-					if (table.getCashingDate() == null) {
-						// Remove Cashing date in where clause
-						insertTableCashing = insertTableCashing.replace("t_dinner_table.dtb_cashing_date=null", "t_dinner_table.dtb_cashing_date IS null");
-					}
+				TableCashing tableCashing = table.getCashing();
+				if (tableCashing != null) {
+					// t_table_cashing
+					String insertTableCashing = "INSERT INTO t_table_cashing (dtb_id, tcs_cashing_date, tcs_deleted) SELECT t_dinner_table.dtb_id, " +
+					this.formatDate(sdf, tableCashing.getCashingDate()) + ", false " +    
+					" FROM t_dinner_table JOIN t_restaurant restaurant_dinner_table ON restaurant_dinner_table.res_id=t_dinner_table.res_id " +
+					" WHERE 1=1 " +
+					" AND t_dinner_table.dtb_code='" + table.getNumber() + "'" +
+					" AND t_dinner_table.dtb_registration_date=" + this.formatDate(sdfTimes, table.getRegistrationDate()) + "" +
+					" AND restaurant_dinner_table.res_reference = '" + restaurantReference + "';";
 					out.println(insertTableCashing);
+					// t_cashing_type
+					Set<CashingType> cashingTypes = tableCashing.getCashingTypes();
+					for (Iterator<CashingType> iterator2 = cashingTypes.iterator(); iterator2.hasNext();) {
+						CashingType cashingType = iterator2.next();
+						String insertCashingType = "INSERT INTO t_cashing_type (tcs_id, cst_type_enum_id, cst_amount, cst_deleted) " +
+								" SELECT t_table_cashing.tcs_id, t_enum.enm_id, " +	cashingType.getAmount() + ", false " +    
+								" FROM t_table_cashing JOIN t_dinner_table ON t_table_cashing.dtb_id = t_dinner_table.dtb_id " +
+								" JOIN t_restaurant restaurant_dinner_table ON restaurant_dinner_table.res_id=t_dinner_table.res_id," +
+								" t_enum " +
+							" WHERE 1=1 " +
+								" AND t_enum.enm_language_key_label = '" + cashingType.getType().getLanguageKeyLabel() + "' " +
+								" AND t_dinner_table.dtb_code='" + table.getNumber() + "'" +
+								" AND t_dinner_table.dtb_registration_date=" + this.formatDate(sdfTimes, table.getRegistrationDate()) + "" +
+								" AND restaurant_dinner_table.res_reference = '" + restaurantReference + "';";
+						out.println(insertCashingType);
+					}
 				}
 			}
 			out.flush();
@@ -365,13 +368,11 @@ public class DataMigrationDinnerTableWork extends DataMigrationWork
 			public void fillValue(DinnerTable table, Object value) {
 				if (value != null) {
 					Date date = (Date) value;
-					Calendar calendar = Calendar.getInstance();
-					calendar.setTime(date);
-					calendar.set(Calendar.HOUR_OF_DAY, Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
-					calendar.set(Calendar.MINUTE, Calendar.getInstance().get(Calendar.MINUTE));
-					calendar.set(Calendar.SECOND, Calendar.getInstance().get(Calendar.SECOND));
-					calendar.set(Calendar.MILLISECOND, Calendar.getInstance().get(Calendar.MILLISECOND));
-					table.setCashingDate(calendar.getTime());
+					TableCashing cashing = new TableCashing();
+					cashing.setDinnerTable(table);
+					cashing.setCashingDate(date);
+					cashing.setCashingTypes(new HashSet<CashingType>());
+					table.setCashing(cashing);
 				}
 			}
 		},		
@@ -474,59 +475,59 @@ public class DataMigrationDinnerTableWork extends DataMigrationWork
 		}
 	}
 
-	private enum TableCashingResultSetRow {
+	private enum CashingTypeResultSetRow {
 		CSH_CASH() {
-			public void fillValue(TableCashing tableCashing, Object value) {
+			public void fillValue(CashingType cashingType, Object value) {
 				if (value != null) {
 					MdoTableAsEnum type = new MdoTableAsEnum();
 					type.setLanguageKeyLabel("CASHING_TYPE.GENERIC_CASH.0");
-					tableCashing.setType(type);
-					tableCashing.setValue(new BigDecimal(value.toString()));
+					cashingType.setType(type);
+					cashingType.setAmount(new BigDecimal(value.toString()));
 				}
 			}
 		}, 
 		CSH_TICKET() {
-			public void fillValue(TableCashing tableCashing, Object value) {
+			public void fillValue(CashingType cashingType, Object value) {
 				if (value != null) {
 					MdoTableAsEnum type = new MdoTableAsEnum();
 					type.setLanguageKeyLabel("CASHING_TYPE.GENERIC_TICKET.1");
-					tableCashing.setType(type);
-					tableCashing.setValue(new BigDecimal(value.toString()));
+					cashingType.setType(type);
+					cashingType.setAmount(new BigDecimal(value.toString()));
 				}
 			}
 		},  
 		CSH_CHEQUE() {
-			public void fillValue(TableCashing tableCashing, Object value) {
+			public void fillValue(CashingType cashingType, Object value) {
 				if (value != null) {
 					MdoTableAsEnum type = new MdoTableAsEnum();
 					type.setLanguageKeyLabel("CASHING_TYPE.GENERIC_CHECK.2");
-					tableCashing.setType(type);
-					tableCashing.setValue(new BigDecimal(value.toString()));
+					cashingType.setType(type);
+					cashingType.setAmount(new BigDecimal(value.toString()));
 				}
 			}
 		}, 
 		CSH_CARD() {
-			public void fillValue(TableCashing tableCashing, Object value) {
+			public void fillValue(CashingType cashingType, Object value) {
 				if (value != null) {
 					MdoTableAsEnum type = new MdoTableAsEnum();
 					type.setLanguageKeyLabel("CASHING_TYPE.GENERIC_CARD.3");
-					tableCashing.setType(type);
-					tableCashing.setValue(new BigDecimal(value.toString()));
+					cashingType.setType(type);
+					cashingType.setAmount(new BigDecimal(value.toString()));
 				}
 			}
 		},  
 		CSH_UNPAID() {
-			public void fillValue(TableCashing tableCashing, Object value) {
+			public void fillValue(CashingType cashingType, Object value) {
 				if (value != null) {
 					MdoTableAsEnum type = new MdoTableAsEnum();
 					type.setLanguageKeyLabel("CASHING_TYPE.UNPAID.4");
-					tableCashing.setType(type);
-					tableCashing.setValue(new BigDecimal(value.toString()));
+					cashingType.setType(type);
+					cashingType.setAmount(new BigDecimal(value.toString()));
 				}
 			}
 		};
 		
-		public void fillValue(TableCashing tableCashing, Object value) {
+		public void fillValue(CashingType cashingType, Object value) {
 			
 		}
 	}

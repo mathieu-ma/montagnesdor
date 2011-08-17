@@ -2,16 +2,22 @@ package fr.mch.mdo.restaurant.dao.products.hibernate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+
+import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 
 import fr.mch.mdo.logs.ILogger;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
-import fr.mch.mdo.restaurant.beans.MdoEntry;
 import fr.mch.mdo.restaurant.dao.beans.Product;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServices;
+import fr.mch.mdo.restaurant.dao.hibernate.TransactionSession;
 import fr.mch.mdo.restaurant.dao.products.IProductsDao;
 import fr.mch.mdo.restaurant.exception.MdoDataBeanException;
 import fr.mch.mdo.restaurant.exception.MdoException;
@@ -69,26 +75,73 @@ public class DefaultProductsDao extends DefaultDaoServices implements IProductsD
 	@SuppressWarnings("unchecked")
 	public List<IMdoBean> findAllByPrefixCode(Long restaurantId, String prefixCode) throws MdoException {
 		List<IMdoBean> result = new ArrayList<IMdoBean>();
-		Map<String, Entry<PropertiesRestrictions, Object>> propertyValueMap = new HashMap<String, Entry<PropertiesRestrictions, Object>>();
-		String property = "restaurant.id";
-		Entry<PropertiesRestrictions, Object> value = new MdoEntry<PropertiesRestrictions, Object>(PropertiesRestrictions.EQUALS, restaurantId);
-		propertyValueMap.put(property, value);
-		property = "code";
-		value = new MdoEntry<PropertiesRestrictions, Object>(PropertiesRestrictions.LIKE, prefixCode);
-		propertyValueMap.put(property, value);
-		result = super.findByPropertiesRestrictions(propertyValueMap, false);
+
+		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
+		criterias.add(new MdoCriteria("restaurant.id", PropertiesRestrictions.EQUALS, restaurantId));
+		criterias.add(new MdoCriteria("code", PropertiesRestrictions.LIKE, prefixCode));
+
+//		Map<String, Entry<PropertiesRestrictions, Object>> propertyValueMap = new HashMap<String, Entry<PropertiesRestrictions, Object>>();
+//		String property = "restaurant.id";
+//		Entry<PropertiesRestrictions, Object> value = new MdoEntry<PropertiesRestrictions, Object>(PropertiesRestrictions.EQUALS, restaurantId);
+//		propertyValueMap.put(property, value);
+//		property = "code";
+//		value = new MdoEntry<PropertiesRestrictions, Object>(PropertiesRestrictions.LIKE, prefixCode);
+//		propertyValueMap.put(property, value);
+//		result = super.findByPropertiesRestrictions(propertyValueMap, false);
+
+		result = super.findByPropertiesRestrictions(criterias, false);
+		return result;
+	}
+
+	@Override
+	public Map<Long, String> findCodesByPrefixCode(Long restaurantId, String prefixProductCode) throws MdoDataBeanException {
+		Map<Long, String> result = new HashMap<Long, String>();
+		try {
+			TransactionSession transactionSession = super.beginTransaction();
+			Session session = transactionSession.getSession();
+	
+			Criteria criteria = session.createCriteria(super.getBean().getClass());
+			criteria.add(Restrictions.ilike("code", prefixProductCode + "%"));
+			criteria.createAlias("restaurant", "restaurant");
+			criteria.add(Restrictions.eq("restaurant.id", restaurantId));
+			// Only select id and number fields
+			criteria.setProjection(Projections.projectionList().add(Projections.property("id")).add(Projections.property("code")));
+	
+			@SuppressWarnings("unchecked")
+			List<Object[]> list = criteria.list();
+			for (Iterator<Object[]> iterator = list.iterator(); iterator.hasNext();) {
+				Object[] objects = iterator.next();
+				Long id = (Long) objects[0];
+				String number = (String) objects[1];
+				result.put(id, number);
+			}
+			super.endTransaction(transactionSession, result, true);
+		} finally {
+			try {
+				super.closeSession();
+			} catch (HibernateException e) {
+				super.getLogger().error("message.error.dao.session.close", e);
+				throw new MdoDataBeanException("message.error.dao.session.close", e);
+			}
+		}
 		return result;
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<IMdoBean> findByRestaurant(Long restaurantId) throws MdoException {
+	public List<IMdoBean> findAllByRestaurant(Long restaurantId) throws MdoException {
 		List<IMdoBean> result = new ArrayList<IMdoBean>();
-		Map<String, Entry<PropertiesRestrictions, Object>> propertyValueMap = new HashMap<String, Entry<PropertiesRestrictions, Object>>();
-		String property = "restaurant.id";
-		Entry<PropertiesRestrictions, Object> value = new MdoEntry<PropertiesRestrictions, Object>(PropertiesRestrictions.EQUALS, restaurantId);
-		propertyValueMap.put(property, value);
-		result = super.findByPropertiesRestrictions(propertyValueMap, false);
+		
+		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
+		criterias.add(new MdoCriteria("restaurant.id", PropertiesRestrictions.EQUALS, restaurantId));
+
+//		Map<String, Entry<PropertiesRestrictions, Object>> propertyValueMap = new HashMap<String, Entry<PropertiesRestrictions, Object>>();
+//		String property = "restaurant.id";
+//		Entry<PropertiesRestrictions, Object> value = new MdoEntry<PropertiesRestrictions, Object>(PropertiesRestrictions.EQUALS, restaurantId);
+//		propertyValueMap.put(property, value);
+//		result = super.findByPropertiesRestrictions(propertyValueMap, false);
+
+		result = super.findByPropertiesRestrictions(criterias, false);
 		return result;
 	}
 }

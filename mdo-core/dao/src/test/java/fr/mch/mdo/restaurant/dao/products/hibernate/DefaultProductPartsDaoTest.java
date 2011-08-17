@@ -56,7 +56,7 @@ public class DefaultProductPartsDaoTest extends DefaultDaoServicesTestCase
 		// Use the existing data in database
 		MdoTableAsEnum code = new MdoTableAsEnum();
 		try {
-			code = (MdoTableAsEnum) DaoServicesFactory.getMdoTableAsEnumsDao().findByPrimaryKey(26L);
+			code = (MdoTableAsEnum) DaoServicesFactory.getMdoTableAsEnumsDao().findByPrimaryKey(3L);
 		} catch (MdoException e) {
 			fail("Could not found the ProductPart code.");
 		}
@@ -96,7 +96,7 @@ public class DefaultProductPartsDaoTest extends DefaultDaoServicesTestCase
 		// Use the existing data in database
 		MdoTableAsEnum code = new MdoTableAsEnum();
 		try {
-			code = (MdoTableAsEnum) DaoServicesFactory.getMdoTableAsEnumsDao().findByPrimaryKey(26L);
+			code = (MdoTableAsEnum) DaoServicesFactory.getMdoTableAsEnumsDao().findByPrimaryKey(4L);
 		} catch (MdoException e) {
 			fail("Could not found the ProductPart code.");
 		}
