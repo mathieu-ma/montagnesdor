@@ -9,6 +9,7 @@ import gnu.io.CommDriver;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 
+import java.applet.Applet;
 import java.io.BufferedOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
@@ -16,17 +17,80 @@ import java.util.HashMap;
 import java.util.StringTokenizer;
 
 /**
+ * In the jre/lib/security/java.policy file, we have to add these following lines:
+ * For Ubuntu sun JDK 6:
+ * permission java.lang.RuntimePermission "loadLibrary.rxtxSerial";
+ * permission java.io.FilePermission "/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/ext/amd64/librxtxSerial.so", "read";
+ * permission java.io.FilePermission "/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/ext/librxtxSerial.so", "read";
+ * permission java.io.FilePermission "/usr/java/packages/lib/ext/amd64/librxtxSerial.so", "read";
+ * permission java.io.FilePermission "/usr/java/packages/lib/ext/librxtxSerial.so", "read";
+ * permission java.util.PropertyPermission "gnu.io.log.mode", "read";
  * 
- * @author maxime
+ * @author mathieu ma
  * @version
  */
-public class PrinterApplet extends java.applet.Applet
+public class PrinterApplet extends Applet
 {
 	/**
      * Default Serial Version UID
      */
 	private static final long serialVersionUID = 1L;
 
+	/** Applet parameters key for debug */
+	public static final String APPLET_PARAMETER_DEBUG_KEY = "debug";
+	/** Default value for APPLET_PARAMETER_CHARSET_KEY */
+	public static final String DEFAULT_CHARSET = "ISO8859_1";
+	/** Applet parameters key for charset */
+	public static final String APPLET_PARAMETER_CHARSET_KEY = "charset";
+	/** Default value for APPLET_PARAMETER_LINUX_DRIVER_NAME_KEY */
+	public static final String DEFAULT_LINUX_DRIVER_NAME = "gnu.io.RXTXCommDriver";
+	/** Applet parameters key for linuxDriverName */
+	public static final String APPLET_PARAMETER_LINUX_DRIVER_NAME_KEY = "linuxDriverName";
+	/** Default value for APPLET_PARAMETER_LINUX_DRIVER_NAME_KEY */
+	public static final String DEFAULT_LINUX_PORT_COM = "/dev/ttyUSB1";
+	/** Applet parameters key for linuxPortCom */
+	public static final String APPLET_PARAMETER_LINUX_PORT_COM_KEY = "linuxPortCom";
+	/** Default value for APPLET_PARAMETER_WINDOWS_DRIVER_NAME_KEY */
+	public static final String DEFAULT_WINDOWS_DRIVER_NAME = "com.sun.comm.Win32Driver";
+	/** Applet parameters key for windowsDriverName */
+	public static final String APPLET_PARAMETER_WINDOWS_DRIVER_NAME_KEY = "windowsDriverName";
+	/** Default value for APPLET_PARAMETER_WINDOWS_PORT_COM_KEY */
+	public static final String DEFAULT_WINDOWS_PORT_COM = "COM1";
+	/** Applet parameters key for windowsPortCom */
+	public static final String APPLET_PARAMETER_WINDOWS_PORT_COM_KEY = "windowsPortCom";
+	/** Default value for APPLET_PARAMETER_SERIAL_PORT_BAUDS_KEY */
+	public static final String DEFAULT_SERIAL_PORT_BAUDS = "9600";
+	/** Applet parameters key for serialportBauds */
+	public static final String APPLET_PARAMETER_SERIAL_PORT_BAUDS_KEY = "serialportBauds";
+	/** Default value for APPLET_PARAMETER_SERIAL_PORT_BITS_KEY */
+	public static final String DEFAULT_SERIAL_PORT_BITS = "8";
+	/** Applet parameters key for serialportBits */
+	public static final String APPLET_PARAMETER_SERIAL_PORT_BITS_KEY = "serialportBits";
+	/** Default value for APPLET_PARAMETER_SERIAL_PORT_STOP_BITS_KEY */
+	public static final String DEFAULT_SERIAL_PORT_STOP_BITS = "1";
+	/** Applet parameters key for serialportStopBits */
+	public static final String APPLET_PARAMETER_SERIAL_PORT_STOP_BITS_KEY = "serialportStopBits";
+	/** Default value for APPLET_PARAMETER_SERIAL_PORT_PARITY_KEY */
+	public static final String DEFAULT_SERIAL_PORT_PARITY = "0";
+	/** Applet parameters key for serialportParity */
+	public static final String APPLET_PARAMETER_SERIAL_PORT_PARITY_KEY = "serialportParity";
+	/** Default value for APPLET_PARAMETER_PACKET_KEY */
+	public static final String DEFAULT_PACKET = "40";
+	/** Applet parameters key for packet */
+	public static final String APPLET_PARAMETER_PACKET_KEY = "packet";
+	/** Default value for APPLET_PARAMETER_PAUSE_KEY */
+	public static final String DEFAULT_PAUSE = "1500";
+	/** Applet parameters key for pause */
+	public static final String APPLET_PARAMETER_PAUSE_KEY = "pause";
+	/** Default value for APPLET_PARAMETER_SPECIAL_CHARACTERS_STRING_KEY */
+	public static final String DEFAULT_SPECIAL_CHARACTERS_STRING = "#;$;à;°;ç;§;^;`;é;ù;è;¨";
+	/** Applet parameters key for specialCharactersString */
+	public static final String APPLET_PARAMETER_SPECIAL_CHARACTERS_STRING_KEY = "specialCharactersString";
+	/** Default value for APPLET_PARAMETER_BIND_SPECIAL_CHARACTERS_STRING_KEY */
+	public static final String DEFAULT_BIND_SPECIAL_CHARACTERS_STRING = "23;24;40;5B;5C;5D;5E;60;7B;7C;7D;7E";
+	/** Applet parameters key for bindSpecialCharactersString */
+	public static final String APPLET_PARAMETER_BIND_SPECIAL_CHARACTERS_STRING_KEY = "bindSpecialCharactersString";
+	
 	// Imprime et fait avancer 160/144 pouces environ, puis decoupe de la feuille.
 	/** POS(point of sale) byte code for printing, feeding paper, and then cutting paper. */
 	public static final byte[] PRINT_FEED_PAPER_CUT_SHEET = { (byte) 0x1B, (byte) 0x4A, (byte) 0xF0, (byte) 0x1B, (byte) 0x69 };
@@ -72,82 +136,64 @@ public class PrinterApplet extends java.applet.Applet
 	private StringBuffer dataBuffer = new StringBuffer();
 
 	/**
-	 * Initialization method that will be called after the applet is loaded into
-	 * the browser. In the java.policy file we MUST be updated with the
-	 * following lines: permission java.lang.RuntimePermission
-	 * "loadLibrary.rxtxSerial"; permission java.io.FilePermission
-	 * "C:/Program Files/Java/jre6/lib/ext/x86/rxtxSerial.dll", "read";
-	 * permission java.io.FilePermission
-	 * "C:/Program Files/Java/jre6/lib/ext/rxtxSerial.dll", "read"; permission
-	 * java.util.PropertyPermission "gnu.io.log.mode", "read";
+	 * Initialization method that will be called after the applet is loaded into the browser.
+	 * TODO Add a new parameter named noCheckDsr for USB Epson Printer ==> See Old java code 
+	 *  
+	 * In the java.policy file we MUST be updated with the
+	 * following lines: 
+	 * permission java.lang.RuntimePermission "loadLibrary.rxtxSerial"; 
+	 * permission java.io.FilePermission "C:/Program Files/Java/jre6/lib/ext/x86/rxtxSerial.dll", "read";
+	 * permission java.io.FilePermission "C:/Program Files/Java/jre6/lib/ext/rxtxSerial.dll", "read"; 
+	 * permission java.util.PropertyPermission "gnu.io.log.mode", "read";
+	 * 
+	 * The permission java.util.PropertyPermission "gnu.io.log.mode", "read" must be set for applet.
 	 */
 	public void init() {
 		super.init();
 
 		String os = System.getProperty("os.name");
+		
 		if (driver == null) {
-			if (getParameter("charset") != null) {
-				charset = getParameter("charset");
-			}
-			String specialCharactersString = "#;$;à;°;ç;§;^;`;é;ù;è;¨";
-			if (getParameter("specialCharactersString") != null) {
-				specialCharactersString = getParameter("specialCharactersString");
-			}
-			StringTokenizer specialCharactersStk = new StringTokenizer(specialCharactersString, ";");
-			String bindCaracteresSpeciauxString = "23;24;40;5B;5C;5D;5E;60;7B;7C;7D;7E";
-			if (getParameter("bindCaracteresSpeciauxStr") != null) {
-				bindCaracteresSpeciauxString = getParameter("bindCaracteresSpeciauxString");
-			}
-			StringTokenizer bindCaracteresSpeciauxStk = new StringTokenizer(bindCaracteresSpeciauxString, ";");
+			debug = Boolean.TRUE.toString().equalsIgnoreCase(this.getParameter(PrinterApplet.APPLET_PARAMETER_DEBUG_KEY, Boolean.FALSE.toString()));
 
-			if (specialCharactersStk != null && bindCaracteresSpeciauxStk != null) {
+			charset = this.getParameter(PrinterApplet.APPLET_PARAMETER_CHARSET_KEY, PrinterApplet.DEFAULT_CHARSET);
+			String specialCharactersString = this.getParameter(PrinterApplet.APPLET_PARAMETER_SPECIAL_CHARACTERS_STRING_KEY, PrinterApplet.DEFAULT_SPECIAL_CHARACTERS_STRING);
+			StringTokenizer specialCharactersStk = new StringTokenizer(specialCharactersString, ";");
+			String bindSpecialCharactersString = this.getParameter(PrinterApplet.APPLET_PARAMETER_BIND_SPECIAL_CHARACTERS_STRING_KEY, PrinterApplet.DEFAULT_BIND_SPECIAL_CHARACTERS_STRING);
+			StringTokenizer bindSpecialCharactersStk = new StringTokenizer(bindSpecialCharactersString, ";");
+
+			if (specialCharactersStk != null && bindSpecialCharactersStk != null) {
 				specialCharacters = new HashMap<String, String>(specialCharactersStk.countTokens());
-				if (specialCharactersStk.countTokens() <= bindCaracteresSpeciauxStk.countTokens()) {
+				if (specialCharactersStk.countTokens() <= bindSpecialCharactersStk.countTokens()) {
 					while (specialCharactersStk.hasMoreTokens()) {
-						specialCharacters.put(specialCharactersStk.nextToken(), bindCaracteresSpeciauxStk.nextToken());
+						specialCharacters.put(specialCharactersStk.nextToken(), bindSpecialCharactersStk.nextToken());
 					}
 				}
 			}
 
-			String driverName = "com.sun.comm.Win32Driver";
-			String portCom = "COM1";
+			String driverName = PrinterApplet.DEFAULT_WINDOWS_DRIVER_NAME;
+			String portCom = PrinterApplet.DEFAULT_WINDOWS_PORT_COM;
 			try {
 				if (os.toLowerCase().matches("linux")) {
-					if (getParameter("linuxDriverName") != null) {
-						driverName = getParameter("linuxDriverName");
-					}
-					if (getParameter("linuxPortCom") != null) {
-						portCom = getParameter("linuxPortCom");
-					}
+					driverName = this.getParameter(PrinterApplet.APPLET_PARAMETER_LINUX_DRIVER_NAME_KEY, PrinterApplet.DEFAULT_LINUX_DRIVER_NAME);
+					portCom = this.getParameter(PrinterApplet.APPLET_PARAMETER_LINUX_PORT_COM_KEY, PrinterApplet.DEFAULT_LINUX_PORT_COM);
 				} else {
-					if (getParameter("windowsDriverName") != null) {
-						driverName = getParameter("windowsDriverName");
-					}
-					if (getParameter("windowsPortCom") != null) {
-						portCom = getParameter("windowsPortCom");
-					}
+					driverName = this.getParameter(PrinterApplet.APPLET_PARAMETER_WINDOWS_DRIVER_NAME_KEY, PrinterApplet.DEFAULT_WINDOWS_DRIVER_NAME);
+					portCom = this.getParameter(PrinterApplet.APPLET_PARAMETER_WINDOWS_PORT_COM_KEY, PrinterApplet.DEFAULT_WINDOWS_PORT_COM);
 				}
-				if (getParameter("serialportBauds") != null) {
-					serialportBauds = Integer.parseInt(getParameter("serialportBauds"));
-				}
-				if (getParameter("serialportBits") != null) {
-					serialportBits = Integer.parseInt(getParameter("serialportBits"));
-				}
-				if (getParameter("serialportStopBits") != null) {
-					serialportStopBits = Integer.parseInt(getParameter("serialportStopBits"));
-				}
-				if (getParameter("serialportParity") != null) {
-					serialportParity = Integer.parseInt(getParameter("serialportParity"));
-				}
-				if (getParameter("packet") != null) {
-					packet = Integer.parseInt(getParameter("packet"));
-				}
-				if (getParameter("pause") != null) {
-					pause = Integer.parseInt(getParameter("pause"));
-				}
+				String serialportBaudsString = this.getParameter(PrinterApplet.APPLET_PARAMETER_SERIAL_PORT_BAUDS_KEY, PrinterApplet.DEFAULT_SERIAL_PORT_BAUDS);
+				serialportBauds = Integer.parseInt(serialportBaudsString);
+				String serialportBitsString = this.getParameter(PrinterApplet.APPLET_PARAMETER_SERIAL_PORT_BITS_KEY, PrinterApplet.DEFAULT_SERIAL_PORT_BITS);
+				serialportBits = Integer.parseInt(serialportBitsString);
+				String serialportStopBitsString = this.getParameter(PrinterApplet.APPLET_PARAMETER_SERIAL_PORT_STOP_BITS_KEY, PrinterApplet.DEFAULT_SERIAL_PORT_STOP_BITS);
+				serialportStopBits = Integer.parseInt(serialportStopBitsString);
+				String serialportParityString = this.getParameter(PrinterApplet.APPLET_PARAMETER_SERIAL_PORT_PARITY_KEY, PrinterApplet.DEFAULT_SERIAL_PORT_PARITY);
+				serialportParity = Integer.parseInt(serialportParityString);
+				String packetString = this.getParameter(PrinterApplet.APPLET_PARAMETER_PACKET_KEY, PrinterApplet.DEFAULT_PACKET);
+				packet = Integer.parseInt(packetString);
+				String pauseString = this.getParameter(PrinterApplet.APPLET_PARAMETER_PAUSE_KEY, PrinterApplet.DEFAULT_PAUSE);
+				pause = Integer.parseInt(pauseString);
 
-				String debugStr = getParameter("debug");
-				debug = (debugStr != null && debugStr.equals("true"));
 			} catch (Exception e) {
 				// debug = true;
 				//System.out.println("Erreur de récupération des paramètres de l'imprimante série");
@@ -206,7 +252,7 @@ public class PrinterApplet extends java.applet.Applet
 								flagNoPortComFound = false;
 								if (debug) {
 									//System.out.println("Identifiant du port de communication trouvé sur " + portCom);
-									System.out.println("Identifier port communication found " + portCom);
+									System.out.println("Identifier port communication found " + portCom + " after " + attempt + " tries");
 								}
 								break;
 							}
@@ -220,6 +266,44 @@ public class PrinterApplet extends java.applet.Applet
 			}
 			printer = new Printer();
 		}
+	}
+
+	/**
+	 * This method check the value of key applet parameter name and returns it
+	 * if this not null else it returns the default value
+	 * 
+	 * @param key
+	 *            applet parameter name
+	 * @param defaultValue
+	 *            default value if there is no value with key applet parameter
+	 *            name
+	 * @return the value of key applet parameter name if this is not null else
+	 *         the default value
+	 */
+	private String getParameter(String key, String defaultValue) {
+		String result = null;
+
+		try {
+			// Get parameter from applet
+			result = super.getParameter(key);
+		} catch (Exception e) {
+			debug = true;
+			String message = "Could not get the parameter %s";
+			System.err.println(String.format(message, key));
+			// e.printStackTrace();
+		}
+		if (result == null) {
+			// Get parameter from resource file
+//			result = this.getResourceString(key, false);
+			if (result == null) {
+				result = defaultValue;
+			}
+		}
+		
+		if (debug) {
+			System.out.println("Parameter " + key + ": " + result);
+		}
+		return result;
 	}
 
 	private byte[] getLine(String line, int size) {
@@ -308,6 +392,18 @@ public class PrinterApplet extends java.applet.Applet
 		return data;
 	}
 
+	public static void main(String[] args) {
+		PrinterApplet printerApplet = new PrinterApplet();
+		printerApplet.init();
+		//Vider le buffer de l'applet 
+		printerApplet.resetDataBuffer();
+
+		//Entete
+		printerApplet.addData2("document.getElementById(");
+		printerApplet.print();
+
+	}
+	
 	class Printer
 	{
 		private SerialPort serialport = null;
@@ -391,8 +487,8 @@ public class PrinterApplet extends java.applet.Applet
 				} catch (Exception e) {
 					System.out.println(e);
 				}
+				closeSerialPort();
 			}
-			closeSerialPort();
 		}
 	}
 
