@@ -26,9 +26,9 @@
 			<br/>
 			<br/>
 			<br/>
-			<div id="administration" style="clear: both;">
+			<div id="submit-form" style="clear: both;">
 				<button class="mdo-ui-button ui-state-default ui-corner-all">
-					<span class="ui-icon ui-icon-extlink"></span><fmt:message key="logon.access.orders"/>
+					<span class="ui-icon ui-icon-extlink"></span><fmt:message key="logon.access.administration"/>
 				</button>
 			</div>
 			<br/>
@@ -36,9 +36,9 @@
 		
 		<s:if test="hasActionErrors()">
 			<div class="ui-widget">
-				<div style="padding: 0pt 0.7em;" class="ui-state-error ui-corner-all">
+				<div class="ui-state-error ui-corner-all logon-error">
 					<p>
-						<span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span> 
+						<span class="ui-icon ui-icon-alert"></span> 
 						<s:iterator value="actionErrors">
 							<s:property escape="false"/>
 						</s:iterator>

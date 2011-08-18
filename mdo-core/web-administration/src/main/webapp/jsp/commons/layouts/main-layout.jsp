@@ -26,7 +26,9 @@
 		<!-- s:head theme="css_xhtml" debug="false"/ -->
 
 		<title><fmt:message key="montagnesdor.welcome"/> - <tiles:getAsString name="title"/></title>
-		
+	</head>
+	<body>
+	    <%-- Put all javascripts at the bottom page see http://developer.yahoo.com/performance/rules.html#js_bottom --%>
 		<tiles:useAttribute id="javascripts" name="javascript-files-default" classname="java.util.List"/>
  		<c:forEach items="${javascripts}" var="javascript">
  			<script type="text/javascript" src="<c:out value="${pageContext.request.contextPath}"/>${javascript}"></script>
@@ -43,8 +45,6 @@
 				//dojo.locale="<c:out value="${session.userSession.currentLocale.languageCode}"/>";
 			//</c:if>
 		</script>
-	</head>
-	<body>
 		<div id="global-transparent" class="global-transparent-hidden">&nbsp;</div>
 		<tiles:useAttribute id="divPart" name="header" classname="java.lang.String"/>
 		<c:if test="${divPart!='none'}">

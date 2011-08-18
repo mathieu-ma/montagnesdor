@@ -24,9 +24,9 @@
 					    </th>
 					</tr>      
 					<tr>
+					    <th><fmt:message key="printing.informations.manager.part"/></th>
 					    <th><fmt:message key="printing.informations.manager.alignment"/></th>
 					    <th><fmt:message key="printing.informations.manager.size"/></th>
-					    <th><fmt:message key="printing.informations.manager.part"/></th>
 					    <th><fmt:message key="printing.informations.manager.order"/></th>
 					    <th style="width:23em;">
 							<div style="padding: 7px; float: left;">
@@ -54,13 +54,21 @@
 				<s:iterator value="form.viewBean.list" id="printingInformation">
 			 		<tr>
 			   			<td>
+							<s:property value="part.name"/>
+			   				<c:if test="${not empty labels}">
+				   				<c:if test="${empty labels[sessionScope.userSession.currentLocale.id]}">
+				   					(<s:property value="labels.values().iterator().next()"/>)
+				   				</c:if>
+				   				<c:if test="${not empty labels[sessionScope.userSession.currentLocale.id]}">
+				   					(<s:property value="labels[#session.userSession.currentLocale.id]"/>)
+				   				</c:if>
+			   				</c:if>
+			   			</td>
+			   			<td>
 							<s:property value="alignment.name"/>
 			   			</td>
 			   			<td>
 							<s:property value="size.name"/>
-			   			</td>
-			   			<td>
-							<s:property value="part.name"/>
 			   			</td>
 			   			<td>
 							<s:property value="order"/>

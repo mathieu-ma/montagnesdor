@@ -58,6 +58,11 @@
 	</div>
 	<div style="clear: both;"></div>
 	<div class="hspacer-left-100p">
-		<s:textfield label="%{getText('restaurants.manager.3des.key')}" name="form.dtoBean.tripleDESKey" readonly="true"/>
+		<div class="hspacer-left-50p">
+			<s:textfield label="%{getText('restaurants.manager.3des.key')}" name="form.dtoBean.tripleDESKey" readonly="true"/>
+		</div>
+		<div class="hspacer-left-50p">
+			<s:select label="%{getText('restaurants.manager.default.table.type')}" name="form.dtoBean.defaultTableType.id" list="form.viewBean.tableTypes" listKey="id" listValue="code.name" value="form.dtoBean.defaultTableType.id" required="true"/>
+		</div>
 	</div>
 </div>

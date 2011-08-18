@@ -9,14 +9,8 @@
 <%@ taglib uri="/WEB-INF/mdo.tld" prefix="mdo" %>
 <%@ taglib uri="/struts-tags" prefix="s" %>
 
-	<script type="text/javascript" src="<c:out value="${pageContext.request.contextPath}"/>/javascript/menu-top.js"></script>			
+	<script type="text/javascript" src="<c:out value="${pageContext.request.contextPath}"/>/javascript/header.js"></script>			
 
-	<script type="text/javascript">
-		var JS_CONTEXT_PATH='<c:out value="${pageContext.request.contextPath}"/>';
-		$(function(){
-			JS_CONTEXT_PATH='<c:out value="${pageContext.request.contextPath}"/>';
-		});
-	</script>
 	<div class="vspacer-left-100p">
 		<div id="applets" class="applets">
 			<!-- WARNING: Applet must not be inside the JQuery resizable plugin -->

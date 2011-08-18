@@ -23,7 +23,7 @@
 			<c:when test="${method=='form' || method=='labels'}">
 				<c:set var="bodyInclude"><c:out value="${bodyInclude}"/>/form-body.jsp</c:set>
 			</c:when>
-			<c:when test="${method=='listProducts'}">
+			<c:when test="${method=='listProducts' || method=='importData'}">
 				<c:set var="bodyInclude"><c:out value="${bodyInclude}"/>/list-products-body.jsp</c:set>
 			</c:when>
 			<c:otherwise>

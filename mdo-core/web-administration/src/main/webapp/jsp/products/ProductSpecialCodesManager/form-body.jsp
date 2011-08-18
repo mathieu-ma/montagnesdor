@@ -17,7 +17,7 @@
 				<s:label label="%{getText('product.special.codes.manager.long.code')}" value="%{form.dtoBean.code.name}" required="true" />
 				<s:hidden key="form.dtoBean.code.id" />
 			</s:else>
-			<s:textfield label="%{getText('product.special.codes.manager.short.code')}" value="%{form.dtoBean.shortCode}" />
+			<s:textfield label="%{getText('product.special.codes.manager.short.code')}" name="form.dtoBean.shortCode" />
 			<div style="height: 2em;">
 				<div class="error">
 					<s:actionerror cssClass="ui-helper-reset" />

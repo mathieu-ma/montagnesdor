@@ -5,7 +5,9 @@
 <script type="text/javascript" src="<c:out value="${pageContext.request.contextPath}"/>/javascript/products.js"></script>
 <link rel="stylesheet" type="text/css" href="<c:out value="${pageContext.request.contextPath}"/>/css/products.css" />
 
-<s:form action="ProductsManager" method="post" enctype="multipart/form-data" validate="false">
+<s:form action="ProductsManagerCUD" method="post" enctype="multipart/form-data" validate="false">
+	<s:hidden name="form.dtoBean.restaurant.reference" />
+	<s:hidden name="form.dtoBean.restaurant.id" />
 	<div class="scroll-table-outer-body">
 		<div class="scroll-table-inner-body">
 			<table id="listproductssortable" class="sortable">
@@ -44,7 +46,7 @@
 							</div>
 							<div id="fileinputs">
 								<input type='file' id="file" name="form.importedFile" />
-								<button class="mdo-ui-button ui-state-default ui-corner-all" name="method:importData"><span class="ui-icon ui-icon-folder-collapsed"></span><fmt:message key="products.manager.import.products" /></button>	
+								<button id="importData" class="mdo-ui-button ui-state-default ui-corner-all" name="method:importData"><span class="ui-icon ui-icon-folder-collapsed"></span><fmt:message key="products.manager.import.products" /></button>	
 							</div>
 					    </th>
 				  	</tr>
@@ -95,6 +97,7 @@
 </s:form>
 
 <div class="error">
-	<s:actionerror/>
+	<s:actionerror />
+	<s:actionmessage />
 </div>
 
