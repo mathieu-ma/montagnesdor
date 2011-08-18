@@ -21,7 +21,61 @@
 		<filter-name>ForbiddenDirectAccessJspFilter</filter-name>
 		<filter-class>fr.mch.mdo.restaurant.web.ForbiddenDirectAccessJspFilter</filter-class>
 	</filter>
- 
+
+	<filter>
+		<description>Set HTTP headers for a mapping.</description>
+		<filter-name>HeaderFilter</filter-name>
+		<filter-class>fr.mch.mdo.restaurant.web.HeaderFilter</filter-class>
+		<init-param>
+			<description>Add an Expires Header</description>
+			<param-name>header</param-name>
+			<param-value>Expires: Sat, 15 Aug 2020 00:00:00 GMT</param-value>
+		</init-param>
+	</filter>
+
+	<!-- Set Far Future Expires Headers for js files  -->
+	<filter-mapping>
+		<filter-name>HeaderFilter</filter-name>
+		<url-pattern>*.js</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping>
+	<!-- Set Far Future Expires Headers for css files  -->
+	<filter-mapping>
+		<filter-name>HeaderFilter</filter-name>
+		<url-pattern>*.css</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping>
+	<!-- Set Far Future Expires Headers for png files  -->
+	<filter-mapping>
+		<filter-name>HeaderFilter</filter-name>
+		<url-pattern>*.png</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping> 
+	<!-- Set Far Future Expires Headers for cur files  -->
+	<filter-mapping>
+		<filter-name>HeaderFilter</filter-name>
+		<url-pattern>*.cur</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping> 
+	<!-- Set Far Future Expires Headers for gif files  -->
+	<filter-mapping>
+		<filter-name>HeaderFilter</filter-name>
+		<url-pattern>*.gif</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping> 
+	<!-- Set Far Future Expires Headers for jpg files  -->
+	<filter-mapping>
+		<filter-name>HeaderFilter</filter-name>
+		<url-pattern>*.jpg</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping> 
+	<!-- Set Far Future Expires Headers for ico files  -->
+	<filter-mapping>
+		<filter-name>HeaderFilter</filter-name>
+		<url-pattern>*.ico</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping> 
+
 	<!-- 
 		The servlet named jsp is defined in $TOMCAT_HOME/conf/web.xml.
 		This name maybe different in other application server.
