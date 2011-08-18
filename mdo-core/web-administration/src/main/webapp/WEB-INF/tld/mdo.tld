@@ -9,6 +9,7 @@
   <display-name>MDO taglibs</display-name>
   <tlib-version>1.0</tlib-version>
   <short-name>mdo</short-name>
+  <uri>/mdo</uri>
   <uri>http://www.mdo.com/jsp/taglibs</uri>
 
   <tag>
