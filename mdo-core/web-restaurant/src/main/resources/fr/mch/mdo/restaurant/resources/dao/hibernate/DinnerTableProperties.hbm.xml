@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="fr.mch.mdo.restaurant.dao.beans.DinnerTableProperties" table="t_dinner_table">
+		<id name="id" column="dtb_id" type="long">
+			<generator class="increment" />
+		</id>
+		<property name="userId" column="aut_id" type="long"/>
+		<property name="roo_id" column="roo_id" type="long"/>
+		<property name="number" column="dtb_number" type="string" />
+		<property name="customersNumber" column="dtb_customers_number" type="integer" />
+		<property name="quantitiesSum" column="dtb_quantities_sum" type="float" />
+		<property name="amountsSum" column="dtb_amounts_sum" type="float" />
+		<property name="reductionRatio" column="dtb_reduction_ratio" type="float" />
+		<property name="amountPay" column="dtb_amount_pay" type="float" />
+		<property name="registrationDate" column="dtb_registration_date" type="timestamp" />
+		<property name="printDate" column="dtb_print_date" type="timestamp" />
+		<property name="cashingDate" column="dtb_cashing_date" type="date" />
+		<property name="reductionRatioChanged" column="dtb_reduction_ratio_changed" type="boolean" />
+		<property name="takeaway" column="dtb_takeaway" type="boolean" />
+	</class>
+</hibernate-mapping>
