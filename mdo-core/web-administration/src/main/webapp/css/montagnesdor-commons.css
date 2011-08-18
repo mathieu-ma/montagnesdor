@@ -6,7 +6,7 @@
 		overflow: hidden;
 		background-color: #660000; 
 		cursor: url('../images/panda.cur'), pointer;
-		background-image: url("./images/montagnesdor2.gif"); 
+		/background-image: url("./images/montagnesdor2.gif"); 
 	}
 
 	html, button {
@@ -233,6 +233,15 @@ div.scroll-table-outer-body th, div.scroll-table-outer-body td {
 		width: 55%;
 	}
 	
+	div.logon-error {
+		padding: 0pt 0.7em;
+	}
+
+	div.logon-error > p > span {
+		float: left; 
+		margin-right: 0.3em;
+	}
+
 	div.logon-center fieldset legend
 	{
 		color: white;
@@ -480,7 +489,7 @@ div.scroll-table-outer-body th, div.scroll-table-outer-body td {
 	span.mdo-ui-button:hover, button.mdo-ui-button:hover
 	{
 		border: 1px solid #59b4d4;
-		background: #0078a3 url(images/ui-bg_glass_40_0078a3_1x400.png) 50% 50% repeat-x;
+		background: #0078a3 url(jquery-ui/themes/ui-darkness/images/ui-bg_glass_40_0078a3_1x400.png) 50% 50% repeat-x;
 		font-weight: bold;
 		color: #ffffff;
 		outline: none; 
