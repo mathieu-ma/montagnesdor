@@ -12,9 +12,10 @@ import fr.mch.mdo.restaurant.dto.beans.ProductCategoryDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductDto;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
 import fr.mch.mdo.restaurant.exception.MdoException;
-import fr.mch.mdo.restaurant.ioc.spring.WebAdministractionBeanFactory;
+import fr.mch.mdo.restaurant.ioc.spring.WebAdministrationBeanFactory;
 import fr.mch.mdo.restaurant.services.business.managers.products.IProductsManager;
 import fr.mch.mdo.restaurant.services.business.managers.restaurants.IRestaurantsManager;
+import fr.mch.mdo.restaurant.ui.forms.IMdoAdministrationForm;
 import fr.mch.mdo.restaurant.ui.forms.ProductsManagerForm;
 
 public class ProductsManagerWebAction extends AdministrationManagerLabelsAction 
@@ -30,9 +31,9 @@ public class ProductsManagerWebAction extends AdministrationManagerLabelsAction
 	private IRestaurantsManager restaurantsManager;
 	
 	public ProductsManagerWebAction() {
-		super(WebAdministractionBeanFactory.getInstance().getLogger(ProductsManagerWebAction.class.getName()), new ProductsManagerForm());
-		administrationManager = WebAdministractionBeanFactory.getInstance().getProductsManager();
-		restaurantsManager = WebAdministractionBeanFactory.getInstance().getRestaurantsManager();
+		super(WebAdministrationBeanFactory.getInstance().getLogger(ProductsManagerWebAction.class.getName()), new ProductsManagerForm());
+		administrationManager = WebAdministrationBeanFactory.getInstance().getProductsManager();
+		restaurantsManager = WebAdministrationBeanFactory.getInstance().getRestaurantsManager();
 	}
 
 	/**
@@ -55,7 +56,7 @@ public class ProductsManagerWebAction extends AdministrationManagerLabelsAction
 		if (dtoBean != null) {
 			MdoUserContext userContext = (MdoUserContext) super.getForm().getUserContext();
 			if (userContext != null) {
-				IAdministrationManagerViewBean viewBean = super.getForm().getViewBean();
+				IAdministrationManagerViewBean viewBean = ((IMdoAdministrationForm) super.getForm()).getViewBean();
 				if (viewBean != null && dtoBean.getRestaurant() != null) {
 					IProductsManager manager = (IProductsManager) administrationManager;
 					viewBean.setList(manager.getList(dtoBean.getRestaurant().getId(), userContext));
@@ -125,15 +126,27 @@ public class ProductsManagerWebAction extends AdministrationManagerLabelsAction
 		product.setCategories(productCategories);
 	}
 
-	public String importData() {
-		ProductsManagerForm form = (ProductsManagerForm) super.getForm();  
-		try {
-			((IProductsManager) administrationManager).importData(form.getImportedFileFileName(), form.getImportedFile(), (MdoUserContext) super.getForm().getUserContext());
-		} catch (Exception e) {
-			super.addActionError(super.getText("error.action.technical", new String[] {this.getClass().getName(), "importData"}));
+	public String importData() throws Exception {
+		ProductsManagerForm form = (ProductsManagerForm) super.getForm();
+		if (form.getImportedFileFileName() != null) {
+			ProductDto product = (ProductDto) form.getDtoBean();
+			if (product != null && product.getRestaurant() != null && form.getImportedFileFileName().contains(product.getRestaurant().getReference())) {
+				try {
+					((IProductsManager) administrationManager).importData(form.getImportedFileFileName(), form.getImportedFile(), (MdoUserContext) super.getForm().getUserContext());
+					super.addActionMessage(super.getText("products.manager.success.import.products"));
+				} catch (Exception e) {
+					super.addActionError(super.getText("error.action.technical", new String[] {this.getClass().getName(), "importData"}));
+				}
+			} else {
+				super.addActionError(super.getText("products.manager.error.import.restautant.reference.not.match"));
+			}
+		} else {
+			super.addActionError(super.getText("products.manager.error.import.no.file"));
 		}
 		// Return to the products list
-		return Constants.ACTION_RESULT_AFTER_SUCCESS_FORM_LIST;
+		listProducts();
+		
+		return Constants.ACTION_RESULT_AFTER_CUD_LIST_PRODUCTS;
 	}
 	
 	public String exportData() {

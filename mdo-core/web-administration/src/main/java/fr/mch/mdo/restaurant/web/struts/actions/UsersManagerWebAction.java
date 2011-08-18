@@ -11,7 +11,8 @@ import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dto.beans.UserDto;
 import fr.mch.mdo.restaurant.dto.beans.UserRestaurantDto;
 import fr.mch.mdo.restaurant.dto.beans.UsersManagerViewBean;
-import fr.mch.mdo.restaurant.ioc.spring.WebAdministractionBeanFactory;
+import fr.mch.mdo.restaurant.ioc.spring.WebAdministrationBeanFactory;
+import fr.mch.mdo.restaurant.ui.forms.IMdoAdministrationForm;
 import fr.mch.mdo.restaurant.ui.forms.UsersManagerForm;
 
 public class UsersManagerWebAction extends AdministrationManagerAction 
@@ -22,8 +23,8 @@ public class UsersManagerWebAction extends AdministrationManagerAction
 	private static final long serialVersionUID = 1L;
 
 	public UsersManagerWebAction() {
-		super(WebAdministractionBeanFactory.getInstance().getLogger(UsersManagerWebAction.class.getName()), new UsersManagerForm());
-		administrationManager = WebAdministractionBeanFactory.getInstance().getUsersManager();
+		super(WebAdministrationBeanFactory.getInstance().getLogger(UsersManagerWebAction.class.getName()), new UsersManagerForm());
+		administrationManager = WebAdministrationBeanFactory.getInstance().getUsersManager();
 	}
 	
 	@Override
@@ -69,7 +70,7 @@ public class UsersManagerWebAction extends AdministrationManagerAction
 	 */
 	private void processAvailableRestaurants() {
 		UserDto dtoBean = (UserDto) super.getForm().getDtoBean();
-		UsersManagerViewBean viewBean = (UsersManagerViewBean) super.getForm().getViewBean();
+		UsersManagerViewBean viewBean = (UsersManagerViewBean) ((IMdoAdministrationForm) super.getForm()).getViewBean();
 
 		List<IMdoDtoBean> listAll = viewBean.getRestaurants();
 		List<IMdoDtoBean> availableRestaurants = new ArrayList<IMdoDtoBean>(listAll);

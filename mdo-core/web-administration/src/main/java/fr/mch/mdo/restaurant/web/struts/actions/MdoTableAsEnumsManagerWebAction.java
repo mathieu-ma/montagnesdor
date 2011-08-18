@@ -15,8 +15,9 @@ import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumsManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.UserRestaurantDto;
 import fr.mch.mdo.restaurant.exception.MdoException;
-import fr.mch.mdo.restaurant.ioc.spring.WebAdministractionBeanFactory;
+import fr.mch.mdo.restaurant.ioc.spring.WebAdministrationBeanFactory;
 import fr.mch.mdo.restaurant.services.business.managers.products.IMdoTableAsEnumsManager;
+import fr.mch.mdo.restaurant.ui.forms.IMdoAdministrationForm;
 import fr.mch.mdo.restaurant.ui.forms.MdoTableAsEnumsManagerForm;
 
 public class MdoTableAsEnumsManagerWebAction extends AdministrationManagerAction 
@@ -27,8 +28,8 @@ public class MdoTableAsEnumsManagerWebAction extends AdministrationManagerAction
 	private static final long serialVersionUID = 1L;
 
 	public MdoTableAsEnumsManagerWebAction() {
-		super(WebAdministractionBeanFactory.getInstance().getLogger(MdoTableAsEnumsManagerWebAction.class.getName()), new MdoTableAsEnumsManagerForm());
-		administrationManager = WebAdministractionBeanFactory.getInstance().getMdoTableAsEnumsManager();
+		super(WebAdministrationBeanFactory.getInstance().getLogger(MdoTableAsEnumsManagerWebAction.class.getName()), new MdoTableAsEnumsManagerForm());
+		administrationManager = WebAdministrationBeanFactory.getInstance().getMdoTableAsEnumsManager();
 	}
 
 	public void validateSave() {
@@ -42,7 +43,7 @@ public class MdoTableAsEnumsManagerWebAction extends AdministrationManagerAction
 	public String form() throws Exception {
 		String result = super.form();
 
-		IAdministrationManagerViewBean viewBean = super.getForm().getViewBean();
+		IAdministrationManagerViewBean viewBean = ((IMdoAdministrationForm) super.getForm()).getViewBean();
 		if (viewBean != null) {
 			try {
 				this.getAdministrationManager().processList(viewBean, (MdoUserContext) super.getForm().getUserContext());
@@ -57,7 +58,7 @@ public class MdoTableAsEnumsManagerWebAction extends AdministrationManagerAction
 		String result = Constants.ACTION_RESULT_AFTER_SUCCESS_FORM_LIST;
 
 		MdoTableAsEnumDto dtoBean = (MdoTableAsEnumDto) super.getForm().getDtoBean();
-		MdoTableAsEnumsManagerViewBean viewBean = (MdoTableAsEnumsManagerViewBean) super.getForm().getViewBean();
+		MdoTableAsEnumsManagerViewBean viewBean = (MdoTableAsEnumsManagerViewBean) ((IMdoAdministrationForm) super.getForm()).getViewBean();
 		if (viewBean != null) {
 			IMdoTableAsEnumsManager manager = (IMdoTableAsEnumsManager) administrationManager;
 			MdoUserContext userContext = (MdoUserContext) super.getForm().getUserContext();

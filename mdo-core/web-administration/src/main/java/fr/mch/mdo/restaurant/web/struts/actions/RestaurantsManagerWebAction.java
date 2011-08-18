@@ -16,7 +16,8 @@ import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantPrefixTableDto;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantValueAddedTaxDto;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantsManagerViewBean;
-import fr.mch.mdo.restaurant.ioc.spring.WebAdministractionBeanFactory;
+import fr.mch.mdo.restaurant.ioc.spring.WebAdministrationBeanFactory;
+import fr.mch.mdo.restaurant.ui.forms.IMdoAdministrationForm;
 import fr.mch.mdo.restaurant.ui.forms.RestaurantsManagerForm;
 
 public class RestaurantsManagerWebAction extends AdministrationManagerAction
@@ -27,8 +28,8 @@ public class RestaurantsManagerWebAction extends AdministrationManagerAction
 	private static final long serialVersionUID = 1L;
 
 	public RestaurantsManagerWebAction() {
-		super(WebAdministractionBeanFactory.getInstance().getLogger(RestaurantsManagerWebAction.class.getName()), new RestaurantsManagerForm());
-		administrationManager = WebAdministractionBeanFactory.getInstance().getRestaurantsManager();
+		super(WebAdministrationBeanFactory.getInstance().getLogger(RestaurantsManagerWebAction.class.getName()), new RestaurantsManagerForm());
+		administrationManager = WebAdministrationBeanFactory.getInstance().getRestaurantsManager();
 		// Load the RestaurantsResources
 		LocalizedTextUtil.addDefaultResourceBundle("fr/mch/mdo/restaurant/resources/i18n/RestaurantsResources");
 	}
@@ -69,7 +70,7 @@ public class RestaurantsManagerWebAction extends AdministrationManagerAction
 	 */
 	private void processAvailablePrefixTableNames() {
 		RestaurantDto dtoBean = (RestaurantDto) super.getForm().getDtoBean();
-		RestaurantsManagerViewBean viewBean = (RestaurantsManagerViewBean) super.getForm().getViewBean();
+		RestaurantsManagerViewBean viewBean = (RestaurantsManagerViewBean) ((IMdoAdministrationForm) super.getForm()).getViewBean();
 
 		List<IMdoDtoBean> listAll = viewBean.getPrefixTableNames();
 		List<IMdoDtoBean> availablePrefixTableNames = new ArrayList<IMdoDtoBean>(listAll);

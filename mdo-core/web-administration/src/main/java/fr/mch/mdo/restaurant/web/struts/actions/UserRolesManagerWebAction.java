@@ -1,6 +1,6 @@
 package fr.mch.mdo.restaurant.web.struts.actions;
 
-import fr.mch.mdo.restaurant.ioc.spring.WebAdministractionBeanFactory;
+import fr.mch.mdo.restaurant.ioc.spring.WebAdministrationBeanFactory;
 import fr.mch.mdo.restaurant.ui.forms.UserRolesManagerForm;
 
 public class UserRolesManagerWebAction extends AdministrationManagerLabelsAction 
@@ -11,7 +11,7 @@ public class UserRolesManagerWebAction extends AdministrationManagerLabelsAction
 	private static final long serialVersionUID = 1L;
 
 	public UserRolesManagerWebAction() {
-		super(WebAdministractionBeanFactory.getInstance().getLogger(UserRolesManagerWebAction.class.getName()), new UserRolesManagerForm());
-		administrationManager = WebAdministractionBeanFactory.getInstance().getUserRolesManager();
+		super(WebAdministrationBeanFactory.getInstance().getLogger(UserRolesManagerWebAction.class.getName()), new UserRolesManagerForm());
+		administrationManager = WebAdministrationBeanFactory.getInstance().getUserRolesManager();
 	}
 }

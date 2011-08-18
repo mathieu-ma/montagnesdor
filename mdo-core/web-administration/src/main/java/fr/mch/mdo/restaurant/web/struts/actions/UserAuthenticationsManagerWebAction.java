@@ -13,7 +13,8 @@ import fr.mch.mdo.restaurant.dto.beans.UserAuthenticationDto;
 import fr.mch.mdo.restaurant.dto.beans.UserAuthenticationsManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.UserLocaleDto;
 import fr.mch.mdo.restaurant.exception.MdoException;
-import fr.mch.mdo.restaurant.ioc.spring.WebAdministractionBeanFactory;
+import fr.mch.mdo.restaurant.ioc.spring.WebAdministrationBeanFactory;
+import fr.mch.mdo.restaurant.ui.forms.IMdoAdministrationForm;
 import fr.mch.mdo.restaurant.ui.forms.UserAuthenticationsManagerForm;
 
 public class UserAuthenticationsManagerWebAction extends AdministrationManagerAction 
@@ -24,8 +25,8 @@ public class UserAuthenticationsManagerWebAction extends AdministrationManagerAc
 	private static final long serialVersionUID = 1L;
 
 	public UserAuthenticationsManagerWebAction() {
-		super(WebAdministractionBeanFactory.getInstance().getLogger(UserAuthenticationsManagerWebAction.class.getName()), new UserAuthenticationsManagerForm());
-		administrationManager = WebAdministractionBeanFactory.getInstance().getUserAuthenticationsManager();
+		super(WebAdministrationBeanFactory.getInstance().getLogger(UserAuthenticationsManagerWebAction.class.getName()), new UserAuthenticationsManagerForm());
+		administrationManager = WebAdministrationBeanFactory.getInstance().getUserAuthenticationsManager();
 	}
 
 	@Override
@@ -65,7 +66,7 @@ public class UserAuthenticationsManagerWebAction extends AdministrationManagerAc
 	 */
 	private void processAvailableLanguages() {
 		UserAuthenticationDto dtoBean = (UserAuthenticationDto) super.getForm().getDtoBean();
-		UserAuthenticationsManagerViewBean viewBean = (UserAuthenticationsManagerViewBean) super.getForm().getViewBean();
+		UserAuthenticationsManagerViewBean viewBean = (UserAuthenticationsManagerViewBean) ((IMdoAdministrationForm) super.getForm()).getViewBean();
 
 		List<LocaleDto> listAll = viewBean.getLanguages();
 		List<LocaleDto> availableLanguages = new ArrayList<LocaleDto>(listAll);
