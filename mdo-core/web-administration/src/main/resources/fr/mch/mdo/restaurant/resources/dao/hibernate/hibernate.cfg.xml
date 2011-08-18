@@ -11,17 +11,17 @@
         <!-- properties -->
 		<!-- org.hsqldb.jdbc.JDBCDriver ==> HSQLDB 2.0 driver  -->
 		<!-- org.hsqldb.jdbcDriver ==> HSQLDB 1.8.X driver  -->
-        <property name="hibernate.connection.driver_class">org.hsqldb.jdbc.JDBCDriver</property>
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
 
-       	<property name="hibernate.connection.url">jdbc:hsqldb:file:/home/mathieu/tmp/database/montagnesdor;shutdown=true;ifexists=true</property> 
+       	<property name="hibernate.connection.url">jdbc:postgresql://localhost/montagnesdor?autoReconnect=true</property> 
         <!-- 
 	        <property name="hibernate.connection.url">jdbc:postgresql://sql.free.fr:5432/montagnesdor?autoReconnect=true</property>
         -->
         
-        <property name="hibernate.connection.username">SA</property>
-        <property name="hibernate.connection.password"></property>
+        <property name="hibernate.connection.username">montagnesdor</property>
+        <property name="hibernate.connection.password">powermdo</property>
         <property name="hibernate.connection.pool_size">10</property>
-        <property name="hibernate.dialect">org.hibernate.dialect.HSQLDialect</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
         <!--  Défini la profondeur maximale d'un arbre de chargement par jointures ouverte pour les associations à cardinalité unitaire (un-à-un, plusieurs-à-un) -->
         <property name="hibernate.max_fetch_depth">3</property>
 
@@ -34,7 +34,7 @@
 		<property name="c3p0.timeout">100</property> <!-- seconds --> 
 		<!-- DEPRECATED very expensive property name="c3p0.validate>--> 
         
-        <property name="hibernate.show_sql">true</property>        
+        <property name="hibernate.show_sql">false</property>        
         <property name="hibernate.transaction.factory_class">
              org.hibernate.transaction.JDBCTransactionFactory
         </property>
@@ -85,6 +85,7 @@
         <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/TableCredit.hbm.xml"/>
         <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/TableVat.hbm.xml"/>
         <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/TableCashing.hbm.xml"/>
+        <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/CashingType.hbm.xml"/>
 
         <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/Revenue.hbm.xml"/>
         <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/RevenueCashing.hbm.xml"/>
