@@ -2,7 +2,7 @@ package fr.mch.mdo.restaurant.ui.forms;
 
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 
-public class MdoLabelsForm extends MdoForm 
+public class MdoLabelsForm extends MdoAdministrationForm 
 {
 	private Long updatingLanguage;
 	private String updatingLabel;

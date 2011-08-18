@@ -3,7 +3,7 @@ package fr.mch.mdo.restaurant.ui.forms;
 import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto;
 import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumsManagerViewBean;
 
-public class MdoTableAsEnumsManagerForm extends MdoForm 
+public class MdoTableAsEnumsManagerForm extends MdoAdministrationForm 
 {
 	// Type manually enter by user
 	private String userEntryType;

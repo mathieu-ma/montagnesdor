@@ -6,7 +6,7 @@ import java.util.Map;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantsManagerViewBean;
 
-public class RestaurantsManagerForm extends MdoForm 
+public class RestaurantsManagerForm extends MdoAdministrationForm 
 {
 	/** Map of vat id key and restaurant vat id value */
 	private Map<Long, String> vats = new HashMap<Long, String>();
