@@ -279,9 +279,7 @@
 		</action>		
 
 		<action name="ProductsManager" class="fr.mch.mdo.restaurant.web.struts.actions.ProductsManagerWebAction" method="list">
-			<interceptor-ref name="fileUpload" />
 		   	<interceptor-ref name="mdoBasicInterceptorValRetrieve" />
-			<result name="input">/jsp/products/products.jsp</result>
 			<!-- After Success form or list -->
 			<result name="asformlist">/jsp/products/products.jsp</result>
 			<!-- After export product list -->
@@ -293,6 +291,7 @@
 			</result>
 		</action>
 		<action name="ProductsManagerCUD" class="fr.mch.mdo.restaurant.web.struts.actions.ProductsManagerWebAction" method="save">
+			<interceptor-ref name="fileUpload" />
 		   	<interceptor-ref name="mdoBasicInterceptorValStore" />
 			<result name="input">/jsp/products/products.jsp</result>
 			<!-- After CUD Labels -->
