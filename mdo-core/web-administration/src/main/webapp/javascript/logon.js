@@ -4,7 +4,7 @@ $(document).ready(
 		//$(".mdo-upsidedown").upsidedown();
 		var upsidedown = new UpsideDown();
 		
-	  	$("#administration").bind("click",
+	  	$("#submit-form").bind("click",
 	  		function(e) 
 	  		{
  				//Click on submit button
