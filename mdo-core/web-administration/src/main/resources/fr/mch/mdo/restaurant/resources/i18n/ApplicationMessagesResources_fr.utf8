@@ -114,6 +114,7 @@ restaurants.manager.takeaway.basic.reduction = Taux de réduction de base pour l
 restaurants.manager.takeaway.min.amount.reduction = Montant minimum de la réduction pour les emporters
 restaurants.manager.takeaway.prefixes.name = Liste de préfixes de nom de table pour les emporters
 restaurants.manager.specific.round = Arrondi Spécific
+restaurants.manager.default.table.type = Type de table par défaut
 restaurants.manager.vat = Tva
 restaurants.manager.prefix.table.name = Préfixe des Noms de Table
 restaurants.manager.table.type = Type de Table
