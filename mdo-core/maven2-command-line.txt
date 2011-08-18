@@ -201,7 +201,7 @@ eide> import/existing project to workspace/select root directory: mdo-core\apple
 ---------------------------------------------------------------------------------------------------
 cd D:\montagnesdor\mdo-maven2-workspace\mdo-core
 
-//Choose 18: internal -> maven-archetype-webapp (A simple Java web application)
+//Choose 15: internal -> maven-archetype-quickstart ()
 mvn archetype:generate -DgroupId=fr.mch.mdo -DartifactId=aop
 cd aop
 mvn eclipse:eclipse
@@ -212,6 +212,18 @@ eide> import/existing project to workspace/select root directory: mdo-core\aop
 Définir le classpath pour Junit : 
 eide> file/propertie/java build path/add variables/select M2-REPO/extend/change to junit-3-8-1.jar/ok
 
+********************** START web module **********************************
+cd D:\montagnesdor\mdo-maven2-workspace\mdo-core
+//Choose 15: internal -> maven-archetype-quickstart ()
+mvn archetype:generate -DgroupId=fr.mch.mdo -DartifactId=web
+cd web
+mvn eclipse:eclipse
+
+Importer le projet test dans l'espace de travail de Eclipse  : 
+eide> import/existing project to workspace/select root directory: mdo-core\web
+
+Définir le classpath pour Junit : 
+eide> file/propertie/java build path/add variables/select M2-REPO/extend/change to junit-3-8-1.jar/ok
 
 ---------------------------------------------------------------------------------------------------
 cd D:\montagnesdor\mdo-maven2-workspace\mdo-core
@@ -263,7 +275,7 @@ SSLPassword="kimsan"
 		keystoreFile="D:\montagnesdor\mdo-maven2-workspace\mdo-core\security\src\main\resources\fr\mch\mdo\restaurant\resources\security\generated\kimsankeystore" keystorePass="kimsan"
 	/>
 
-Remarque sur Ubuntu, installer tcnative-1 avet apt-get install tcnative-1 
+Remarque sur Ubuntu, installer tcnative-1 avec apt-get install tcnative-1 
 ***************************************************************************************************
 Pour Debian Etch et Epson TM T88IV, si on veut charger le module usbserial au démarrage, il faut:
 1) Créer un fichier /etc/modprobe.d/epsontmt88iv dans lequel on ajoute les lignes suivantes:
@@ -272,7 +284,7 @@ Pour Debian Etch et Epson TM T88IV, si on veut charger le module usbserial au d�
 2) Ajout la ligne suivante dans le ficher /etc/modules:
 	epsontmt88iv 		
 
-Pour foukoda:
+Pour foukoda imprimante EPSON USB :
 0) Télécharger le fichier http://mathieu.ma.free.fr/montagnesdor/install/linux/debian/install-debian-etch-montagnesdor-packages.sh et lancer les lignes correspondant é epsontmt88iv 
 1) Telecharger le fichier 
 wget http://mathieu.ma.free.fr/montagnesdor/foukoda/SPrinterApplet.jar
