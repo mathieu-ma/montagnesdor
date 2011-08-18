@@ -12,6 +12,7 @@ import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.services.business.managers.IAdministrationManager;
+import fr.mch.mdo.restaurant.ui.forms.IMdoAdministrationForm;
 import fr.mch.mdo.restaurant.ui.forms.IMdoForm;
 
 public class AdministrationManagerAction extends MdoAbstractWebAction implements Preparable
@@ -100,7 +101,7 @@ public class AdministrationManagerAction extends MdoAbstractWebAction implements
 
 	@Override
 	public void prepare() {
-		IAdministrationManagerViewBean viewBean = super.getForm().getViewBean();
+		IAdministrationManagerViewBean viewBean = ((IMdoAdministrationForm) super.getForm()).getViewBean();
 		if (viewBean != null) {
 			try {
 				this.getAdministrationManager().processList(viewBean, (MdoUserContext) super.getForm().getUserContext());
