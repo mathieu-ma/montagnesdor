@@ -7,9 +7,6 @@ import fr.mch.mdo.restaurant.beans.IMdoBean;
 
 public abstract class AdministrationManagerForm
 {	
-	//new is used to know if we have to insert or update the bean into database
-	private boolean beanNew = true;
-	
 	private ILogger logger;
 	
 	private List<IMdoBean> list;
@@ -41,15 +38,5 @@ public abstract class AdministrationManagerForm
 	public void setLogger(ILogger logger)
 	{
 		this.logger = logger;
-	}
-
-	public boolean isBeanNew()
-	{
-		return beanNew;
-	}
-
-	public void setBeanNew(boolean beanNew)
-	{
-		this.beanNew = beanNew;
 	}
 }
