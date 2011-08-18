@@ -1,6 +1,6 @@
 package fr.mch.mdo.restaurant.web.struts.actions;
 
-import fr.mch.mdo.restaurant.ioc.spring.WebAdministractionBeanFactory;
+import fr.mch.mdo.restaurant.ioc.spring.WebAdministrationBeanFactory;
 import fr.mch.mdo.restaurant.ui.forms.CategoriesManagerForm;
 
 public class CategoriesManagerWebAction extends AdministrationManagerLabelsAction 
@@ -11,7 +11,7 @@ public class CategoriesManagerWebAction extends AdministrationManagerLabelsActio
 	private static final long serialVersionUID = 1L;
 
 	public CategoriesManagerWebAction() {
-		super(WebAdministractionBeanFactory.getInstance().getLogger(CategoriesManagerWebAction.class.getName()), new CategoriesManagerForm());
-		administrationManager = WebAdministractionBeanFactory.getInstance().getCategoriesManager();
+		super(WebAdministrationBeanFactory.getInstance().getLogger(CategoriesManagerWebAction.class.getName()), new CategoriesManagerForm());
+		administrationManager = WebAdministrationBeanFactory.getInstance().getCategoriesManager();
 	}
 }
