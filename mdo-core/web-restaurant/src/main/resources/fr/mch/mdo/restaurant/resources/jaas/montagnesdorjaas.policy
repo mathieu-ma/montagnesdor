@@ -1,11 +1,24 @@
 grant Principal * * 
 {
   	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/Logon";
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/orders/Logon";
 };
 
 
 grant Principal fr.mch.mdo.restaurant.services.authorization.jaas.TypedPrincipal "USER" 
 {
+};
+
+grant Principal fr.mch.mdo.restaurant.services.authorization.jaas.TypedPrincipal "ADMINISTRATOR" 
+{
+	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/orders/RedirectToSchemeHTTP";
+
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/orders/AjaxI18nMessages";  	
+
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/orders/User";  	
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/orders/ChangeEntryDate";  	
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/orders/ChangePassword";  	
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/orders/TablesOrders";  	
 };
 
 grant Principal fr.mch.mdo.restaurant.services.authorization.jaas.TypedPrincipal "GLOBAL_ADMINISTRATOR" 
