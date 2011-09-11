@@ -3,7 +3,6 @@ package fr.mch.mdo.restaurant.services.business.managers.tables;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Connection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -19,14 +18,11 @@ import fr.mch.mdo.restaurant.dto.beans.DinnerTableDto;
 import fr.mch.mdo.restaurant.dto.beans.LocaleDto;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.OrderLineDto;
-import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
 import fr.mch.mdo.restaurant.dto.beans.UserAuthenticationDto;
 import fr.mch.mdo.restaurant.exception.MdoException;
-import fr.mch.mdo.restaurant.services.business.managers.DefaultAdministrationManagerTest;
 import fr.mch.mdo.restaurant.services.business.managers.MdoBusinessBasicTestCase;
 import fr.mch.mdo.restaurant.services.business.managers.users.DefaultUserAuthenticationsManager;
 import fr.mch.mdo.test.MdoTestCase;
-import fr.mch.mdo.test.resources.ITestResources;
 
 public class OrdersManagerTest extends MdoBusinessBasicTestCase 
 {
@@ -83,7 +79,10 @@ public class OrdersManagerTest extends MdoBusinessBasicTestCase
 		return new TestSuite(OrdersManagerTest.class);
 	}
 
-	public void testOrders() {
+	public void testDummy() {
+	}
+
+	public void _testOrders() {
 		String prefixTableNumber = "1";
 		try {
 			List<IMdoDtoBean> list = DefaultDinnerTablesManager.getInstance().findAll(userContext);

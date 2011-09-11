@@ -1,9 +1,9 @@
 package fr.mch.mdo.restaurant.ioc.spring;
 
-import fr.mch.mdo.restaurant.exception.MdoTechnicalException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import fr.mch.mdo.restaurant.exception.MdoTechnicalException;
 
 public class SpringBeanFactoryTest extends TestCase 
 {

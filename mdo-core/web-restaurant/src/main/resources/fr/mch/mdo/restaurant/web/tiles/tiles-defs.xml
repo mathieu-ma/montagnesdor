@@ -75,7 +75,7 @@
 	</definition>
 
 	<!-- Generic Restaurant for ajax only load left menu, body and footer not header -->
-	<definition name="ajax.main.layout" template="/jsp/commons/layouts/ajax-main-layout.jsp">
+	<definition name="ajax.main.layout" template="/jsp/commons/layouts/menu-body-footer-main-layout.jsp">
 		<put-attribute name="body-css" type="string" value="body-scroll"/>		
 	</definition>
 

@@ -108,18 +108,38 @@
 						<goals>
 							<goal>jar</goal>
 						</goals>
+						<configuration>
+							<excludes>
+								<exclude>assembly/**</exclude>
+								<exclude>generated/**</exclude>
+								<exclude>fr/mch/mdo/restaurant/resources/</exclude>
+								<exclude>lib/**</exclude>
+								<exclude>rxtx/**</exclude>
+							</excludes>
+						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<excludes>
-						<exclude>assembly/**</exclude>
-						<exclude>generated/**</exclude>
-						<exclude>fr/mch/mdo/restaurant/resources/</exclude>
-						<exclude>lib/**</exclude>
-						<exclude>rxtx/**</exclude>
-					</excludes>
-				</configuration>
 			</plugin>			
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>jar-linux-64-rxtx-library</id>
+						<phase>package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<echo>
+									Jar Linux 64 bits RXTX Library 
+								</echo>
+								<jar destfile="linux-64-rxtx-library.jar" basedir="target/classes/rxtx/lib64/linux" includes="librxtxSerial.so" />
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.2.1</version>
@@ -165,6 +185,34 @@
 					<verify>true</verify>
 				</configuration>
 			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>sign-jar-linux-64-rxtx-library</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<echo>
+									Sign Jar Linux 64 bits RXTX Library 
+								</echo>
+<signjar
+    storetype="pkcs12"
+    alias="${alias}" keystore="${keystorePKCS12}"
+    storepass="${storepass}"
+    lazy="true"
+    jar="linux-64-rxtx-library.jar"
+    signedjar="Slinux-64-rxtx-library.jar"
+    >
+</signjar>
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -187,6 +235,26 @@
 			<artifactId>log4j</artifactId>
 			<version>1.2.14</version>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hornetq</groupId>
+			<artifactId>hornetq-core-client</artifactId>
+			<version>2.2.5.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hornetq</groupId>
+			<artifactId>hornetq-jms-client</artifactId>
+			<version>2.2.5.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.spec.javax.jms</groupId>
+			<artifactId>jboss-jms-api_1.1_spec</artifactId>
+			<version>1.0.0.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.netty</groupId>
+			<artifactId>netty</artifactId>
+			<version>3.2.5.Final</version>
 		</dependency>
 
 		<dependency>

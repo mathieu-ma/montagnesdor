@@ -23,5 +23,8 @@ $(document).ready(function() {
 			return false;
 		});
 	});
+	$("#printingLocale").change(function() {
+		alert($(this).val());
+	});
 });
 

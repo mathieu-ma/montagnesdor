@@ -270,6 +270,16 @@
 											<type>2</type>
 											<location>${parentBasedir}/web/src/main/resources</location>
 										</linkedResource>
+										<linkedResource>
+											<name>target/embedded-server-java</name>
+											<type>2</type>
+											<location>${parentBasedir}/jms/embedded-server/src/main/java</location>
+										</linkedResource>
+										<linkedResource>
+											<name>target/embedded-server-resources</name>
+											<type>2</type>
+											<location>${parentBasedir}/jms/embedded-server/src/main/resources</location>
+										</linkedResource>
 									</linkedResources>
 									<wtpContextName>/web-restaurant</wtpContextName>
 									<wtpversion>2.0</wtpversion>
@@ -312,6 +322,9 @@
 										<mkdir dir="target/service-resources" />
 										<mkdir dir="target/web-java" />
 										<mkdir dir="target/web-resources" />
+										<mkdir dir="target/embedded-server-java" />
+										<mkdir dir="target/embedded-server-resources" />
+										
 										<echo>TESTING ${file.separator} == ${parentBasedir} ==
 											${project.basedir.parentFile}</echo>
 									</tasks>
@@ -341,6 +354,7 @@
 										<source>target/security-java</source>
 										<source>target/service-java</source>
 										<source>target/web-java</source>
+										<source>target/embedded-server-java</source>
 									</sources>
 								</configuration>
 							</execution>
@@ -378,6 +392,9 @@
 										</resource>
 										<resource>
 											<directory>target/web-resources</directory>
+										</resource>
+										<resource>
+											<directory>target/embedded-server-resources</directory>
 										</resource>
 									</resources>
 								</configuration>
@@ -444,24 +461,12 @@
 			<version>1.0-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
-
 		<dependency>
-			<!-- This dependency is used because of the used of Hibernate for logging -->
-		  	<groupId>org.slf4j</groupId>
-		  	<artifactId>slf4j-log4j12</artifactId>
-		  	<version>1.5.8</version>
-		</dependency>		
-
- 		<dependency>
-            <groupId>org.hornetq</groupId>
-            <artifactId>hornetq-core</artifactId>
-	    	<version>2.2.5.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hornetq</groupId>
-            <artifactId>hornetq-jms</artifactId>
-            <version>2.2.5.Final</version>
-        </dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>embedded-server</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
         
 		<dependency>
 			<groupId>org.apache.tiles</groupId>

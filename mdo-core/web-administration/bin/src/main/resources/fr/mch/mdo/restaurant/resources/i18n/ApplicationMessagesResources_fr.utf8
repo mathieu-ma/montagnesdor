@@ -1,0 +1,546 @@
+#/usr/local/java/j2sdk1.4.2_04/bin/native2ascii -encoding UTF-8 ApplicationResources.properties ApplicationResources_fr.properties
+
+mdo.true = Vrai
+mdo.false = Faux
+
+#Label common
+montagnesdor.welcome = Bienvenue Dans L'Application MDO 
+label.back = Retour
+label.cancel = Annuler
+label.confirm = Confirmer
+label.ok = Ok
+alert.label.negative.quantity = Les quantités ne peuvent pas être négatives.
+alert.label.negative.price = Les prix ne peuvent pas être négatifs.
+
+#Admin Messages
+error.action.technical = Error technique dans l''action {0} et la méthode {1}
+error.create = Impossible de créer l''objet {0}
+error.save = Impossible de sauver l''object
+error.delete = Impossible de supprimer l''objet {0}-{1}
+info.success.data.creation = Donnée créée avec succes
+info.success.data.update = Donnée mise à jour successfully
+info.success.data.deletion = Donnée supprimée successfully
+error.validation.form.invalids.number = Votre formulaire contient {0} erreur(s), voir details ci-dessous
+
+#Error for Logon
+error.authorization.failed = Accès refusé
+error.authentication.failed = Autentification échouée
+error.authentication.denied = Autentification impossible
+error.action.required = Action exigée
+error.login.required = Login exigé
+error.repeated.password.different = Confirmation mot de passe différente
+error.password.required = Mot de passe exigé
+error.password.incorrect = Mot de passe incorrecte
+error.password.noaccess = Accés interdit
+error.level.password.required = Type de mot de passe exigé
+error.level.password.unavailable = Type de mot de passe non valable
+error.new.password.required = Nouveau mot de passe exigé
+error.repeated.password.required = Confirmation du mot de passe exigé
+error.action.unavailable = Action non valable
+error.params.forbidden = Paramètre ou bien valeur du paramètre non géré
+errors.footer =
+errors.header =
+
+#Label for error.jsp
+error.jsp.title = Page d'erreurs
+error.jsp.message = Une erreur est survenue lors de la crétion de la page demandée...
+
+
+#Admin Gestion
+admin.manager.view = Voir
+admin.manager.create = Créer
+admin.manager.edit = Editer
+admin.manager.save = Sauvegarder
+admin.manager.update = Modifier
+admin.manager.delete = Supprimer
+admin.manager.cancel = Annuler
+admin.manager.remove = Enlever
+admin.manager.add = Ajouter
+admin.manager.reset = Réinitialiser
+admin.manager.back =  Retour
+admin.manager.ok = Ok
+
+
+language.add.label.empty = Impossible d'ajouter un libellé vide
+
+quantity.remove.empty = Impossible de supprimer une quantité vide.
+quantity.add.empty = Impossible d'ajouter une quantité vide.
+
+references.manager.title = Gestion des données de références
+locales.manager.title = Gestion des locales
+restaurants.manager.title = Gestion des restaurants
+users.manager.title = Gestion des utilisateurs
+products.manager.title = Gestion des produits
+
+locales.manager.language = Langue
+
+enums.manager.type.select.header.value = Select a type
+enums.manager.type = Type
+enums.manager.name = Nom
+enums.manager.order = Ordre 
+enums.manager.default.label = Libellé par défaut
+enums.manager.label.key = Clé de libellé
+error.emuns.type.required = Type obligatoire
+error.emuns.name.required = Nom obligatoire
+error.emuns.order.required = Ordre obligatoire
+error.emuns.order.integer = Ordre est un entier
+error.emuns.default.label.required = Libellé par défaut obligatoire
+
+table.types.manager.code.type = Type de Table
+table.types.manager.code.name = Nom 
+table.types.manager.code.order = Ordre 
+table.types.manager.code.default.label = Libellé par défaut
+table.types.manager.code.label.key = Clé de libellé 
+
+value.added.taxes.manager.code.name = Nom 
+value.added.taxes.manager.code.label.key = Clé de libellé 
+value.added.taxes.manager.rate = Taux TVA
+
+restaurants.manager.tab.restaurant = Restaurant
+restaurants.manager.tab.vat = VAT
+restaurants.manager.tab.prefix.table.name = Préfixe des Noms de Table
+restaurants.manager.registration.date = Date d'enregistrement
+restaurants.manager.reference = Référence
+restaurants.manager.name = Nom
+restaurants.manager.address.road = Rue
+restaurants.manager.address.zip = Code postal
+restaurants.manager.address.city = Ville
+restaurants.manager.phone = Téléphone
+restaurants.manager.vat.reference = Référence TVA
+restaurants.manager.visa.reference = Référence VISA
+restaurants.manager.3des.key = Cléf Triple DES
+restaurants.manager.sum.amount.vat = Somme montants dépendant TVA
+restaurants.manager.takeaway.basic.reduction = Taux de réduction de base pour les emporters  
+restaurants.manager.takeaway.min.amount.reduction = Montant minimum de la réduction pour les emporters
+restaurants.manager.takeaway.prefixes.name = Liste de préfixes de nom de table pour les emporters
+restaurants.manager.specific.round = Arrondi Spécific
+restaurants.manager.default.table.type = Type de table par défaut
+restaurants.manager.vat = Tva
+restaurants.manager.prefix.table.name = Préfixe des Noms de Table
+restaurants.manager.table.type = Type de Table
+error.restaurant.name.required = Le nom du restaurant est obligatoire
+
+users.manager.tab.user = Utilisateur
+users.manager.tab.restaurant = Restaurant
+users.manager.user = Utilisateur
+users.manager.user.title = Titre
+users.manager.lastname = Nom
+users.manager.firstname1 = Prémon 1
+users.manager.firstname2 = Prémon 2
+users.manager.birthdate = Date de naissance 
+users.manager.sex = Sexe
+users.manager.sex.male = Homme
+users.manager.sex.female = Femme
+users.manager.restaurants = Restaurants
+users.manager.worked.restaurants = Restaurants Travaillés
+users.manager.alert.no.worked.restaurant.selected = Il faut sélectionner au moins un restaurant
+
+user.roles.manager.code = RÃ´le
+user.roles.manager.label = Libellé rÃ´le
+user.roles.manager.language = Langage
+
+user.authentications.manager.tab.user.authentication = Utilisateur
+user.authentications.manager.login = Identifiant
+user.authentications.manager.password = Mot de passe
+user.authentications.manager.levelPass1 = Mot de passe niveau 1
+user.authentications.manager.levelPass2 = Mot de passe niveau 2
+user.authentications.manager.levelPass3 = Mot de passe niveau 3 
+user.authentications.manager.role = Rôle
+user.authentications.manager.user = Utilisateur
+user.authentications.manager.restaurant = Restaurant
+user.authentications.manager.tab.languages = Langages
+user.authentications.manager.prefered.print.language = Langue Impression par défaut
+user.authentications.manager.locales = Langues affichées
+
+
+categories.manager.code = Catégorie
+categories.manager.label = Libellé catégorie
+categories.manager.language = Langage
+
+product.special.codes.manager.short.code = Code produit spécifique court
+product.special.codes.manager.long.code = Code produit spécifique long
+product.special.codes.manager.restaurant = Restaurant
+product.special.codes.manager.label = Libellé code produit spécifique
+product.special.codes.manager.language = Langage
+
+product.parts.manager.code = Partie de produits
+product.parts.manager.label = Libellé partie de produits
+product.parts.manager.language = Langage
+
+products.manager.price = Prix
+products.manager.code = Code
+products.manager.color = Couleur
+products.manager.label = Libellé produit
+products.manager.language = Langage
+products.manager.product.special.code = Code spécial
+products.manager.vat = TVA
+products.manager.restaurant = Restaurant
+products.manager.categories = Catégories
+products.manager.category = Categorie
+products.manager.category.quantity = Quantité
+products.manager.tab.product = Produit
+products.manager.tab.labels = Libellés
+products.manager.tab.categories = Categories
+products.manager.languages.select.list.header.key = -1
+products.manager.languages.select.list.header.value = -- Sélectionner une langue --
+products.manager.categories.select.list.header.key = -1
+products.manager.categories.select.list.header.value = -- Sélectionner une catégorie --
+products.manager.warn.create.product.vat.label = Impossible de créer de produit car il faut d'abord créer une TVA
+products.manager.warn.create.product.label = Impossible de créer un produit sans libellé
+products.manager.warn.remove.product.one.label = Il doit rester au moins un libellé
+products.manager.warn.remove.product.empty.label = Impossible de supprimer un libellé vide
+products.manager.warn.remove.product.label = Impossible de supprimer un libellé non enregistré
+
+type.tables.manager.code = Type Table
+type.tables.manager.label = Libellé Type Table
+type.tables.manager.language = Langage
+
+
+#Label for changeUserPassword.jsp
+changeUserPassword.jsp.title = Pop-up Changer différent niveau de mot de passe
+changeUserPassword.jsp.change.password = Modifier le mot de passe {0}
+changeUserPassword.jsp.old.password = Ancien mot de passe {0}
+changeUserPassword.jsp.new.password = Nouveau mot de passe {0}
+changeUserPassword.jsp.repeated.password = Confirmer le nouveau mot de passe {0}
+changeUserPassword.jsp.level.password0 = 
+changeUserPassword.jsp.level.password1 = de niveau 1
+changeUserPassword.jsp.level.password2 = de niveau 2
+changeUserPassword.jsp.level.password3 = de niveau 3
+
+
+
+
+
+#Label for authorizationFailed.jsp
+#Les autres libellés de cette jsp sont dans la partie logon
+authorizationFailed.jsp.title = Autorisation échouée
+authorizationFailed.jsp.error  = Demande de page refusée
+
+#Label for logon
+logon.title = Se loguer
+logon.login = Identifiant
+logon.password = Mot de passe
+logon.access.orders = Accés aux commandes
+logon.access.administration = Accés à l'administration
+logon.welcome = Bienvenue dans l'application Montagnes d'Or
+
+#Label for menu top
+menu.title = Menu Principal
+menu.welcome = BIENVENUE CHEZ {0}
+menu.manage.reference.data = Données de références
+menu.manage.reference.data.locales = Gestion des langues
+menu.manage.reference.data.references = Gestion des références
+menu.manage.reference.data.table.types = Gestion des Types de Tables
+menu.manage.reference.data.value.added.taxes = Gestion des TVAs
+menu.manage.restaurants = Restaurants
+menu.manage.users = Gestion des utilisateurs
+menu.manage.user.roles = Gestion des rôles utilisateur
+menu.manage.user.authentications = Gestion des authentications utilisateur
+menu.manage.printing = Gestion de l'impression
+menu.manage.orders = Gestion des commandes
+menu.manage.tables = Gestion des tables
+menu.manage.day = Gestion du jour
+menu.manage.month = Gestion du mois
+menu.manage.menus = Gestion des menus
+menu.manage.products = Gestion des produits
+menu.manage.categories = Gestion des catégories
+menu.manage.product.parts = Gestion des parties de produits
+menu.manage.product.special.codes = Gestion des codes spéciaux
+menu.number.table = Table n°
+menu.number.customer = Nombre de personne(s)
+menu.takeaway = Emporter
+
+#Label for productsListIFrame.jsp
+productsListIFrame.jsp.title = Information sur la liste des produits de la carte des menus
+productsListIFrame.jsp.title.remove = Supprimer le produit {0}
+productsListIFrame.jsp.label.remove = Supprimer
+productsListIFrame.jsp.title.modify = Modifier le produit {0}
+productsListIFrame.jsp.order.code = Trier par code produit
+productsListIFrame.jsp.label.code = Code
+productsListIFrame.jsp.order.label = Trier par désignation
+productsListIFrame.jsp.label.label = Désignation
+productsListIFrame.jsp.order.price = Trier par prix
+productsListIFrame.jsp.label.price = Prix
+productsListIFrame.jsp.label.vat = TVA
+productsListIFrame.jsp.select.byX1 = LISTE PRODUITS PAR 10
+productsListIFrame.jsp.select.byX2 = LISTE PRODUITS PAR 15
+productsListIFrame.jsp.select.byX3 = LISTE PRODUITS PAR 20
+productsListIFrame.jsp.select.byX1.value = 10
+productsListIFrame.jsp.select.byX2.value = 15
+productsListIFrame.jsp.select.byX3.value = 20
+productsListIFrame.jsp.select.products.found = PRODUIT(S) TROUVE(S)
+productsListIFrame.jsp.select.categories = Sélection par catégories
+productsListIFrame.jsp.select.pages = Sélection par pages
+productsListIFrame.jsp.select.others = Autres
+productsListIFrame.jsp.no.product = AUCUN PRODUIT
+productsListIFrame.jsp.products.number = Nbr. produits
+productsListIFrame.jsp.title.search.products = Recherche les produits suivant leur code, leur désignation ou leur prix
+productsListIFrame.jsp.label.search.products = Rechercher produits
+productsListIFrame.jsp.label.add.product = Ajouter
+productsListIFrame.jsp.title.add.product = Ajouter un nouveau produit
+productsListIFrame.jsp.label.next = Suivant&gt;&gt;
+productsListIFrame.jsp.title.next = Afficher la liste des produits suivants
+productsListIFrame.jsp.label.previous = &lt;&lt;Précédent
+productsListIFrame.jsp.title.previous = Afficher la liste des produits précédents
+productsListIFrame.jsp.label.search.page = Aller à
+productsListIFrame.jsp.label.page.begin = Début page
+productsListIFrame.jsp.label.page.end = Fin page
+productsListIFrame.jsp.label.page = Page
+productsListIFrame.jsp.alert.number.page1 = Impossible d'aller vers une page dont le numéro de page est négatif ou nul !
+productsListIFrame.jsp.alert.number.page2 = Impossible d'aller vers une page dont le numéro de page est supérieur au nombre de pages !
+productsListIFrame.jsp.confirm.delete.product = Voulez-vous réellement supprimer ce produit
+productsListIFrame.jsp.list.products = Liste produits
+productsListIFrame.jsp.title.products = Afficher la liste des produits
+
+
+#Label for categoriesListIFrame
+categoriesListIFrame.jsp.title = Informations sur les catégories associées aux produits
+categoriesListIFrame.jsp.list.categories = Liste catégories
+categoriesListIFrame.jsp.title.categories = Afficher la liste des catégories
+categoriesListIFrame.jsp.categories.number = Nbr. catégories
+categoriesListIFrame.jsp.label.id = Identifiant categorie
+categoriesListIFrame.jsp.label.label = Désignation
+categoriesListIFrame.jsp.label.action = Action
+categoriesListIFrame.jsp.label.remove = Supprimer
+categoriesListIFrame.jsp.title.remove = Supprimer la catégorie {0}
+categoriesListIFrame.jsp.label.add = Ajouter
+categoriesListIFrame.jsp.title.add = Ajouter une nouvelle catégorie
+categoriesListIFrame.jsp.title.modify = Modifier la catégorie {0}
+categoriesListIFrame.jsp.confirm.delete.category = Voulez-vous réellement supprimer cette catégorie
+
+
+#Label for statsConsumptionProductsListIFrame
+statsConsumptionProductsListIFrame.jsp.title = Informations sur les produits consommés - statistiques
+statsConsumptionProductsListIFrame.jsp.list.stats = Liste stats conso
+statsConsumptionProductsListIFrame.jsp.title.stats = Afficher la liste des stats conso
+statsConsumptionProductsListIFrame.jsp.label.quantity = Quantité
+statsConsumptionProductsListIFrame.jsp.order.quantity = Trier par quantité
+statsConsumptionProductsListIFrame.jsp.label.code = Code
+statsConsumptionProductsListIFrame.jsp.order.code = Trier par code
+statsConsumptionProductsListIFrame.jsp.label.label = Désignation
+statsConsumptionProductsListIFrame.jsp.label.price = Prix
+statsConsumptionProductsListIFrame.jsp.select.others = Sélection spéciale consos
+statsConsumptionProductsListIFrame.jsp.label.product.deleted = CE PRODUIT A ETE SUPPRIME
+statsConsumptionProductsListIFrame.jsp.label.price.unknown = 0
+statsConsumptionProductsListIFrame.jsp.sum.quantities = Î£ Quantités
+statsConsumptionProductsListIFrame.jsp.sum.prices = Î£ Prix
+statsConsumptionProductsListIFrame.jsp.label.backup = Sauvegarder stats conso
+statsConsumptionProductsListIFrame.jsp.title.backup = Sauvegarder des statistiques de consommation
+statsConsumptionProductsListIFrame.jsp.label.purge = Purger stats conso
+statsConsumptionProductsListIFrame.jsp.title.purge = Purger les statistiques de consommation
+statsConsumptionProductsListIFrame.jsp.file.backup = StatsConsoProduits
+statsConsumptionProductsListIFrame.jsp.confirm.backup = Attention, cette action va remettre à jour les statistiques de consommation, désirez-vous continuer ?
+statsConsumptionProductsListIFrame.jsp.confirm.purge = Attention, cette action va purger les statistiques de consommation, désirez-vous continuer ?
+statsConsumptionProductsListIFrame.jsp.date.all = TOUS
+statsConsumptionProductsListIFrame.jsp.error.date = Le jour, le mois ou l'année ne doit pas Ãªtre nul
+statsConsumptionProductsListIFrame.jsp.label.password = Mot de passe
+statsConsumptionProductsListIFrame.jsp.label.date = Jour
+statsConsumptionProductsListIFrame.jsp.label.month = Mois
+statsConsumptionProductsListIFrame.jsp.label.year = Année
+
+#Label for searchStatsConsumptionProductsListIFrame.jsp
+searchStatsConsumptionProductsListIFrame.jsp.title = Rechercher dans les statistiques de consommation
+searchStatsConsumptionProductsListIFrame.jsp.product = LISTE DES PRODUITS DE LA RECHERCHE
+searchStatsConsumptionProductsListIFrame.jsp.product.deleted = LISTE PRODUITS SUPPRIMES
+searchStatsConsumptionProductsListIFrame.jsp.product.quantity.null = LISTE DES PRODUITS INCONSOMMES
+searchStatsConsumptionProductsListIFrame.jsp.product.category = LISTE DES PRODUITS SUIVANT LA CATEGORIE {0}
+searchStatsConsumptionProductsListIFrame.jsp.product.no.found = AUCUN PRODUIT TROUVE VENANT DE LA RECHERCHE
+searchStatsConsumptionProductsListIFrame.jsp.select.product.by = Sélectionné par
+searchStatsConsumptionProductsListIFrame.jsp.select.product.deleted = PRODUITS SUPPRIMES
+searchStatsConsumptionProductsListIFrame.jsp.select.product.quantity.null = PRODUITS INCONSOMMES
+searchStatsConsumptionProductsListIFrame.jsp.quantity.operator.lt = <
+searchStatsConsumptionProductsListIFrame.jsp.quantity.operator.gt = >
+searchStatsConsumptionProductsListIFrame.jsp.quantity.operator.eq = =
+searchStatsConsumptionProductsListIFrame.jsp.quantity.operator.undefined = Impossible de choisir cet opérateur lié à cette quantité car il est non défini
+searchStatsConsumptionProductsListIFrame.jsp.select.undefined = Impossible de choisir cette sélection car elle est indéfinie
+searchStatsConsumptionProductsListIFrame.jsp.select.categories = Sélection par catégories
+
+#Label for searchProducts.jsp
+searchProducts.jsp.title = Recherche des produits suivant leur code, leur désignation ou leur prix
+searchProducts.jsp.label.search = Rechercher
+searchProducts.jsp.label.search.code = Rechercher par code
+searchProducts.jsp.label.search.label = Rechercher par désignation
+searchProducts.jsp.label.search.price = Rechercher par prix
+
+#Label for saveOrUpdateProduct.jsp
+saveOrUpdateProduct.jsp.title = Modifier ou ajouter un produit
+saveOrUpdateProduct.jsp.add.title = Ajouter un produit
+saveOrUpdateProduct.jsp.update.title = Modifier le produit {0}
+saveOrUpdateProduct.jsp.add.categories.relation = Attacher des catégories de produits
+saveOrUpdateProduct.jsp.hide.categories.relation = Cacher les catégories de produits
+saveOrUpdateProduct.jsp.list.categories.relation = Liste des catégories de produits disponibles
+saveOrUpdateProduct.jsp.quantity.category.product = Quantité pour ce produit liée à la catégorie du produit
+saveOrUpdateProduct.jsp.code = Code produit
+saveOrUpdateProduct.jsp.label = Désignation
+saveOrUpdateProduct.jsp.price = Prix
+saveOrUpdateProduct.jsp.vat = TVA
+saveOrUpdateProduct.jsp.color = Couleur
+saveOrUpdateProduct.jsp.alert.quantity = La quantité doit Ãªtre saisie et non nulle !
+saveOrUpdateProduct.jsp.alert.code = Il faut remplir le code du produit
+saveOrUpdateProduct.jsp.alert.label = Il faut remplir la désignation du produit
+saveOrUpdateProduct.jsp.error.create.forbidden = Impossible de créer le produit {0} car il existe déjà.
+saveOrUpdateProduct.jsp.error.update.forbidden = Impossible de mettre à jour le produit {0} car il n''existe plus.
+saveOrUpdateProduct.jsp.error.delete.forbidden = Impossible de supprimer le produit {0} car il n''existe plus.
+saveOrUpdateProduct.jsp.error.delete.categories = Impossible de supprimer le produit {0} car ce produit est rattaché à des catégories.
+
+#Label for saveOrUpdateCategory.jsp
+saveOrUpdateCategory.jsp.title = Modifier ou ajouter une catégorie
+saveOrUpdateCategory.jsp.add.title = Ajouter une catégorie
+saveOrUpdateCategory.jsp.update.title = Modifier la catégorie {0}
+saveOrUpdateCategory.jsp.id = Identifiant de la catégorie
+saveOrUpdateCategory.jsp.label = Désignation
+saveOrUpdateCategory.jsp.alert.label = Il faut remplir la désignation de la catégorie
+saveOrUpdateCategory.jsp.error.create.forbidden = Impossible de créer la catégorie {0} car elle existe déjà.
+saveOrUpdateCategory.jsp.error.update.forbidden = Impossible de mettre à jour la catégorie {0} car elle n''existe plus.
+saveOrUpdateCategory.jsp.error.delete.forbidden = Impossible de supprimer la catégorie {0} car elle n''existe plus.
+
+#Label for daylyReceiptsIFrame.jsp
+daylyReceiptsIFrame.jsp.title = Listes des recettes journaliéres
+daylyReceiptsIFrame.jsp.label.modify = Modifier
+daylyReceiptsIFrame.jsp.label.print = Imprimer
+daylyReceiptsIFrame.jsp.title.modify = Modifier la recette journaliére de la table {0}
+daylyReceiptsIFrame.jsp.title.print = Imprimer la table {0}
+daylyReceiptsIFrame.jsp.label.print.receipts = Imprimer
+daylyReceiptsIFrame.jsp.label.close = ClÃ´turer
+daylyReceiptsIFrame.jsp.label.merge = Cumuler
+daylyReceiptsIFrame.jsp.label.display = Recettes
+daylyReceiptsIFrame.jsp.label.display.all = Recettes du jour
+daylyReceiptsIFrame.jsp.label.display.takeaway = Tables à emporter
+daylyReceiptsIFrame.jsp.label.display.inplace = Tables sur place
+daylyReceiptsIFrame.jsp.title.display.all = Afficher la liste de toutes les tables des recettes du {0}
+daylyReceiptsIFrame.jsp.title.display.takeaway = Afficher la liste des tables à emporter des recettes du {0}
+daylyReceiptsIFrame.jsp.title.display.inplace = Afficher la liste des tables sur place des recettes du {0}
+daylyReceiptsIFrame.jsp.title.print.receipts.all = Imprimer les recettes de toutes les tables du {0}
+daylyReceiptsIFrame.jsp.title.print.receipts.takeaway = Imprimer les recettes des tables à emporter du {0}
+daylyReceiptsIFrame.jsp.title.print.receipts.inplace = Imprimer les recettes des tables sur place du {0}
+daylyReceiptsIFrame.jsp.title.close = ClÃ´turer les recettes du {0}
+daylyReceiptsIFrame.jsp.title.merge = Cumuler les recettes du {0}
+daylyReceiptsIFrame.jsp.alert.print = Impression des recettes du {0} impossible avant leurs clÃ´ture.
+daylyReceiptsIFrame.jsp.alert.print.done = L'impression est déjà sortie, voulez-vous continuer ?
+daylyReceiptsIFrame.jsp.alert.close = ClÃ´turer les recettes du {0}
+daylyReceiptsIFrame.jsp.alert.close.forbidden = Impossible de clÃ´turer les recettes, elles ont déjà été faites !
+daylyReceiptsIFrame.jsp.alert.merge = Cumuler les recettes du {0}
+daylyReceiptsIFrame.jsp.label.table = Table
+daylyReceiptsIFrame.jsp.label.cash = Espéce
+daylyReceiptsIFrame.jsp.label.ticket = Ticket
+daylyReceiptsIFrame.jsp.label.cheque = Chéque
+daylyReceiptsIFrame.jsp.label.card = Carte
+daylyReceiptsIFrame.jsp.label.unpaid = Impayé
+daylyReceiptsIFrame.jsp.label.amount= Somme
+daylyReceiptsIFrame.jsp.title.table = Trier par numéro de table
+daylyReceiptsIFrame.jsp.title.cash = Trier par espéce
+daylyReceiptsIFrame.jsp.title.ticket = Trier par ticket
+daylyReceiptsIFrame.jsp.title.cheque = Trier par chéque
+daylyReceiptsIFrame.jsp.title.card = Trier par carte
+daylyReceiptsIFrame.jsp.title.unpaid = Trier par impayé
+daylyReceiptsIFrame.jsp.title.amount= Trier par somme due
+daylyReceiptsIFrame.jsp.label.number.tables = Nbr. tables
+daylyReceiptsIFrame.jsp.label.sum.cash = Î£ espéces
+daylyReceiptsIFrame.jsp.label.sum.ticket = Î£ tickets
+daylyReceiptsIFrame.jsp.label.sum.cheque = Î£ chéques
+daylyReceiptsIFrame.jsp.label.sum.card = Î£ cartes
+daylyReceiptsIFrame.jsp.label.sum.unpaid = Î£ impayés
+daylyReceiptsIFrame.jsp.label.sum.amounts = Î£ montants
+daylyReceiptsIFrame.jsp.select.date.none = AUCUNE RECETTE
+
+#Label for printing dayly receipts
+daylyReceipts.print.label.takeway = RECETTES A EMPORTER DU {0}
+daylyReceipts.print.label.inplace = RECETTES SUR PLACE DU {0}
+daylyReceipts.print.label.table = TAB.
+daylyReceipts.print.label.cash = ESP.
+daylyReceipts.print.label.ticket = TICK.
+daylyReceipts.print.label.cheque = CHEQ.
+daylyReceipts.print.label.card = C.BL.
+daylyReceipts.print.label.sum.cash = ESPECES
+daylyReceipts.print.label.sum.ticket = TICKETS REPAS
+daylyReceipts.print.label.sum.cheque = CHEQUES BANCAIRES
+daylyReceipts.print.label.sum.card = CARTES DE CREDIT
+daylyReceipts.print.label.sum.unpaid = IMPAYES
+daylyReceipts.print.label.sum.cashing.by.vat = Dont total TVA {0}%
+daylyReceipts.print.label.sum.cashing.by.table = TOTAL ENCAISSE
+daylyReceipts.print.label.difference = DIFFERENCE ENCAISSEE
+daylyReceipts.print.label.sum = TOTAL
+daylyReceipts.print.label.vat = Dont TVA {0}%
+daylyReceipts.print.label.without.vat = Total hors taxe
+daylyReceipts.print.label.total.sum = TOTAL GENERAL
+daylyReceipts.print.label.sum.table = NOMBRE DE TABLES
+
+#Label for monthly receipts
+monthlyReceiptsIFrame.jsp.title = Listes des recettes journaliéres
+monthlyReceiptsIFrame.jsp.label.display = Recettes
+monthlyReceiptsIFrame.jsp.label.display.all = Recettes du mois
+monthlyReceiptsIFrame.jsp.label.display.takeaway = Tables à emporter
+monthlyReceiptsIFrame.jsp.label.display.inplace = Tables sur place
+monthlyReceiptsIFrame.jsp.label.download.receipts = Sauvegarder
+monthlyReceiptsIFrame.jsp.title.display.all = Afficher la liste de toutes les tables des recettes du mois de {0}
+monthlyReceiptsIFrame.jsp.title.display.takeaway = Afficher la liste des tables à emporter des recettes du mois de {0}
+monthlyReceiptsIFrame.jsp.title.display.inplace = Afficher la liste des tables sur place des recettes du mois de {0}
+monthlyReceiptsIFrame.jsp.title.download.receipts = Télécharger les recettes mensuelles du mois de {0}
+monthlyReceiptsIFrame.jsp.label.day = Jour
+monthlyReceiptsIFrame.jsp.label.cash = Espéce
+monthlyReceiptsIFrame.jsp.label.ticket = Ticket
+monthlyReceiptsIFrame.jsp.label.cheque = Chéque
+monthlyReceiptsIFrame.jsp.label.card = Carte
+monthlyReceiptsIFrame.jsp.label.unpaid = Impayé
+monthlyReceiptsIFrame.jsp.label.amount= Somme
+monthlyReceiptsIFrame.jsp.title.day = Trier par jour
+monthlyReceiptsIFrame.jsp.title.cash = Trier par espéce
+monthlyReceiptsIFrame.jsp.title.ticket = Trier par ticket
+monthlyReceiptsIFrame.jsp.title.cheque = Trier par chéque
+monthlyReceiptsIFrame.jsp.title.card = Trier par carte
+monthlyReceiptsIFrame.jsp.title.unpaid = Trier par impayé
+monthlyReceiptsIFrame.jsp.title.amount= Trier par somme due
+monthlyReceiptsIFrame.jsp.label.number.days = Nbr. de jours
+monthlyReceiptsIFrame.jsp.label.sum.cash = Î£ espéces
+monthlyReceiptsIFrame.jsp.label.sum.ticket = Î£ tickets
+monthlyReceiptsIFrame.jsp.label.sum.cheque = Î£ chéques
+monthlyReceiptsIFrame.jsp.label.sum.card = Î£ cartes
+monthlyReceiptsIFrame.jsp.label.sum.unpaid = Î£ impayés
+monthlyReceiptsIFrame.jsp.label.sum.amounts = Î£ montants
+monthlyReceiptsIFrame.jsp.title.ok = Afficher la liste des recettes mensuelles
+monthlyReceiptsIFrame.jsp.label.vat.amount = Montant TVA {0}
+monthlyReceiptsIFrame.jsp.label.vat.value = TVA {0}
+monthlyReceiptsIFrame.jsp.file.backup = RecettesMensuelles
+
+
+#Applets parameters
+applets.message.wait.loading = Chargement des applets
+
+applets.jar = /jsp/commons/SDateTimeImpressionTableApplet.jar
+applets.DateTimeApplet.class = fr.montagnesdor.restaurant.applets.DateTimeApplet.class
+applets.DateTimeApplet.param.patternDate.value = EEEE dd MMMM yyyy
+applets.DateTimeApplet.param.patternDateShort.value = dd/MM/yyyy
+applets.DateTimeApplet.param.patternTime.value = HH:mm:ss
+applets.DateTimeApplet.param.patternDateTime.value = EEEE dd MMMM yyyy à HH:mm:ss
+applets.DateTimeApplet.param.debug.value = true
+
+applets.TableOrdersApplet.class = fr.montagnesdor.restaurant.applets.OrdersApplet.class
+applets.TableOrdersApplet.param.URLServlet.value = /TableOrdersAppletServlet
+applets.TableOrdersApplet.param.patternDate.value = dd/MM/yyyy/HH/mm/ss
+
+applets.PrinterApplet.class = fr.montagnesdor.restaurant.applets.PrinterApplet.class
+#applets.PrinterApplet.param.charset.value = UTF8
+applets.PrinterApplet.param.charset.value = ISO8859_1
+applets.PrinterApplet.param.linux.driver.name.value = gnu.io.RXTXCommDriver
+applets.PrinterApplet.param.linux.printer.portcom.value = /dev/ttyS0
+applets.PrinterApplet.param.windows.driver.name.value = com.sun.comm.Win32Driver
+applets.PrinterApplet.param.windows.printer.portcom.value = COM1
+applets.PrinterApplet.param.serialport.bauds.value = 9600
+applets.PrinterApplet.param.serialport.bits.value = 8
+applets.PrinterApplet.param.serialport.stopbits.value = 1
+applets.PrinterApplet.param.serialport.parity.value = 0
+applets.PrinterApplet.param.packet.value = 50
+applets.PrinterApplet.param.pause.value = 1500
+applets.PrinterApplet.param.printer.specialCaracters.value = #;$;à;Â°;Ã§;Â§;^;`;é;Ã¹;é;Â¨
+applets.PrinterApplet.param.printer.bindSpecialCaracters.value = 23;24;40;5B;5C;5D;5E;60;7B;7C;7D;7E
+applets.PrinterApplet.param.debug.value = false
+
+applets.ColorPickerApplet.class = fr.montagnesdor.restaurant.applets.ColorPickerApplet.class
+applets.ColorPickerApplet.param.defaultRGBColor.value = 660000
+applets.ColorPickerApplet.param.defaultLabelRGBColor.value = Code en Hexa
+applets.ColorPickerApplet.param.defaultFont.value = Arial
+
+#Format number i18n
+format.number.percent = {0,number,##0.00'%'}
+format.number.decimal.3.2 = {0,number,##0.00}
+

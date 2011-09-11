@@ -167,10 +167,16 @@ Définir le classpath pour Junit :
 eide> file/propertie/java build path/add variables/select M2-REPO/extend/change to junit-3-8-1.jar/ok
 ********************** END ioc module **********************************
 
+---------------------------------------------------------------------------------------------------
+					START APPLET PART
+---------------------------------------------------------------------------------------------------
+****************** START applet part ***************************
+Create folder applet in mdo-core folder
+cd mdo-core
+mkdir applet
+****************** END applet part ***************************
 
-Créer un projet
-eclipse > new project/ project/enter :mdo-core\applet/finish
-
+****************** START applet date-time module ***************************
 cd D:\montagnesdor\mdo-maven2-workspace\mdo-core\applet
 //Choose 15: internal -> maven-archetype-quickstart ()
 mvn archetype:generate -DgroupId=fr.mch.mdo -DartifactId=date-time
@@ -179,7 +185,9 @@ mvn eclipse:eclipse
 
 Importer le projet date-time dans l'espace de travail de Eclipse  : 
 eide> import/existing project to workspace/select root directory: mdo-core\applet\date-time
+****************** END applet date-time module ***************************
 
+****************** START applet color-picker module ***************************
 cd D:\montagnesdor\mdo-maven2-workspace\mdo-core\applet
 //Choose 15: internal -> maven-archetype-quickstart ()
 mvn archetype:generate -DgroupId=fr.mch.mdo -DartifactId=color-picker
@@ -188,7 +196,9 @@ mvn eclipse:eclipse
 
 Importer le projet color-picker dans l'espace de travail de Eclipse  : 
 eide> import/existing project to workspace/select root directory: mdo-core\applet\color-picker
+****************** END applet color-picker module ***************************
 
+****************** START applet serial-port-printer module ***************************
 cd D:\montagnesdor\mdo-maven2-workspace\mdo-core\applet
 //Choose 15: internal -> maven-archetype-quickstart ()
 mvn archetype:generate -DgroupId=fr.mch.mdo -DartifactId=serial-port-printer
@@ -197,8 +207,91 @@ mvn eclipse:eclipse
 
 Importer le projet serial-port-printer dans l'espace de travail de Eclipse  : 
 eide> import/existing project to workspace/select root directory: mdo-core\applet\date-time
+****************** END applet serial-port-printer module ***************************
+---------------------------------------------------------------------------------------------------
+					END APPLET PART
+---------------------------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------------------------
+					START client-tools PART
+---------------------------------------------------------------------------------------------------
+****************** START client-tools part ***************************
+Create folder applet in mdo-core folder
+cd mdo-core
+mkdir client-tools
+****************** END client-tools part ***************************
+
+****************** START printer module ***************************
+cd D:\montagnesdor\mdo-maven2-workspace\mdo-core\client-tools
+//Choose 15: internal -> maven-archetype-quickstart ()
+mvn archetype:generate -DgroupId=fr.mch.mdo -DartifactId=printer
+cd printer
+mvn eclipse:eclipse
+
+Importer le projet printer dans l'espace de travail de Eclipse  : 
+eide> import/existing project to workspace/select root directory: mdo-core\client-tools\printer
+****************** END printer-jms module ***************************
+
+****************** START printer-jms module ***************************
+cd D:\montagnesdor\mdo-maven2-workspace\mdo-core\client-tools
+//Choose 15: internal -> maven-archetype-quickstart ()
+mvn archetype:generate -DgroupId=fr.mch.mdo -DartifactId=printer-jms
+cd printer-jms
+mvn eclipse:eclipse
+
+Importer le projet printer-jms dans l'espace de travail de Eclipse  : 
+eide> import/existing project to workspace/select root directory: mdo-core\client-tools\printer-jms
+****************** END printer-jms module ***************************
+
+****************** START printer-applet module ***************************
+cd D:\montagnesdor\mdo-maven2-workspace\mdo-core\client-tools
+//Choose 15: internal -> maven-archetype-quickstart ()
+mvn archetype:generate -DgroupId=fr.mch.mdo -DartifactId=printer-applet
+cd printer-applet
+mvn eclipse:eclipse
+
+Importer le projet printer-applet dans l'espace de travail de Eclipse  : 
+eide> import/existing project to workspace/select root directory: mdo-core\client-tools\printer-applet
+****************** END printer-applet module ***************************
+---------------------------------------------------------------------------------------------------
+					END client-tools PART
+---------------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------------
+					START JMS PART
+---------------------------------------------------------------------------------------------------
+****************** START jms part ***************************
+Create folder applet in mdo-core folder
+cd mdo-core
+mkdir jms
+****************** END jms part ***************************
+
+****************** START jms hornetq-embedded-server module ***************************
+cd D:\montagnesdor\mdo-maven2-workspace\mdo-core\jms
+//Choose 15: internal -> maven-archetype-quickstart ()
+mvn archetype:generate -DgroupId=fr.mch.mdo -DartifactId=hornetq-embedded-server
+cd hornetq-embedded-server
+mvn eclipse:eclipse
+
+Importer le projet hornetq-embedded-server dans l'espace de travail de Eclipse  : 
+eide> import/existing project to workspace/select root directory: mdo-core\jms\hornetq-embedded-server
+****************** END jms hornetq-embedded-server module ***************************
+
+****************** START jms hornetq-client-producer module ***************************
+cd D:\montagnesdor\mdo-maven2-workspace\mdo-core\jms
+//Choose 15: internal -> maven-archetype-quickstart ()
+mvn archetype:generate -DgroupId=fr.mch.mdo -DartifactId=hornetq-client-producer
+cd hornetq-client-producer
+mvn eclipse:eclipse
+
+Importer le projet hornetq-client-producer dans l'espace de travail de Eclipse  : 
+eide> import/existing project to workspace/select root directory: mdo-core\jms\hornetq-client-producer
+****************** END jms hornetq-client-producer module ***************************
+---------------------------------------------------------------------------------------------------
+					END JMS PART
+---------------------------------------------------------------------------------------------------
+
+****************** START aop module ***************************
 cd D:\montagnesdor\mdo-maven2-workspace\mdo-core
 
 //Choose 15: internal -> maven-archetype-quickstart ()
@@ -211,6 +304,7 @@ eide> import/existing project to workspace/select root directory: mdo-core\aop
 
 Définir le classpath pour Junit : 
 eide> file/propertie/java build path/add variables/select M2-REPO/extend/change to junit-3-8-1.jar/ok
+****************** END aop module ***************************
 
 ********************** START web module **********************************
 cd D:\montagnesdor\mdo-maven2-workspace\mdo-core
@@ -224,8 +318,9 @@ eide> import/existing project to workspace/select root directory: mdo-core\web
 
 Définir le classpath pour Junit : 
 eide> file/propertie/java build path/add variables/select M2-REPO/extend/change to junit-3-8-1.jar/ok
+********************** END web module **********************************
 
----------------------------------------------------------------------------------------------------
+********************** START web-administration module **********************************
 cd D:\montagnesdor\mdo-maven2-workspace\mdo-core
 
 //Choose 18: internal -> maven-archetype-webapp (A simple Java web application)
@@ -238,8 +333,9 @@ eide> import/existing project to workspace/select root directory: mdo-core\web-a
 
 Définir le classpath pour Junit : 
 eide> file/propertie/java build path/add variables/select M2-REPO/extend/change to junit-3-8-1.jar/ok
+********************** END web-administration module **********************************
 
-
+********************** START web-restaurant module **********************************
 cd D:\montagnesdor\mdo-maven2-workspace\mdo-core
 
 //Choose 18: internal -> maven-archetype-webapp (A simple Java web application)
@@ -252,6 +348,7 @@ eide> import/existing project to workspace/select root directory: mdo-core\web-r
 
 Définir le classpath pour Junit : 
 eide> file/propertie/java build path/add variables/select M2-REPO/extend/change to junit-3-8-1.jar/ok
+********************** END web-restaurant module **********************************
 
 ****************************************************************************************************************
 Pour utiliser Tomcat en production sous WINDOWS, il faut

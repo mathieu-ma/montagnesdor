@@ -12,9 +12,13 @@
 			<tiles:addAttribute type="string" value="/javascript/jquery/plugins/jquery.tablesorter.min.js" />
 		</tiles:putListAttribute>
 		<tiles:putAttribute name="title" value="${title}"/>
+		<tiles:putAttribute name="menu" value="/jsp/tables-orders/menu.jsp" />
 		<c:choose>
 			<c:when test="${method=='list'}">
 				<tiles:putAttribute name="body" value="/jsp/tables-orders/list-body.jsp" />
+			</c:when>
+			<c:when test="${method=='form'}">
+				<tiles:putAttribute name="body" value="/jsp/tables-orders/orders-body.jsp" />
 			</c:when>
 			<c:otherwise>
 				<tiles:putAttribute name="body" value="/jsp/tables-orders/list-body.jsp" />

@@ -1,0 +1,15 @@
+This jar comes from librxtx-java_2.2pre2-3_amd64.deb. The later file comes from the cache of command "apt-get librxtx-java".  
+
+This version of RXTX java library is 2.2pre2 for AMD 64 bits.
+
+The jar file RXTXcomm.jar is the same as RXTXcomm-2.2pre2.jar: We just rename it.
+
+	*******************************************************************************************************************
+	* In order to run this class, we have 2 choices depending on how you are going to run it:
+	* 1) If you run it in command line then add the system property java.library.path and point to the right folder.
+	* 2) If you run it in eclipse, 
+	* 		2.1) Open the "Package Explorer", 
+	* 		2.2) "Alt + Enter" on the rxtx jar file(in "Referenced Libraries"), 
+	* 		2.3) Enter into "Native Lirary" menu,
+	* 		2.4) Point to the right location path.
+	*******************************************************************************************************************

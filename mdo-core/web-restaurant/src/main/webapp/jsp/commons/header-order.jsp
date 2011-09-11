@@ -11,28 +11,31 @@
 
 	<script type="text/javascript" src="<c:out value="${pageContext.request.contextPath}"/>/javascript/header-order.js"></script>
 
+<%-- To Be Deleted --%>
+<script type="text/javascript" src="<c:out value="${pageContext.request.contextPath}"/>/javascript/orders-body.js"></script>
+
 	<div id='header-order' class="mdo-upsidedown">
 		<s:url id="tablesOrdersUrl" action="TablesOrders" method="form" />
-		<s:form action="TablesOrders!form" method="post" id="TablesOrders" >
+		<s:form action="TablesOrders!form" method="post" id="HeaderTablesOrders" >
 			<s:hidden id="user-entry-date" value="%{#session.userSession.entryDate.time}" />
 			<table style="width: 80%">
 				<tbody>
 					<tr>
 						<td style="width: 5%">
 							<div class='header-order-table-number'>
-								<s:textfield cssClass="string uppercase" labelposition="left" label="%{getText('header.table.number')}" name="form.dtoBean.dinnerTableDto.tableNumber" id="input-header-order-table-number" maxLength="4" size="4"/>
-								<s:hidden name="form.dtoBean.dinnerTableDtoBean.id"/>
+								<s:textfield cssClass="string uppercase" labelposition="left" label="%{getText('header.table.number')}" name="form.dtoBean.number" id="input-header-order-table-number" maxLength="4" size="4"/>
+								<s:hidden name="form.dtoBean.id"/>
 							</div>
 						</td>
 						<td style="width: 5%">
 							<div class='header-order-takeaway'>
-								<s:hidden id="prefixesTakeawayName" name="form.dtoBean.userContext.userAuthentication.restaurant.prefixesTakeawayName"/>
-								<s:checkbox labelposition="left" label="%{getText('header.table.takeaway')}" name="form.dtoBean.dinnerTableDto.takeaway" id="checkbox-header-order-table-takeaway" fieldValue="false"/>
+								<s:hidden id="prefixesTakeawayName" name="#session.userSession.userAuthentication.restaurant.prefixTakeawayNames" />
+								<s:checkbox labelposition="left" label="%{getText('header.table.takeaway')}" name="form.dtoBean.takeaway" id="checkbox-header-order-table-takeaway" fieldValue="false"/>
 							</div>
 						</td>
 						<td style="width: 7%">
 							<div class='header-order-table-customer'>
-								<s:textfield cssClass="integer" labelposition="left" label="%{getText('header.table.customer')}" name="form.dtoBean.dinnerTableDto.customersNumber" id="input-header-order-table-customer" maxLength="4" size="4"/>
+								<s:textfield cssClass="integer" labelposition="left" label="%{getText('header.table.customer')}" name="form.dtoBean.customersNumber" id="input-header-order-table-customer" maxLength="4" size="4"/>
 							</div>
 						</td>
 						<td style="width: 9%">

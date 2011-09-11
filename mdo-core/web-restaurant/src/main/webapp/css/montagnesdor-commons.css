@@ -35,8 +35,12 @@
 		text-transform: capitalize;	
 	}
 	
+	div#menu-body-footer {
+		height: 88%;
+	}
+
 	div#body, div#body-scroll, div#menu {
-		height: 80%;
+		height: 90%;
 	}
 
 	div#menu {
@@ -59,8 +63,8 @@
 	}
 
 	div#footer {
-		height: 8%;
-		/height: 8.5%;
+		height: 10%;
+		/height: 10.5%;
 	}
 
 	div#header {
@@ -697,6 +701,10 @@ table.admin-list-body tr:hover {
 }
 
 /** Header Order **/
+div.header-order-takeaway, div.header-order-table-customer {
+	visibility: hidden;
+}
+
 div.header-order-table-customer label.label {
 	width: 50%;
 }
@@ -724,6 +732,9 @@ div.header-order-table-customer label.label {
 	width: 32%;
 }
 
+#hidden-order-line {
+	display: none;
+}
 /****************************/
 /*	END: Struts 2 skin  	*/
 /****************************/

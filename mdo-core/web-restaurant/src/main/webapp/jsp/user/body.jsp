@@ -19,11 +19,11 @@
 			<s:label label="%{getText('user.manager.birthdate')}" name="form.userContext.user.birthdate" labelposition="left" /> 
 			<s:label label="%{getText('user.manager.role')}"	name="form.userContext.role" labelposition="left" /> 
 			<s:label label="%{getText('user.manager.login')}" name="form.userContext.login" labelposition="left" /> 
-			<s:select
+			<s:select id="printingLocale"
 				label="%{getText('user.manager.prefered.print.language')}"
 				name="form.userContext.userAuthentication.printingLocale.id"
 				list="form.userContext.userAuthentication.locales" listKey="id"
-				listValue="#session.userSession.systemAvailableLanguages[form.userContext.currentLocale.languageCode]" labelposition="left" />
+				listValue="#session.userSession.systemAvailableLanguages[locale.languageCode]" labelposition="left" />
 
 			<s:iterator begin="0" end="3" status="status">
 				<div class="wwgrp" title="<fmt:message key="user.manager.change.password.level.${status.index}"/>">

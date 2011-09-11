@@ -34,6 +34,10 @@ import org.apache.log4j.PatternLayout;
 import org.apache.log4j.RollingFileAppender;
 
 /**
+ * In oder to used this class in Linux OS, we have to give permission for connected user by following these 2 steps:
+ * 1) adduser $connectedUser uucp
+ * 2) adduser $connectedUser dialout
+ * 
  * @author user
  * 
  *         To change this generated comment edit the template variable
@@ -81,6 +85,7 @@ public class PrinterSimulator extends JFrame
 			System.load("/home/mathieu/development/workspace/mdo-core/applet/serial-port-printer/src/main/resources/rxtx/lib64/linux/librxtxSerial.so");
 			System.load("/home/mathieu/development/workspace/mdo-core/applet/serial-port-printer/src/main/resources/rxtx/lib64/linux/librxtxParallel.so");
 			System.setProperty("java.library.path", "/home/mathieu/development/workspace/mdo-core/applet/serial-port-printer/src/main/resources/rxtx/lib64/linux/");
+			//System.loadLibrary("rxtxSerial");
 			CommDriver driver = (CommDriver) Class.forName(driverName).newInstance();
 			driver.initialize();
 		} catch (Exception e) {

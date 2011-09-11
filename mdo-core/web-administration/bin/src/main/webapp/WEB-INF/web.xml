@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+   version="2.5"> 
+
+	<filter>
+		<filter-name>struts2</filter-name>
+		<filter-class>fr.mch.mdo.restaurant.web.struts.MdoStrutsDispatcher</filter-class>
+		<init-param>
+			<param-name>config</param-name>
+			<param-value>fr/mch/mdo/restaurant/web/struts/struts.xml</param-value>
+		</init-param>
+	</filter>
+
+	<!--
+		This filter is used to prevent client browsers to access directly to jsp pages without Struts actions processed
+	-->
+	<filter>
+		<filter-name>ForbiddenDirectAccessJspFilter</filter-name>
+		<filter-class>fr.mch.mdo.restaurant.web.ForbiddenDirectAccessJspFilter</filter-class>
+	</filter>
+
+	<filter>
+		<description>Set HTTP headers for a mapping.</description>
+		<filter-name>HeaderFilter</filter-name>
+		<filter-class>fr.mch.mdo.restaurant.web.HeaderFilter</filter-class>
+		<init-param>
+			<description>Add an Expires Header</description>
+			<param-name>header</param-name>
+			<param-value>Expires: Sat, 15 Aug 2020 00:00:00 GMT</param-value>
+		</init-param>
+	</filter>
+
+	<!-- Set Far Future Expires Headers for js files  -->
+	<filter-mapping>
+		<filter-name>HeaderFilter</filter-name>
+		<url-pattern>*.js</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping>
+	<!-- Set Far Future Expires Headers for css files  -->
+	<filter-mapping>
+		<filter-name>HeaderFilter</filter-name>
+		<url-pattern>*.css</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping>
+	<!-- Set Far Future Expires Headers for png files  -->
+	<filter-mapping>
+		<filter-name>HeaderFilter</filter-name>
+		<url-pattern>*.png</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping> 
+	<!-- Set Far Future Expires Headers for cur files  -->
+	<filter-mapping>
+		<filter-name>HeaderFilter</filter-name>
+		<url-pattern>*.cur</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping> 
+	<!-- Set Far Future Expires Headers for gif files  -->
+	<filter-mapping>
+		<filter-name>HeaderFilter</filter-name>
+		<url-pattern>*.gif</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping> 
+	<!-- Set Far Future Expires Headers for jpg files  -->
+	<filter-mapping>
+		<filter-name>HeaderFilter</filter-name>
+		<url-pattern>*.jpg</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping> 
+	<!-- Set Far Future Expires Headers for ico files  -->
+	<filter-mapping>
+		<filter-name>HeaderFilter</filter-name>
+		<url-pattern>*.ico</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping> 
+
+	<!-- 
+		The servlet named jsp is defined in $TOMCAT_HOME/conf/web.xml.
+		This name maybe different in other application server.
+	-->	 
+	<filter-mapping>
+		<filter-name>ForbiddenDirectAccessJspFilter</filter-name>
+		<servlet-name>jsp</servlet-name>
+	</filter-mapping>
+	
+
+	<filter-mapping>
+		<filter-name>struts2</filter-name>
+		<url-pattern>*.action</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>struts2</filter-name>
+		<url-pattern>/struts/*</url-pattern>
+	</filter-mapping>
+
+	<servlet>
+		<servlet-name>tiles</servlet-name>
+		<servlet-class>org.apache.tiles.web.startup.TilesServlet</servlet-class>
+		<init-param>
+			<param-name>org.apache.tiles.impl.BasicTilesContainer.DEFINITIONS_CONFIG</param-name>
+			<param-value>/WEB-INF/classes/fr/mch/mdo/restaurant/web/tiles/tiles-defs.xml</param-value>
+		</init-param>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+
+	<!-- Définit le fichier des libellés pour l'utilisation des taglibs JSTL  -->
+	<context-param>
+		<param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
+		<param-value>fr.mch.mdo.restaurant.resources.i18n.ApplicationMessagesResources</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>schemeHTTP</param-name>
+		<param-value>http</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>portHTTP</param-name>
+		<param-value>8180</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>schemeHTTPS</param-name>
+		<param-value>https</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>portHTTPS</param-name>
+		<param-value>8443</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>defaultEntryURI</param-name>
+		<!-- /administration is Struts2 namespace dependent  -->
+		<param-value>/administration/Logon.action</param-value>
+	</context-param>
+	
+	<session-config>
+		<session-timeout>-1</session-timeout>
+	</session-config>
+
+	<!-- The Welcome File List -->
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+
+	<jsp-config>
+		<!-- Taglib utilisé par l'application -->
+		<taglib>
+			<taglib-uri>/WEB-INF/mdo.tld</taglib-uri>
+			<taglib-location>/WEB-INF/tld/mdo.tld</taglib-location>
+		</taglib>
+	</jsp-config>
+
+	<error-page>
+		<exception-type>java.lang.Throwable</exception-type>
+		<location>/jsp/errors/error.jsp</location>
+	</error-page>
+
+</web-app>

@@ -107,7 +107,10 @@ public class RestaurantDto extends MdoDtoBean
      * List of prefix table names for this restaurant
      */
     private Set<RestaurantPrefixTableDto> prefixTableNames = new HashSet<RestaurantPrefixTableDto>();
-
+    /**
+     * Array of prefix take-away names
+     */
+    private String[] prefixTakeawayNames;
     /**
      * Map of ProductSpecialCode with key == short code and value == ProductSpecialCodeDto
      */
@@ -319,6 +322,18 @@ public class RestaurantDto extends MdoDtoBean
 		return prefixTableNames;
 	}
 
+	/**
+	 * @param prefixTakeawayNames the prefixTakeawayNames to set
+	 */
+	public void setPrefixTakeawayNames(String[] prefixTakeawayNames) {
+		this.prefixTakeawayNames = prefixTakeawayNames;
+	}
+	/**
+	 * @return the prefixTakeawayNames
+	 */
+	public String[] getPrefixTakeawayNames() {
+		return prefixTakeawayNames;
+	}
 	/**
 	 * @param productSpecialCodes the productSpecialCodes to set
 	 */

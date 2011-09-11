@@ -9,12 +9,13 @@ import gnu.io.CommDriver;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 
-import java.applet.Applet;
 import java.io.BufferedOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.StringTokenizer;
+
+import javax.swing.JApplet;
 
 /**
  * In the jre/lib/security/java.policy file, we have to add these following lines:
@@ -26,10 +27,12 @@ import java.util.StringTokenizer;
  * permission java.io.FilePermission "/usr/java/packages/lib/ext/librxtxSerial.so", "read";
  * permission java.util.PropertyPermission "gnu.io.log.mode", "read";
  * 
+ * PropertyPermission "gnu.io.log.mode" ==> Required by RXTX
+ * 
  * @author mathieu ma
  * @version
  */
-public class PrinterApplet extends Applet
+public class PrinterApplet extends JApplet
 {
 	/**
      * Default Serial Version UID

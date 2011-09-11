@@ -93,10 +93,6 @@ public class DefaultDinnerTablesManager extends AbstractAdministrationManager im
 		}
 	}
 
-	private enum ManagedTableType {
-		TAKE_AWAY, EAT_IN
-	}
-	
 	@Override
 	public IMdoDtoBean update(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
 		DinnerTable daoBean = (DinnerTable) assembler.unmarshal(dtoBean);
@@ -146,20 +142,20 @@ public class DefaultDinnerTablesManager extends AbstractAdministrationManager im
 		if (code.length() > 0) {
 			// Check if the First character belongs to a product special code
 			try {
-				String shortCode = code.substring(1);
+				String shortCode = code.substring(0, 1);
 				// Maybe get ProductSpecialCode from collection restaurant.getProductSpecialCodes() instead of requesting into database
-//				Set<ProductSpecialCodeDto> productSpecialCodes = restaurant.getProductSpecialCodes();
-//				for (Iterator<ProductSpecialCodeDto> iterator = productSpecialCodes.iterator(); iterator.hasNext();) {
-//					ProductSpecialCodeDto productSpecialCode = iterator.next();
-//					if (shortCode.equals(productSpecialCode.getShortCode())) {
-//						result = ManagedProductSpecialCode.valueOf(productSpecialCode.getCode().getName());
-//						break;
-//					}
-//				}
-				ProductSpecialCode productSpecialCode = (ProductSpecialCode) productSpecialCodeDao.findByShortCode(restaurant.getId(), shortCode);
-				if (productSpecialCode != null) {
-					result = ManagedProductSpecialCode.valueOf(productSpecialCode.getCode().getName());
+				Set<ProductSpecialCodeDto> productSpecialCodes = restaurant.getProductSpecialCodes();
+				for (Iterator<ProductSpecialCodeDto> iterator = productSpecialCodes.iterator(); iterator.hasNext();) {
+					ProductSpecialCodeDto productSpecialCode = iterator.next();
+					if (shortCode.equals(productSpecialCode.getShortCode())) {
+						result = ManagedProductSpecialCode.valueOf(productSpecialCode.getCode().getName());
+						break;
+					}
 				}
+//				ProductSpecialCode productSpecialCode = (ProductSpecialCode) productSpecialCodeDao.findByShortCode(restaurant.getId(), shortCode);
+//				if (productSpecialCode != null) {
+//					result = ManagedProductSpecialCode.valueOf(productSpecialCode.getCode().getName());
+//				}
 			} catch (Exception e) {
 				logger.error("message.error.business.find.productSpecialCode", e);
 			}

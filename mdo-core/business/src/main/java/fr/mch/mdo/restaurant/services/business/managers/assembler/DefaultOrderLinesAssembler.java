@@ -112,7 +112,14 @@ public class DefaultOrderLinesAssembler extends AbstractAssembler implements IMa
 			dto = new OrderLineDto();
 			dto.setId(bean.getId());
 			dto.setAmount(bean.getAmount());
-			//dto.setCode(code);
+			String code = null;
+			if (bean.getProduct() != null) {
+				code = bean.getProduct().getCode();
+			}
+			if (bean.getProductSpecialCode() != null && bean.getProductSpecialCode().getShortCode() != null) {
+				code = bean.getProductSpecialCode().getShortCode() + code;
+			}
+			dto.setCode(code);
 			CreditDto credit = (CreditDto) creditsAssembler.marshal(bean.getCredit(), userContext);
 			dto.setCredit(credit);
 			if (bean.getDinnerTable() != null) {

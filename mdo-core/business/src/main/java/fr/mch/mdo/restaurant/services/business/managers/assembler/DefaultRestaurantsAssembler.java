@@ -1,6 +1,9 @@
 package fr.mch.mdo.restaurant.services.business.managers.assembler;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import fr.mch.mdo.logs.ILogger;
@@ -149,6 +152,15 @@ public class DefaultRestaurantsAssembler extends AbstractAssembler implements IM
 			Set<RestaurantPrefixTableDto> prefixTableNames = null;
 			if (bean.getPrefixTableNames() != null) {
 				prefixTableNames = (Set) restaurantPrefixTablesAssembler.marshal(bean.getPrefixTableNames(), userContext);
+				// Set the user restaurant
+				List<String> prefixTakeawayName = new ArrayList<String>();
+				for (Iterator iterator = prefixTableNames.iterator(); iterator.hasNext();) {
+					RestaurantPrefixTableDto restaurantPrefixTableDto = (RestaurantPrefixTableDto) iterator.next();
+					if (ManagedTableType.TAKE_AWAY.name().equals(restaurantPrefixTableDto.getType().getCode().getName())) {
+						prefixTakeawayName.add(restaurantPrefixTableDto.getPrefix().getName());
+					}
+				}
+				dto.setPrefixTakeawayNames(prefixTakeawayName.toArray(new String[0]));
 			}
 			dto.setPrefixTableNames(prefixTableNames);
 			Set<ProductSpecialCodeDto> productSpecialCodes = null;

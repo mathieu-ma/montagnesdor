@@ -14,9 +14,9 @@ $(document).ready(function() {
 		}
 		var jTableNumber = $("#input-header-order-table-number");
 		var jTableCustomer = $("#input-header-order-table-customer");
-		var jDivTableCustomer = $("div.header-order-table-customer");
+		var jDivTableCustomer = $("div.header-order-table-customer").css('visibility', 'hidden');
 		//URL for ajax call
-		var tableCustomerUrl = $("#TablesOrders").attr("action").replace("form", "tableCustomersNumber");		
+		var tableCustomerUrl = $("#HeaderTablesOrders").attr("action").replace("form", "tableCustomersNumber");		
 		var options = {
 			processPreKeyup: function(jCell) {
 				//Ajax autocomplete
@@ -29,6 +29,12 @@ $(document).ready(function() {
 						jTakeawayCheckbox.removeAttr("checked");
 					}
 				}
+			},
+			processEsc: function(jCell) {
+				jTableNumber.val("");
+				jDivCheckbox.css("visibility", "hidden");
+				jTakeawayCheckbox.removeAttr("checked");
+				jQuery.mdoFocus(jTableNumber);
 			},
 			processEnter: function(jCell) {
 				jTakeawayCheckbox.css('visibility', 'hidden');
@@ -60,7 +66,7 @@ $(document).ready(function() {
 		}
 		jTableNumber.mdoInputText(options);
 //		//URL for ajax call
-//		var autoCompleteTablesNamesUrl = $("#TablesOrders").attr("action").replace("form", "autoCompleteTablesNames");		
+//		var autoCompleteTablesNamesUrl = $("#HeaderTablesOrders").attr("action").replace("form", "autoCompleteTablesNames");		
 //		jTableNumber.autocomplete(autoCompleteTablesNamesUrl, 
 //			{
 //				extraParams: {"form.dtoBean.prefixTableNumber": function() {return jTableNumber.val().toUpperCase();}},
@@ -93,16 +99,20 @@ $(document).ready(function() {
 			}
 		};
 		jTableCustomer.mdoInputText(options);
-//		
-//		function displayDinnerTable()
-//		{
-//			//Form TablesOrders
-//			var jForm = $("#TablesOrders");
-//			var jParameters = jForm.serialize();
-//			//URL for ajax call
-//			var displayDinnerTableUrl = jForm.attr("action");
-//			$("#main").load(displayDinnerTableUrl, jParameters);
-//		}
-//
+		
+		function displayDinnerTable() {
+			// Form TablesOrders
+			var jForm = $("#HeaderTablesOrders");
+			var jParameters = jForm.serialize();
+			// URL for ajax call
+			var displayDinnerTableUrl = jForm.attr("action");
+			// display overlay block in order to prevent user entry
+  			$("#mdo-overlay").css('display', 'block');
+			$("#menu-body-footer").load(displayDinnerTableUrl, jParameters);
+			// display overlay none in order to enable user entry
+  			$("#mdo-overlay").css('display', 'none');
+		}
+
 		jQuery.mdoFocus("#input-header-order-table-number");
+		jQuery.mdoSubmit();
 });

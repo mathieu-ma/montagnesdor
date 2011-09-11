@@ -166,7 +166,7 @@ AND enm_table_type.enm_language_key_label='TABLE_TYPE.EAT_IN.0';
 --COMMENT ON COLUMN t_restaurant_prefix_table.tbt_id IS 'This is a foreign key that refers to t_table_type. This field and the other res_id and rpt_prefix_enm_id fields consist of a unique field.';
 --COMMENT ON COLUMN t_restaurant_prefix_table.rpt_prefix_enm_id IS 'This is a foreign key that refers to t_enum table for type PREFIX_TAKEAWAY_TABLE_NAME. This field and the other res_id and tbt_id fields consist of a unique field.';
 --COMMENT ON COLUMN t_restaurant_prefix_table.rpt_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_restaurant_prefix_table (res_id, tbt_id, rpt_prefix_enm_id, rpt_deleted) SELECT t_restaurant.res_id, t_table_type.tbt_id, enum1.enm_id, false FROM t_restaurant, t_table_type JOIN t_enum enum1 ON enum1.enm_id = t_table_type.tbt_code_enm_id, t_enum enum2 WHERE t_restaurant.res_reference = '10203040506070' AND enum1.enm_language_key_label = 'TABLE_TYPE.TAKE_AWAY.0' AND enum2.enm_language_key_label = 'PREFIX_TABLE_NAME.E.0';
+INSERT INTO t_restaurant_prefix_table (res_id, tbt_id, rpt_prefix_enm_id, rpt_deleted) SELECT t_restaurant.res_id, t_table_type.tbt_id, enum1.enm_id, false FROM t_restaurant, t_table_type JOIN t_enum enum1 ON enum1.enm_id = t_table_type.tbt_code_enm_id, t_enum enum2 WHERE t_restaurant.res_reference = '10203040506070' AND enum1.enm_language_key_label = 'TABLE_TYPE.TAKE_AWAY.1' AND enum2.enm_language_key_label = 'PREFIX_TABLE_NAME.E.0';
 
 
 --COMMENT ON TABLE t_restaurant_vat IS 'This table is used for restaurant value added tax. Each restaurant has a list of value added tax.';

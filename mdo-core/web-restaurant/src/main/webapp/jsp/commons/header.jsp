@@ -22,6 +22,7 @@
 				<s:a id='header-date' action="ChangeEntryDate" method="form">
 					<fmt:message key="applets.message.wait.loading"/>
 				</s:a>
+				<a href="../jnlp/printer/printer.jnlp">PROG</a>
 			</div>
 		</div>
  		<div class="header-menu-top">

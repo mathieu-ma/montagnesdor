@@ -15,10 +15,11 @@ grant Principal fr.mch.mdo.restaurant.services.authorization.jaas.TypedPrincipal
 
   	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/orders/AjaxI18nMessages";  	
 
-  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/orders/User";  	
-  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/orders/ChangeEntryDate";  	
-  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/orders/ChangePassword";  	
-  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/orders/TablesOrders";  	
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/orders/ChangeEntryDate";
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/orders/TablesOrders";
+
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/orders/User";
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/orders/ChangePassword";
 };
 
 grant Principal fr.mch.mdo.restaurant.services.authorization.jaas.TypedPrincipal "GLOBAL_ADMINISTRATOR" 

@@ -58,24 +58,8 @@
 			    </div>
 		    </div>
 	    </c:if>
-		<tiles:useAttribute id="divPart" name="menu" classname="java.lang.String"/>
-		<c:if test="${divPart!='none'}">
-		    <div id="menu">
-				<div id="menu-resizable" class="mdo-resizable">
-			        <tiles:insertAttribute name="menu"/>
-			    </div>
-		    </div>
-	    </c:if>
-		<div id="<tiles:getAsString name="body-css"/>">
-	    	<tiles:insertAttribute name="body"/>
-	    </div>
-		<tiles:useAttribute id="divPart" name="footer" classname="java.lang.String"/>
-		<c:if test="${divPart!='none'}">
-			<div id="footer">
-				<div id="footer-resizable" class="mdo-resizable">
-			    	<tiles:insertAttribute name="footer"/>
-			    </div>
-		    </div>
-	    </c:if>
+		<div id="menu-body-footer">
+		    <jsp:include page="menu-body-footer-main-layout.jsp" />
+		</div>    
 	</body>
 </html>

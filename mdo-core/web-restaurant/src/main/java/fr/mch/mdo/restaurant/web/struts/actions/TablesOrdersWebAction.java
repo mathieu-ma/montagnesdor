@@ -27,15 +27,16 @@ public final class TablesOrdersWebAction extends RestaurantWebAction
 		String result = "ajax-response-form";
 
 		TablesOrdersForm form = (TablesOrdersForm) super.getForm();
-		TablesOrdersDtoBean dtoBean = (TablesOrdersDtoBean) form.getDtoBean();
+		DinnerTableDto dtoBean = (DinnerTableDto) form.getDtoBean();
 
 		// Table name
-		String tableNumber = dtoBean.getDinnerTable().getNumber();
+		String tableNumber = dtoBean.getNumber();
 		super.getLogger().debug("Table name : " + tableNumber);
 		try {
 			MdoUserContext userContext = (MdoUserContext) form.getUserContext();
-			dtoBean.setDinnerTable(manager.findTableByNumber(userContext, tableNumber));
-			userContext.setCurrentTable(dtoBean.getDinnerTable());
+			dtoBean = manager.findTableByNumber(userContext, tableNumber);
+			form.setDtoBean(dtoBean);
+			userContext.setCurrentTable(dtoBean);
 		} catch (Exception e) {
 			addActionError(getText("error.table.name"));
 		}
