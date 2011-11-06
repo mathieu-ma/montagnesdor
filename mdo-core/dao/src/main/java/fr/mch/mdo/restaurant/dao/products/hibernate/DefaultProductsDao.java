@@ -1,5 +1,6 @@
 package fr.mch.mdo.restaurant.dao.products.hibernate;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,6 +10,7 @@ import java.util.Map;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
@@ -16,6 +18,7 @@ import fr.mch.mdo.logs.ILogger;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.dao.beans.Product;
+import fr.mch.mdo.restaurant.dao.beans.ProductLanguage;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServices;
 import fr.mch.mdo.restaurant.dao.hibernate.TransactionSession;
 import fr.mch.mdo.restaurant.dao.products.IProductsDao;
@@ -129,7 +132,7 @@ public class DefaultProductsDao extends DefaultDaoServices implements IProductsD
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<IMdoBean> findAllByRestaurant(Long restaurantId) throws MdoException {
+	public List<IMdoBean> findAllByRestaurant(Long restaurantId) throws MdoDataBeanException {
 		List<IMdoBean> result = new ArrayList<IMdoBean>();
 		
 		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
@@ -144,4 +147,34 @@ public class DefaultProductsDao extends DefaultDaoServices implements IProductsD
 		result = super.findByPropertiesRestrictions(criterias, false);
 		return result;
 	}
+
+	@Override
+	public IMdoBean getProductByCode(Long restaurantId, Long localeId, String code) throws MdoDataBeanException {
+		Product result = null;
+		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
+		criterias.add(new MdoCriteria("product.restaurant.id", PropertiesRestrictions.EQUALS, restaurantId));
+		criterias.add(new MdoCriteria("product.code", PropertiesRestrictions.EQUALS, code));
+		criterias.add(new MdoCriteria("locale.id", PropertiesRestrictions.EQUALS, localeId));
+		
+		criterias.add(new MdoCriteria("product.id", PropertiesRestrictions.PROJECTION, Projections.property("product.id")));
+		criterias.add(new MdoCriteria("product.code", PropertiesRestrictions.PROJECTION, Projections.property("product.code")));
+		criterias.add(new MdoCriteria("product.price", PropertiesRestrictions.PROJECTION, Projections.property("product.price")));
+		criterias.add(new MdoCriteria("product.colorRGB", PropertiesRestrictions.PROJECTION, Projections.property("product.colorRGB")));
+		criterias.add(new MdoCriteria("label", PropertiesRestrictions.PROJECTION, Projections.property("label")));
+
+		Object[] object = (Object[]) super.uniqueResult(super.findByCriteria(ProductLanguage.class, criterias));
+		if (object != null) {
+			result = new Product();
+			result.setId(new Long(object[0].toString()));
+			result.setCode(object[1].toString());
+			result.setPrice(new BigDecimal(object[2].toString()));
+			result.setColorRGB((String) object[3]);
+			Map<Long, String> labels = new HashMap<Long, String>();
+			labels.put(localeId, (String) object[4]);
+			result.setLabels(labels);
+		}
+		
+		return result;
+	}
+
 }

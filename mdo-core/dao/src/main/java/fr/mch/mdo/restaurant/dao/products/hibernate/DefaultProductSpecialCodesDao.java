@@ -1,8 +1,11 @@
 package fr.mch.mdo.restaurant.dao.products.hibernate;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.hibernate.criterion.Projections;
 
 import fr.mch.mdo.logs.ILogger;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
@@ -65,4 +68,33 @@ public class DefaultProductSpecialCodesDao extends DefaultDaoServices implements
 
 		return (IMdoBean) super.findByUniqueKey(propertyValueMap);
 	}
+
+	@Override
+	public Long getIdByCodeName(Long restaurantId, String codeName) throws MdoDataBeanException {
+		Long result = null;
+
+		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
+		criterias.add(new MdoCriteria("restaurant.id", PropertiesRestrictions.EQUALS, restaurantId));
+		criterias.add(new MdoCriteria("code.name", PropertiesRestrictions.EQUALS, codeName));
+		criterias.add(new MdoCriteria("code.type", PropertiesRestrictions.EQUALS, MdoTableAsEnumTypeDao.PRODUCT_SPECIAL_CODE.name()));
+		criterias.add(new MdoCriteria("code.deleted", PropertiesRestrictions.EQUALS, Boolean.FALSE));
+		criterias.add(new MdoCriteria("id", PropertiesRestrictions.PROJECTION, Projections.property("id")));
+		Object object = super.uniqueResult(super.findByCriteria(this.getBean().getClass(), criterias));
+		if (object != null) {
+			result = new Long(object.toString());
+		}
+
+		return result;
+	}
+
+	@Override
+	public List<IMdoBean> findAllByRestaurant(Long restaurantId) throws MdoDataBeanException {
+		List<IMdoBean> result = new ArrayList<IMdoBean>();
+		
+		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
+		criterias.add(new MdoCriteria("restaurant.id", PropertiesRestrictions.EQUALS, restaurantId));
+		result = super.findByPropertiesRestrictions(criterias, false);
+		return result;
+	}
+
 }

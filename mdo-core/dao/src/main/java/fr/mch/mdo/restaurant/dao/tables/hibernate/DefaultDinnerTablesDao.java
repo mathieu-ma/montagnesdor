@@ -82,7 +82,8 @@ public class DefaultDinnerTablesDao extends DefaultDaoServices implements IDinne
 		criterias.add(new MdoCriteria("restaurant.id", PropertiesRestrictions.EQUALS, restaurantId));
 		criterias.add(new MdoCriteria("cashing.id", CriteriaSpecification.LEFT_JOIN, PropertiesRestrictions.IS_NULL, null));
 		// Only select id and number fields
-		criterias.add(new MdoCriteria(null, PropertiesRestrictions.PROJECTION, Projections.projectionList().add(Projections.property("id")).add(Projections.property("number"))));
+		criterias.add(new MdoCriteria("id", PropertiesRestrictions.PROJECTION, Projections.property("number")));
+		criterias.add(new MdoCriteria("number", PropertiesRestrictions.PROJECTION, Projections.property("number")));
 		@SuppressWarnings("unchecked")
 		List<Object[]> list = super.findByPropertiesRestrictions(criterias, false);
 		for (Iterator<Object[]> iterator = list.iterator(); iterator.hasNext();) {
@@ -218,6 +219,49 @@ public class DefaultDinnerTablesDao extends DefaultDaoServices implements IDinne
 
 		result = super.findByPropertiesRestrictions(criterias, false);
 		
+		return result;
+	}
+
+	@Override
+	public void updateCustomersNumber(Long dinnerTableId, Integer customersNumber) throws MdoDataBeanException {
+		try {
+			TransactionSession transactionSession = super.beginTransaction();
+	
+			Session session = transactionSession.getSession();
+			session.createQuery("Update DinnerTable dinnerTable set " +
+					" dinnerTable.customersNumber = :customersNumber " +
+					" WHERE dinnerTable.id=" + dinnerTableId).setInteger("customersNumber", customersNumber).executeUpdate();
+			super.endTransaction(transactionSession, null, true);
+		} catch (HibernateException e) {
+			super.getLogger().error("message.error.dao.DefaultDinnerTablesDao.updateCustomersNumber", e);
+			throw new MdoDataBeanException("message.error.dao.DefaultDinnerTablesDao.updateCustomersNumber", e);
+		} catch (Exception e) {
+			super.getLogger().error("message.error.dao.DefaultDinnerTablesDao.updateCustomersNumber", e);
+			throw new MdoDataBeanException("message.error.dao.DefaultDinnerTablesDao.updateCustomersNumber", e);
+		} finally {
+			try {
+				super.closeSession();
+			} catch (HibernateException e) {
+				super.getLogger().error("message.error.dao.session.close", e);
+				throw new MdoDataBeanException("message.error.dao.session.close", e);
+			}
+		}
+	}
+
+	@Override
+	public int getOrderLinesSize(Long dinnerTableId) throws MdoException {
+		int result = 0;
+
+		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
+		criterias.add(new MdoCriteria("dinnerTable.id", PropertiesRestrictions.EQUALS, dinnerTableId));
+		criterias.add(new MdoCriteria(null, PropertiesRestrictions.PROJECTION_ROW_COUNT, Projections.rowCount()));
+//		criterias.add(new MdoCriteria("quantity", PropertiesRestrictions.PROJECTION_SUM, Projections.sum("quantity")));
+//		criterias.add(new MdoCriteria("amount", PropertiesRestrictions.PROJECTION_SUM, Projections.sum("amount")));
+		Object object = super.uniqueResult(super.findByCriteria(OrderLine.class, criterias));
+		if (object != null) {
+			result = new Integer(object.toString());
+		}
+
 		return result;
 	}
 }

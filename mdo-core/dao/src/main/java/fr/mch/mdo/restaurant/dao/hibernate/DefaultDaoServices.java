@@ -13,6 +13,8 @@ import org.hibernate.Session;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projection;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import fr.mch.mdo.restaurant.beans.IMdoBean;
@@ -25,35 +27,49 @@ public abstract class DefaultDaoServices extends MdoDaoBase implements IDaoServi
 	protected enum PropertiesRestrictions 
 	{
 		EQUALS() {
-			public Criteria add(Criteria criteria, String property, Object value) {
+			public Criteria add(Criteria criteria, String property, Object value, ProjectionList projectionList) {
 				return criteria.add(Restrictions.eq(property, value));
 			}
 		},
 		LIKE() {
-			public Criteria add(Criteria criteria, String property, Object value) {
+			public Criteria add(Criteria criteria, String property, Object value, ProjectionList projectionList) {
 				return criteria.add(Restrictions.like(property, value));
 			}
 		},
 		IS_NULL() {
-			public Criteria add(Criteria criteria, String property, Object value) {
+			public Criteria add(Criteria criteria, String property, Object value, ProjectionList projectionList) {
 				return criteria.add(Restrictions.isNull(property));
 			}
 		},
 		ORDER() {
-			public Criteria add(Criteria criteria, String property, Object value) {
+			public Criteria add(Criteria criteria, String property, Object value, ProjectionList projectionList) {
 				return criteria.addOrder(Order.asc(property));
 			}
 		},
 		PROJECTION() {
-			public Criteria add(Criteria criteria, String property, Object value) {
-				if (value instanceof Projection) {
-					return criteria.setProjection((Projection) value);
-				}
-				// Maybe throw IllegalArgumentException or create MdoRuntimeException
-				throw new IllegalArgumentException();
+			public Criteria add(Criteria criteria, String property, Object value, ProjectionList projectionList) {
+				projectionList.add(Projections.property(property));
+				return criteria;
+			}
+		},
+		PROJECTION_ROW_COUNT() {
+			public Criteria add(Criteria criteria, String property, Object value, ProjectionList projectionList) {
+				projectionList.add(Projections.rowCount());
+				return criteria;
+			}
+		},
+		PROJECTION_SUM() {
+			public Criteria add(Criteria criteria, String property, Object value, ProjectionList projectionList) {
+				projectionList.add(Projections.sum(property));
+				return criteria;
+			}
+		},
+		SQL() {
+			public Criteria add(Criteria criteria, String property, Object value, ProjectionList projectionList) {
+				return criteria.add(Restrictions.sqlRestriction(value.toString()));
 			}
 		};
-		public Criteria add(Criteria criteria, String property, Object value) {
+		public Criteria add(Criteria criteria, String property, Object value, ProjectionList projectionList) {
 			return null;
 		}
 	}
@@ -541,9 +557,13 @@ public abstract class DefaultDaoServices extends MdoDaoBase implements IDaoServi
 			Session session = transactionSession.getSession();
 			Criteria criteria = session.createCriteria(clazz);
 			Map<String,String> alreadyCreatedAlias = new HashMap<String, String>();
+			ProjectionList projectionList = Projections.projectionList(); 
 			for (MdoCriteria mdoCriteria : criterias) {
 				String aliasProperty = this.createAlias(alreadyCreatedAlias, criteria, mdoCriteria);
-				mdoCriteria.getRestriction().add(criteria, aliasProperty, mdoCriteria.getRestrictionValue());
+				mdoCriteria.getRestriction().add(criteria, aliasProperty, mdoCriteria.getRestrictionValue(), projectionList);
+			}
+			if (projectionList.getLength() != 0) {
+				criteria.setProjection(projectionList);
 			}
 
 			criteria.add(Restrictions.eq("deleted", Boolean.FALSE));
@@ -596,7 +616,7 @@ public abstract class DefaultDaoServices extends MdoDaoBase implements IDaoServi
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List findAllByQuery(String queryName, Object[] values, boolean... isLazy) throws MdoDataBeanException {
+	public List findAllByQuery(String queryName, Map values, boolean... isLazy) throws MdoDataBeanException {
 		List result = null;
 		try {
 			TransactionSession transactionSession = super.beginTransaction();
@@ -604,20 +624,20 @@ public abstract class DefaultDaoServices extends MdoDaoBase implements IDaoServi
 			Session session = transactionSession.getSession();
 			Query query = session.getNamedQuery(queryName);
 			String[] namedParameters = query.getNamedParameters();
-			if (namedParameters != null && values != null && namedParameters.length == values.length) {
+			if (namedParameters != null && values != null && namedParameters.length == values.size()) {
 				for (int i = 0; i < namedParameters.length; i++) {
-					query.setParameter(namedParameters[i], values[i]);
+					query.setParameter(namedParameters[i], values.get(namedParameters[i]));
 				}
 			}
 			result = query.list();
 
 			super.endTransaction(transactionSession, result, isLazy);
 		} catch (HibernateException e) {
-			logger.error("message.error.dao.query", values, e);
-			throw new MdoDataBeanException("message.error.dao.query", values, e);
+			logger.error("message.error.dao.query", new Object[] {queryName}, e);
+			throw new MdoDataBeanException("message.error.dao.query", new Object[] {queryName}, e);
 		} catch (Exception e) {
-			logger.error("message.error.dao.query", values, e);
-			throw new MdoDataBeanException("message.error.dao.query", values, e);
+			logger.error("message.error.dao.query", new Object[] {queryName}, e);
+			throw new MdoDataBeanException("message.error.dao.query", new Object[] {queryName}, e);
 		} finally {
 			try {
 				super.closeSession();

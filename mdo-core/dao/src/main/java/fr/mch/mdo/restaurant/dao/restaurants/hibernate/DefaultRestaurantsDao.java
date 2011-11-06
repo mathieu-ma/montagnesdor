@@ -60,6 +60,8 @@ public class DefaultRestaurantsDao extends DefaultDaoServices implements IRestau
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<IMdoBean> findRestaurants(Long userId, boolean... isLazy) throws MdoDataBeanException {
-		return super.findAllByQuery("User.SelectRestaurantsById", new Object[] { userId }, isLazy);
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("id", userId);
+		return super.findAllByQuery("User.SelectRestaurantsById", parameters, isLazy);
 	}
 }
