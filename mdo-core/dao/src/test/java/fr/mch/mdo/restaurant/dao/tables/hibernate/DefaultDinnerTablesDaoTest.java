@@ -457,4 +457,32 @@ public class DefaultDinnerTablesDaoTest extends DefaultDaoServicesTestCase
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
+	
+	public void testUpdateCustomersNumber() {
+		IDinnerTablesDao iDinnerTablesDao = (IDinnerTablesDao) this.getInstance();
+		try {
+			Long dinnerTableId = Long.valueOf(1);
+			// The value 2 is in the file montagnesdorDatas.sql
+			Integer customersNumber = new Integer(2);
+			DinnerTable dinnerTable = (DinnerTable) iDinnerTablesDao.findByPrimaryKey(dinnerTableId);
+			assertEquals("Check Dinner Table's Customers Number initial value", customersNumber, dinnerTable.getCustomersNumber());
+			customersNumber = new Integer(6);
+			iDinnerTablesDao.updateCustomersNumber(dinnerTableId, customersNumber);
+			DinnerTable updatedDinnerTable = (DinnerTable) iDinnerTablesDao.findByPrimaryKey(dinnerTableId);
+			assertEquals("Check Dinner Table's Customers Number updated value", customersNumber, updatedDinnerTable.getCustomersNumber());
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+	
+	public void testGetOrderLinesSize() {
+		IDinnerTablesDao iDinnerTablesDao = (IDinnerTablesDao) this.getInstance();
+		try {
+			Long dinnerTableId = Long.valueOf(1);
+			int size = iDinnerTablesDao.getOrderLinesSize(dinnerTableId);
+			assertTrue("Check Dinner Table's Order Lines Size initial value", size>0);
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
 }

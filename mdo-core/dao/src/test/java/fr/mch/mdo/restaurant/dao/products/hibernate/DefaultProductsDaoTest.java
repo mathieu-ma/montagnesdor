@@ -276,9 +276,9 @@ public class DefaultProductsDaoTest extends DefaultDaoServicesTestCase
 	}
 	
 	/**
-	 * Test the findByRestaurant method.
+	 * Test the findAllByRestaurant method.
 	 */
-	public void testFindByRestaurant() {
+	public void testFindAllByRestaurant() {
 		// 1 restaurant was created at HSQLDB startup
 		Long restaurantId = 1L;
 		try {
@@ -302,6 +302,20 @@ public class DefaultProductsDaoTest extends DefaultDaoServicesTestCase
 			Map<Long, String> map = productsDao.findCodesByPrefixCode(restaurantId, prefixProductCode);
 			assertNotNull("Map of product code must not be null", map);
 			assertFalse("Map of product code must not be empty", map.isEmpty());
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+	
+	public void testGetProductByCode() {
+		Long restaurantId = 1L;
+		Long localeId = 1L;
+		String prefixProductCode = "11";
+		try {
+			IProductsDao productsDao = (IProductsDao) this.getInstance();
+
+			Product product = (Product) productsDao.getProductByCode(restaurantId, localeId, prefixProductCode);
+			assertNotNull("Product must not be null", product);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}

@@ -16,6 +16,7 @@ import fr.mch.mdo.restaurant.dao.beans.ProductPart;
 import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServicesTestCase;
 import fr.mch.mdo.restaurant.dao.orders.IOrderLinesDao;
+import fr.mch.mdo.restaurant.dao.products.IProductsDao;
 import fr.mch.mdo.test.MdoTestCase;
 
 public class DefaultOrderLinesDaoTest extends DefaultDaoServicesTestCase
@@ -146,5 +147,17 @@ public class DefaultOrderLinesDaoTest extends DefaultDaoServicesTestCase
 		newBean.setUnitPrice(unitPrice);
 		
 		return newBean;
+	}
+	
+	public void testGetOrderLine() {
+		Long id = 1L;
+		try {
+			IOrderLinesDao orderLinesDao = (IOrderLinesDao) this.getInstance();
+
+			OrderLine orderLine = (OrderLine) orderLinesDao.getOrderLine(id);
+			assertNotNull("Product must not be null", orderLine);
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
 	}
 }

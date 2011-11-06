@@ -134,6 +134,16 @@ public class DefaultProductSpecialCodesDaoTest extends DefaultDaoServicesTestCas
 		}
 	}
 
+	public void testGetIdByCodeName() {
+		IProductSpecialCodesDao dao = (IProductSpecialCodesDao) this.getInstance();
+		try {
+			Long beanId = dao.getIdByCodeName(1L, "DEFAULT");
+			assertNotNull(beanId);
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getLocalizedMessage());
+		}
+	}
+	
 	private IMdoBean createNewBean(String shortCode, Restaurant restaurant, MdoTableAsEnum code, Map<Long, String> labels) {
 		ProductSpecialCode newBean = new ProductSpecialCode();
 		newBean.setShortCode(shortCode);
@@ -142,4 +152,25 @@ public class DefaultProductSpecialCodesDaoTest extends DefaultDaoServicesTestCas
 		newBean.setLabels(labels);
 		return newBean;
 	}
+	
+	/**
+	 * Test the findAllByRestaurant method.
+	 */
+	public void testFindAllByRestaurant() {
+		// 1 restaurant was created at HSQLDB startup
+		Long restaurantId = 1L;
+		try {
+			IProductSpecialCodesDao productSpecialCodesDao = (IProductSpecialCodesDao) this.getInstance();
+
+			List<IMdoBean> list = productSpecialCodesDao.findAllByRestaurant(restaurantId);
+			assertNotNull("List of IMdoBean must not be null", list);
+			assertFalse("List of IMdoBean must not be empty", list.isEmpty());
+			ProductSpecialCode psc = (ProductSpecialCode) list.get(0);
+			assertNotNull("ProductSpecialCode code not null", psc.getCode());
+			assertNotNull("ProductSpecialCode code id not null", psc.getCode().getId());
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+
 }
