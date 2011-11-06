@@ -503,7 +503,7 @@ CREATE TABLE t_order_line
   pdt_id int8,
   psc_id int8,
   orl_code varchar(5) NOT NULL,
-  orl_label varchar(50) NOT NULL,
+  orl_label varchar(255) NOT NULL,
   orl_unit_price numeric(12,4) NOT NULL DEFAULT 0.00,
   orl_amount numeric(12,4) NOT NULL DEFAULT 0.00,
   orl_deleted boolean NOT NULL DEFAULT false,
