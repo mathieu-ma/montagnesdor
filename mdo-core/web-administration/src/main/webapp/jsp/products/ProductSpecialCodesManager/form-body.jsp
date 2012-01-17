@@ -10,6 +10,7 @@
 	<div class="mdo-upsidedown">
 		<s:hidden name="form.dtoBean.id"/>
 		<div class="hspacer-left-100p">
+			<s:select label="%{getText('product.special.codes.manager.restaurant')}" name="form.dtoBean.restaurant.id" list="form.viewBean.restaurants" listKey="id" listValue="name" value="form.dtoBean.restaurant.id" required="true"/>
 			<s:if test="%{form.dtoBean.id==null}">
 				<s:select label="%{getText('product.special.codes.manager.long.code')}" name="form.dtoBean.code.id" list="form.viewBean.codes" listKey="id" listValue="name" value="form.dtoBean.code.id" required="true"/>
 			</s:if>

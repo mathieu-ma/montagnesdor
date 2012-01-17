@@ -26,6 +26,9 @@
 			<c:when test="${method=='listProducts' || method=='importData'}">
 				<c:set var="bodyInclude"><c:out value="${bodyInclude}"/>/list-products-body.jsp</c:set>
 			</c:when>
+			<c:when test="${method=='listProductSpecialCodes'}">
+				<c:set var="bodyInclude"><c:out value="${bodyInclude}"/>/list-product-special-codes-body.jsp</c:set>
+			</c:when>
 			<c:otherwise>
 				<c:set var="bodyInclude"><c:out value="${bodyInclude}"/>/list-body.jsp</c:set>
 			</c:otherwise>
