@@ -11,7 +11,7 @@
 
 	<script type="text/javascript" src="<c:out value="${pageContext.request.contextPath}"/>/javascript/jquery/jquery-ui/i18n/jquery.ui.datepicker-<s:property value="#session.userSession.currentLocale.languageCode"/>.js"></script>
 	<script type="text/javascript" src="<c:out value="${pageContext.request.contextPath}"/>/javascript/header.js"></script>			
-<script type="text/javascript" src="<c:out value="${pageContext.request.contextPath}"/>/javascript/change-entry-date.js"></script>
+	<script type="text/javascript" src="<c:out value="${pageContext.request.contextPath}"/>/javascript/change-entry-date.js"></script>
 
 	<div class="vspacer-left-100p">
 <%-- 		
@@ -45,5 +45,5 @@
 		 	<br/>
 			<jsp:include page="languages.jsp" />
 		</div> 	
-		<jsp:include page="header-order.jsp" />		
+		<jsp:include page="orders-header.jsp" />		
 	</div>
