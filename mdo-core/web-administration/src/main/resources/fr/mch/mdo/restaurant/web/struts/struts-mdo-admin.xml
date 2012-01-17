@@ -256,6 +256,14 @@
 				<param name="method">form</param>
 				<param name="form.dtoBean.id">${form.dtoBean.id}</param>
 			</result>
+			<!-- After CUD List Products -->
+			<result name="acudlistproductspecialcodes" type="redirectAction">
+				<param name="actionName">ProductSpecialCodesManager</param>
+				<param name="method">listProductSpecialCodes</param>
+				<param name="form.dtoBean.restaurant.id">${form.dtoBean.restaurant.id}</param>
+				<param name="form.dtoBean.restaurant.reference">${form.dtoBean.restaurant.reference}</param>
+				<param name="form.dtoBean.restaurant.name">${form.dtoBean.restaurant.name}</param>
+			</result>
 			<!-- After CUD -->
 			<result name="acud" type="redirectAction">ProductSpecialCodesManager</result>
 		</action>
