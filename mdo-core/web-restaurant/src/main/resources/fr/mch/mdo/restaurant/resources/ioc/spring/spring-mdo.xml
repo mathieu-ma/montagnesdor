@@ -11,11 +11,13 @@
 
 	<import resource="spring-mdo-log.xml"/>
 
+	<import resource="spring-mdo-dao.xml"/>
+
 	<import resource="spring-mdo-manager.xml"/>
 
 <!-- 
 	<import resource="spring-mdo-dao-aop-transaction.xml"/>
--->
+ -->
 	<import resource="spring-mdo-jaas.xml"/>
 	
 </beans>       

@@ -1,33 +1,46 @@
 <configuration xmlns="urn:hornetq"
-               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="urn:hornetq /schema/hornetq-configuration.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:hornetq /schema/hornetq-configuration.xsd">
+
+   <management-address>jms.queue.hornetq.management</management-address>
 
 	<security-enabled>true</security-enabled>
-    <persistence-enabled>false</persistence-enabled>
-    <!-- Connectors -->
+	<persistence-enabled>false</persistence-enabled>
+	<cluster-user>montagnesdor</cluster-user>
+	<cluster-password>powermdo</cluster-password>
+	<journal-directory>./target/data/journal</journal-directory>
+	
+	<!-- Connectors -->
 
-    <connectors>
-        <connector name="in-vm">
-            <factory-class>org.hornetq.core.remoting.impl.invm.InVMConnectorFactory</factory-class>
-        </connector>
-    </connectors>
+	<connectors>
+		<connector name="netty">
+			<factory-class>
+				org.hornetq.core.remoting.impl.netty.NettyConnectorFactory
+			</factory-class>
+			<param key="port" value="5445" />
+		</connector>
+	</connectors>
 
-    <acceptors>
-        <acceptor name="in-vm">
-            <factory-class>org.hornetq.core.remoting.impl.invm.InVMAcceptorFactory</factory-class>
-        </acceptor>
-    </acceptors>
+	<acceptors>
+		<acceptor name="netty">
+			<factory-class>
+				org.hornetq.core.remoting.impl.netty.NettyAcceptorFactory
+			</factory-class>
+			<param key="port" value="5445" />
+		</acceptor>
+	</acceptors>
 
-    <!-- Other config -->
+	<!-- Other config -->
 
-	 <security-settings>
-        <security-setting match="#">
-            <permission type="createDurableQueue" roles="guest"/>
-            <permission type="deleteDurableQueue" roles="guest"/>
-            <permission type="createNonDurableQueue" roles="guest"/>
-            <permission type="deleteNonDurableQueue" roles="guest"/>
-            <permission type="consume" roles="guest"/>
-            <permission type="send" roles="guest"/>
-        </security-setting>
-    </security-settings>
+	<security-settings>
+		<security-setting match="jms.queue.printerQueue">
+			<permission type="createDurableQueue" roles="printer" />
+			<permission type="deleteDurableQueue" roles="printer" />
+			<permission type="createNonDurableQueue" roles="printer" />
+			<permission type="deleteNonDurableQueue" roles="printer" />
+			<permission type="consume" roles="printer" />
+			<permission type="send" roles="printer" />
+			<permission type="manage" roles="printer" />
+		</security-setting>
+	</security-settings>
 </configuration>

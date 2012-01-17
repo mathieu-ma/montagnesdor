@@ -34,7 +34,7 @@
 		<property name="c3p0.timeout">100</property> <!-- seconds --> 
 		<!-- DEPRECATED very expensive property name="c3p0.validate>--> 
         
-        <property name="hibernate.show_sql">false</property>        
+        <property name="hibernate.show_sql">true</property>        
         <property name="hibernate.transaction.factory_class">
              org.hibernate.transaction.JDBCTransactionFactory
         </property>
