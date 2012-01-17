@@ -9,7 +9,7 @@ import fr.mch.mdo.restaurant.beans.MdoDtoBean;
  * @author Mathieu MA
  * 
  */
-public class TablesOrdersDtoBean extends MdoDtoBean
+public class TablesOrdersDto extends MdoDtoBean
 {
 	/**
      * 
@@ -28,7 +28,7 @@ public class TablesOrdersDtoBean extends MdoDtoBean
 
 	private DinnerTableDto dinnerTable = new DinnerTableDto();
 
-	private OrderLineDto orderLine = new OrderLineDto();
+	private AjaxOrderLineDto orderLine = new AjaxOrderLineDto();
 
 	/**
 	 * Hash key == DinnerTable id Hash value == DinnerTable number(name)
@@ -40,7 +40,7 @@ public class TablesOrdersDtoBean extends MdoDtoBean
 	 */
 	private Map<Long, String> productsCodes;
 
-	public TablesOrdersDtoBean() {
+	public TablesOrdersDto() {
 	}
 
 	public String getPrefixTableNumber() {
@@ -107,11 +107,11 @@ public class TablesOrdersDtoBean extends MdoDtoBean
 		this.productsCodes = productsCodes;
 	}
 
-	public void setOrderLine(OrderLineDto orderLine) {
+	public void setOrderLine(AjaxOrderLineDto orderLine) {
 		this.orderLine = orderLine;
 	}
 
-	public OrderLineDto getOrderLine() {
+	public AjaxOrderLineDto getOrderLine() {
 		return orderLine;
 	}
 }
