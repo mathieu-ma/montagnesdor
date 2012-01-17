@@ -103,9 +103,9 @@
 	  	return parent;
 	}
 	//END mdoParentsByCss
-	//START mdoTablesorter
+	//START mdoTableSorter
 	jQuery.fn.extend({
-		mdoTablesorter: function(options) {
+		mdoTableSorter: function(options) {
 			 // add parser through the tablesorter addParser method 
 //		    $.tablesorter.addParser({ 
 //		        // set a unique id 
@@ -152,7 +152,7 @@
 			return result;
 		}
 	});
-	//END mdoTablesorter
+	//END mdoTableSorter
 	//START mdoI18nProperties
 	jQuery.mdoI18nProperties = function(options) {
 		options = options || {};
@@ -279,7 +279,7 @@
 				return false;
 			});
 
-			var jSortTable = $(".crud-list-sortable").mdoTablesorter({
+			var jSortTable = $(".crud-list-sortable").mdoTableSorter({
 				headers: {2:{sorter: false}}
 			});
 

@@ -8,7 +8,7 @@ $(document).ready(function() {
 			selectorHeaders = "thead tr:eq(1) th";
 			headers = {4:{sorter: false}};
 		}
-		$(this).mdoTablesorter({
+		$(this).mdoTableSorter({
 			selectorHeaders: selectorHeaders,
 			headers: headers,
 		});

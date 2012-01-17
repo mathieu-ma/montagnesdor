@@ -1,11 +1,11 @@
 $(document).ready(function() {
 
 		// For sorting list
-		$("#listsortable").mdoTablesorter({
+		$("#listsortable").mdoTableSorter({
 			headers: {1: {sorter: 'mdodate'}, 5:{sorter: false}},
 		});
 
-		$("#vatsortable").mdoTablesorter();
+		$("#vatsortable").mdoTableSorter();
 
 		$("form").mdoValidate({
 			resourceMessages: 'RestaurantsManagerWebAction',

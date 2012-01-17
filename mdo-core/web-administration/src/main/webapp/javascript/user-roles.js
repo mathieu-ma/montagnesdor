@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
 	// For sorting list
-	$(".sortable").mdoTablesorter({
+	$(".sortable").mdoTableSorter({
 		headers: {1:{sorter: false}},
 	});
 

@@ -1,6 +1,6 @@
 $(document).ready(function() {
 	// For sorting list
-	$("#listsortable").mdoTablesorter({
+	$("#listsortable").mdoTableSorter({
 		headers: {1:{sorter: false}},
 	});
 

@@ -2,7 +2,7 @@ $(document).ready(function() {
 
 	// For sorting list
 	var headers = {3:{sorter: false}};
-	$("table.sortable").mdoTablesorter({
+	$("table.sortable").mdoTableSorter({
 		headers: headers,
 	});
 

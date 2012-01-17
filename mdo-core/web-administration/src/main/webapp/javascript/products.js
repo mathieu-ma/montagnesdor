@@ -1,11 +1,11 @@
 $(document).ready(function() {
 	// For sorting list
-	$("#listsortable").mdoTablesorter({
+	$("#listsortable").mdoTableSorter({
 		headers: {1:{sorter: false}},
 	});
 
 	// For sorting list
-	$("#listproductssortable").mdoTablesorter({
+	$("#listproductssortable").mdoTableSorter({
 		headers: {1:{sorter: false}},
 	});
 
