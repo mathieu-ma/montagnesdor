@@ -9,6 +9,7 @@
   <display-name>MDO taglibs</display-name>
   <tlib-version>1.0</tlib-version>
   <short-name>mdo</short-name>
+  <uri>/mdo</uri>
   <uri>http://www.mdo.com/jsp/taglibs</uri>
 
   <tag>
@@ -44,6 +45,49 @@
         <name>selectedMenuItemId</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+
+  <tag>
+    <description>
+        Stores the given locale in the locale configuration variable for Struts2 and JSTL
+    </description>
+    <name>setLocale</name>
+    <tag-class>fr.mch.mdo.restaurant.web.taglib.SetLocaleTag</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+        <description>
+			A String value is interpreted as the
+			printable representation of a locale, which
+			must contain a two-letter (lower-case)
+			language code (as defined by ISO-639),
+			and may contain a two-letter (upper-case)
+			country code (as defined by ISO-3166).
+			Language and country codes must be
+			separated by hyphen (-) or underscore
+			(_).        
+		</description>
+        <name>value</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <description>
+			Vendor- or browser-specific variant.
+			See the java.util.Locale javadocs for
+			more information on variants.
+        </description>
+        <name>variant</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <description>
+			Scope of the locale configuration variable.
+        </description>
+        <name>scope</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
     </attribute>
   </tag>
 
