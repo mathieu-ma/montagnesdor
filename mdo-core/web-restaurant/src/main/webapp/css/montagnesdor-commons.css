@@ -702,7 +702,7 @@ table.admin-list-body tr:hover {
 
 /** Header Order **/
 div.header-order-takeaway, div.header-order-table-customer {
-	visibility: hidden;
+	//visibility: hidden;
 }
 
 div.header-order-table-customer label.label {
@@ -761,4 +761,8 @@ div.colorpicker {
 
 .uppercase {
 	text-transform: uppercase;	
+}
+
+#input-header-order-table-customer {
+	text-align: right;
 }

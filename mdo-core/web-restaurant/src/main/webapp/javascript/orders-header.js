@@ -6,17 +6,11 @@ $(document).ready(function() {
 		var prefixesTakeawayTableName = inputPrefixesTakeawayTableName==""?[]:inputPrefixesTakeawayTableName.split(","); 
 		var jTakeawayCheckbox = $("#checkbox-header-order-table-takeaway");
 		var jDivCheckbox = $("div.header-order-takeaway");
-		if(prefixesTakeawayTableName.length==0)	{
-			//No prefix for takeaway so let the user check if the table is takeaway
-			jDivCheckbox.css("visibility", "visible");
-		} else {
-			jTakeawayCheckbox.css('visibility', 'hidden');
-		}
 		var jTableNumber = $("#input-header-order-table-number");
 		var jTableCustomer = $("#input-header-order-table-customer");
-		var jDivTableCustomer = $("div.header-order-table-customer").css('visibility', 'hidden');
+		var jDivTableCustomer = $("div.header-order-table-customer");
 		//URL for ajax call
-		var tableCustomerUrl = $("#HeaderTablesOrders").attr("action").replace("form", "tableCustomersNumber");		
+		var tableCustomerUrl = $("#HeaderTablesOrders").attr("action").replace("displayDinnerTable", "tableCustomersNumber");		
 		var options = {
 			processPreKeyup: function(jCell) {
 				//Ajax autocomplete
@@ -66,7 +60,7 @@ $(document).ready(function() {
 		}
 		jTableNumber.mdoInputText(options);
 //		//URL for ajax call
-//		var autoCompleteTablesNamesUrl = $("#HeaderTablesOrders").attr("action").replace("form", "autoCompleteTablesNames");		
+//		var autoCompleteTablesNamesUrl = $("#HeaderTablesOrders").attr("action").replace("displayDinnerTable", "autoCompleteTablesNames");		
 //		jTableNumber.autocomplete(autoCompleteTablesNamesUrl, 
 //			{
 //				extraParams: {"form.dtoBean.prefixTableNumber": function() {return jTableNumber.val().toUpperCase();}},
@@ -103,14 +97,19 @@ $(document).ready(function() {
 		function displayDinnerTable() {
 			// Form TablesOrders
 			var jForm = $("#HeaderTablesOrders");
-			var jParameters = jForm.serialize();
-			// URL for ajax call
-			var displayDinnerTableUrl = jForm.attr("action");
-			// display overlay block in order to prevent user entry
-  			$("#mdo-overlay").css('display', 'block');
-			$("#menu-body-footer").load(displayDinnerTableUrl, jParameters);
-			// display overlay none in order to enable user entry
-  			$("#mdo-overlay").css('display', 'none');
+    		$("#mdo-overlay").css('display', 'block');
+			window.location.href = jForm.attr("action") + "?" + $(":text", jForm).serialize();
+
+//			var jParameters = jForm.serialize();
+//			// URL for ajax call
+//			var displayDinnerTableUrl = jForm.attr("action").replace("displayDinnerTable", "displayDinnerTable");
+//			// display overlay block in order to prevent user entry
+//  			$("#mdo-overlay").css('display', 'block');
+//			$("#menu-body-footer").load(displayDinnerTableUrl, jParameters);
+//			// display overlay none in order to enable user entry
+//  			$("#mdo-overlay").css('display', 'none');
+//  			jTableNumber.unbind();
+//  			jTableCustomer.unbind();
 		}
 
 		jQuery.mdoFocus("#input-header-order-table-number");

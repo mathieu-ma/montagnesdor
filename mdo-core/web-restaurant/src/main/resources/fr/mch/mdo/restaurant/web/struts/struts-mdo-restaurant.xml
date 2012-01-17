@@ -112,7 +112,7 @@
 		</action>
 
 		<action name="TablesOrders" class="fr.mch.mdo.restaurant.web.struts.actions.TablesOrdersWebAction" method="form">
-			<result name="ajax-response-form">/jsp/tables-orders/ajax-response-form.jsp</result>
+			<result name="dinner-table">/jsp/tables-orders/tables-orders.jsp</result>
 			<result name="ajax-response-auto-complete-tables-names">/jsp/tables-orders/ajax-response-auto-complete-tables-names.jsp</result>
 			<result name="ajax-response-table-customers-number">/jsp/tables-orders/ajax-response-table-customers-number.jsp</result>
 			<result name="ajax-response-auto-complete-products-codes">/jsp/tables-orders/ajax-response-auto-complete-products-codes.jsp</result>
