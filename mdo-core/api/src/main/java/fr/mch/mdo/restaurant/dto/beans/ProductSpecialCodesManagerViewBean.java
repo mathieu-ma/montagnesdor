@@ -20,11 +20,27 @@ public class ProductSpecialCodesManagerViewBean extends AdministrationManagerVie
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private List<IMdoDtoBean> restaurants;
+
 	private Map<Long, String> labels;
 
 	private Map<Long, String> languages;
 
 	private List<IMdoDtoBean> codes;
+
+	/**
+	 * @return the restaurants
+	 */
+	public List<IMdoDtoBean> getRestaurants() {
+		return restaurants;
+	}
+
+	/**
+	 * @param restaurants the restaurants to set
+	 */
+	public void setRestaurants(List<IMdoDtoBean> restaurants) {
+		this.restaurants = restaurants;
+	}
 
 	/**
 	 * @return the labels

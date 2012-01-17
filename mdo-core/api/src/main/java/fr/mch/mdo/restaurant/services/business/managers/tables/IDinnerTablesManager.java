@@ -67,21 +67,21 @@ public interface IDinnerTablesManager extends IAdministrationManager
     
     /**
      * Create a dinner table and prefill some mandatory fields from user context.
-     * @param dinnerTable the dinner table.
      * @param userContext the user context.
+     * @param dinnerTableNumber the dinner table number.
      * @return the filled dinner table.
      * @throws MdoException when any exception occurs
      */
-    Long createFromUserContext(DinnerTableDto dinnerTable, MdoUserContext userContext) throws MdoException;
+    Long createFromUserContext(MdoUserContext userContext, String dinnerTableNumber) throws MdoException;
     
-
     /**
      * Process order line by code.
      * @param userContext the user context.
      * @param orderLine the order line to be filled once the code is found.
+     * @param deletedId the deleted Id.
      * @throws Exception any exception occurs.
      */
-    void processOrderLineByCode(MdoUserContext userContext, OrderLineDto orderLine) throws MdoException;
+    void processOrderLineByCode(MdoUserContext userContext, OrderLineDto orderLine, Long deletedId) throws MdoException;
     
     /**
      * Add or update order line.
@@ -89,7 +89,7 @@ public interface IDinnerTablesManager extends IAdministrationManager
      * @param orderLine the order line to be filled once the order line is saved.
      * @throws Exception any exception occurs.
      */
-	void addOrderLine(IMdoBean userContext, OrderLineDto orderLine) throws MdoException;
+	void addOrderLine(MdoUserContext userContext, OrderLineDto orderLine) throws MdoException;
 
     /**
      * This method tries to get free tables.
@@ -99,5 +99,19 @@ public interface IDinnerTablesManager extends IAdministrationManager
      * @throws MdoException any exception occurs.
      */
 	List<IMdoDtoBean> findAllFreeTables(MdoUserContext userContext) throws MdoException;
+
+	/**
+	 * Update the customers number of the specific table.
+	 * @param dinnerTableId the Dinner Table Id.
+	 * @param customersNumber the customers number to be updated.
+	 */
+	void updateCustomersNumber(Long dinnerTableId, Integer customersNumber) throws MdoException;
+
+	/**
+	 * Delete the specified Order Line.
+     * @param userContext user context.
+	 * @param orderLine the Order Line to be deleted.
+	 */
+	void removeOrderLine(MdoUserContext userContext, OrderLineDto orderLine) throws MdoException;
 
 }

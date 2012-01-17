@@ -21,7 +21,7 @@ public interface IProductsDao  extends IDaoServices
      * @param userContext user context
      * @param prefixProductCode prefix table name to look up
      * @return map with key equals to product id and value equals to product code
-     * @throws Exception any exception occurs
+     * @throws MdoException any exception occur
      */
     Map<Long, String> findCodesByPrefixCode(Long restaurantId, String prefixProductCode) throws MdoException;
 
@@ -32,4 +32,14 @@ public interface IProductsDao  extends IDaoServices
      * @throws MdoException when any exception occur.
      */
     List<IMdoBean> findAllByRestaurant(Long restaurantId) throws MdoException;
+
+    /**
+     * This method tries to get the Product by code with minimum informations.
+     * @param restaurantId the restaurant id.
+     * @param localeId the locale id for product label.
+     * @param code the unique code.
+     * @return Product with minimum informations.
+     * @throws MdoException when any exception occur.
+     */
+	IMdoBean getProductByCode(Long restaurantId, Long localeId, String code) throws MdoException;
 }

@@ -15,6 +15,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
+
 /**
  * In oder to used this class in Linux OS, we have to give permission for connected user by following these 2 steps:
  * 1) adduser $connectedUser uucp
@@ -67,6 +68,11 @@ public abstract class AbstractPrinter implements IPrinter
 	private static int packet = 50;
 	/** Pause in millisecond. */
 	private static int pause = 1500;
+	/** 
+	 * Used to know if we have to check DSR: for USB printer no DSR to check but for Serial Port Printer we must check DSR. 
+	 * Default value is false, it means that we have to check the DSR.
+	 **/
+	private boolean noCheckDsr = false;;
 	/** Data container to be printed. */
 	private StringBuffer dataBuffer = new StringBuffer();
 	/** Printer loaded. */
@@ -131,6 +137,9 @@ public abstract class AbstractPrinter implements IPrinter
 				packet = Integer.parseInt(packetString);
 				String pauseString = this.getParameter(IPrinter.PARAMETER_PAUSE_KEY, IPrinter.DEFAULT_PAUSE);
 				pause = Integer.parseInt(pauseString);
+				String noCheckDsrString = this.getParameter(IPrinter.PARAMETER_NO_CHECK_DSR_KEY, IPrinter.DEFAULT_NO_CHECK_DSR);
+				this.noCheckDsr = ((noCheckDsrString != null) && (noCheckDsrString.equals("true")));
+
 
 			} catch (Exception e) {
 				// debug = true;
@@ -405,7 +414,7 @@ public abstract class AbstractPrinter implements IPrinter
 					int lastLength = data.length % packet;
 					int indexDataBegin = 0;
 					while (indexDataBegin < data.length) {
-						if (serialport.isDSR()) {
+						if (noCheckDsr || serialport.isDSR()) {
 							if (indexDataBegin + packet <= data.length) {
 								out.write(data, indexDataBegin, packet);
 								if (debug) {
@@ -429,7 +438,7 @@ public abstract class AbstractPrinter implements IPrinter
 							try {
 								Thread.sleep(pause);
 							} catch (Exception e) {
-								System.out.println("Impossible de faire la pause de " + (pause / 5) + " " + e);
+								System.out.println("Impossible de faire la pause de " + (pause) + " " + e);
 							}
 						}
 						if (stop) {

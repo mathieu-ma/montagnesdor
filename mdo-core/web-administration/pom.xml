@@ -154,8 +154,7 @@
 											folder name with backslash like D:\montagnesdor\mdo-maven2-svn-workspace\mdo-core -->
 										<!-- But in maven-eclipse-plugin we need folder name with slash: 
 											so we replace backslash with slash -->
-										project.properties["parentBasedir"] =
-										project.basedir.parentFile.canonicalPath.replace("\\", "/");
+										project.properties["parentBasedir"] = project.basedir.parentFile.canonicalPath.replace("\\", "/");
 									</source>
 								</configuration>
 							</execution>
@@ -189,6 +188,26 @@
 											<name>target/api-resources</name>
 											<type>2</type>
 											<location>${parentBasedir}/api/src/main/resources</location>
+										</linkedResource>
+										<linkedResource>
+											<name>target/i18n-java</name>
+											<type>2</type>
+											<location>${parentBasedir}/i18n/src/main/java</location>
+										</linkedResource>
+										<linkedResource>
+											<name>target/i18n-resources</name>
+											<type>2</type>
+											<location>${parentBasedir}/i18n/src/main/resources</location>
+										</linkedResource>
+										<linkedResource>
+											<name>target/exception-java</name>
+											<type>2</type>
+											<location>${parentBasedir}/exception/src/main/java</location>
+										</linkedResource>
+										<linkedResource>
+											<name>target/exception-resources</name>
+											<type>2</type>
+											<location>${parentBasedir}/exception/src/main/resources</location>
 										</linkedResource>
 										<linkedResource>
 											<name>target/log-java</name>
@@ -296,6 +315,10 @@
 										</echo>
 										<mkdir dir="target/api-java" />
 										<mkdir dir="target/api-resources" />
+										<mkdir dir="target/i18n-java" />
+										<mkdir dir="target/i18n-resources" />
+										<mkdir dir="target/exception-java" />
+										<mkdir dir="target/exception-resources" />
 										<mkdir dir="target/log-java" />
 										<mkdir dir="target/log-resources" />
 										<mkdir dir="target/authentication-java" />
@@ -333,6 +356,8 @@
 								<configuration>
 									<sources>
 										<source>target/api-java</source>
+										<source>target/i18n-java</source>
+										<source>target/exception-java</source>
 										<source>target/log-java</source>
 										<source>target/authentication-java</source>
 										<source>target/business-java</source>
@@ -354,6 +379,12 @@
 									<resources>
 										<resource>
 											<directory>target/api-resources</directory>
+										</resource>
+										<resource>
+											<directory>target/i18n-resources</directory>
+										</resource>
+										<resource>
+											<directory>target/exception-resources</directory>
 										</resource>
 										<resource>
 											<directory>target/log-resources</directory>
@@ -393,6 +424,12 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>api</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>exception</artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>

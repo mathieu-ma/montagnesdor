@@ -60,4 +60,23 @@ public class AbstractPrinterTest extends MdoTestCase
 		assertNotNull("Check AbstractPrinter instance", printer);
 		printer.init();
 	}
+	
+	public static void main(String[] args) {
+		IPrinter printer = new AbstractPrinter() {
+			@Override
+			public String getParameter(String key, String defaultValue) {
+				return defaultValue;
+			}
+		};
+		printer.init();
+		String text = "Hello";
+		System.out.println("Received message: " + text);
+		// Vider le buffer de l'applet
+		printer.resetDataBuffer();
+		// Entete
+		printer.addData2(text);
+		printer.print();
+
+	}
+
 }

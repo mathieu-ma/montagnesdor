@@ -60,4 +60,12 @@ public class ProductLanguage extends MdoDaoBean
 	{
 		this.locale = locale;
 	}
+
+	@Override
+	public String toString() {
+		return "ProductLanguage [locale=" + locale + ", product=" + product
+				+ ", label=" + label + "]";
+	}
+	
+	
 }

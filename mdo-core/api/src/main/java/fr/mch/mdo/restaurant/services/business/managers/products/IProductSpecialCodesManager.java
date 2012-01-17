@@ -5,11 +5,17 @@ import java.util.List;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.exception.MdoException;
-import fr.mch.mdo.restaurant.services.business.ManagedProductSpecialCode;
 import fr.mch.mdo.restaurant.services.business.managers.IAdministrationManager;
 
 public interface IProductSpecialCodesManager extends IAdministrationManager
 {
-    List<ManagedProductSpecialCode> getManagedProductSpecialCodes(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoException;
+     /**
+     * Get the list of ProductSpecialCodes by restaurant Id. 
+     * @param restaurantId the restaurant Id.
+     * @param userContext the user context.
+     * @return list of ProductSpecialCodes.
+     * @throws MdoException when any exceptions occur.
+     */
+	List<IMdoDtoBean> getList(Long restaurantId, MdoUserContext userContext) throws MdoException;
 }
 

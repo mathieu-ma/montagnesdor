@@ -3,6 +3,7 @@ package fr.mch.mdo.restaurant.dto.beans;
 import java.text.DecimalFormatSymbols;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -24,7 +25,10 @@ public class MdoUserContext implements IMdoBean
 	
 	private UserAuthenticationDto userAuthentication = null;
 	private LocaleDto currentLocale = new LocaleDto();
-	private DinnerTableDto currentTable;
+	// All dinner tables the user will manage.
+	// This is useful when user has several tabs opened in his browser.
+	// So DO NOT use current dinner table because browser considers that each tab belongs to the same session.
+	private Map<String, DinnerTableDto> myDinnerTables = new HashMap<String, DinnerTableDto>();
 
 	/* Navigation part */
 	private String currentURLWithParameters;
@@ -143,20 +147,6 @@ public class MdoUserContext implements IMdoBean
 		return temp;
 	}
 
-	/**
-	 * @return currentTable.
-	 */
-	public IMdoBean getCurrentTable() {
-		return currentTable;
-	}
-
-	/**
-	 * @param currentTable
-	 */
-	public void setCurrentTable(DinnerTableDto currentTable) {
-		this.currentTable = currentTable;
-	}
-
 	public int getRestaurantRegistrationYear() {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(this.getUserAuthentication().getRestaurant().getRegistrationDate());
@@ -190,6 +180,35 @@ public class MdoUserContext implements IMdoBean
 
 	public void setUserAuthentication(UserAuthenticationDto userAuthentication) {
 		this.userAuthentication = userAuthentication;
+	}
+
+	/**
+	 * @return the myDinnerTables
+	 */
+	public Map<String, DinnerTableDto> getMyDinnerTables() {
+		return myDinnerTables;
+	}
+
+	/**
+	 * @param myDinnerTables the myDinnerTables to set
+	 */
+	public void setMyDinnerTables(Map<String, DinnerTableDto> myDinnerTables) {
+		this.myDinnerTables = myDinnerTables;
+	}
+
+	/**
+	 * @param dinnerTableNumber the Dinner Table number
+	 * @return the DinnerTableDto
+	 */
+	public DinnerTableDto getMyDinnerTable(String dinnerTableNumber) {
+		return myDinnerTables.get(dinnerTableNumber);
+	}
+
+	/**
+	 * @param dinnerTable the dinnerTable to set
+	 */
+	public void setMyDinnerTable(DinnerTableDto dinnerTable) {
+		this.myDinnerTables.put(dinnerTable.getNumber(), dinnerTable);
 	}
 
 	public Map<String, String> getSystemAvailableLanguages() {

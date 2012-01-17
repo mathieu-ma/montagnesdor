@@ -1,5 +1,6 @@
 package fr.mch.mdo.restaurant.services.business.managers.tables;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -24,6 +25,8 @@ import fr.mch.mdo.restaurant.dao.beans.TableCredit;
 import fr.mch.mdo.restaurant.dao.beans.TableType;
 import fr.mch.mdo.restaurant.dao.beans.TableVat;
 import fr.mch.mdo.restaurant.dao.beans.UserAuthentication;
+import fr.mch.mdo.restaurant.dao.orders.IOrderLinesDao;
+import fr.mch.mdo.restaurant.dao.orders.hibernate.DefaultOrderLinesDao;
 import fr.mch.mdo.restaurant.dao.products.IProductSpecialCodesDao;
 import fr.mch.mdo.restaurant.dao.products.IProductsDao;
 import fr.mch.mdo.restaurant.dao.products.hibernate.DefaultProductSpecialCodesDao;
@@ -31,9 +34,9 @@ import fr.mch.mdo.restaurant.dao.products.hibernate.DefaultProductsDao;
 import fr.mch.mdo.restaurant.dao.tables.IDinnerTablesDao;
 import fr.mch.mdo.restaurant.dao.tables.hibernate.DefaultDinnerTablesDao;
 import fr.mch.mdo.restaurant.dto.beans.DinnerTableDto;
+import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.OrderLineDto;
-import fr.mch.mdo.restaurant.dto.beans.ProductDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductSpecialCodeDto;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantPrefixTableDto;
@@ -45,12 +48,11 @@ import fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultDinnerT
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 import fr.mch.mdo.utils.IManagerAssembler;
 
-
-
 public class DefaultDinnerTablesManager extends AbstractAdministrationManager implements IDinnerTablesManager
 {
 	private IProductsDao productsDao;
 	private IProductSpecialCodesDao productSpecialCodeDao;
+	private IOrderLinesDao orderLinesDao;
 	
 	private static class LazyHolder {
 		private static IDinnerTablesManager instance = new DefaultDinnerTablesManager(
@@ -64,6 +66,7 @@ public class DefaultDinnerTablesManager extends AbstractAdministrationManager im
 		super.assembler = assembler;
 		this.productsDao = DefaultProductsDao.getInstance();
 		this.productSpecialCodeDao = DefaultProductSpecialCodesDao.getInstance();
+		this.orderLinesDao = DefaultOrderLinesDao.getInstance();
 	}
 
 	/**
@@ -76,21 +79,47 @@ public class DefaultDinnerTablesManager extends AbstractAdministrationManager im
 		return LazyHolder.instance;
 	}
 
-	private enum ManagedProductSpecialCode {
-		DEFAULT(""), OFFERED_PRODUCT("#"), DISCOUNT_ORDER("-"), USER_ORDER("/") {
-			public void fillFields(MdoUserContext userContext, OrderLineDto orderLineDto, OrderLine orderLine) {
-				orderLineDto.setCode(this.getCode());
-			}
-		}, CREDIT("@");
-		private String code = "";
+	/**
+	 * @return the productsDao
+	 */
+	public IProductsDao getProductsDao() {
+		return productsDao;
+	}
 
-		ManagedProductSpecialCode(String code) {
-			this.code = code;
-		}
+	/**
+	 * @param productsDao the productsDao to set
+	 */
+	public void setProductsDao(IProductsDao productsDao) {
+		this.productsDao = productsDao;
+	}
 
-		public String getCode() {
-			return this.code;
-		}
+	/**
+	 * @return the productSpecialCodeDao
+	 */
+	public IProductSpecialCodesDao getProductSpecialCodeDao() {
+		return productSpecialCodeDao;
+	}
+
+	/**
+	 * @param productSpecialCodeDao the productSpecialCodeDao to set
+	 */
+	public void setProductSpecialCodeDao(
+			IProductSpecialCodesDao productSpecialCodeDao) {
+		this.productSpecialCodeDao = productSpecialCodeDao;
+	}
+
+	/**
+	 * @return the orderLinesDao
+	 */
+	public IOrderLinesDao getOrderLinesDao() {
+		return orderLinesDao;
+	}
+
+	/**
+	 * @param orderLinesDao the orderLinesDao to set
+	 */
+	public void setOrderLinesDao(IOrderLinesDao orderLinesDao) {
+		this.orderLinesDao = orderLinesDao;
 	}
 
 	@Override
@@ -134,8 +163,8 @@ public class DefaultDinnerTablesManager extends AbstractAdministrationManager im
 	 * ManagedProductSpecialCode object
 	 * 
 	 * @param restaurantId
-	 * @param code
-	 * @return
+	 * @param code the code.
+	 * @return the 
 	 */
 	private ManagedProductSpecialCode getProductSpecialCode(RestaurantDto restaurant, String code) {
 		ManagedProductSpecialCode result = null;
@@ -148,7 +177,11 @@ public class DefaultDinnerTablesManager extends AbstractAdministrationManager im
 				for (Iterator<ProductSpecialCodeDto> iterator = productSpecialCodes.iterator(); iterator.hasNext();) {
 					ProductSpecialCodeDto productSpecialCode = iterator.next();
 					if (shortCode.equals(productSpecialCode.getShortCode())) {
-						result = ManagedProductSpecialCode.valueOf(productSpecialCode.getCode().getName());
+						ManagedProductSpecialCode resultX = ManagedProductSpecialCode.valueOf(productSpecialCode.getCode().getName());
+						if (resultX.checkCode(code)) {
+							result = resultX;
+							result.setProductSpecialCode(productSpecialCode);
+						}
 						break;
 					}
 				}
@@ -164,10 +197,11 @@ public class DefaultDinnerTablesManager extends AbstractAdministrationManager im
 	}
 
 	@Override
-	public void processOrderLineByCode(MdoUserContext userContext, OrderLineDto orderLine) throws MdoBusinessException {
+	public void processOrderLineByCode(MdoUserContext userContext, OrderLineDto orderLine, Long deletedId) throws MdoBusinessException {
 		String computedCode = orderLine.getCode();
 		if (computedCode != null) {
 			String productCode = computedCode;
+long deltaTime = System.currentTimeMillis();
 			// Try to know if the code begins by the a Product Special Code
 			ManagedProductSpecialCode productSpecialCode = this.getProductSpecialCode(userContext.getUserAuthentication().getRestaurant(), computedCode);
 			if (productSpecialCode != null) {
@@ -176,32 +210,53 @@ public class DefaultDinnerTablesManager extends AbstractAdministrationManager im
 			} else {
 				productSpecialCode = ManagedProductSpecialCode.DEFAULT;
 			}
+deltaTime = System.currentTimeMillis() - deltaTime;
+System.out.println("1) processOrderLineByCode Delta Time = " + deltaTime);
+deltaTime = System.currentTimeMillis();
+			
 			try {
 				Long restaurantId = userContext.getUserAuthentication().getRestaurant().getId();
-				// Product Special Code
-				ProductSpecialCode psc = (ProductSpecialCode) productSpecialCodeDao.findByCodeName(restaurantId, productSpecialCode.name());
-				if (psc == null) {
+				// Product Special Code Id
+				Long pscId = productSpecialCodeDao.getIdByCodeName(restaurantId, productSpecialCode.name());
+				if (pscId == null) {
 					logger.error("message.error.business.DefaultDinnerTablesManager.processOrderLineByCode.no.psc", new Object[]{orderLine});
 					throw new MdoBusinessException("message.error.business.DefaultDinnerTablesManager.processOrderLineByCode.no.psc", new Object[]{orderLine});
 				}
 				ProductSpecialCodeDto pscDto = new ProductSpecialCodeDto();
-				pscDto.setId(psc.getId());
+				pscDto.setId(pscId);
+				MdoTableAsEnumDto code = new MdoTableAsEnumDto();
+				code.setName(productSpecialCode.name());
+				pscDto.setCode(code);
 				orderLine.setProductSpecialCode(pscDto);
+deltaTime = System.currentTimeMillis() - deltaTime;
+System.out.println("2) processOrderLineByCode Delta Time = " + deltaTime);
+deltaTime = System.currentTimeMillis();
 				
 				// Try to get the Product
-				Product product = (Product) productsDao.findByCode(restaurantId, productCode);
-				if (product != null) {
-					ProductDto productDto = new ProductDto();
-					productDto.setId(product.getId());
-					productDto.setColorRGB(product.getColorRGB());
-					orderLine.setProduct(productDto);
-					// Update unit price and label...
-					orderLine.setLabel(this.getLabel(product.getLabels(), userContext.getCurrentLocale().getId()));
-					orderLine.setUnitPrice(product.getPrice());
-				}
+				Product product = productSpecialCode.getProductByCode(productsDao, restaurantId, userContext.getCurrentLocale().getId(), productCode);
+				productSpecialCode.fillOrderLine((MdoUserContext) userContext, product, orderLine);
+deltaTime = System.currentTimeMillis() - deltaTime;
+System.out.println("3) processOrderLineByCode Delta Time = " + deltaTime);
+deltaTime = System.currentTimeMillis();
 				if (orderLine.getUnitPrice() != null) {
 					this.addOrderLine(userContext, orderLine);
 				}
+				productSpecialCode.postProcessCode(orderLine);
+				if (deletedId != null) {
+					OrderLineDto deletedOrderLine = new OrderLineDto();
+					deletedOrderLine.setId(deletedId);
+					deletedOrderLine.setDinnerTable(orderLine.getDinnerTable());
+					this.removeOrderLine(userContext, deletedOrderLine);
+					if (deletedOrderLine.getDinnerTable() == null) {
+						// Set Dinner Table to null means that the dinner table is deleted. 
+						orderLine.setDinnerTable(null);
+					}
+				}
+				// Process sum quantities and sum amounts.
+//				this.processDinnerTable((DinnerTableDto) userContext.getCurrentTable(), orderLine, false);
+deltaTime = System.currentTimeMillis() - deltaTime;
+System.out.println("4) processOrderLineByCode Delta Time = " + deltaTime);
+deltaTime = System.currentTimeMillis();
 			} catch (MdoException e) {
 				logger.error("message.error.business.DefaultDinnerTablesManager.processOrderLineByCode", new Object[]{orderLine}, e);
 				throw new MdoBusinessException("message.error.business.DefaultDinnerTablesManager.processOrderLineByCode", new Object[]{orderLine}, e);
@@ -209,19 +264,8 @@ public class DefaultDinnerTablesManager extends AbstractAdministrationManager im
 		}
 	}
 	
-	private String getLabel(Map<Long, String> labels, Long localeId) {
-		String result = null;
-		if (labels != null && !labels.isEmpty()) {
-			result = labels.get(localeId);
-			if (result == null) {
-				result = labels.values().iterator().next();
-			}
-		}
-		return result;
-	}
-	
 	@Override
-	public void addOrderLine(IMdoBean userContext, OrderLineDto orderLine) throws MdoBusinessException {
+	public void addOrderLine(MdoUserContext userContext, OrderLineDto orderLine) throws MdoBusinessException {
 		if (orderLine.getQuantity() == null) {
 			logger.error("message.error.business.DefaultDinnerTablesManager.addOrderLine.quantity.null", new Object[]{orderLine});
 			throw new MdoBusinessException("message.error.business.DefaultDinnerTablesManager.addOrderLine.no.quantity", new Object[]{orderLine});
@@ -252,7 +296,7 @@ public class DefaultDinnerTablesManager extends AbstractAdministrationManager im
 			Long dinnerTableId = orderLine.getDinnerTable().getId();
 			if (dinnerTableId == null) {
 				// Create new table
-				dinnerTableId = this.createFromUserContext(orderLine.getDinnerTable(), castedUserContext);
+				dinnerTableId = this.createFromUserContext(castedUserContext, orderLine.getDinnerTable().getNumber());
 				orderLine.getDinnerTable().setId(dinnerTableId);
 			} 
 			if (dinnerTableId != null) {
@@ -271,29 +315,37 @@ public class DefaultDinnerTablesManager extends AbstractAdministrationManager im
 				Product product = new Product();
 				if (orderLine.getProduct() != null) {
 					product.setId(orderLine.getProduct().getId());
+					orderLineToBeSaved.setProduct(product);
 				}
-				orderLineToBeSaved.setProduct(product);
 
 				// Fill order line
 				orderLineToBeSaved.setId(orderLine.getId());
 				orderLineToBeSaved.setQuantity(orderLine.getQuantity());
+				orderLineToBeSaved.setLabel(orderLine.getLabel());
 				orderLineToBeSaved.setUnitPrice(orderLine.getUnitPrice());
 				// Amount == quantity * unit price
 				orderLine.setAmount(orderLine.getQuantity().multiply(orderLine.getUnitPrice()));
 				// Maybe don't have to store in database
 				orderLineToBeSaved.setAmount(orderLine.getAmount());
-				orderLineToBeSaved.setLabel(orderLine.getLabel());
 				if (orderLine.getId() == null) {
 					dao.insert(orderLineToBeSaved);
 				} else {
-//					// Load the order line from data base in order to subtract in sums
+					// Load the order line from data base in order to subtract in sums
 //					OrderLine oldOrderLine = new OrderLine();
 //					oldOrderLine.setId(orderLineToBeSaved.getId());
-//					dao.load(oldOrderLine);
-//					// Subtract because this will be added later
-//					tableToBeSaved.setAmountsSum(tableToBeSaved.getAmountsSum().subtract(oldOrderLine.getAmount()));
-//					tableToBeSaved.setQuantitiesSum(tableToBeSaved.getQuantitiesSum().subtract(oldOrderLine.getQuantity()));
-					// Save new values
+					//dao.load(oldOrderLine);
+					OrderLine oldOrderLine = orderLinesDao.getOrderLine(orderLineToBeSaved.getId());
+
+					
+					// Subtract because this will be added later
+					if (tableToBeSaved.getAmountsSum() == null) {
+						tableToBeSaved.setAmountsSum(BigDecimal.ZERO);
+					}
+					if (tableToBeSaved.getQuantitiesSum() == null) {
+						tableToBeSaved.setQuantitiesSum(BigDecimal.ZERO);
+					}
+					tableToBeSaved.setAmountsSum(tableToBeSaved.getAmountsSum().subtract(oldOrderLine.getAmount()));
+					tableToBeSaved.setQuantitiesSum(tableToBeSaved.getQuantitiesSum().subtract(oldOrderLine.getQuantity()));
 					dao.update(orderLineToBeSaved);
 				}
 				// Store the id get from database
@@ -343,7 +395,7 @@ public class DefaultDinnerTablesManager extends AbstractAdministrationManager im
 		}
 
 		result = (DinnerTableDto) assembler.marshal(dinnerTable, userContext);
-
+		
 		return result;
 	}
 
@@ -368,23 +420,28 @@ public class DefaultDinnerTablesManager extends AbstractAdministrationManager im
 	}
 
 	@Override
-	public Long createFromUserContext(DinnerTableDto dinnerTable, MdoUserContext userContext) throws MdoBusinessException {
+	public Long createFromUserContext(MdoUserContext userContext, String dinnerTableNumber) throws MdoBusinessException {
 		Long result = null;
-		if (dinnerTable.getNumber() == null) {
+		if (dinnerTableNumber == null) {
 			logger.error("message.error.business.DefaultDinnerTablesManager.createFromUserContext.number.null");
 			throw new MdoBusinessException("message.error.business.DefaultDinnerTablesManager.createFromUserContext.number.null");
 		}
-		boolean isDinnerTableFree = this.isDinnerTableFree(userContext, dinnerTable.getNumber());
+		DinnerTableDto myDinnerTable = userContext.getMyDinnerTable(dinnerTableNumber);
+		if (myDinnerTable == null) {
+			logger.error("message.error.business.DefaultDinnerTablesManager.createFromUserContext.myDinnerTable.null");
+			throw new MdoBusinessException("message.error.business.DefaultDinnerTablesManager.createFromUserContext.myDinnerTable.null");
+		}
+		boolean isDinnerTableFree = this.isDinnerTableFree(userContext, dinnerTableNumber);
 		if (!isDinnerTableFree) {
 			logger.error("message.error.business.DefaultDinnerTablesManager.createFromUserContext.table.occupied");
-			throw new MdoBusinessException("message.error.business.DefaultDinnerTablesManager.createFromUserContext.table.occupied", new Object[] {dinnerTable.getNumber()});
+			throw new MdoBusinessException("message.error.business.DefaultDinnerTablesManager.createFromUserContext.table.occupied", new Object[] {dinnerTableNumber});
 		}
 		
 		RestaurantDto userContextRestaurant = userContext.getUserAuthentication().getRestaurant();
 		
 		DinnerTable dinnerTableToBeSaved = new DinnerTable();
-		dinnerTableToBeSaved.setNumber(dinnerTable.getNumber());
-		dinnerTableToBeSaved.setCustomersNumber(dinnerTable.getCustomersNumber());
+		dinnerTableToBeSaved.setNumber(dinnerTableNumber);
+		dinnerTableToBeSaved.setCustomersNumber(myDinnerTable.getCustomersNumber());
 		//dtb_reduction_ratio, dtb_amount_pay, dtb_reduction_ratio_changed, 
 		Restaurant restaurant = new Restaurant();
 		restaurant.setId(userContextRestaurant.getId());
@@ -394,7 +451,7 @@ public class DefaultDinnerTablesManager extends AbstractAdministrationManager im
 		dinnerTableToBeSaved.setUser(user);
 		Date registrationDate = new Date();
 		dinnerTableToBeSaved.setRegistrationDate(registrationDate);
-		TableTypeDto typeDto = findTableType(userContextRestaurant.getPrefixTableNames(), dinnerTable.getNumber(), userContextRestaurant.getDefaultTableType());
+		TableTypeDto typeDto = findTableType(userContextRestaurant.getPrefixTableNames(), dinnerTableNumber, userContextRestaurant.getDefaultTableType());
 		TableType type = new TableType();
 		type.setId(typeDto.getId());
 		dinnerTableToBeSaved.setType(type);
@@ -402,8 +459,8 @@ public class DefaultDinnerTablesManager extends AbstractAdministrationManager im
 		try {
 			dao.insert(dinnerTableToBeSaved);
 		} catch (MdoException e) {
-			logger.error("message.error.business.DefaultDinnerTablesManager.createFromUserContext.insert.table", new Object[]{dinnerTable.getNumber()}, e);
-			throw new MdoBusinessException("message.error.business.DefaultDinnerTablesManager.createFromUserContext.insert.table", new Object[]{dinnerTable.getNumber()}, e);
+			logger.error("message.error.business.DefaultDinnerTablesManager.createFromUserContext.insert.table", new Object[]{dinnerTableNumber}, e);
+			throw new MdoBusinessException("message.error.business.DefaultDinnerTablesManager.createFromUserContext.insert.table", new Object[]{dinnerTableNumber}, e);
 		}
 		
 		result = dinnerTableToBeSaved.getId();
@@ -440,7 +497,7 @@ public class DefaultDinnerTablesManager extends AbstractAdministrationManager im
 	}
 
 	@Override
-	public List<IMdoDtoBean> findAllFreeTables(MdoUserContext userContext) throws MdoException {
+	public List<IMdoDtoBean> findAllFreeTables(MdoUserContext userContext) throws MdoBusinessException {
 		List<IMdoDtoBean> result = new ArrayList<IMdoDtoBean>();
 			
 		Long restaurantId = ((MdoUserContext) userContext).getUserAuthentication().getRestaurant().getId();
@@ -455,4 +512,64 @@ public class DefaultDinnerTablesManager extends AbstractAdministrationManager im
 
 		return result;
 	}
+
+	@Override
+	public void updateCustomersNumber(Long dinnerTableId, Integer customersNumber) throws MdoBusinessException {
+		try {
+			((IDinnerTablesDao) dao).updateCustomersNumber(dinnerTableId, customersNumber);
+		} catch (MdoException e) {
+			logger.error("message.error.business.DefaultDinnerTablesManager.updateCustomersNumber", e);
+			throw new MdoBusinessException("message.error.business.DefaultDinnerTablesManager.updateCustomersNumber", e);
+		}
+	}
+
+	@Override
+	public void removeOrderLine(MdoUserContext userContext, OrderLineDto orderLine) throws MdoBusinessException {
+		try {
+			OrderLine deletedOrderLine = new OrderLine();
+			deletedOrderLine.setId(orderLine.getId());
+			((IDinnerTablesDao) dao).removeOrderLine(deletedOrderLine);
+			// Check if the table order line list is empty
+			int size = ((IDinnerTablesDao) dao).getOrderLinesSize(orderLine.getDinnerTable().getId());
+			if (size == 0) {
+				DinnerTable dinnerTable = new DinnerTable();
+				dinnerTable.setId(orderLine.getDinnerTable().getId());
+				((IDinnerTablesDao) dao).delete(dinnerTable);
+				// Set Dinner Table to null means that the dinner table is deleted. 
+				orderLine.setDinnerTable(null);
+			}
+			// Process sum quantities and sum amounts. Be aware when the table is deleted
+			//this.processCurrentDinnerTable((DinnerTableDto) userContext.getCurrentTable(), orderLine, true);
+
+		} catch (MdoException e) {
+			logger.error("message.error.business.DefaultDinnerTablesManager.removeOrderLine", e);
+			throw new MdoBusinessException("message.error.business.DefaultDinnerTablesManager.removeOrderLine", e);
+		}
+	}
+	
+	/**
+	 * Process sum quantity and sum unit price.
+	 * @param dinnerTable the dinner table fields to be changed
+	 */
+	private void processCurrentDinnerTable(DinnerTableDto dinnerTable, OrderLineDto orderLine, boolean orderLineToBeRemoved) {
+		BigDecimal quantitiesSum = dinnerTable.getQuantitiesSum();
+		BigDecimal amountsSum = dinnerTable.getAmountsSum();
+		if (quantitiesSum != null) {
+			if (orderLineToBeRemoved) {
+				quantitiesSum = quantitiesSum.subtract(orderLine.getQuantity());
+			} else {
+				quantitiesSum = quantitiesSum.add(orderLine.getQuantity());
+			}
+		}
+		if (amountsSum != null) {
+			if (orderLineToBeRemoved) {
+				amountsSum = amountsSum.subtract(orderLine.getAmount());
+			} else {
+				amountsSum = amountsSum.add(orderLine.getAmount());
+			}
+		}
+		dinnerTable.setQuantitiesSum(quantitiesSum);
+		dinnerTable.setAmountsSum(amountsSum);
+	}
+	
 }

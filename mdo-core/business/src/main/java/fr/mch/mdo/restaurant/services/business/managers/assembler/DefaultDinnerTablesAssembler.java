@@ -225,7 +225,6 @@ public class DefaultDinnerTablesAssembler extends AbstractAssembler implements I
 			dto.setPrintingDate(bean.getPrintingDate());
 			//dto.setQuantitiesSum(bean.getQuantitiesSum());
 			dto.setQuantitiesSum(bean.getQuantitiesSumByFormula());
-			dto.setQuantitiesSum(bean.getQuantitiesSumByFormula());
 			dto.setReductionRatio(bean.getReductionRatio());
 			dto.setReductionRatioChanged(bean.getReductionRatioChanged());
 			dto.setRegistrationDate(bean.getRegistrationDate());

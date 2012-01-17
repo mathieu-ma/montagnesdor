@@ -11,6 +11,8 @@
 
 	<import resource="spring-mdo-log.xml"/>
 
+	<import resource="spring-mdo-dao.xml"/>
+
 	<import resource="spring-mdo-manager.xml"/>
 
 <!-- 

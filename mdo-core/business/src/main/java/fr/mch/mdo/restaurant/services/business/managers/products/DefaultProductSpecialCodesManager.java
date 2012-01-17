@@ -17,7 +17,6 @@ import fr.mch.mdo.restaurant.dto.beans.ProductSpecialCodesManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
 import fr.mch.mdo.restaurant.exception.MdoBusinessException;
 import fr.mch.mdo.restaurant.exception.MdoException;
-import fr.mch.mdo.restaurant.services.business.ManagedProductSpecialCode;
 import fr.mch.mdo.restaurant.services.business.managers.AbstractAdministrationManagerLabelable;
 import fr.mch.mdo.restaurant.services.business.managers.DefaultMdoTableAsEnumsManager;
 import fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultProductSpecialCodesAssembler;
@@ -25,6 +24,7 @@ import fr.mch.mdo.restaurant.services.business.managers.locales.DefaultLocalesMa
 import fr.mch.mdo.restaurant.services.business.managers.locales.ILocalesManager;
 import fr.mch.mdo.restaurant.services.business.managers.restaurants.DefaultRestaurantsManager;
 import fr.mch.mdo.restaurant.services.business.managers.restaurants.IRestaurantsManager;
+import fr.mch.mdo.restaurant.services.business.managers.tables.ManagedProductSpecialCode;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 import fr.mch.mdo.utils.IManagerAssembler;
 
@@ -112,39 +112,6 @@ public class DefaultProductSpecialCodesManager extends AbstractAdministrationMan
 		return result;
 	}
 
-	
-	@Override
-	public List<ManagedProductSpecialCode> getManagedProductSpecialCodes(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
-		List<ManagedProductSpecialCode> result = new ArrayList<ManagedProductSpecialCode>();
-
-		ProductSpecialCodeDto psc = (ProductSpecialCodeDto) dtoBean;
-		List<IMdoBean> productSpecialCodes;
-		try {
-			List<IMdoDtoBean> restaurants = restaurantsManager.findAll(userContext);
-			RestaurantDto selectedRestaurant = psc!=null && psc.getRestaurant()!=null?psc.getRestaurant():(RestaurantDto) restaurants.get(0);
-			productSpecialCodes = ((IProductSpecialCodesDao) dao).findProductSpecialCodesByRestaurant(selectedRestaurant.getId());
-		} catch (MdoException e) {
-			logger.error("message.error.administration.business.find.all", e);
-			throw new MdoBusinessException("message.error.administration.business.find.all", e);
-		}
-		for (ManagedProductSpecialCode mPSC : ManagedProductSpecialCode.values()) {
-			boolean isAlreadyStored = false;
-			for (IMdoBean bean : productSpecialCodes) {
-				ProductSpecialCode productSpecialCode = (ProductSpecialCode) bean;
-				if (mPSC.name().equals(productSpecialCode.getCode().getName()) 
-						&& psc!=null && !productSpecialCode.getId().equals(psc.getId())) {
-					isAlreadyStored = true;
-					break;
-				}
-			}
-			if (!isAlreadyStored) {
-				result.add(mPSC);
-			}
-		}
-
-		return result;
-	}
-
 //	@Override
 //	public IMdoDtoBean save(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
 //		ProductSpecialCode daoBean = (ProductSpecialCode) assembler.unmarshal(dtoBean);
@@ -171,6 +138,7 @@ public class DefaultProductSpecialCodesManager extends AbstractAdministrationMan
 		super.processList(viewBean, userContext, lazy);
 		ProductSpecialCodesManagerViewBean productSpecialCodesManagerViewBean = (ProductSpecialCodesManagerViewBean) viewBean;
 		try {
+			productSpecialCodesManagerViewBean.setRestaurants(this.restaurantsManager.findAll(userContext, lazy));
 			productSpecialCodesManagerViewBean.setLabels(super.getLabels(userContext.getCurrentLocale()));
 			productSpecialCodesManagerViewBean.setLanguages(this.localesManager.getLanguages(userContext.getCurrentLocale().getLanguageCode()));
 			productSpecialCodesManagerViewBean.setCodes(this.getRemainingList(mdoTableAsEnumsManager.getProductSpecialCodes(userContext), userContext));
@@ -201,6 +169,23 @@ public class DefaultProductSpecialCodesManager extends AbstractAdministrationMan
 					result.remove(tableAsEnum);
 				}
 			}
+		}
+
+		return result;
+	}
+
+	@Override
+	public List<IMdoDtoBean> getList(Long restaurantId, MdoUserContext userContext) throws MdoBusinessException {
+		List<IMdoDtoBean> result = new ArrayList<IMdoDtoBean>();
+		
+		try {
+			List<IMdoBean> list = ((IProductSpecialCodesDao) dao).findAllByRestaurant(restaurantId);
+			if (list != null) {
+				result = assembler.marshal(list, userContext);
+			}
+		} catch (MdoException e) {
+			logger.error("message.error.administration.business.product.special.codes.by.restaurant", new Object[] {restaurantId}, e);
+			throw new MdoBusinessException("message.error.administration.business.product.special.codes.by.restaurant", new Object[] {restaurantId}, e);
 		}
 
 		return result;

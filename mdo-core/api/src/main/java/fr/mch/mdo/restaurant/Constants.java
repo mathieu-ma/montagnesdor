@@ -52,6 +52,7 @@ public interface Constants
     public static final String ACTION_RESULT_AFTER_CUD_RESTAURANT = "acudrestaurant";
     public static final String ACTION_RESULT_AFTER_CUD_LABELS = "acudlabels";
     public static final String ACTION_RESULT_AFTER_CUD_LANGUAGE = "acudlanguage";
+    public static final String ACTION_RESULT_AFTER_CUD_LIST_PRODUCT_SPECIAL_CODES = "acudlistproductspecialcodes";
     public static final String ACTION_RESULT_AFTER_CUD_LIST_PRODUCTS = "acudlistproducts";
     public static final String ACTION_RESULT_AFTER_EXPORT_PRODUCTS_LIST = "aepl";
     public static final String ACTION_RESULT_AFTER_CUD_LIST_PRINTING_INFORMATIONS = "acudlistprintinginformations";

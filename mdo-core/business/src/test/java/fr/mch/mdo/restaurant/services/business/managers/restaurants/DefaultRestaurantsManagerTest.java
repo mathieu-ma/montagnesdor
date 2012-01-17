@@ -240,7 +240,11 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 		restaurantPrefixTable.setPrefix(prefix);
 		type = new TableTypeDto();
 		// Use the existing data in database
-		type.setId(1L);
+		try {
+			type = (TableTypeDto) DefaultTableTypesManager.getInstance().findByPrimaryKey(2L, userContext);
+		} catch (MdoException e) {
+			fail("Could not found the type.");
+		}
 		restaurantPrefixTable.setType(type);
 		prefixTableNames.add(restaurantPrefixTable);
 		try {

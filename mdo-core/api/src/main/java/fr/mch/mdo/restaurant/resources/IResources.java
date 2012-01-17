@@ -25,7 +25,10 @@ public interface IResources
      * START JAAS
      */
     String JMS_SERVER_HORNETQ_CONFIGURATION_FILE = "fr/mch/mdo/restaurant/resources/jms/hornetq/hornetq-configuration.xml";
-    String JMS_SERVER_HORNETQ_JMS_FILE = "fr/mch/mdo/restaurant/resources/jms/hornetq/hornetq-jms.xml";
+    // The file hornetq-jms.xml MUST be in the root path because of FileDeploymentManager HornetQ class that always check the existence of this file from "hornetq-jms.xml"
+    // If we want to change the location of the file hornetq-jms.xml to /path/to/another/folder/hornetq-jms.xml then we have to add the path /path/to/another/folder/ to the classpath. 
+//    String JMS_SERVER_HORNETQ_JMS_FILE = "fr/mch/mdo/restaurant/resources/jms/hornetq/hornetq-jms.xml";
+    String JMS_SERVER_HORNETQ_JMS_FILE = "hornetq-jms.xml";
     String JMS_HORNETQ_USER_FILE = "jms/hornetq/hornetq-users.properties";
     /**
      * END JAAS

@@ -244,7 +244,8 @@ public class DefaultDinnerTablesManagerTest extends DefaultAdministrationManager
 			Integer customersNumber = 2;
 			dinnerTable.setNumber(number);
 			dinnerTable.setCustomersNumber(customersNumber);
-			Long dinnerTableId = ((IDinnerTablesManager) this.getInstance()).createFromUserContext(dinnerTable, DefaultAdministrationManagerTest.userContext);
+			DefaultAdministrationManagerTest.userContext.setMyDinnerTable(dinnerTable);
+			Long dinnerTableId = ((IDinnerTablesManager) this.getInstance()).createFromUserContext(DefaultAdministrationManagerTest.userContext, number);
 			assertNotNull("Dinner Table Id not null", dinnerTableId);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
@@ -299,5 +300,43 @@ public class DefaultDinnerTablesManagerTest extends DefaultAdministrationManager
 		newBean.setVats(vats);
 		newBean.setCashing(cashing);
 		return newBean;
+	}
+	
+	public void testUpdateCustomersNumber() {
+		try {
+			Long dinnerTableId = Long.valueOf(1);
+			// The value 2 is in the file montagnesdorDatas.sql
+			Integer customersNumber = new Integer(2);
+			DinnerTableDto dinnerTable = (DinnerTableDto) ((IDinnerTablesManager) this.getInstance()).findByPrimaryKey(dinnerTableId, DefaultAdministrationManagerTest.userContext);
+			assertEquals("Check Dinner Table's Customers Number initial value", customersNumber, dinnerTable.getCustomersNumber());
+			customersNumber = new Integer(6);
+			((IDinnerTablesManager) this.getInstance()).updateCustomersNumber(dinnerTableId, customersNumber);
+			DinnerTableDto updatedDinnerTable = (DinnerTableDto) ((IDinnerTablesManager) this.getInstance()).findByPrimaryKey(dinnerTableId, DefaultAdministrationManagerTest.userContext);
+			assertEquals("Check Dinner Table's Customers Number updated value", customersNumber, updatedDinnerTable.getCustomersNumber());
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+	
+	public void testProcessOrderLineByCode() {
+		int i=0;
+		while(i++<3)
+		try {
+			OrderLineDto orderLine = new OrderLineDto();
+			String code = "11";
+			BigDecimal quantity = new BigDecimal(2);
+			orderLine.setQuantity(quantity);
+			orderLine.setCode(code);
+			Long dinnerTableId = new Long(1);
+			orderLine.setId(1L);
+			orderLine.setDinnerTable(new DinnerTableDto());
+			orderLine.getDinnerTable().setId(dinnerTableId);
+			long deltaTime = System.currentTimeMillis();
+			((IDinnerTablesManager) this.getInstance()).processOrderLineByCode(DefaultAdministrationManagerTest.userContext, orderLine, null);
+			deltaTime = System.currentTimeMillis() - deltaTime;
+			System.out.println("testProcessOrderLineByCode Delta Time = " + deltaTime);
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
 	}
 }

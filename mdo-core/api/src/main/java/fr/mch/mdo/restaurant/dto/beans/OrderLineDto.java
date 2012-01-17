@@ -79,6 +79,11 @@ public class OrderLineDto extends MdoDtoBean
 	 */
 	private String code;
 
+	/** 
+	 * Currently the dataCode is used for merging 2 rows
+	 */
+	private String dataCode;
+	
 	/**
 	 * @return the dinnerTable
 	 */
@@ -229,10 +234,23 @@ public class OrderLineDto extends MdoDtoBean
 		return code;
 	}
 
+	/**
+	 * @return the dataCode
+	 */
+	public String getDataCode() {
+		return dataCode;
+	}
+
+	/**
+	 * @param dataCode the dataCode to set
+	 */
+	public void setDataCode(String dataCode) {
+		this.dataCode = dataCode;
+	}
+
 	@Override
 	public String toString() {
 		return "OrderLine [amount=" + amount + ", credit=" + credit + ", label=" + label + ", product=" + product + ", productPart=" + productPart + ", productSpecialCode=" + productSpecialCode
 				+ ", quantity=" + quantity + ", unitPrice=" + unitPrice + ", id=" + id + "]";
 	}
-
 }

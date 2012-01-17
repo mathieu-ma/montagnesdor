@@ -229,12 +229,15 @@ public class PrinterSimulator extends JFrame
 					serialPort = (SerialPort) portId.open("montagnesdor", Integer.parseInt(resource.getString("pause")) * 2);
 					serialPort.setSerialPortParams(Integer.parseInt(resource.getString("serialportBauds")), Integer.parseInt(resource.getString("serialportBits")),
 							Integer.parseInt(resource.getString("serialportStopBits")), Integer.parseInt(resource.getString("serialportParity")));
+					
 					serialPort.addEventListener(new PrinterSerialPortEventListener());
 					serialPort.setOutputBufferSize(20);
 					// Set notifyOnDataAvailable to true to allow event driven
 					// input.
 					serialPort.notifyOnDataAvailable(true);
-					serialPort.notifyOnOutputEmpty(true);
+					// Don't use this event serialPort.notifyOnOutputEmpty if you want to receive data from serial port terminal 
+					// only on linux Ubuntu 2.6.38-11 and RXTX 2.2-pre2
+					//serialPort.notifyOnOutputEmpty(true);
 					serialPort.notifyOnDSR(true);
 					serialPort.notifyOnBreakInterrupt(true);
 					serialPort.notifyOnCarrierDetect(true);
@@ -387,16 +390,16 @@ public class PrinterSimulator extends JFrame
 				byte[] dataToBeSent = donnees.getBytes();
 				if (!donnees.equals("")) {
 					try {
-						if (serialPort.isDSR()) {
+//						if (serialPort.isDSR()) {
 							logger.info("Données envoyées : " + donnees);
 							printDataInHexa(dataToBeSent);
 							OutputStream os = serialPort.getOutputStream();
 							os.write(dataToBeSent);
 							os.flush();
 							os.close();
-						} else {
-							logger.info("DTE occupée");
-						}
+//						} else {
+//							logger.info("DTE occupée");
+//						}
 					} catch (Exception ex) {
 						logger.info("Erreur d'envoie de Données", ex);
 					}
@@ -464,25 +467,29 @@ public class PrinterSimulator extends JFrame
 
 			case SerialPortEvent.DATA_AVAILABLE:
 				logger.info("serialPort.notifyOnDataAvailable(true) SerialPortEvent.DATA_AVAILABLE : " + SerialPortEvent.DATA_AVAILABLE);
-
-				serialPort.setDTR(false);
-				logger.info("SerialPortEvent.DATA_AVAILABLE : " + SerialPortEvent.DATA_AVAILABLE);
-				try {
-					BufferedInputStream bis = new BufferedInputStream(serialPort.getInputStream());
-					byte[] data = new byte[bis.available()];
-					logger.info("Taille des Données reçues " + bis.available());
-					bis.read(data);
-
-					logger.info("Données réelles reçues: " + new String(data));
-
-					dataRecievedArea.append(printDataInHexa(data));
-
-				} catch (Exception e) {
-				}
-				serialPort.setDTR(true);
+				readSerial();
 				break;
 
 			}
+		}
+	}
+	
+	private void readSerial() {
+		
+		try {
+			if (serialPort.getInputStream().available() > 0) {
+				BufferedInputStream bis = new BufferedInputStream(serialPort.getInputStream());
+				serialPort.setDTR(false);
+				byte[] data = new byte[bis.available()];
+				logger.info("Taille des Données reçues " + bis.available());
+				bis.read(data);
+	
+				logger.info("Données réelles reçues: " + new String(data));
+	
+				dataRecievedArea.append(printDataInHexa(data));
+				serialPort.setDTR(true);
+			}
+		} catch (Exception e) {
 		}
 	}
 }

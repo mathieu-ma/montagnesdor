@@ -69,6 +69,10 @@ public interface IPrinter
 	String DEFAULT_PAUSE = "1500";
 	/** parameters key for pause */
 	String PARAMETER_PAUSE_KEY = "pause";
+	/** Default value for PARAMETER_NO_CHECK_DSR_KEY */
+	String DEFAULT_NO_CHECK_DSR = "false";
+	/** parameters key for NO_CHECK_DSR */
+	String PARAMETER_NO_CHECK_DSR_KEY = "noCheckDsr";
 	/** Default value for PARAMETER_SPECIAL_CHARACTERS_STRING_KEY */
 	String DEFAULT_SPECIAL_CHARACTERS_STRING = "#;$;à;°;ç;§;^;`;é;ù;è;¨";
 	/** parameters key for specialCharactersString */

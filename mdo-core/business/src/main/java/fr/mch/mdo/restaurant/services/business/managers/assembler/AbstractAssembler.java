@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,7 +21,7 @@ public abstract class AbstractAssembler implements IManagerAssembler, ILoggerBea
 {
 	@Override
 	public Set<IMdoDtoBean> marshal(Set<? extends IMdoBean> set, MdoUserContext userContext) {
-		Set<IMdoDtoBean> result = new HashSet<IMdoDtoBean>();
+		Set<IMdoDtoBean> result = new LinkedHashSet<IMdoDtoBean>();
 		this.marshal(result, set, userContext);
 		return result;
 	}

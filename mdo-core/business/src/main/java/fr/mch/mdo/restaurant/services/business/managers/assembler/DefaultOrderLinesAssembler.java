@@ -17,6 +17,7 @@ import fr.mch.mdo.restaurant.dto.beans.OrderLineDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductPartDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductSpecialCodeDto;
+import fr.mch.mdo.restaurant.services.business.managers.tables.ManagedProductSpecialCode;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 import fr.mch.mdo.utils.IManagerAssembler;
 
@@ -112,14 +113,21 @@ public class DefaultOrderLinesAssembler extends AbstractAssembler implements IMa
 			dto = new OrderLineDto();
 			dto.setId(bean.getId());
 			dto.setAmount(bean.getAmount());
-			String code = null;
+			String code = "";
 			if (bean.getProduct() != null) {
 				code = bean.getProduct().getCode();
 			}
+			// Currently the dataCode is used for merging 2 rows
+			String dataCode = code;
 			if (bean.getProductSpecialCode() != null && bean.getProductSpecialCode().getShortCode() != null) {
 				code = bean.getProductSpecialCode().getShortCode() + code;
+				dataCode = code;
+				if (ManagedProductSpecialCode.USER_ORDER.name().equals(bean.getProductSpecialCode().getCode().getName())) {
+					dataCode = null;
+				}
 			}
 			dto.setCode(code);
+			dto.setDataCode(dataCode);
 			CreditDto credit = (CreditDto) creditsAssembler.marshal(bean.getCredit(), userContext);
 			dto.setCredit(credit);
 			if (bean.getDinnerTable() != null) {
@@ -139,7 +147,7 @@ public class DefaultOrderLinesAssembler extends AbstractAssembler implements IMa
 		}
 		return dto;
 	}
-	
+
 	@Override
 	public IMdoDaoBean unmarshal(IMdoDtoBean dtoBean, IMdoDaoBean... parents) {
 		if (dtoBean == null) {

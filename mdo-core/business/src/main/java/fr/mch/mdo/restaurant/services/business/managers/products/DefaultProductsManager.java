@@ -53,7 +53,7 @@ import fr.mch.mdo.utils.IManagerAssembler;
 
 public class DefaultProductsManager extends AbstractAdministrationManagerLabelable implements IProductsManager
 {
-	/**	rateFormat is used formatting Bigdecimal rate */
+	/**	rateFormat is used formatting BigDecimal rate */
 	private NumberFormat vatRateFormat;
 	{
 		DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance();

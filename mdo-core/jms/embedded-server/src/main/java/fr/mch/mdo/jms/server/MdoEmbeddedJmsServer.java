@@ -1,9 +1,14 @@
 package fr.mch.mdo.jms.server;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Properties;
 
 import javax.jms.Connection;
@@ -89,8 +94,59 @@ public class MdoEmbeddedJmsServer extends EmbeddedJMS implements IMdoEmbeddedJms
 			}
 			dummyServer.accept();
 		}
+		
+
+//		String fileName = "/home/mathieu/development/eclipse/workspaces/montagnesdor/mdo-core/jms/embedded-server/target/classes/fr/mch/mdo/restaurant/resources/jms/hornetq/hornetq-jms.xml";
+//		fileName = IResources.JMS_SERVER_HORNETQ_JMS_FILE;
+//        Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources(fileName);
+//        URL url = null;
+//        while (urls.hasMoreElements())
+//        {
+//           url = urls.nextElement();
+//System.out.println("1) " + url);           
+//           break;
+//        }
+//		
+//        if (fileExists(url)) {
+//        	System.out.println("Yes");
+//        } else {
+//        	System.out.println("no");
+//        }
 	}
 
+private static File getFileFromURL(final URL url) throws UnsupportedEncodingException
+{
+System.out.println("URLDecoder.decode(url.getFile()) " + URLDecoder.decode(url.getFile(), "UTF-8"));           
+	return new File(URLDecoder.decode(url.getFile(), "UTF-8"));
+}
+private static boolean fileExists(final URL resourceURL)
+{
+   try
+   {
+      File f = getFileFromURL(resourceURL); // this was the orginal line, which doesnt work for File-URLs with white
+System.out.println("f.exists()) " + f.exists());      
+      // spaces: File f = new File(resourceURL.getPath());
+      Enumeration<URL> resources = Thread.currentThread().getContextClassLoader().getResources(f.getName());
+System.out.println("f.getName()) " + f.getName());           
+      while (resources.hasMoreElements())
+      {
+         URL url = resources.nextElement();
+System.out.println("2) " + url);           
+         if (url.equals(resourceURL))
+         {
+            return true;
+         }
+      }
+   }
+   catch (Exception e)
+   {
+      return false;
+   }
+   return false;
+}
+
+
+	
 	@Override
 	public void startServer() throws MdoException {
 		try {

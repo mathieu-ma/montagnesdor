@@ -64,6 +64,10 @@ public interface IDinnerTablesDao extends IDaoServices
 
     void updateOrderLine(OrderLine orderLine) throws MdoException;
 
+	/**
+	 * Delete the specified Order Line.
+	 * @param orderLine the Order Line to be deleted.
+	 */
     void removeOrderLine(OrderLine orderLine) throws MdoException;
     
     /**
@@ -74,5 +78,20 @@ public interface IDinnerTablesDao extends IDaoServices
      * @throws MdoException any exception occurs
      */
     List<IMdoBean> findAllFreeTables(Long restaurantId) throws MdoException;
+
     
+	/**
+	 * Update the customers number of the specific table.
+	 * @param dinnerTableId the Dinner Table Id.
+	 * @param customersNumber the customers number to be updated.
+	 */
+    void updateCustomersNumber(Long dinnerTableId, Integer customersNumber) throws MdoException;
+
+    /**
+     * Retrieve the size of the table order lines.
+     * @param dinnerTableId the dinner table Id.
+     * @return the size of the table order lines.
+     */
+	int getOrderLinesSize(Long dinnerTableId) throws MdoException;
+
 }

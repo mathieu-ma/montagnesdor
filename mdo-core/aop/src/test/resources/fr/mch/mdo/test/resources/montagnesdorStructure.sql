@@ -764,7 +764,7 @@ CREATE TABLE t_order_line (
   cre_id integer,
   prp_id integer,
   orl_quantity numeric(12,4) DEFAULT 0.00 NOT null,
-  orl_label VARCHAR(50) NOT null,
+  orl_label VARCHAR(255) NOT null,
   orl_unit_price numeric(12,4) DEFAULT 0.00 NOT null,
   orl_amount numeric(12,4) DEFAULT 0.00 NOT null,
   orl_deleted BOOLEAN DEFAULT false NOT null,

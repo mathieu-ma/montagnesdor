@@ -112,8 +112,9 @@ public class OrdersManagerTest extends MdoBusinessBasicTestCase
 			customersNumber = 2;
 			dinnerTable.setNumber(number);
 			dinnerTable.setCustomersNumber(customersNumber);
+			OrdersManagerTest.getUserContext().setMyDinnerTable(dinnerTable);
 			try {
-				dinnerTableId = DefaultDinnerTablesManager.getInstance().createFromUserContext(dinnerTable, OrdersManagerTest.getUserContext());
+				dinnerTableId = DefaultDinnerTablesManager.getInstance().createFromUserContext(OrdersManagerTest.getUserContext(), dinnerTable.getNumber());
 				dinnerTable.setId(dinnerTableId);
 			} catch(Exception e) {
 				fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
@@ -125,15 +126,16 @@ public class OrdersManagerTest extends MdoBusinessBasicTestCase
 			String code = "11";
 			order.setCode(code);
 			order.setQuantity(BigDecimal.TEN);
-			DefaultDinnerTablesManager.getInstance().processOrderLineByCode(OrdersManagerTest.userContext, order);
+			DefaultDinnerTablesManager.getInstance().processOrderLineByCode(OrdersManagerTest.userContext, order, null);
 
 			//order.getProduct().setId(2L);
 			order.setQuantity(new BigDecimal(11));
 			DefaultDinnerTablesManager.getInstance().addOrderLine(OrdersManagerTest.userContext, order);
 
 //			orders.add(order);
-			dinnerTableId = DefaultDinnerTablesManager.getInstance().createFromUserContext(dinnerTable, OrdersManagerTest.userContext);
-			dinnerTableId = DefaultDinnerTablesManager.getInstance().createFromUserContext(dinnerTable, OrdersManagerTest.userContext);
+			OrdersManagerTest.getUserContext().setMyDinnerTable(dinnerTable);
+			dinnerTableId = DefaultDinnerTablesManager.getInstance().createFromUserContext(OrdersManagerTest.userContext, dinnerTable.getNumber());
+			dinnerTableId = DefaultDinnerTablesManager.getInstance().createFromUserContext(OrdersManagerTest.userContext, dinnerTable.getNumber());
 			assertNotNull("Dinner Table Id not null", dinnerTableId);
 			
 			
