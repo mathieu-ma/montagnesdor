@@ -53,7 +53,7 @@
 									</span>
 								</div>
 					    	</s:if>
-					    	<s:if test="id == #session.userSession.currentLocale.id">
+					    	<s:else>
 				    			<div style="visibility: hidden;">
 									<span class="mdo-ui-button ui-state-default ui-corner-all">
 										<span class="ui-icon ui-icon-trash"></span>
@@ -63,7 +63,7 @@
 				    					<s:a id="%{id}" href="%{url}"><fmt:message key="admin.manager.delete"/></s:a>
 									</span>
 								</div>
-					    	</s:if>
+					    	</s:else>
 					    </td>
 					</tr>		
 				</s:iterator>
