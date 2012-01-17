@@ -1,3 +1,0 @@
-error.restaurant.name.required = Nom exigé
-error.restaurant.date.required = Date exigé
-error.restaurant.takeaway.basic.reduction.required = Taux réduction de base exigé entre 0 et 100

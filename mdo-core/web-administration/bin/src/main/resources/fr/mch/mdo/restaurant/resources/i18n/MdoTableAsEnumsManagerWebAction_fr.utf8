@@ -1,5 +1,0 @@
-error.emuns.type.required = Type obligatoire
-error.emuns.name.required = Nom obligatoire
-error.emuns.order.required = Ordre obligatoire
-error.emuns.order.integer = Ordre est un entier
-error.emuns.default.label.required = Libellé par défaut obligatoire
