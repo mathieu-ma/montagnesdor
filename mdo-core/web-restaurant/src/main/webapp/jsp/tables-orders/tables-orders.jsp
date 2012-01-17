@@ -9,15 +9,15 @@
 	<tiles:insertDefinition name="main.layout">
 		<tiles:putListAttribute name="javascript-files-default" inherit="true">
 			<tiles:addAttribute type="string" value="/javascript/jquery/plugins/jquery.i18n.properties-min.js" />
-			<tiles:addAttribute type="string" value="/javascript/jquery/plugins/jquery.tablesorter.min.js" />
 		</tiles:putListAttribute>
 		<tiles:putAttribute name="title" value="${title}"/>
 		<tiles:putAttribute name="menu" value="/jsp/tables-orders/menu.jsp" />
+		<tiles:putAttribute name="body-css" value="body" type="string" />
 		<c:choose>
 			<c:when test="${method=='list'}">
 				<tiles:putAttribute name="body" value="/jsp/tables-orders/list-body.jsp" />
 			</c:when>
-			<c:when test="${method=='form'}">
+			<c:when test="${method=='displayDinnerTable'}">
 				<tiles:putAttribute name="body" value="/jsp/tables-orders/orders-body.jsp" />
 			</c:when>
 			<c:otherwise>

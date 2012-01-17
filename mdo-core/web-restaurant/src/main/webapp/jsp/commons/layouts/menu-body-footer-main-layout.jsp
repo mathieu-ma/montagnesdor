@@ -15,7 +15,7 @@
 			    </div>
 		    </div>
 	    </c:if>
-		<div id="<tiles:getAsString name="body-css"/>">
+		<div id="<tiles:insertAttribute name="body-css"/>">
 	    	<tiles:insertAttribute name="body"/>
 	    </div>
 		<tiles:useAttribute id="divPart" name="footer" classname="java.lang.String"/>
