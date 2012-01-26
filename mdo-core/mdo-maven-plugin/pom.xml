@@ -45,9 +45,9 @@
 							<goal>run</goal>
 						</goals>
 						<configuration>
-							<tasks>
+							<target>
 								<echo>::${settings.localRepository}::</echo>
-							</tasks>
+							</target>
 						</configuration>
 					</execution>
 				</executions>

@@ -121,6 +121,8 @@ public class DefaultProductSpecialCodesManagerTest extends DefaultAdministration
 			assertNotNull("Main list not be null", viewBean.getList());
 			assertFalse("Main list not be empty", viewBean.getList().isEmpty());
 			assertNotNull("Labels list not be null", viewBean.getLabels());
+			assertFalse("Restaurants list not be empty", viewBean.getRestaurants().isEmpty());
+			assertNotNull("Restaurants list not be null", viewBean.getRestaurants());
 			assertFalse("Labels list not be empty", viewBean.getLabels().isEmpty());
 			assertNotNull("Languages list not be null", viewBean.getLanguages());
 			assertFalse("Languages list not be empty", viewBean.getLanguages().isEmpty());
@@ -143,6 +145,20 @@ public class DefaultProductSpecialCodesManagerTest extends DefaultAdministration
 		newBean.setCode(code);
 		newBean.setLabels(labels);
 		return newBean;
+	}
+
+	/**
+	 * Test the getList method.
+	 */
+	public void testGetList() {
+		Long restaurantId = 1L;
+		try {
+			List<IMdoDtoBean> list= ((IProductSpecialCodesManager) DefaultProductSpecialCodesManager.getInstance()).getList(restaurantId, userContext);
+			assertNotNull("List must not be null", list);
+			assertFalse("List must not be empty", list.isEmpty());
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}	
 	}
 
 }

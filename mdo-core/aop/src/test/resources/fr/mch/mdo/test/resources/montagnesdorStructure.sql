@@ -4,6 +4,7 @@
 DROP TABLE IF EXISTS t_revenue_vat;
 DROP TABLE IF EXISTS t_revenue_cashing;
 DROP TABLE IF EXISTS t_revenue;
+DROP TABLE IF EXISTS t_cashing_type;
 DROP TABLE IF EXISTS t_table_cashing;
 DROP TABLE IF EXISTS t_table_vat;
 DROP TABLE IF EXISTS t_table_bill;
@@ -32,14 +33,15 @@ DROP TABLE IF EXISTS t_printing_information;
 DROP TABLE IF EXISTS t_locale;
 DROP TABLE IF EXISTS t_restaurant_vat;
 DROP TABLE IF EXISTS t_restaurant_prefix_table;
-DROP TABLE IF EXISTS t_table_type;
 DROP TABLE IF EXISTS t_restaurant;
+DROP TABLE IF EXISTS t_table_type;
 DROP TABLE IF EXISTS t_value_added_tax;
 DROP TABLE IF EXISTS t_enum;
 
 DROP SEQUENCE IF EXISTS t_revenue_vat_rva_id_seq;
 DROP SEQUENCE IF EXISTS t_revenue_cashing_rvc_id_seq;
 DROP SEQUENCE IF EXISTS t_revenue_rev_id_seq;
+DROP SEQUENCE IF EXISTS t_cashing_type_cst_id_seq;
 DROP SEQUENCE IF EXISTS t_table_cashing_tcs_id_seq;
 DROP SEQUENCE IF EXISTS t_table_vat_tvt_id_seq;
 DROP SEQUENCE IF EXISTS t_table_bill_tbi_id_seq;
@@ -714,7 +716,6 @@ CREATE TABLE t_dinner_table (
   dtb_id integer *{DEFAULT NEXTVAL('t_dinner_table_dtb_id_seq')} NOT null PRIMARY KEY,
   res_id integer NOT null,
   dtb_code VARCHAR(5) NOT null,
-  dtb_cashing_date TIMESTAMP,  
   aut_id integer NOT null,
   roo_id integer,
   dtb_customers_number integer DEFAULT 0 NOT null,
@@ -728,7 +729,7 @@ CREATE TABLE t_dinner_table (
   tbt_id integer NOT null,  
   dtb_deleted BOOLEAN DEFAULT false NOT null,
   CONSTRAINT dtb_id_uni UNIQUE (dtb_id),
-  CONSTRAINT dtb_res_id_dtb_code_dtb_cashing_date_uni UNIQUE (res_id, dtb_code, dtb_cashing_date),
+  CONSTRAINT dtb_res_id_dtb_code_dtb_cashing_date_uni UNIQUE (res_id, dtb_code, dtb_registration_date),
   CONSTRAINT dtb_res_id_fk FOREIGN KEY (res_id) REFERENCES t_restaurant (res_id) ON UPDATE RESTRICT ON DELETE RESTRICT, 
   CONSTRAINT dtb_aut_id_fk FOREIGN KEY (aut_id) REFERENCES t_user_authentication (aut_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
   CONSTRAINT dtb_tbt_id_fk FOREIGN KEY (tbt_id) REFERENCES t_table_type (tbt_id) ON UPDATE RESTRICT ON DELETE RESTRICT 
@@ -736,17 +737,16 @@ CREATE TABLE t_dinner_table (
 -- COMMENT Statement is used for PostGresql but this is also compatible with HSQLDB 2.0.
 COMMENT ON TABLE t_dinner_table IS 'This table is used for dinner tables.';
 COMMENT ON COLUMN t_dinner_table.dtb_id IS 'This is primary key of this table.';
-COMMENT ON COLUMN t_dinner_table.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant where the dinner table belongs. Notice that this information is already known with the aut_id field. But this field is used for the unicity of the dinner table. So this field and the others dtb_code and dtb_cashing_date consist of a unique field.';
-COMMENT ON COLUMN t_dinner_table.dtb_code IS 'This is the code number of the dinner table. This field and the others res_id and dtb_cashing_date consist of a unique field.';
-COMMENT ON COLUMN t_dinner_table.dtb_cashing_date IS 'This is the dinner table cashing date. It is used to know if the dinner table has already payed. If not then this field is null and we can not create a new dinner table with the same code in the same restaurant. This field and the others res_id and dtb_cashing_date consist of a unique field.';
+COMMENT ON COLUMN t_dinner_table.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant where the dinner table belongs. Notice that this information is already known with the aut_id field. But this field is used for the unicity of the dinner table. So this field and the others dtb_code and dtb_registration_date consist of a unique field.';
+COMMENT ON COLUMN t_dinner_table.dtb_code IS 'This is the code number of the dinner table. This field and the others res_id and dtb_registration_date consist of a unique field.';
 COMMENT ON COLUMN t_dinner_table.aut_id IS 'This is a foreign key that refers to t_user_authentication. It is used to specify the user authentication that created this dinner table.';
 COMMENT ON COLUMN t_dinner_table.roo_id IS 'This is an id for the room where the dinner table is. It is not currently used.';
 COMMENT ON COLUMN t_dinner_table.dtb_customers_number IS 'This is used to specify the number of customers.';
 COMMENT ON COLUMN t_dinner_table.dtb_quantities_sum IS 'This is used to specify the sum of the order lines quantities. This value could be calculated from order lines table.';
 COMMENT ON COLUMN t_dinner_table.dtb_amounts_sum IS 'This is used to specify the sum of the order lines amounts. This value could be calculated from order lines table.';
 COMMENT ON COLUMN t_dinner_table.dtb_reduction_ratio IS 'This is used to specify the reduction ratio.';
-COMMENT ON COLUMN t_dinner_table.dtb_amount_pay IS 'This is used to specify the amount to pay.';
-COMMENT ON COLUMN t_dinner_table.dtb_registration_date IS 'This is used to specify the registration/creation date.';
+COMMENT ON COLUMN t_dinner_table.dtb_amount_pay IS 'This is used to specify the amount to pay. This value could be calculated with value of dtb_reduction_ratio and dtb_amounts_sum. amountPay = dtb_amounts_sum-dtb_amounts_sum*dtb_reduction_ratio/100.';
+COMMENT ON COLUMN t_dinner_table.dtb_registration_date IS 'This is used to specify the registration/creation date. This field and the others res_id and dtb_code consist of a unique field.';
 COMMENT ON COLUMN t_dinner_table.dtb_printing_date IS 'This is used to specify the printing date.';
 COMMENT ON COLUMN t_dinner_table.dtb_reduction_ratio_changed IS 'This is used to specify if user has changed the reduction ratio.';
 COMMENT ON COLUMN t_dinner_table.tbt_id IS 'This is used to specify the type of dinner table. Could be TAKE-AWAY, EAT-IN ... This is a foreign key that refers to t_table_type.';
@@ -871,23 +871,43 @@ CREATE SEQUENCE t_table_cashing_tcs_id_seq;
 CREATE TABLE t_table_cashing (
   tcs_id integer *{DEFAULT NEXTVAL('t_table_cashing_tcs_id_seq')} NOT null PRIMARY KEY,
   dtb_id integer NOT null,
-  tcs_type_enum_id integer NOT null,
-  tcs_amount numeric(12,4) DEFAULT 0.00 NOT null,
+  tcs_cashing_date DATE NOT null,
   tcs_deleted BOOLEAN DEFAULT false NOT null,
   CONSTRAINT tcs_id_uni UNIQUE (tcs_id),
-  CONSTRAINT tcs_dtb_id_tcs_type_enum_id_uni UNIQUE (dtb_id, tcs_type_enum_id),
-  CONSTRAINT tcs_dtb_id_fk FOREIGN KEY (dtb_id) REFERENCES t_dinner_table (dtb_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
-  CONSTRAINT tcs_type_enum_id_fk FOREIGN KEY (tcs_type_enum_id) REFERENCES t_enum (enm_id) ON UPDATE RESTRICT ON DELETE RESTRICT
+  CONSTRAINT tcs_dtb_id_uni UNIQUE (dtb_id),
+  CONSTRAINT tcs_dtb_id_fk FOREIGN KEY (dtb_id) REFERENCES t_dinner_table (dtb_id) ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 -- COMMENT Statement is used for PostGresql but this is also compatible with HSQLDB 2.0.
-COMMENT ON TABLE t_table_cashing IS 'This table is used for cashing of dinner table depending on type of cashing.';
+COMMENT ON TABLE t_table_cashing IS 'This table is used for cashing of dinner table.';
 COMMENT ON COLUMN t_table_cashing.tcs_id IS 'This is primary key of this table.';
-COMMENT ON COLUMN t_table_cashing.dtb_id IS 'This is a foreign key that refers to t_dinner_table. It is used to specify the dinner table. This field and the other tcs_type_enum_id fields consist of a unique field.';
-COMMENT ON COLUMN t_table_cashing.tcs_type_enum_id IS 'This is a foreign key that refers to t_enum. It is used to specify the type of cashing. It could be GENERIC_CASH, EURO_CASH, DOLLAR_CASH, GENERIC_TICKET, MEAL_TICKET, HOLIDAYS_TICKET, GENERIC_CHECK, BNP_CHECK, GENERIC_CARD, VISA_CARD, MASTER_CARD, UNPAID... This field and the other dtb_id fields consist of a unique field.';
-COMMENT ON COLUMN t_table_cashing.tcs_amount IS 'This is the amount of the dinner table depending on the specific type of cashing.';
+COMMENT ON COLUMN t_table_cashing.dtb_id IS 'This is a foreign key that refers to t_dinner_table. It is used to specify the dinner table. There is only one dinner table for one cashing. This field consist of a unique field.';
+COMMENT ON COLUMN t_table_cashing.tcs_cashing_date IS 'This is the date of the dinner table cashing.';
 COMMENT ON COLUMN t_table_cashing.tcs_deleted IS 'This is used for logical deletion.';
 -- For PostGresql, the sequence is marked as "*{OWNED BY" the column, so that it will be dropped if the column or table is dropped.
 ALTER SEQUENCE t_table_cashing_tcs_id_seq *{OWNED BY t_table_cashing.tcs_id};
+
+-- New START
+CREATE SEQUENCE t_cashing_type_cst_id_seq;
+CREATE TABLE t_cashing_type (
+  cst_id integer *{DEFAULT NEXTVAL('t_cashing_type_cst_id_seq')} NOT null PRIMARY KEY,
+  tcs_id integer NOT null,
+  cst_type_enum_id integer NOT null,
+  cst_amount numeric(12,4) DEFAULT 0.00 NOT null,
+  cst_deleted BOOLEAN DEFAULT false NOT null,
+  CONSTRAINT cst_id_uni UNIQUE (cst_id),
+  CONSTRAINT cst_tcs_id_cst_type_enum_id_uni UNIQUE (tcs_id, cst_type_enum_id),
+  CONSTRAINT cst_tcs_id_fk FOREIGN KEY (tcs_id) REFERENCES t_table_cashing (tcs_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT cst_type_enum_id_fk FOREIGN KEY (cst_type_enum_id) REFERENCES t_enum (enm_id) ON UPDATE RESTRICT ON DELETE RESTRICT
+);
+-- COMMENT Statement is used for PostGresql but this is also compatible with HSQLDB 2.0.
+COMMENT ON TABLE t_cashing_type IS 'This table is used for cashing of dinner table depending on type of cashing.';
+COMMENT ON COLUMN t_cashing_type.cst_id IS 'This is primary key of this table.';
+COMMENT ON COLUMN t_cashing_type.tcs_id IS 'This is a foreign key that refers to t_table_cashing. It is used to specify the cashed table. This field and the other cst_type_enum_id fields consist of a unique field.';
+COMMENT ON COLUMN t_cashing_type.cst_type_enum_id IS 'This is a foreign key that refers to t_enum. It is used to specify the type of cashing. It could be GENERIC_CASH, EURO_CASH, DOLLAR_CASH, GENERIC_TICKET, MEAL_TICKET, HOLIDAYS_TICKET, GENERIC_CHECK, BNP_CHECK, GENERIC_CARD, VISA_CARD, MASTER_CARD, UNPAID... This field and the other tcs_id fields consist of a unique field.';
+COMMENT ON COLUMN t_cashing_type.cst_amount IS 'This is the amount of the dinner table depending on the specific type of cashing.';
+COMMENT ON COLUMN t_cashing_type.cst_deleted IS 'This is used for logical deletion.';
+-- For PostGresql, the sequence is marked as "*{OWNED BY" the column, so that it will be dropped if the column or table is dropped.
+ALTER SEQUENCE t_cashing_type_cst_id_seq *{OWNED BY t_cashing_type.cst_id};
 
 -- New START
 CREATE SEQUENCE t_revenue_rev_id_seq;

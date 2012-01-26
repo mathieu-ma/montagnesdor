@@ -12,6 +12,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
+import fr.mch.mdo.restaurant.dto.beans.CashingTypeDto;
 import fr.mch.mdo.restaurant.dto.beans.DinnerTableDto;
 import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto;
 import fr.mch.mdo.restaurant.dto.beans.OrderLineDto;
@@ -23,6 +24,7 @@ import fr.mch.mdo.restaurant.dto.beans.TableCreditDto;
 import fr.mch.mdo.restaurant.dto.beans.TableTypeDto;
 import fr.mch.mdo.restaurant.dto.beans.TableVatDto;
 import fr.mch.mdo.restaurant.dto.beans.UserAuthenticationDto;
+import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.services.business.managers.DefaultAdministrationManagerTest;
 import fr.mch.mdo.restaurant.services.business.managers.IAdministrationManager;
 import fr.mch.mdo.test.MdoTestCase;
@@ -77,12 +79,19 @@ public class DefaultDinnerTablesManagerTest extends DefaultAdministrationManager
 		Set<TableBillDto> bills = null;
 		Set<TableCreditDto> credits = null;
 		Set<TableVatDto> vats = null;
-		Set<TableCashingDto> cashings = new HashSet<TableCashingDto>();
+		TableCashingDto tableCashing = new TableCashingDto();
+		tableCashing.setCashingDate(cashingDate);
+		CashingTypeDto cashingType = new CashingTypeDto();
+		MdoTableAsEnumDto typeOfCashing = new MdoTableAsEnumDto();
+		typeOfCashing.setId(35L);
+		cashingType.setType(typeOfCashing);
+		cashingType.setAmount(BigDecimal.TEN);
+		tableCashing.addCashingType(cashingType);
 		DinnerTableDto dinnerTable = (DinnerTableDto) createNewBean(restaurant,
-				number, cashingDate, user, rooId, customersNumber,
+				number, user, rooId, customersNumber,
 				quantitiesSum, amountsSum, reductionRatio, amountPay,
 				registrationDate, printingDate, reductionRatioChanged, type,
-				orders, bills, credits, vats, cashings);
+				orders, bills, credits, vats, tableCashing);
 
 		OrderLineDto orderLine = new OrderLineDto();
 		orderLine.setQuantity(BigDecimal.ONE);
@@ -93,13 +102,6 @@ public class DefaultDinnerTablesManagerTest extends DefaultAdministrationManager
 		productSpecialCode.setId(1L);
 		orderLine.setProductSpecialCode(productSpecialCode);
 		dinnerTable.addOrderLine(orderLine);
-
-		TableCashingDto cashing = new TableCashingDto();
-		MdoTableAsEnumDto cashingType = new MdoTableAsEnumDto();
-		cashingType.setId(35L);
-		cashing.setType(cashingType);
-		cashing.setAmount(BigDecimal.TEN);
-		dinnerTable.addCashing(cashing);
 
 		return dinnerTable;
 	}
@@ -131,12 +133,19 @@ public class DefaultDinnerTablesManagerTest extends DefaultAdministrationManager
 		Set<TableBillDto> bills = null;
 		Set<TableCreditDto> credits = null;
 		Set<TableVatDto> vats = null;
-		Set<TableCashingDto> cashings = new HashSet<TableCashingDto>();
+		TableCashingDto tableCashing = new TableCashingDto();
+		tableCashing.setCashingDate(cashingDate);
+		CashingTypeDto cashingType = new CashingTypeDto();
+		MdoTableAsEnumDto typeOfCashing = new MdoTableAsEnumDto();
+		typeOfCashing.setId(36L);
+		cashingType.setType(typeOfCashing);
+		cashingType.setAmount(BigDecimal.TEN);
+		tableCashing.addCashingType(cashingType);
 		DinnerTableDto dinnerTable = (DinnerTableDto) createNewBean(restaurant,
-				number, cashingDate, user, rooId, customersNumber,
+				number, user, rooId, customersNumber,
 				quantitiesSum, amountsSum, reductionRatio, amountPay,
 				registrationDate, printingDate, reductionRatioChanged, type,
-				orders, bills, credits, vats, cashings);
+				orders, bills, credits, vats, tableCashing);
 
 		OrderLineDto orderLine = new OrderLineDto();
 		orderLine.setQuantity(BigDecimal.ONE);
@@ -147,13 +156,6 @@ public class DefaultDinnerTablesManagerTest extends DefaultAdministrationManager
 		productSpecialCode.setId(1L);
 		orderLine.setProductSpecialCode(productSpecialCode);
 		dinnerTable.addOrderLine(orderLine);
-
-		TableCashingDto cashing = new TableCashingDto();
-		MdoTableAsEnumDto cashingType = new MdoTableAsEnumDto();
-		cashingType.setId(36L);
-		cashing.setType(cashingType);
-		cashing.setAmount(BigDecimal.TEN);
-		dinnerTable.addCashing(cashing);
 
 		list.add(dinnerTable);
 		return list;
@@ -185,12 +187,19 @@ public class DefaultDinnerTablesManagerTest extends DefaultAdministrationManager
 		Set<TableBillDto> bills = null;
 		Set<TableCreditDto> credits = null;
 		Set<TableVatDto> vats = null;
-		Set<TableCashingDto> cashings = new HashSet<TableCashingDto>();
+		TableCashingDto tableCashing = new TableCashingDto();
+		tableCashing.setCashingDate(cashingDate);
+		CashingTypeDto cashingType = new CashingTypeDto();
+		MdoTableAsEnumDto typeOfCashing = new MdoTableAsEnumDto();
+		typeOfCashing.setId(36L);
+		cashingType.setType(typeOfCashing);
+		cashingType.setAmount(BigDecimal.TEN);
+		tableCashing.addCashingType(cashingType);
 		DinnerTableDto dinnerTable = (DinnerTableDto) createNewBean(restaurant,
-				number, cashingDate, user, rooId, customersNumber,
+				number, user, rooId, customersNumber,
 				quantitiesSum, amountsSum, reductionRatio, amountPay,
 				registrationDate, printingDate, reductionRatioChanged, type,
-				orders, bills, credits, vats, cashings);
+				orders, bills, credits, vats, tableCashing);
 
 		OrderLineDto orderLine = new OrderLineDto();
 		orderLine.setQuantity(BigDecimal.ONE);
@@ -202,12 +211,6 @@ public class DefaultDinnerTablesManagerTest extends DefaultAdministrationManager
 		orderLine.setProductSpecialCode(productSpecialCode);
 		dinnerTable.addOrderLine(orderLine);
 
-		TableCashingDto cashing = new TableCashingDto();
-		MdoTableAsEnumDto cashingType = new MdoTableAsEnumDto();
-		cashingType.setId(36L);
-		cashing.setType(cashingType);
-		cashing.setAmount(BigDecimal.TEN);
-		dinnerTable.addCashing(cashing);
 		try {
 			// Create new bean to be updated
 			IMdoBean beanToBeUpdated = this.getInstance().insert(dinnerTable, DefaultAdministrationManagerTest.userContext);
@@ -232,28 +235,54 @@ public class DefaultDinnerTablesManagerTest extends DefaultAdministrationManager
 		}
 	}
 
+	public void testCreateFromUserContext() {
+		try {
+			// Could create a new table with this table number
+			DinnerTableDto dinnerTable = new DinnerTableDto();
+			// Set required fields
+			String number = "1234";
+			Integer customersNumber = 2;
+			dinnerTable.setNumber(number);
+			dinnerTable.setCustomersNumber(customersNumber);
+			DefaultAdministrationManagerTest.userContext.setMyDinnerTable(dinnerTable);
+			Long dinnerTableId = ((IDinnerTablesManager) this.getInstance()).createFromUserContext(DefaultAdministrationManagerTest.userContext, number);
+			assertNotNull("Dinner Table Id not null", dinnerTableId);
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+
+	
 	@Override
 	protected void doProcessList() {
 	}
 
+	public void testFindAllFreeTable() {
+		try {
+			List<IMdoDtoBean> list = ((IDinnerTablesManager) this.getInstance()).findAllFreeTables(DefaultAdministrationManagerTest.userContext);
+			assertNotNull("List of Dinner Tables", list);
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+	
 	public void testGetInstance() {
 		assertTrue(this.getInstance() instanceof IDinnerTablesManager);
 		assertTrue(this.getInstance() instanceof DefaultDinnerTablesManager);
 	}
 
 	private IMdoDtoBean createNewBean(RestaurantDto restaurant, String number,
-			Date cashingDate, UserAuthenticationDto user, Long rooId,
+			UserAuthenticationDto user, Long rooId,
 			Integer customersNumber, BigDecimal quantitiesSum,
 			BigDecimal amountsSum, BigDecimal reductionRatio,
 			BigDecimal amountPay, Date registrationDate, Date printingDate,
 			Boolean reductionRatioChanged, TableTypeDto type,
 			Set<OrderLineDto> orders, Set<TableBillDto> bills,
 			Set<TableCreditDto> credits, Set<TableVatDto> vats,
-			Set<TableCashingDto> cashings) {
+			TableCashingDto cashing) {
 		DinnerTableDto newBean = new DinnerTableDto();
 		newBean.setRestaurant(restaurant);
 		newBean.setNumber(number);
-		newBean.setCashingDate(cashingDate);
 		newBean.setUser(user);
 		newBean.setRoo_id(rooId);
 		newBean.setCustomersNumber(customersNumber);
@@ -269,7 +298,45 @@ public class DefaultDinnerTablesManagerTest extends DefaultAdministrationManager
 		newBean.setBills(bills);
 		newBean.setCredits(credits);
 		newBean.setVats(vats);
-		newBean.setCashings(cashings);
+		newBean.setCashing(cashing);
 		return newBean;
+	}
+	
+	public void testUpdateCustomersNumber() {
+		try {
+			Long dinnerTableId = Long.valueOf(1);
+			// The value 2 is in the file montagnesdorDatas.sql
+			Integer customersNumber = new Integer(2);
+			DinnerTableDto dinnerTable = (DinnerTableDto) ((IDinnerTablesManager) this.getInstance()).findByPrimaryKey(dinnerTableId, DefaultAdministrationManagerTest.userContext);
+			assertEquals("Check Dinner Table's Customers Number initial value", customersNumber, dinnerTable.getCustomersNumber());
+			customersNumber = new Integer(6);
+			((IDinnerTablesManager) this.getInstance()).updateCustomersNumber(dinnerTableId, customersNumber);
+			DinnerTableDto updatedDinnerTable = (DinnerTableDto) ((IDinnerTablesManager) this.getInstance()).findByPrimaryKey(dinnerTableId, DefaultAdministrationManagerTest.userContext);
+			assertEquals("Check Dinner Table's Customers Number updated value", customersNumber, updatedDinnerTable.getCustomersNumber());
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+	
+	public void testProcessOrderLineByCode() {
+		int i=0;
+		while(i++<3)
+		try {
+			OrderLineDto orderLine = new OrderLineDto();
+			String code = "11";
+			BigDecimal quantity = new BigDecimal(2);
+			orderLine.setQuantity(quantity);
+			orderLine.setCode(code);
+			Long dinnerTableId = new Long(1);
+			orderLine.setId(1L);
+			orderLine.setDinnerTable(new DinnerTableDto());
+			orderLine.getDinnerTable().setId(dinnerTableId);
+			long deltaTime = System.currentTimeMillis();
+			((IDinnerTablesManager) this.getInstance()).processOrderLineByCode(DefaultAdministrationManagerTest.userContext, orderLine, null);
+			deltaTime = System.currentTimeMillis() - deltaTime;
+			System.out.println("testProcessOrderLineByCode Delta Time = " + deltaTime);
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
 	}
 }

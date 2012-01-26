@@ -44,9 +44,9 @@ public class DefaultMdoTableAsEnumsManagerTest extends DefaultAdministrationMana
 	@Override
 	protected IMdoDtoBean createNewBean() {
 		MdoTableAsEnumTypeDao type = MdoTableAsEnumTypeDao.PREFIX_TABLE_NAME;
-		String name = "B";
-		int order = 1;
-		String defaultLabel = "B";
+		String name = "C";
+		int order = 2;
+		String defaultLabel = "C";
 		String languageKeyLabel = type.name() + "." + name + "." + order;
 
 		return createNewBean(type, name, order, defaultLabel, languageKeyLabel);
@@ -56,15 +56,15 @@ public class DefaultMdoTableAsEnumsManagerTest extends DefaultAdministrationMana
 	protected List<IMdoBean> createListBeans() {
 		List<IMdoBean> list = new ArrayList<IMdoBean>();
 		MdoTableAsEnumTypeDao type = MdoTableAsEnumTypeDao.PREFIX_TABLE_NAME;
-		String name = "C";
-		int order = 2;
-		String defaultLabel = "C";
+		String name = "D";
+		int order = 3;
+		String defaultLabel = "D";
 		String languageKeyLabel = type.name() + "." + name + "." + order;
 		list.add(createNewBean(type, name, order, defaultLabel, languageKeyLabel));
 		type = MdoTableAsEnumTypeDao.PREFIX_TABLE_NAME;
-		name = "D";
-		order = 3;
-		defaultLabel = "D";
+		name = "E";
+		order = 4;
+		defaultLabel = "E";
 		languageKeyLabel = type.name() + "." + name + "." + order;
 		list.add(createNewBean(type, name, order, defaultLabel, languageKeyLabel));
 		return list;
@@ -122,10 +122,11 @@ public class DefaultMdoTableAsEnumsManagerTest extends DefaultAdministrationMana
 		MdoTableAsEnumTypeDao type = MdoTableAsEnumTypeDao.PREFIX_TABLE_NAME;
 		List<IMdoDtoBean> list = ((DefaultMdoTableAsEnumsManager) this.getInstance()).getPrefixTableNames(DefaultAdministrationManagerTest.userContext);
 		// Only 1 elements
-		int expectedSize = 1;
+		int expectedSize = 2;
 		Map<String, String> expectedData = new LinkedHashMap<String, String>();
 		expectedData.put("A", "A");
-		int expectedBeginId = 1;
+		expectedData.put("B", "B");
+		int expectedBeginId = 0;
 		checkList(type, list, expectedSize, expectedData, expectedBeginId);
 	}
 

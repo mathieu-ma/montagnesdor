@@ -68,7 +68,9 @@
 		<module>service</module>
 		<module>dao</module>
 		<module>authentication</module>
+<!-- 		
     	<module>jopendocument</module>
+-->    	
 		<module>business</module>
 		<module>web</module>
 		<module>web-administration</module>

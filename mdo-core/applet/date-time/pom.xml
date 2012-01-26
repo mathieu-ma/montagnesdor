@@ -41,7 +41,7 @@
 							<goal>run</goal>
 						</goals>
 						<configuration>
-							<tasks>
+							<target>
 								<echo>
 									Remove all files in
 									${security-generated-files-folder}				
@@ -49,7 +49,7 @@
 								<delete verbose="true" failonerror="no">
 									<fileset dir="${security-generated-files-folder}" />
 								</delete>
-							</tasks>
+							</target>
 						</configuration>
 					</execution>
 				</executions>

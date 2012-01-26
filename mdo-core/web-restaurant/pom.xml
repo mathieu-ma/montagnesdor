@@ -90,7 +90,7 @@
 							<goal>run</goal>
 						</goals>
 						<configuration>
-							<tasks>
+							<target>
 								<echo>
 									Remove all WAR lib files in src/main/webapp/WEB-INF/lib				
 								</echo>
@@ -100,7 +100,7 @@
 								<delete verbose="true" failonerror="no">
 									<fileset dir="src/main/webapp/WEB-INF/classes" />
 								</delete>
-							</tasks>
+							</target>
 						</configuration>
 					</execution>
 				</executions>
@@ -321,7 +321,7 @@
 									<goal>run</goal>
 								</goals>
 								<configuration>
-									<tasks>
+									<target>
 										<echo>
 											Create temporary directories in target folder for
 											tomcat/eclipse integration				
@@ -352,7 +352,7 @@
 										<mkdir dir="target/embedded-server-resources" />
 										<echo>TESTING ${file.separator} == ${parentBasedir} ==
 											${project.basedir.parentFile}</echo>
-									</tasks>
+									</target>
 								</configuration>
 							</execution>
 						</executions>
@@ -482,13 +482,16 @@
 			<version>1.0-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
+<!-- 		
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>jopendocument</artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
-		<dependency>
+
+ -->
+ 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>web</artifactId>
 			<version>1.0-SNAPSHOT</version>

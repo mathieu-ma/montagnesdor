@@ -58,7 +58,7 @@
 							<goal>run</goal>
 						</goals>
 						<configuration>
-							<tasks>
+							<target>
 								<echo>
 									Remove all files in
 									${security-generated-files-folder}				
@@ -66,7 +66,7 @@
 								<delete verbose="true" failonerror="no">
 									<fileset dir="${security-generated-files-folder}" />
 								</delete>
-							</tasks>
+							</target>
 						</configuration>
 					</execution>
 				</executions>
@@ -130,12 +130,12 @@
 							<goal>run</goal>
 						</goals>
 						<configuration>
-							<tasks>
+							<target>
 								<echo>
 									Jar Linux 64 bits RXTX Library 
 								</echo>
 								<jar destfile="linux-64-rxtx-library.jar" basedir="target/classes/rxtx/lib64/linux" includes="librxtxSerial.so" />
-							</tasks>
+							</target>
 						</configuration>
 					</execution>
 				</executions>
@@ -195,7 +195,7 @@
 							<goal>run</goal>
 						</goals>
 						<configuration>
-							<tasks>
+							<target>
 								<echo>
 									Sign Jar Linux 64 bits RXTX Library 
 								</echo>
@@ -208,7 +208,7 @@
     signedjar="Slinux-64-rxtx-library.jar"
     >
 </signjar>
-							</tasks>
+							</target>
 						</configuration>
 					</execution>
 				</executions>

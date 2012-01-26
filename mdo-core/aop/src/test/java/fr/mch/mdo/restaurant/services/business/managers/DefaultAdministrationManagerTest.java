@@ -38,6 +38,7 @@ public abstract class DefaultAdministrationManagerTest extends MdoBusinessBasicT
 		if (userContext == null) {
 			userContext = new MdoUserContext(new Subject());
 			LocaleDto currentLocale = new LocaleDto();
+			currentLocale.setId(1L);
 			currentLocale.setLanguageCode(Locale.FRANCE.getLanguage());
 			userContext.setCurrentLocale(currentLocale);
 			UserAuthenticationDto user = null;

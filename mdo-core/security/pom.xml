@@ -60,7 +60,7 @@
 							<goal>run</goal>
 						</goals>
 						<configuration>
-							<tasks>
+							<target>
 								<echo>
 									Remove all files in ${security-source-generated-files-folder}
 									but not dummy file								
@@ -78,7 +78,7 @@
 									<fileset dir="${security-generated-files-folder}"/>
 								</delete>
 							 -->	
-							</tasks>
+							</target>
 						</configuration>
 					</execution>
 					<execution>
@@ -88,14 +88,14 @@
 							<goal>run</goal>
 						</goals>
 						<configuration>
-							<tasks>
+							<target>
 								<echo>
 									${openssl.exe} genrsa -out ${privateKeyRSA} 2048
 								</echo>
 								<exec executable="${openssl.exe}">
 									<arg line="genrsa -out ${privateKeyRSA} 1024" />
 								</exec>
-							</tasks>
+							</target>
 						</configuration>
 					</execution>
 					<execution>
@@ -105,7 +105,7 @@
 							<goal>run</goal>
 						</goals>
 						<configuration>
-							<tasks>
+							<target>
 								<description>
 									Creating a self-signed test certificate.
 									This file
@@ -122,7 +122,7 @@
 									<arg
 										line="req -config ${openSSLConf} -new -x509 -key ${privateKeyRSA} -out ${selfSignedCertificate} -days 1095" />
 								</exec>
-							</tasks>
+							</target>
 						</configuration>
 					</execution>
 					<execution>
@@ -132,7 +132,7 @@
 							<goal>run</goal>
 						</goals>
 						<configuration>
-							<tasks>
+							<target>
 								<description>
 									Create pkcs12 keystore
 								</description>
@@ -150,7 +150,7 @@
 									<arg
 										line="pkcs12 -export -passout file:${passwordsFileKeystorePKCS12} -passin file:${passwordsFileKeystorePKCS12} -in ${selfSignedCertificate} -inkey ${privateKeyRSA} -out ${keystorePKCS12} -name ${alias}" />
 								</exec>
-							</tasks>
+							</target>
 						</configuration>
 					</execution>
 					<execution>
@@ -160,7 +160,7 @@
 							<goal>run</goal>
 						</goals>
 						<configuration>
-							<tasks>
+							<target>
 								<description>
 									Convert PKCS12 keystore to JKS keystore. 
 									The	generated file
@@ -194,7 +194,7 @@
 									Remove dummy file in ${security-generated-files-folder}								
 								</echo>
 								<delete verbose="true" file="${security-generated-files-folder}/dummy"/>
-							</tasks>
+							</target>
 						</configuration>
 					</execution>
 					<execution>
@@ -204,14 +204,14 @@
 							<goal>run</goal>
 						</goals>
 						<configuration>
-							<tasks>
+							<target>
 								<echo>
 									Copy files from ${security-generated-files-folder}								
 								</echo>
 								<copy todir="${security-source-generated-files-folder}">
 									<fileset dir="${security-generated-files-folder}"/>
 								</copy>
-							</tasks>
+							</target>
 						</configuration>
 					</execution>
 				</executions>

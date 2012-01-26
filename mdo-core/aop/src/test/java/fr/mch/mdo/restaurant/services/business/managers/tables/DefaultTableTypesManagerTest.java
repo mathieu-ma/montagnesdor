@@ -133,6 +133,28 @@ public class DefaultTableTypesManagerTest extends DefaultAdministrationManagerTe
 		assertTrue(this.getInstance() instanceof DefaultTableTypesManager);
 	}
 
+	public void testFindByCodeName() {
+		String codeName = null;
+		try {
+			((ITableTypesManager) this.getInstance()).findByCodeName(codeName, DefaultAdministrationManagerTest.userContext);
+			fail(DEFAULT_FAILED_MESSAGE);
+		} catch (MdoException e) {
+			assertNotNull("Exception because codeName null", e);
+		}
+		try {
+			codeName = "";
+			TableTypeDto tableType = ((ITableTypesManager) this.getInstance()).findByCodeName(codeName, DefaultAdministrationManagerTest.userContext);
+			assertNull("TableTypeDto must be null", tableType);
+
+			codeName = "TAKE_AWAY";
+			tableType = ((ITableTypesManager) this.getInstance()).findByCodeName(codeName, DefaultAdministrationManagerTest.userContext);
+			assertNotNull("TableTypeDto must NOT be null", tableType);
+			assertEquals("Check TableTypeDto code name", codeName, tableType.getCode().getName());
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+
 	private IMdoDtoBean createNewBean(MdoTableAsEnumDto code) {
 		TableTypeDto newBean = new TableTypeDto();
 		newBean.setCode(code);
