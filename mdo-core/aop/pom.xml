@@ -8,9 +8,13 @@
 		<groupId>fr.mch.mdo</groupId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
-	<groupId>fr.mch.mdo</groupId>
+	
+	<!-- This aop module is woven with 2 dependencies: dao and business -->
+	<!-- 
+		If we want to used this aop module in the web application, 
+		we have to remove the 2 jars(dao and business) from the lib folder and copy this aop jar into the lib folder.  
+	-->
 	<artifactId>aop</artifactId>
-	<version>1.0-SNAPSHOT</version>
 	<name>aop</name>
 	<url>http://maven.apache.org</url>
 	<build>
@@ -67,8 +71,51 @@
 					</execution>
 				</executions>
 			</plugin>
-		</plugins>
-	</build>
+<!-- 
+<plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-dependency-plugin</artifactId>
+	<executions>
+		<execution>
+			<id>unpack</id>
+			<phase>process-test-classes</phase>
+			<goals>
+				<goal>unpack</goal>
+			</goals>
+			<configuration>
+				<artifactItems>
+					<artifactItem>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>business</artifactId>
+						<version>1.0-SNAPSHOT</version>
+						<type>test-jar</type>
+						<outputDirectory>${project.build.directory}/additionalTests/business</outputDirectory>
+					</artifactItem>
+				</artifactItems>
+			</configuration>
+		</execution>
+	</executions>
+</plugin>
+<plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-surefire-plugin</artifactId>
+	<executions>
+		<execution>
+			<id>project-business-tests</id>
+			<phase>test</phase>
+			<goals>
+				<goal>test</goal>
+			</goals>
+			<configuration>
+				<testClassesDirectory>${project.build.directory}/additionalTests/business</testClassesDirectory>
+				<reportsDirectory>${project.build.directory}/surefire-reports/business</reportsDirectory>
+			</configuration>
+		</execution>
+	</executions>
+</plugin>			
+ -->
+ 		</plugins>
+ 	</build>
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -86,7 +133,14 @@
 			<artifactId>aspectjrt</artifactId>
 			<version>1.6.7</version>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>business</artifactId>
+			<type>test-jar</type>
+			<version>1.0-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>test</artifactId>

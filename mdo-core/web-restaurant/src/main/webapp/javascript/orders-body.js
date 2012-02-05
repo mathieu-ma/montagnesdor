@@ -293,19 +293,12 @@ jQuery(document).ready(function() {
 		});
 //		var url = "/web-restaurant/jsp/tables-orders/productC1.xml?" + jQuery.param(orderLine);
 /************* END TEST ***************/
-		var isOrderAutoUpdate = $("#header-order-auto-update:checked").length;
-		var jFoundRow = getRowByCode(code);
-		if (isOrderAutoUpdate && jFoundRow.length>0 && jFoundRow[0] != jCurrentRow[0]) {
-			// Only when found row is not the current one
-			// Update old order line and delete the current one
-			orderLine.quantity = parseFloat(orderLine.quantity) + parseFloat(jFoundRow[0].cells[0].innerHTML);
-			// Delete the current Row
-			orderLine.deletedId = jCurrentRow.attr("id") || "";
-			// Reset or Delete row at the end of the process
-			isRowByCodeExisted = true;
-		} else {
-			jFoundRow = jCurrentRow;
-		}
+		// orderAutoUpdate is object of class OrderAutoUpdate
+		var orderAutoUpdate = processOrderAutoUpdate(code, jCurrentRow, orderLine);
+		var jFoundRow = orderAutoUpdate.jFoundRow;
+		orderLine = orderAutoUpdate.orderLine;
+		isRowByCodeExisted = orderAutoUpdate.isRowByCodeExisted;
+		
 		if(parseFloat(orderLine.quantity)==0) {
 			alert("Quantity must not be zero");
 			backward(jText, -1);
@@ -457,17 +450,77 @@ jQuery(document).ready(function() {
 			});
 		}
 	}
+	/**
+	 * This method return a Jquery object as table row. It will always return a non null object.
+	 * The result could be an array.
+	 */
 	function getRowByCode(code) {
+		// Create Jquery empty object
+		var jResult = $();
 		if (code) {
 			try {
 				//return jQuery("tr." + code, jBodyOrders);
-				return jQuery("tr[data-code][data-code='" + code +"']", jBodyOrders);
+				jResult = jQuery("tr[data-code][data-code='" + code +"']", jBodyOrders);
 			} catch (e) {
 				// Error could be raised if code equals to "/" or with characters not compatible with class name.
 				// Return empty object.
 			}
 		}
-		return {};
+		return jResult;
+	}
+	/**
+	 * This is POJO object.
+	 * This class is not required in javascript but it is usefull for semantic.
+	 */
+	function OrderAutoUpdate() {
+		/** Fields Part */
+		this.jFoundRow = null;
+		this.isRowByCodeExisted = false;
+		this.orderLine = null;
+
+		/** Methods Part */
+	}
+	/**
+	 * This method will search a row by code.
+	 * It follows the following process:
+	 * 1) if the parameter jExcludedElement is empty then it will return the first element not the entire found array.
+	 * 2) if the parameter jExcludedElement is not empty then 
+	 */
+	function processOrderAutoUpdate(code, jCurrentRow, orderLine) {
+		var result = new OrderAutoUpdate();
+		// Default values
+		result.jFoundRow = jCurrentRow;
+		result.isRowByCodeExisted = false;
+		result.orderLine = orderLine;
+		
+		// Default value for isOrderAutoUpdateFirstFoundRowOnly : maybe this local variable will be global or value set by user
+//		var isOrderAutoUpdateFirstFoundRowOnly = true;
+		var isOrderAutoUpdateFirstFoundRowOnly = false;
+		var isOrderAutoUpdate = $("#header-order-auto-update:checked").length;
+		// Find if there is another row with the same code but it is not the current row
+		var jFoundRow = getRowByCode(code);
+		if (isOrderAutoUpdate && jFoundRow.length > 0) {
+			if (jFoundRow.index(jCurrentRow[0]) != -1) {
+				//jFoundRow contains at least the element jCurrentRow
+				if (jFoundRow.length == 1 || isOrderAutoUpdateFirstFoundRowOnly) {
+					 // jFoundRow == jCurrentRow or we want isOrderAutoUpdateFirstFoundRowOnly
+					return result;
+				}
+				jFoundRow = jFoundRow.not(jCurrentRow[0]);
+			}
+			// Get the first one because we could get an array of elements
+			jFoundRow = jFoundRow.eq(0);
+			
+			// Only when found row is not the current one
+			// Update old order line and delete the current one
+			result.orderLine.quantity = parseFloat(orderLine.quantity) + parseFloat(jFoundRow[0].cells[0].innerHTML);
+			// Delete the current Row
+			result.orderLine.deletedId = jCurrentRow.attr("id") || "";
+			// Reset or Delete row at the end of the process
+			result.isRowByCodeExisted = true;
+			result.jFoundRow = jFoundRow;
+		}
+		return result;
 	}
 	function updateRowByOrderLine(jRow, orderLine) {
 		var cells = jRow[0].cells;

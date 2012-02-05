@@ -65,6 +65,8 @@
 	    <module>i18n</module>
 		<module>log</module>
 		<module>exception</module>
+		<!-- jms module is used in web-restaurant module -->
+		<module>jms</module>
 		<module>service</module>
 		<module>dao</module>
 		<module>authentication</module>
@@ -72,12 +74,12 @@
     	<module>jopendocument</module>
 -->    	
 		<module>business</module>
+		<module>ioc</module>
 		<module>web</module>
 		<module>web-administration</module>
-<!--
 		<module>web-restaurant</module>
--->
+
+		<!-- See the pom.xml of aop module in order to know how to use AOP in web application -->
 	    <module>aop</module>
-		<module>ioc</module>
   </modules>
 </project>

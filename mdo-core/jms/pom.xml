@@ -32,6 +32,6 @@
 	</build>
 	<modules>
 		<module>embedded-server</module>
-		<module>client-producer</module>
+		<module>client-jms</module>
 	</modules>
 </project>

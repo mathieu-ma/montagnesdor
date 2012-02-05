@@ -43,4 +43,9 @@ public class DefaultTableOrdersDaoTest extends TestCase
 //	    e.printStackTrace();
 //	}
 //    }
+	
+	public void testDummy() {
+		
+	}
+
 }

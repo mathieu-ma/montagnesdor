@@ -109,4 +109,8 @@ public class DefaultTablesOrdersManagerTest extends TestCase
 //	    e.printStackTrace();
 //	}
 //    }
+	
+	public void testDummy() {
+		
+	}
 }
