@@ -13,10 +13,31 @@ import fr.mch.mdo.restaurant.dao.hibernate.DefaultSessionFactory;
 import fr.mch.mdo.restaurant.exception.MdoDataBeanException;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 
+/**
+ * This class is used for data migration from V1 to V2.
+ * It will generate SQL data files from SQL data file of V1.
+ * If you are in Ubuntu OS and the database is named montagnesdor for kimsan 93 restaurant 
+ * then you have to follow theses steps in order to migrate from old database into new one:
+ * 1) Create a new database name montagnesdor
+ * 2) sudo su postgres -c 'psql montagnesdor -f .../resources/fr/mch/mdo/restaurant/dao/montagnesdorStructure.sql' 
+ * 3) sudo su postgres -c 'psql montagnesdor -f .../resources/fr/mch/mdo/restaurant/dao/tools/migration/v1/DataMigrationKimsan93.sql' 
+ * 4) sudo su postgres -c 'psql montagnesdor -f .../resources/fr/mch/mdo/restaurant/dao/tools/migration/v1/DataMigrationProductWork.sql' 
+ * 5) sudo su postgres -c 'psql montagnesdor -f .../resources/fr/mch/mdo/restaurant/dao/tools/migration/v1/DataMigrationProductCategoryWork.sql' 
+ * 6) sudo su postgres -c 'psql montagnesdor -f .../resources/fr/mch/mdo/restaurant/dao/tools/migration/v1/DataMigrationProductSoldWork.sql'
+ * 7) sudo su postgres -c 'psql montagnesdor -f .../resources/fr/mch/mdo/restaurant/dao/tools/migration/v1/DataMigrationDinnerTableWork.sql'
+ * 8) sudo su postgres -c 'psql montagnesdor -f .../resources/fr/mch/mdo/restaurant/dao/tools/migration/v1/DataMigrationRevenueWork.sql'
+ *  
+ * @author mathieu
+ *
+ */
 public class DataMigrationV1ToV2 {
 	
 	private static ILogger logger = LoggerServiceImpl.getInstance().getLogger(DefaultSessionFactory.class.getName());
 
+	/**
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		
 		String outputFolder = "/home/mathieu/tmp/";

@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="/struts-tags" prefix="s" %>
 
-	<fmt:message var="title" key="orders.manager.title"/>
+	<fmt:message var="title" key="tables.orders.manager.title"/>
 	<%-- Get the called method of the action --%>
 	<s:set name="method" value="%{#context['com.opensymphony.xwork2.ActionContext.actionInvocation'].proxy.method}"/>
 	<tiles:insertDefinition name="main.layout">

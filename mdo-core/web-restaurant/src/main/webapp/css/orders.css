@@ -1,13 +1,17 @@
-	div.scroll-table-outer-body thead tr {
-		width: 100%;
-	}
+div.scroll-table-outer-body th, div.scroll-table-outer-body td {
+	width: 15%;
+	height: 3.5em;
+}
 
+div.scroll-table-outer-body thead tr {
+	width: 100%;
+}
 
 div.scroll-table-outer-body th.orders-quantity-header, div.scroll-table-outer-body td.cell0 {
-	width:116px;
+	width: 116px;
 }
 div.scroll-table-outer-body th.orders-code-header, div.scroll-table-outer-body td.cell1 {
-	width:116px;
+	width: 116px;
 }
 div.scroll-table-outer-body th.orders-label-header, div.scroll-table-outer-body td.cell2 {
 	width: 60%;

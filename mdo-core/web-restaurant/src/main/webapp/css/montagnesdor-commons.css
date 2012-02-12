@@ -34,7 +34,11 @@
 	.mdo-date {
 		text-transform: capitalize;	
 	}
-	
+
+	.mdo-code {
+		text-align: center;	
+	}
+
 	div#menu-body-footer {
 		height: 88%;
 	}

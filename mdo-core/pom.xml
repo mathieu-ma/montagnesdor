@@ -40,6 +40,12 @@
 		</developer>
 	</developers>
 
+	<scm>
+		<connection>scm:git:git@github.com:mathieu-ma/montagnesdor.git</connection>
+		<developerConnection>scm:git:git@github.com:mathieu-ma/montagnesdor.git</developerConnection>
+		<url>http://github.com/mathieu-ma/montagnesdor</url>
+	</scm>
+  
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>

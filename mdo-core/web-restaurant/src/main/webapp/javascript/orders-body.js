@@ -3,13 +3,31 @@ jQuery(document).ready(function() {
 	// Prevent Header Input elements
 	$("#input-header-order-table-number[value!=''],#input-header-order-table-customer[value!='']").unbind();
 	// Process the height of the main body data
-	jQuery(".scroll-table-inner-body").height(jQuery("#body").height()-50);
+	var scrollTableInnerBody = jQuery(".scroll-table-inner-body").height(jQuery("#body").height()-50);
+//	scrollTableInnerBody.height(150);
+	// Get the inner width
+	var innerWidth = jQuery(".scroll-table-inner-body table").innerWidth();
+	// Set the width of the container in case of scroll bar appears
+	jQuery("div.scroll-table-outer-body thead tr").width(innerWidth);
 
 	// For updating table
 	var jDinnerTableId = $("#dinnerTableId");
 	// For creating new table
 	var jDinnerTableNumber = $("#input-header-order-table-number");
 	
+	// For list tables
+	$("#listsortable").mdoTableSorter({
+		// sortList is empty array because we do not want default sorting by column 0
+		sortList: {}, 
+		// pass the headers argument and assing a object 
+        headers: { 
+            // assign the 7 column (we start counting zero) 
+            6: { 
+                // disable it by setting the property sorter to false 
+                sorter: false 
+            } 
+        } 
+	});
 	// For sorting list: sortList is empty array because we do not want default sorting by column 0
 	var jSortable = $("#table-orders").mdoTableSorter({sortList: {}});
 

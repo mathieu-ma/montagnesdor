@@ -7,7 +7,6 @@ import fr.mch.mdo.restaurant.dto.beans.DinnerTableDto;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.OrderLineDto;
 import fr.mch.mdo.restaurant.dto.beans.TablesOrdersDto;
-import fr.mch.mdo.restaurant.exception.MdoDinnerTableAlreadyInUseException;
 import fr.mch.mdo.restaurant.ioc.spring.WebRestaurantBeanFactory;
 import fr.mch.mdo.restaurant.services.business.managers.tables.IDinnerTablesManager;
 import fr.mch.mdo.restaurant.ui.forms.TablesOrdersForm;
@@ -215,13 +214,29 @@ deltaTime = System.currentTimeMillis();
 				ajaxOrderLine.setDinnerTableId(null);
 			}
 		} catch (Exception e) {
-			addActionError(getText("message.error.ui.action.saveOrderLine"));
+			addActionError(getText("message.error.ui.action.deleteOrderLine"));
 		}
 
 		// Forward control to the specified success URI
 		return forwardPage;
 	}
 
+	public String deleteTable() throws Exception {
+
+		TablesOrdersForm form = (TablesOrdersForm) super.getForm();
+
+		MdoUserContext userContext = (MdoUserContext) form.getUserContext();
+		super.getLogger().debug("Delete the table with id : " + form.getDtoBean().getId());
+		try {
+			manager.delete(form.getDtoBean(), userContext);
+		} catch (Exception e) {
+			addActionError(getText("message.error.ui.action.deleteTable"));
+		}
+
+		// Forward control to the specified success URI
+		return this.list();
+	}
+	
 	@SuppressWarnings("unchecked")
 	public String list() throws Exception {
 		String forwardPage = "list";
