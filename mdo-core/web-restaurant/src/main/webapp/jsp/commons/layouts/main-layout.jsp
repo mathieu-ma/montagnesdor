@@ -25,7 +25,7 @@
 
 		<!-- s:head theme="css_xhtml" debug="false"/ -->
 
-		<title><fmt:message key="mdo.welcome.restaurant"/> - <tiles:getAsString name="title"/></title>
+		<title><fmt:message key="mdo.title"/> - <tiles:getAsString name="title"/></title>
 	</head>
 	<body>
 	    <%-- Put all javascripts at the bottom page see http://developer.yahoo.com/performance/rules.html#js_bottom --%>

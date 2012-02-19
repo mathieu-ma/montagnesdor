@@ -16,8 +16,10 @@ import junit.framework.TestSuite;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.dao.DaoServicesFactory;
 import fr.mch.mdo.restaurant.dao.IDaoServices;
+import fr.mch.mdo.restaurant.dao.beans.CashingType;
 import fr.mch.mdo.restaurant.dao.beans.Credit;
 import fr.mch.mdo.restaurant.dao.beans.DinnerTable;
+import fr.mch.mdo.restaurant.dao.beans.MdoTableAsEnum;
 import fr.mch.mdo.restaurant.dao.beans.OrderLine;
 import fr.mch.mdo.restaurant.dao.beans.Product;
 import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode;
@@ -100,6 +102,12 @@ public class DefaultDinnerTablesDaoTest extends DefaultDaoServicesTestCase
 		Set<TableVat> vats = null;
 		TableCashing cashing = new TableCashing();
 		cashing.setCashingDate(new Date());
+		CashingType cashingType = new CashingType();
+		cashingType.setAmount(amountPay);
+		MdoTableAsEnum cashType = new MdoTableAsEnum();
+		cashType.setId(1L);
+		cashingType.setType(cashType);
+		cashing.addCashingType(cashingType);
 		DinnerTable dinnerTable = (DinnerTable) createNewBean(restaurant,
 				number, user, rooId, customersNumber,
 				quantitiesSum, amountsSum, reductionRatio, amountPay,

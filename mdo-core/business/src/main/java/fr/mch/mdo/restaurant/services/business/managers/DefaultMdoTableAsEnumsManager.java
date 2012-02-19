@@ -164,7 +164,9 @@ public class DefaultMdoTableAsEnumsManager extends AbstractAdministrationManager
 			bean.setType(type);
 			list.add(bean);
 			
-			existingTypes.add(type);
+			if (!existingTypes.contains(type)) {
+				existingTypes.add(type);
+			}
 		}
 		viewBean.setList(list);
 		((MdoTableAsEnumsManagerViewBean) viewBean).setExistingTypes(existingTypes);

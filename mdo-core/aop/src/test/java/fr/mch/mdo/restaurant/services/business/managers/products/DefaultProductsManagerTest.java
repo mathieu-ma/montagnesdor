@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -241,7 +242,14 @@ public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 	}
 	
 	public void testImportData() {
-		File file = new File(ITestResources.class.getResource("inport-data-10203040506070-fr.ods").getFile());
+		File file = null;
+		try {
+			// Don't use URL.getFile or URL.getPath instead convert to URI first
+			// Because when using URL and the path contains space then the URL.getFile or URL.getPath will convert space to "%20"
+			file = new File(ITestResources.class.getResource("inport-data-10203040506070-fr.ods").toURI().getPath());
+		} catch (URISyntaxException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
 		 try {
 			((IProductsManager) DefaultProductsManager.getInstance()).importData(file.getName(), file, DefaultProductsManagerTest.userContext);
 		} catch (MdoException e) {
@@ -274,8 +282,8 @@ public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 		} finally {
 			try {
 				fos.close();
-				// Open with ooo
-		        OOUtils.open(file);
+				// Open with ooo: Do not use the following instruction in Ubuntu Jenkins if the user who laucnh the test has no rights to open ooo
+		        //OOUtils.open(file);
 			} catch (IOException e) {
 				fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 			}

@@ -1,5 +1,6 @@
 package fr.mch.mdo.restaurant.services.authentication.jaas;
 
+import java.net.URISyntaxException;
 import java.security.Policy;
 
 import javax.security.auth.login.LoginContext;
@@ -42,11 +43,20 @@ public class MdoAuthenticationServiceImpl implements IMdoAuthenticationService
 	}
 
 	public MdoAuthenticationServiceImpl() {
-		this(IResources.class.getResource(IResources.JAAS_LOGIN_CONFIGURATION_FILE).getPath(), 
-				IResources.class.getResource(IResources.JAAS_POLICY_FILE).getPath());
+		this(IResources.JAAS_LOGIN_CONFIGURATION_FILE, IResources.JAAS_POLICY_FILE);
 	}
 
 	public MdoAuthenticationServiceImpl(String authLoginConfigPath, String authPolicyPath) {
+				
+		try {
+			// Don't use URL.getFile or URL.getPath instead convert to URI first
+			// Because when using URL and the path contains space then the URL.getFile or URL.getPath will convert space to "%20"
+			authLoginConfigPath = IResources.class.getResource(authLoginConfigPath).toURI().getPath();
+			authPolicyPath = IResources.class.getResource(authPolicyPath).toURI().getPath();
+		} catch (URISyntaxException e) {
+			logger.fatal("message.error.authentication.resources.uri.path", e);
+		}
+
 		// Tells the LoginContext where to find the configuration file
 		System.setProperty("java.security.auth.login.config", authLoginConfigPath);
 		// Gives the client the JAAS permissions it needs

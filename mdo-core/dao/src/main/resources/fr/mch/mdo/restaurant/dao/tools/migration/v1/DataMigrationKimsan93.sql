@@ -94,7 +94,7 @@ INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_langua
 INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('CATEGORY', 'ICE_CREAM', 18, 'Ice Cream','CATEGORY.ICE_CREAM.18', false);
 INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('CATEGORY', 'INFUSION', 19, 'Ice Cream','CATEGORY.INFUSION.19', false);
 
-INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('PRODUCT_SPECIAL_CODE', 'NOTHING', 0, 'Offered product', 'PRODUCT_SPECIAL_CODE.NOTHING.0', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('PRODUCT_SPECIAL_CODE', 'DEFAULT', 0, 'Default product', 'PRODUCT_SPECIAL_CODE.DEFAULT.0', false);
 INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('PRODUCT_SPECIAL_CODE', 'OFFERED_PRODUCT', 1, 'Offered product', 'PRODUCT_SPECIAL_CODE.OFFERED_PRODUCT.1', false);
 INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('PRODUCT_SPECIAL_CODE', 'DISCOUNT_ORDER', 2, 'Reduced order', 'PRODUCT_SPECIAL_CODE.DISCOUNT_ORDER.2', false);
 INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('PRODUCT_SPECIAL_CODE', 'USER_ORDER', 3, 'User order', 'PRODUCT_SPECIAL_CODE.USER_ORDER.3', false);

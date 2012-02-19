@@ -29,11 +29,12 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
-			<plugin>
+ 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-install-plugin</artifactId>
 				<executions>
 					<execution>
+						<id>install-file-rxtx</id>
 						<phase>validate</phase>
 						<goals>
 							<goal>install-file</goal>
@@ -43,12 +44,12 @@
 							<artifactId>rxtx</artifactId>
 							<version>2.2-20081207</version>
 							<packaging>jar</packaging>
-							<file>src/main/resources/rxtx/lib64/RXTXcomm.jar</file>
+							<file>${basedir}/src/main/resources/rxtx/lib64/RXTXcomm.jar</file>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
+ 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
 					<execution>

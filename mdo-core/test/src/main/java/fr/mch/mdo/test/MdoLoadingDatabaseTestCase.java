@@ -145,7 +145,10 @@ public abstract class MdoLoadingDatabaseTestCase extends MdoTestCase
 					sqlVarMap = sqlDialect.sqlVarMap(reader);
 					// Open reader again because already read the reader
 					reader = new InputStreamReader(fileURL.openStream(), "UTF8");
-					sqlFile = new SqlFile(reader, fileURL.getFile(), System.out, "UTF8", false);
+					// Don't use URL.getFile or URL.getPath instead convert to URI first
+					// Because when using URL and the path contains space then the URL.getFile or URL.getPath will convert space to "%20"
+					String fileName = fileURL.getPath();
+					sqlFile = new SqlFile(reader, fileName, System.out, "UTF8", false);
 					sqlFile.addUserVars(sqlVarMap);
 					sqlFile.setConnection(connection);
 					// Execute the SQL

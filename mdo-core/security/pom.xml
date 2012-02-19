@@ -8,10 +8,8 @@
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>fr.mch.mdo</groupId>
 	<artifactId>security</artifactId>
 	<name>security</name>
-	<version>1.0-SNAPSHOT</version>
 	<url>http://maven.apache.org</url>
 	<description>This module is only used to generate java security files like certificate file</description>
 	
@@ -52,6 +50,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
+				<!--version>1.7</version-->
 				<executions>
 					<execution>
 						<id>initialize-security-resources</id>
@@ -93,7 +92,7 @@
 									${openssl.exe} genrsa -out ${privateKeyRSA} 2048
 								</echo>
 								<exec executable="${openssl.exe}">
-									<arg line="genrsa -out ${privateKeyRSA} 1024" />
+									<arg line="genrsa -out '${privateKeyRSA}' 1024" />
 								</exec>
 							</target>
 						</configuration>
@@ -120,7 +119,7 @@
 								</echo>
 								<exec executable="${openssl.exe}">
 									<arg
-										line="req -config ${openSSLConf} -new -x509 -key ${privateKeyRSA} -out ${selfSignedCertificate} -days 1095" />
+										line="req -config '${openSSLConf}' -new -x509 -key '${privateKeyRSA}' -out '${selfSignedCertificate}' -days 1095" />
 								</exec>
 							</target>
 						</configuration>
@@ -148,7 +147,7 @@
 								</echo>
 								<exec executable="${openssl.exe}">
 									<arg
-										line="pkcs12 -export -passout file:${passwordsFileKeystorePKCS12} -passin file:${passwordsFileKeystorePKCS12} -in ${selfSignedCertificate} -inkey ${privateKeyRSA} -out ${keystorePKCS12} -name ${alias}" />
+										line="pkcs12 -export -passout file:'${passwordsFileKeystorePKCS12}' -passin file:'${passwordsFileKeystorePKCS12}' -in '${selfSignedCertificate}' -inkey '${privateKeyRSA}' -out '${keystorePKCS12}' -name ${alias}" />
 								</exec>
 							</target>
 						</configuration>

@@ -1,6 +1,5 @@
 package fr.mch.mdo.restaurant.services.logs;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -16,24 +15,22 @@ public class LoggerImpl implements ILogger {
 	private IMessageQuery loggerMessage;
 
 	static {
-		reload(IResources.LOG4J_CONFIGURATION_FILE);
+		try {
+			reload(IResources.LOG4J_CONFIGURATION_FILE);
+		} catch (Exception e) {
+			throw new ExceptionInInitializerError(e);
+		}
 	}
 
-	private static void reload(final String configFile) {
+	private static void reload(final String configFile) throws Exception {
 		Properties properties = new Properties();
 		InputStream inputStream = null;
 		try {
 			inputStream = IResources.class.getResourceAsStream(configFile);
 			properties.load(inputStream);
 			PropertyConfigurator.configure(properties);
-		} catch (IOException e) {
-			e.printStackTrace();
 		} finally {
-			try {
-				inputStream.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			inputStream.close();
 		}
 	}
 

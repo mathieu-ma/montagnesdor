@@ -15,6 +15,33 @@
 	<url>http://maven.apache.org</url>
 
 	<build>
+		<filters>
+			<filter>src/main/filters/log4j-filters.properties</filter>
+		</filters>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<!-- First generate test resources without filtering -->
+				<directory>src/test/resources</directory>
+			</testResource>
+			<testResource>
+				<!-- Second generate test resources with filtering -->
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+<!--  
+	Use mvn org.apache.maven.plugins:maven-eclipse-plugin:2.6:eclipse instead of default version 2.7 
+	because of bug MECLIPSE-551 regression - Resources are excluded if resource dir equals source dir
+-->
+				<includes>
+					<include>**/log4j.properties</include>
+				</includes>
+			</testResource>
+		</testResources>
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

@@ -30,7 +30,7 @@
 				  	</tr>
 			  	</thead>
 			  	<tbody>
-				<s:iterator value="form.viewBean.list" id="tableAsEnum">
+				<s:iterator value="form.viewBean.existingTypes" id="type">
 			 		<tr>
 			   			<td>
 			   				<s:property value="type"/>

@@ -47,6 +47,8 @@
 								${project.groupId}
 							</includeGroupIds>
 							<excludeTransitive>false</excludeTransitive>
+							<overWriteSnapshots>true</overWriteSnapshots>
+							<overWriteReleases>true</overWriteReleases>
 							<includes>
 								**\/montagnesdorjaas.login,**\/montagnesdorjaas.policy
 							</includes>

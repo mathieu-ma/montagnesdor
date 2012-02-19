@@ -17,6 +17,7 @@ import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.dao.beans.DinnerTable;
 import fr.mch.mdo.restaurant.dao.beans.OrderLine;
+import fr.mch.mdo.restaurant.dao.beans.TableCashing;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServices;
 import fr.mch.mdo.restaurant.dao.hibernate.TransactionSession;
 import fr.mch.mdo.restaurant.dao.tables.IDinnerTablesDao;
@@ -262,6 +263,56 @@ public class DefaultDinnerTablesDao extends DefaultDaoServices implements IDinne
 			result = new Integer(object.toString());
 		}
 
+		return result;
+	}
+
+	/**
+	 * This method delete the dinner table.
+	 * In order to do this, it has to delete by cascade in the following order:
+	 * 1) Delete the SQL Table t_order_line
+	 * 2) Delete the SQL Table t_table_bill
+	 * 3) Delete the SQL Table t_table_cashing
+	 * 4) Delete the SQL Table t_cashing_type
+	 * 5) Delete the SQL Table t_table_credit
+	 * 6) Delete the SQL Table t_table_vat
+	 * 
+	 */
+	@Override
+	public IMdoBean delete(IMdoBean daoBean, boolean... isLazy) throws MdoDataBeanException {
+		DinnerTable result = (DinnerTable) daoBean;
+		try {
+			TransactionSession transactionSession = super.beginTransaction();
+			
+			Session session = transactionSession.getSession();
+			session.load(result, result.getId());
+			result.getOrders().clear();
+			result.getBills().clear();
+			
+			TableCashing cashing = result.getCashing();
+			if (cashing != null) {
+				cashing.getCashingTypes().clear();
+				result.setCashing(null);
+			}
+			
+			result.getCredits().clear();
+			result.getVats().clear();
+			session.delete(result);
+
+			super.endTransaction(transactionSession, result, isLazy);
+		} catch (HibernateException e) {
+			super.getLogger().error("message.error.dao.delete", new Object[] { getBean().getClass().getName(), result }, e);
+			throw new MdoDataBeanException(e);
+		} catch (Exception e) {
+			super.getLogger().error("message.error.dao.delete", new Object[] { getBean().getClass().getName(), result }, e);
+			throw new MdoDataBeanException(e);
+		} finally {
+			try {
+				super.closeSession();
+			} catch (HibernateException e) {
+				super.getLogger().error("message.error.dao.session.close", e);
+				throw new MdoDataBeanException("message.error.dao.session.close", e);
+			}
+		}
 		return result;
 	}
 }
