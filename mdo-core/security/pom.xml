@@ -8,11 +8,13 @@
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
+	<groupId>fr.mch.mdo</groupId>
 	<artifactId>security</artifactId>
 	<name>security</name>
+	<version>1.0-SNAPSHOT</version>
 	<url>http://maven.apache.org</url>
 	<description>This module is only used to generate java security files like certificate file</description>
-	
+
 	<build>
 		<filters>
 			<filter>src/main/filters/filter-${target-company}.properties</filter>
@@ -21,10 +23,9 @@
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
-<!--  
-	Use mvn org.apache.maven.plugins:maven-eclipse-plugin:2.6:eclipse instead of default version 2.7 
-	because of bug MECLIPSE-551 regression - Resources are excluded if resource dir equals source dir
--->
+				<!-- Use mvn org.apache.maven.plugins:maven-eclipse-plugin:2.6:eclipse 
+					instead of default version 2.7 because of bug MECLIPSE-551 regression - Resources 
+					are excluded if resource dir equals source dir -->
 				<excludes>
 					<exclude>security-tools/**</exclude>
 				</excludes>
@@ -50,7 +51,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
-				<!--version>1.7</version-->
+				<version>1.7</version>
 				<executions>
 					<execution>
 						<id>initialize-security-resources</id>
@@ -62,21 +63,16 @@
 							<target>
 								<echo>
 									Remove all files in ${security-source-generated-files-folder}
-									but not dummy file								
+									but not dummy file
 								</echo>
 								<delete verbose="true">
 									<fileset dir="${security-source-generated-files-folder}">
-										<exclude name="dummy"/>
+										<exclude name="dummy" />
 									</fileset>
 								</delete>
-							<!-- 	
-								<echo>
-									Remove all files in ${security-generated-files-folder}
-								</echo>
-								<delete verbose="true" failonerror="no">
-									<fileset dir="${security-generated-files-folder}"/>
-								</delete>
-							 -->	
+								<!-- <echo> Remove all files in ${security-generated-files-folder} 
+									</echo> <delete verbose="true" failonerror="no"> <fileset dir="${security-generated-files-folder}"/> 
+									</delete> -->
 							</target>
 						</configuration>
 					</execution>
@@ -115,7 +111,8 @@
 									found on the java.library.path)
 								</description>
 								<echo>
-									${openssl.exe} req -config  ${openSSLConf} -new -x509 -key ${privateKeyRSA} -out ${selfSignedCertificate} -days 1095
+									${openssl.exe} req -config ${openSSLConf} -new -x509 -key ${privateKeyRSA}
+									-out ${selfSignedCertificate} -days 1095
 								</echo>
 								<exec executable="${openssl.exe}">
 									<arg
@@ -138,11 +135,11 @@
 								<delete file="${keystorePKCS12}"></delete>
 								<echo>
 									${openssl.exe} pkcs12 -export
-									-passout file:${passwordsFileKeystorePKCS12} 
-									-passin file:${passwordsFileKeystorePKCS12} 
-									-in	${selfSignedCertificate} 
+									-passout file:${passwordsFileKeystorePKCS12}
+									-passin file:${passwordsFileKeystorePKCS12}
+									-in ${selfSignedCertificate}
 									-inkey ${privateKeyRSA}
-									-out ${keystorePKCS12} 
+									-out ${keystorePKCS12}
 									-name ${alias}
 								</echo>
 								<exec executable="${openssl.exe}">
@@ -161,8 +158,8 @@
 						<configuration>
 							<target>
 								<description>
-									Convert PKCS12 keystore to JKS keystore. 
-									The	generated file
+									Convert PKCS12 keystore to JKS keystore.
+									The generated file
 									kimsankeystore is used for SSL in
 									Tomcat
 									server.xml file for none production environment
@@ -170,14 +167,14 @@
 									Tomcat Native library which allows optimal performance in
 									production environments was not found on the java.library.path)
 								</description>
-								<delete file="${keystoreJKS}" verbose="true"><!-- Assuming that this file does not already exist --></delete>
+								<delete file="${keystoreJKS}" verbose="true"><!-- Assuming that this 
+										file does not already exist -->
+								</delete>
 								<echo>
-									<!--
-										Instead of use a folder ${project.build.outputDirectory} in the classpath.
-										You can use the jar target/${project.build.finalName}.jar, 
-										but this jar is only generated after the phase package
-									-->
-									java -classpath	${project.build.outputDirectory}
+									<!-- Instead of use a folder ${project.build.outputDirectory} in 
+										the classpath. You can use the jar target/${project.build.finalName}.jar, 
+										but this jar is only generated after the phase package -->
+									java -classpath ${project.build.outputDirectory}
 									fr.mch.mdo.security.util.PKCS12Import
 									${keystorePKCS12}
 									${keystoreJKS}
@@ -190,9 +187,10 @@
 									<arg value="${passwordsFileKeystorePKCS12}" />
 								</java>
 								<echo>
-									Remove dummy file in ${security-generated-files-folder}								
+									Remove dummy file in ${security-generated-files-folder}
 								</echo>
-								<delete verbose="true" file="${security-generated-files-folder}/dummy"/>
+								<delete verbose="true"
+									file="${security-generated-files-folder}/dummy" />
 							</target>
 						</configuration>
 					</execution>
@@ -205,10 +203,10 @@
 						<configuration>
 							<target>
 								<echo>
-									Copy files from ${security-generated-files-folder}								
+									Copy files from ${security-generated-files-folder}
 								</echo>
 								<copy todir="${security-source-generated-files-folder}">
-									<fileset dir="${security-generated-files-folder}"/>
+									<fileset dir="${security-generated-files-folder}" />
 								</copy>
 							</target>
 						</configuration>
@@ -226,7 +224,7 @@
 			${basedir}/src/main/resources/generated
 		</security-source-generated-files-folder>
 		<resources-folder>
-			${project.build.outputDirectory}<!-- ${basedir}/target/classes  -->			
+			${project.build.outputDirectory}<!-- ${basedir}/target/classes -->
 		</resources-folder>
 		<security-tools-folder>
 			${resources-folder}/security-tools
@@ -237,8 +235,7 @@
 		<security-generated-files-folder>
 			${security-files-folder}/generated
 		</security-generated-files-folder>
-		<openssl.exe>${security-tools-folder}/openssl.exe</openssl.exe>
-		<openssl.exe>/usr/bin/openssl</openssl.exe>
+		<openssl.exe>${platform.dependency.openssl.exe}</openssl.exe>
 		<openSSLConf.initial.sample>${security-tools-folder}/openssl-initial-sample.cnf</openSSLConf.initial.sample>
 		<openSSLConf>
 			${security-files-folder}/openssl-noprompt.cnf
@@ -277,5 +274,33 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<!-- profiles (with activation per platform) -->
+	<profiles>
+		<profile>
+			<id>mdo-windows</id>
+			<properties>
+				<platform.dependency.openssl.exe>${security-tools-folder}/openssl.exe</platform.dependency.openssl.exe>
+			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+				<os>
+					<family>windows</family>
+				</os>
+			</activation>
+		</profile>
+		<profile>
+			<id>mdo-linux</id>
+			<properties>
+				<platform.dependency.openssl.exe>/usr/bin/openssl</platform.dependency.openssl.exe>
+			</properties>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+				<os>
+					<name>linux</name>
+				</os>
+			</activation>
+		</profile>
+	</profiles>
 
 </project>
