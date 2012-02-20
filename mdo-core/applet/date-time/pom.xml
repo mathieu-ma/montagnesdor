@@ -106,7 +106,16 @@
 					<verify>true</verify>
 				</configuration>
 			</plugin>
-		</plugins>
+			<plugin>
+				<!-- Use this for unit tests because this module test UI components even never display the components. -->
+				<!-- We can not use the command "mvn -Djava.awt.headless=false test" because 
+					the surefire plugin uses by default a fork in order to launch tests. -->
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<argLine>-Djava.awt.headless=false</argLine>
+				</configuration>
+			</plugin>
+ 		</plugins>
 	</build>
 
 	<dependencies>
