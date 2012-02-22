@@ -80,7 +80,7 @@ public abstract class DataMigrationWork implements Work
 		String result = null;
 		result = productSpecialCodeV1ToV2.get(key);
 		if (result == null) {
-			result = "PRODUCT_SPECIAL_CODE.NOTHING.0";
+			result = "PRODUCT_SPECIAL_CODE.DEFAULT.0";
 		}
 		return result;
 	}

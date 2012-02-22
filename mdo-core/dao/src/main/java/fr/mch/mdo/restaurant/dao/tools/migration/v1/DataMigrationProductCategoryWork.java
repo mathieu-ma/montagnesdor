@@ -61,7 +61,7 @@ public class DataMigrationProductCategoryWork extends DataMigrationWork
 			categoryV1ToV2.put("RIZ", "CATEGORY.RICE.8");
 			categoryV1ToV2.put("GLACE", "CATEGORY.ICE_CREAM.18");
 			categoryV1ToV2.put("VIN", "CATEGORY.WINE.3");
-			categoryV1ToV2.put("powermat", "CATEGORY.STEAM.6");
+			categoryV1ToV2.put("VAPEURS", "CATEGORY.STEAM.6");
 			categoryV1ToV2.put("ALCOOL", "CATEGORY.ALCOHOL.10");
 			
 			ps = connection.prepareStatement("SELECT t_category_relation.pdt_id, t_category_relation.ctr_quantity, t_category_language.ctl_label" +
