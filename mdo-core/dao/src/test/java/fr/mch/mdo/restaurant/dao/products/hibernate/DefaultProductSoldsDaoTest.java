@@ -4,7 +4,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -147,6 +149,52 @@ public class DefaultProductSoldsDaoTest extends DefaultDaoServicesTestCase
 			this.getInstance().delete(updatedBean);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+
+	@Override
+	public void doUpdateFieldsByKeysSpecific() {
+		IMdoBean newBean = null;
+		Calendar calendar = Calendar.getInstance();
+		calendar.clear();
+		calendar.set(1970, 7, 17);
+		Date soldDate = calendar.getTime();
+		Product product = new Product();
+		product.setId(2L);
+		BigDecimal quantity = BigDecimal.ONE;
+		newBean = createNewBean(soldDate, product, quantity);
+		try {
+			// Create new bean to be updated
+			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean);
+			assertTrue("IMdoBean must be instance of " + ProductSold.class, beanToBeUpdated instanceof ProductSold);
+			ProductSold castedBean = (ProductSold) beanToBeUpdated;
+			assertNotNull("Product Sold Id must not be null", castedBean.getProduct().getId());
+			assertFalse("ProductSold must not be deleted", castedBean.isDeleted());
+
+			// Update the created bean
+			Map<String, Object> fields = new HashMap<String, Object>();
+			Map<String, Object> keys = new HashMap<String, Object>();
+			castedBean.setQuantity(BigDecimal.TEN);
+			castedBean.setSoldDay(1);
+			castedBean.setSoldMonth(2);
+			castedBean.setSoldYear(3);
+			fields.put("quantity", castedBean.getQuantity());
+			fields.put("soldDay", castedBean.getSoldDay());
+			fields.put("soldMonth", castedBean.getSoldMonth());
+			fields.put("soldYear", castedBean.getSoldYear());
+			keys.put("id", castedBean.getId());
+			this.getInstance().updateFieldsByKeys(fields, keys);
+			// Reload the modified bean
+			ProductSold updatedBean = (ProductSold) createNewBean();
+			updatedBean.setId(castedBean.getId());
+			this.getInstance().load(updatedBean);
+			assertEquals("Check updated fields ", castedBean.getQuantity(), updatedBean.getQuantity());
+			assertEquals("Check updated fields ", castedBean.getSoldDay(), updatedBean.getSoldDay());
+			assertEquals("Check updated fields ", castedBean.getSoldMonth(), updatedBean.getSoldMonth());
+			assertEquals("Check updated fields ", castedBean.getSoldYear(), updatedBean.getSoldYear());
+			this.getInstance().delete(updatedBean);
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}
 	}
 

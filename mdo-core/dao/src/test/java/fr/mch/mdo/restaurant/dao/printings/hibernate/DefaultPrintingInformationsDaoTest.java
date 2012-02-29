@@ -16,6 +16,7 @@ import fr.mch.mdo.restaurant.dao.beans.Restaurant;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServicesTestCase;
 import fr.mch.mdo.restaurant.dao.printings.IPrintingInformationsDao;
 import fr.mch.mdo.restaurant.exception.MdoException;
+import fr.mch.mdo.test.MdoTestCase;
 
 public class DefaultPrintingInformationsDaoTest extends DefaultDaoServicesTestCase 
 {
@@ -210,6 +211,70 @@ public class DefaultPrintingInformationsDaoTest extends DefaultDaoServicesTestCa
 			this.getInstance().delete(updatedBean);
 		} catch (Exception e) {
 			fail(e.getMessage());
+		}
+	}
+	
+	@Override
+	public void doUpdateFieldsByKeysSpecific() {
+		IMdoBean newBean = null;
+		Restaurant restaurant = new Restaurant();
+		restaurant.setId(1L);
+		int order = 1;
+		MdoTableAsEnum alignment = new MdoTableAsEnum();
+		// Use the existing data in database
+		try {
+			alignment = (MdoTableAsEnum) DaoServicesFactory.getMdoTableAsEnumsDao().findByPrimaryKey(5L);
+		} catch (MdoException e) {
+			fail("Could not found the printing information alignment.");
+		}
+		MdoTableAsEnum size = new MdoTableAsEnum();
+		// Use the existing data in database
+		try {
+			size = (MdoTableAsEnum) DaoServicesFactory.getMdoTableAsEnumsDao().findByPrimaryKey(8L);
+		} catch (MdoException e) {
+			fail("Could not found the printing information size.");
+		}
+		MdoTableAsEnum part = new MdoTableAsEnum();
+		// Use the existing data in database
+		try {
+			part = (MdoTableAsEnum) DaoServicesFactory.getMdoTableAsEnumsDao().findByPrimaryKey(11L);
+		} catch (MdoException e) {
+			fail("Could not found the printing information part.");
+		}
+		Map<Long, String> labels = new HashMap<Long, String>();
+		Long localeId = 1L;
+		String label = "Partie Haut - Information Haut";
+		labels.put(localeId, label);
+		newBean = createNewBean(restaurant, order, alignment, size, part, labels);
+		try {
+			// Create new bean to be updated
+			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean, false);
+			assertTrue("IMdoBean must be instance of " + PrintingInformation.class, beanToBeUpdated instanceof PrintingInformation);
+			PrintingInformation castedBean = (PrintingInformation) beanToBeUpdated;
+			assertNotNull("PrintingInformation labels must not be null", castedBean.getLabels());
+			assertEquals("PrintingInformation labels size must be equals to 1", 1, castedBean.getLabels().size());
+			Long firstKey = castedBean.getLabels().keySet().iterator().next();
+			assertEquals("Check PrintingInformation first label", label, castedBean.getLabels().get(firstKey));
+			assertFalse("PrintingInformation must not be deleted", castedBean.isDeleted());
+
+			// Update the created bean
+			Map<String, Object> fields = new HashMap<String, Object>();
+			Map<String, Object> keys = new HashMap<String, Object>();
+			castedBean.setOrder(0);
+			castedBean.setDeleted(true);
+			fields.put("order", castedBean.getOrder());
+			fields.put("deleted", castedBean.isDeleted());
+			keys.put("id", castedBean.getId());
+			this.getInstance().updateFieldsByKeys(fields, keys);
+			// Reload the modified bean
+			PrintingInformation updatedBean = (PrintingInformation) createNewBean();
+			updatedBean.setId(castedBean.getId());
+			this.getInstance().load(updatedBean);
+			assertEquals("Check updated fields ", castedBean.getOrder(), updatedBean.getOrder());
+			assertEquals("Check updated fields ", castedBean.isDeleted(), updatedBean.isDeleted());
+			this.getInstance().delete(updatedBean);
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}
 	}
 

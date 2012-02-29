@@ -15,6 +15,7 @@ import fr.mch.mdo.restaurant.dao.beans.MdoTableAsEnum;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServicesTestCase;
 import fr.mch.mdo.restaurant.dao.products.ICategoriesDao;
 import fr.mch.mdo.restaurant.exception.MdoException;
+import fr.mch.mdo.test.MdoTestCase;
 
 public class DefaultCategoriesDaoTest extends DefaultDaoServicesTestCase 
 {
@@ -137,6 +138,53 @@ public class DefaultCategoriesDaoTest extends DefaultDaoServicesTestCase
 			this.getInstance().delete(updatedBean);
 		} catch (Exception e) {
 			fail(e.getMessage());
+		}
+	}
+
+	@Override
+	public void doUpdateFieldsByKeysSpecific() {
+		IMdoBean newBean = null;
+		// Use the existing data in database
+		MdoTableAsEnum code = new MdoTableAsEnum();
+		try {
+			code = (MdoTableAsEnum) DaoServicesFactory.getMdoTableAsEnumsDao().findByPrimaryKey(19L);
+		} catch (MdoException e) {
+			fail("Could not found the category code.");
+		}
+		Map<Long, String> labels = new HashMap<Long, String>();
+		Long localeId = 1L;
+		String label = "Eau";
+		labels.put(localeId, label);
+		localeId = 2L;
+		label = "Aqua";
+		labels.put(localeId, label);
+		newBean = createNewBean(code, labels);
+		try {
+			// Create new bean to be updated
+			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean);
+			assertTrue("IMdoBean must be instance of " + Category.class, beanToBeUpdated instanceof Category);
+			Category castedBean = (Category) beanToBeUpdated;
+			assertNotNull("Category code must not be null", castedBean.getCode());
+			assertEquals("Category name must be equals to the inserted value", code.toString(), castedBean.getCode().toString());
+			assertNotNull("Category labels must not be null", castedBean.getLabels());
+			assertEquals("Check Category labels size", labels.size(), castedBean.getLabels().size());
+			assertFalse("Category must not be deleted", castedBean.isDeleted());
+
+			// Update the created bean
+			Map<String, Object> fields = new HashMap<String, Object>();
+			Map<String, Object> keys = new HashMap<String, Object>();
+			castedBean.setDeleted(true);
+			fields.put("deleted", castedBean.isDeleted());
+			keys.put("id", castedBean.getId());
+			this.getInstance().updateFieldsByKeys(fields, keys);
+			// Reload the modified bean
+			Category updatedBean = (Category) createNewBean();
+			updatedBean.setId(castedBean.getId());
+			this.getInstance().load(updatedBean);
+			assertEquals("Check updated fields ", castedBean.isDeleted(), updatedBean.isDeleted());
+			this.getInstance().delete(updatedBean);
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}
 	}
 

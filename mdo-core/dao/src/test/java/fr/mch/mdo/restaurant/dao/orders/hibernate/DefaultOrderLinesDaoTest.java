@@ -2,7 +2,9 @@ package fr.mch.mdo.restaurant.dao.orders.hibernate;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -16,7 +18,6 @@ import fr.mch.mdo.restaurant.dao.beans.ProductPart;
 import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServicesTestCase;
 import fr.mch.mdo.restaurant.dao.orders.IOrderLinesDao;
-import fr.mch.mdo.restaurant.dao.products.IProductsDao;
 import fr.mch.mdo.test.MdoTestCase;
 
 public class DefaultOrderLinesDaoTest extends DefaultDaoServicesTestCase
@@ -124,6 +125,60 @@ public class DefaultOrderLinesDaoTest extends DefaultDaoServicesTestCase
 			this.getInstance().delete(updatedBean);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+
+	@Override
+	public void doUpdateFieldsByKeysSpecific() {
+		IMdoBean newBean = null;
+		BigDecimal amount = BigDecimal.TEN.multiply(BigDecimal.valueOf(2));
+		Credit credit =null;
+		DinnerTable dinnerTable = new DinnerTable();
+		dinnerTable.setId(1L);
+		String label = "Create new Order Label in update"; 
+		Product product = new Product();
+		product.setId(2L);
+		ProductPart productPart = new ProductPart();
+		productPart.setId(1L);
+		ProductSpecialCode productSpecialCode = new ProductSpecialCode();
+		productSpecialCode.setId(1L);
+		BigDecimal quantity = BigDecimal.TEN.divide(BigDecimal.valueOf(2)); 
+		BigDecimal unitPrice = BigDecimal.ONE;
+		newBean = createNewBean(amount, credit, dinnerTable, label, product, productPart, productSpecialCode, quantity, unitPrice);
+		try {
+			// Create new bean to be updated
+			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean);
+			assertTrue("IMdoBean must be instance of " + OrderLine.class, beanToBeUpdated instanceof OrderLine);
+			OrderLine castedBean = (OrderLine) beanToBeUpdated;
+			assertNotNull("OrderLine ID must not be null", castedBean.getId());
+			assertNotNull("OrderLine label must not be null", castedBean.getLabel());
+			assertEquals("OrderLine label must be equals to the inserted value", label, castedBean.getLabel());
+			assertFalse("OrderLine must not be deleted", castedBean.isDeleted());
+
+			// Update the created bean
+			Map<String, Object> fields = new HashMap<String, Object>();
+			Map<String, Object> keys = new HashMap<String, Object>();
+			castedBean.setAmount(BigDecimal.ONE);
+			castedBean.setLabel("label");
+			castedBean.setQuantity(BigDecimal.TEN);
+			castedBean.setUnitPrice(BigDecimal.ZERO);
+			fields.put("amount", castedBean.getAmount());
+			fields.put("label", castedBean.getLabel());
+			fields.put("quantity", castedBean.getQuantity());
+			fields.put("unitPrice", castedBean.getUnitPrice());
+			keys.put("id", castedBean.getId());
+			this.getInstance().updateFieldsByKeys(fields, keys);
+			// Reload the modified bean
+			OrderLine updatedBean = (OrderLine) createNewBean();
+			updatedBean.setId(castedBean.getId());
+			this.getInstance().load(updatedBean);
+			assertEquals("Check updated fields ", castedBean.getAmount(), updatedBean.getAmount());
+			assertEquals("Check updated fields ", castedBean.getLabel(), updatedBean.getLabel());
+			assertEquals("Check updated fields ", castedBean.getQuantity(), updatedBean.getQuantity());
+			assertEquals("Check updated fields ", castedBean.getUnitPrice(), updatedBean.getUnitPrice());
+			this.getInstance().delete(updatedBean);
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}
 	}
 

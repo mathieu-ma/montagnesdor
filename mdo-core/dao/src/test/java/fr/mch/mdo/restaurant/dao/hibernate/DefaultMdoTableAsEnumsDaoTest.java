@@ -1,6 +1,7 @@
 package fr.mch.mdo.restaurant.dao.hibernate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -118,15 +119,64 @@ public class DefaultMdoTableAsEnumsDaoTest extends DefaultDaoServicesTestCase
 			MdoTableAsEnum updatedBean = (MdoTableAsEnum) createNewBean();
 			updatedBean.setId(castedBean.getId());
 			this.getInstance().load(updatedBean);
-			assertNotNull("MdoTableAsEnum name must not be null", castedBean.getName());
+			assertNotNull("MdoTableAsEnum name must not be null", updatedBean.getName());
 			assertEquals("MdoTableAsEnum name must be equals to updated value", castedBean.getName(), updatedBean.getName());
-			assertTrue("MdoTableAsEnum must be deleted", castedBean.isDeleted());
+			assertTrue("MdoTableAsEnum must be deleted", updatedBean.isDeleted());
 			this.getInstance().delete(updatedBean);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}
 	}
 
+	@Override
+	public void doUpdateFieldsByKeysSpecific() {
+		IMdoBean newBean = null;
+		MdoTableAsEnumTypeDao type = MdoTableAsEnumTypeDao.PREFIX_TABLE_NAME;
+		String name = "D";
+		int order = 3;
+		String defaultLabel = "D";
+		String languageKeyLabel = type.name() + "." + name + "." + order;
+		newBean = createNewBean(type, name, order, defaultLabel, languageKeyLabel);
+		try {
+			// Create new bean to be updated
+			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean);
+			assertTrue("IMdoBean must be instance of " + MdoTableAsEnum.class, beanToBeUpdated instanceof MdoTableAsEnum);
+			MdoTableAsEnum castedBean = (MdoTableAsEnum) beanToBeUpdated;
+			assertNotNull("MdoTableAsEnum name must not be null", castedBean.getName());
+			assertEquals("MdoTableAsEnum name must be equals to the inserted value", name, castedBean.getName());
+			assertFalse("MdoTableAsEnum must not be deleted", castedBean.isDeleted());
+
+			// Update the created bean
+			Map<String, Object> fields = new HashMap<String, Object>();
+			Map<String, Object> keys = new HashMap<String, Object>();
+			castedBean.setType("type");
+			castedBean.setName("name");
+			castedBean.setOrder(1);
+			castedBean.setLanguageKeyLabel("languageKeyLabel");
+			castedBean.setDefaultLabel("defaultLabel");
+			fields.put("type", castedBean.getType());
+			fields.put("name", castedBean.getName());
+			fields.put("order", castedBean.getOrder());
+			fields.put("languageKeyLabel", castedBean.getLanguageKeyLabel());
+			fields.put("defaultLabel", castedBean.getDefaultLabel());
+			keys.put("id", castedBean.getId());
+			this.getInstance().updateFieldsByKeys(fields, keys);
+			// Reload the modified bean
+			MdoTableAsEnum updatedBean = (MdoTableAsEnum) createNewBean();
+			updatedBean.setId(castedBean.getId());
+			this.getInstance().load(updatedBean);
+			assertEquals("Check updated fields ", castedBean.getType(), updatedBean.getType());
+			assertEquals("Check updated fields ", castedBean.getName(), updatedBean.getName());
+			assertEquals("Check updated fields ", castedBean.getOrder(), updatedBean.getOrder());
+			assertEquals("Check updated fields ", castedBean.getLanguageKeyLabel(), updatedBean.getLanguageKeyLabel());
+			assertEquals("Check updated fields ", castedBean.getDefaultLabel(), updatedBean.getDefaultLabel());
+			this.getInstance().delete(updatedBean);
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
+		}
+	}
+
+	
 	public void testGetBeans() throws MdoException {
 		// There is already data inserted into database with id 0 and 1
 		MdoTableAsEnumTypeDao type = MdoTableAsEnumTypeDao.PREFIX_TABLE_NAME;

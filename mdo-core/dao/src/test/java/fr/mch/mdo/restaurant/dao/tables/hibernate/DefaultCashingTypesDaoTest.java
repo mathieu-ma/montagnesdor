@@ -2,19 +2,19 @@ package fr.mch.mdo.restaurant.dao.tables.hibernate;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.dao.IDaoServices;
 import fr.mch.mdo.restaurant.dao.beans.CashingType;
-import fr.mch.mdo.restaurant.dao.beans.DinnerTable;
 import fr.mch.mdo.restaurant.dao.beans.MdoTableAsEnum;
 import fr.mch.mdo.restaurant.dao.beans.TableCashing;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServicesTestCase;
 import fr.mch.mdo.restaurant.dao.tables.ICashingTypesDao;
-import fr.mch.mdo.restaurant.dao.tables.ITableCashingsDao;
 import fr.mch.mdo.test.MdoTestCase;
 
 public class DefaultCashingTypesDaoTest extends DefaultDaoServicesTestCase 
@@ -112,6 +112,42 @@ public class DefaultCashingTypesDaoTest extends DefaultDaoServicesTestCase
 			this.getInstance().delete(updatedBean);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+
+	@Override
+	public void doUpdateFieldsByKeysSpecific() {
+		IMdoBean newBean = null;
+		BigDecimal amount = BigDecimal.TEN;
+		TableCashing tableCashing = new TableCashing();
+		tableCashing.setId(2L);
+		MdoTableAsEnum type = new MdoTableAsEnum();
+		type.setId(38L);
+		newBean = createNewBean(amount, tableCashing, type);
+		try {
+			// Create new bean to be updated
+			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean);
+			assertTrue("IMdoBean must be instance of " + CashingType.class, beanToBeUpdated instanceof CashingType);
+			CashingType castedBean = (CashingType) beanToBeUpdated;
+			assertNotNull("CashingType has a not be null ID", castedBean.getId());
+			assertEquals("Check CashingType type", type.getId(), castedBean.getType().getId());
+			assertFalse("CashingType must not be deleted", castedBean.isDeleted());
+
+			// Update the created bean
+			Map<String, Object> fields = new HashMap<String, Object>();
+			Map<String, Object> keys = new HashMap<String, Object>();
+			castedBean.setAmount(BigDecimal.ONE);
+			fields.put("amount", castedBean.getAmount());
+			keys.put("id", castedBean.getId());
+			this.getInstance().updateFieldsByKeys(fields, keys);
+			// Reload the modified bean
+			CashingType updatedBean = (CashingType) createNewBean();
+			updatedBean.setId(castedBean.getId());
+			this.getInstance().load(updatedBean);
+			assertEquals("Check updated fields ", castedBean.getAmount(), updatedBean.getAmount());
+			this.getInstance().delete(updatedBean);
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}
 	}
 

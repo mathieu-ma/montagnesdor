@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -325,6 +326,113 @@ public class DefaultDinnerTablesDaoTest extends DefaultDaoServicesTestCase
 		}
 	}
 	
+	@Override
+	public void doUpdateFieldsByKeysSpecific() {
+		DinnerTable newBean = null;
+		Restaurant restaurant = new Restaurant();
+		restaurant.setId(1L);
+		String number = "1";
+		UserAuthentication user = new UserAuthentication();
+		user.setId(1L);
+		// Used for equality of 2 dinner tables
+		user.setLogin("mch");
+		Long rooId = 1L;
+		Integer customersNumber = 2;
+		BigDecimal quantitiesSum = BigDecimal.valueOf(10.2);
+		BigDecimal amountsSum = BigDecimal.valueOf(100.98);
+		BigDecimal reductionRatio = BigDecimal.ZERO;
+		// amountPay = amountsSum-amountsSum*reductionRatio/100
+		BigDecimal amountPay = amountsSum.add(amountsSum.negate().multiply(reductionRatio).divide(BigDecimal.valueOf(100)));
+		Date registrationDate = Calendar.getInstance().getTime();
+		Date printingDate = Calendar.getInstance().getTime();
+		Boolean reductionRatioChanged = Boolean.TRUE;
+		TableType type = new TableType();
+		type.setId(1L);
+		Set<OrderLine> orders = new HashSet<OrderLine>();
+		Set<TableBill> bills = new HashSet<TableBill>();
+		Set<TableCredit> credits = new HashSet<TableCredit>();
+		Set<TableVat> vats = new HashSet<TableVat>();
+		TableCashing cashing = new TableCashing();
+		cashing.setCashingDate(new Date());
+
+		newBean = (DinnerTable) createNewBean(restaurant, number,
+				user, rooId, customersNumber, quantitiesSum, amountsSum,
+				reductionRatio, amountPay, registrationDate, printingDate,
+				reductionRatioChanged, type, orders, bills, credits, vats,
+				cashing);
+		OrderLine orderLine = new OrderLine();
+		orderLine.setQuantity(BigDecimal.ONE);
+		orderLine.setLabel("Label 1");
+		orderLine.setUnitPrice(BigDecimal.TEN);
+		orderLine.setAmount(BigDecimal.TEN);
+		ProductSpecialCode productSpecialCode = new ProductSpecialCode();
+		productSpecialCode.setId(1L);
+		orderLine.setProductSpecialCode(productSpecialCode);
+		newBean.addOrderLine(orderLine);
+		TableBill bill = new TableBill();
+		bill.setAmount(BigDecimal.ONE);
+		bill.setMealNumber(2);
+		bill.setOrder(1);
+		bill.setPrinted(Boolean.FALSE);
+		bill.setReference("reference");
+		newBean.addBill(bill);
+		TableVat tableVat = new TableVat();
+		tableVat.setAmount(BigDecimal.ONE);
+		tableVat.setValue(BigDecimal.TEN);
+		ValueAddedTax vat = new ValueAddedTax();
+		vat.setId(1L);
+		tableVat.setVat(vat);
+		newBean.addTableVat(tableVat);
+		try {
+			// Create new bean to be updated
+			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean);
+			assertTrue("IMdoBean must be instance of " + DinnerTable.class, beanToBeUpdated instanceof DinnerTable);
+			DinnerTable castedBean = (DinnerTable) beanToBeUpdated;
+			assertNotNull("DinnerTable number must not be null", castedBean.getNumber());
+			assertEquals("DinnerTable number must be equals to the inserted value", number, castedBean.getNumber());
+			assertNotNull("DinnerTable cashing must not be null", castedBean.getCashing());
+			assertNotNull("DinnerTable cashing Id must not be null", castedBean.getCashing().getId());
+			assertFalse("DinnerTable must not be deleted", castedBean.isDeleted());
+
+			// Update the created bean
+			Map<String, Object> fields = new HashMap<String, Object>();
+			Map<String, Object> keys = new HashMap<String, Object>();
+			castedBean.setAmountPay(amountPay.add(BigDecimal.ONE));
+			castedBean.setAmountsSum(amountsSum.add(BigDecimal.ONE));
+			castedBean.setCustomersNumber(1);
+			castedBean.setNumber("NUM");
+			castedBean.setPrintingDate(new Date());
+			castedBean.setQuantitiesSum(quantitiesSum.add(BigDecimal.ONE));
+			castedBean.setReductionRatio(reductionRatio.add(BigDecimal.ONE));
+			castedBean.setReductionRatioChanged(!reductionRatioChanged);
+			fields.put("amountPay", castedBean.getAmountPay());
+			fields.put("amountsSum", castedBean.getAmountsSum());
+			fields.put("customersNumber", castedBean.getCustomersNumber());
+			fields.put("number", castedBean.getNumber());
+			fields.put("printingDate", castedBean.getPrintingDate());
+			fields.put("quantitiesSum", castedBean.getQuantitiesSum());
+			fields.put("reductionRatio", castedBean.getReductionRatio());
+			fields.put("reductionRatioChanged", castedBean.getReductionRatioChanged());
+			keys.put("id", castedBean.getId());
+			this.getInstance().updateFieldsByKeys(fields, keys);
+			// Reload the modified bean
+			DinnerTable updatedBean = (DinnerTable) createNewBean();
+			updatedBean.setId(castedBean.getId());
+			this.getInstance().load(updatedBean);
+			assertEquals("Check updated fields ", castedBean.getAmountPay(), updatedBean.getAmountPay());
+			assertEquals("Check updated fields ", castedBean.getAmountsSum(), updatedBean.getAmountsSum());
+			assertEquals("Check updated fields ", castedBean.getCustomersNumber(), updatedBean.getCustomersNumber());
+			assertEquals("Check updated fields ", castedBean.getNumber(), updatedBean.getNumber());
+			assertEquals("Check updated fields ", castedBean.getPrintingDate(), updatedBean.getPrintingDate());
+			assertEquals("Check updated fields ", castedBean.getQuantitiesSum(), updatedBean.getQuantitiesSum());
+			assertEquals("Check updated fields ", castedBean.getReductionRatio(), updatedBean.getReductionRatio());
+			assertEquals("Check updated fields ", castedBean.getReductionRatioChanged(), updatedBean.getReductionRatioChanged());
+			this.getInstance().delete(updatedBean);
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
+		}
+	}
+
 	public void testUpdateReductionRatio() {
 		IDinnerTablesDao iDinnerTablesDao = (IDinnerTablesDao) this.getInstance();
 		try {

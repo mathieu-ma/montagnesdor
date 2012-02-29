@@ -1,7 +1,9 @@
 package fr.mch.mdo.restaurant.dao.tables.hibernate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -118,6 +120,44 @@ public class DefaultTableTypesDaoTest extends DefaultDaoServicesTestCase
 		}
 	}
 
+	@Override
+	public void doUpdateFieldsByKeysSpecific() {
+		IMdoBean newBean = null;
+		// Use the existing data in database
+		MdoTableAsEnum code = new MdoTableAsEnum();
+		try {
+			code = (MdoTableAsEnum) DaoServicesFactory.getMdoTableAsEnumsDao().findByPrimaryKey(19L);
+		} catch (MdoException e) {
+			fail("Could not found the category code.");
+		}
+		newBean = createNewBean(code);
+		try {
+			// Create new bean to be updated
+			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean);
+			assertTrue("IMdoBean must be instance of " + TableType.class, beanToBeUpdated instanceof TableType);
+			TableType castedBean = (TableType) beanToBeUpdated;
+			assertNotNull("TableType code must not be null", castedBean.getCode());
+			assertEquals("TableType name must be equals to the inserted value", code.toString(), castedBean.getCode().toString());
+			assertFalse("TableType must not be deleted", castedBean.isDeleted());
+
+			// Update the created bean
+			Map<String, Object> fields = new HashMap<String, Object>();
+			Map<String, Object> keys = new HashMap<String, Object>();
+			castedBean.setDeleted(true);
+			fields.put("deleted", castedBean.isDeleted());
+			keys.put("id", castedBean.getId());
+			this.getInstance().updateFieldsByKeys(fields, keys);
+			// Reload the modified bean
+			TableType updatedBean = (TableType) createNewBean();
+			updatedBean.setId(castedBean.getId());
+			this.getInstance().load(updatedBean);
+			assertEquals("Check updated fields ", castedBean.isDeleted(), updatedBean.isDeleted());
+			this.getInstance().delete(updatedBean);
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
+		}
+	}
+	
 	private IMdoBean createNewBean(MdoTableAsEnum code) {
 		TableType newBean = new TableType();
 		newBean.setCode(code);

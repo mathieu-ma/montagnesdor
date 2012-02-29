@@ -257,12 +257,12 @@ public class DefaultDinnerTablesAssembler extends AbstractAssembler implements I
 		bean.setAmountsSum(dto.getAmountsSum());
 		bean.setAmountPay(dto.getAmountPay());
 		Set<TableBill> bills = new HashSet<TableBill>();
-		if (bean.getBills() != null) {
+		if (dto.getBills() != null) {
 			bills = (Set) tableBillsAssembler.unmarshal(dto.getBills(), bean);
 		}
 		bean.setBills(bills);
 		TableCashing cashing = null;
-		if (bean.getCashing() != null) {
+		if (dto.getCashing() != null) {
 			cashing = (TableCashing) tableCashingsAssembler.unmarshal(dto.getCashing());
 		}
 		bean.setCashing(cashing);
@@ -274,7 +274,7 @@ public class DefaultDinnerTablesAssembler extends AbstractAssembler implements I
 		bean.setCustomersNumber(dto.getCustomersNumber());
 		bean.setNumber(dto.getNumber());
 		Set<OrderLine> orders = new HashSet<OrderLine>();
-		if (bean.getOrders() != null) {
+		if (dto.getOrders() != null) {
 			orders = (Set) orderLinesAssembler.unmarshal(dto.getOrders(), bean);
 		}
 		bean.setOrders(orders);
@@ -291,7 +291,7 @@ public class DefaultDinnerTablesAssembler extends AbstractAssembler implements I
 		UserAuthentication user = (UserAuthentication) userAuthenticationsAssembler.unmarshal(dto.getUser()); 
 		bean.setUser(user);
 		Set<TableVat> vats = new HashSet<TableVat>();
-		if (bean.getVats() != null) {
+		if (dto.getVats() != null) {
 			vats = (Set) tableVatsAssembler.unmarshal(dto.getVats(), bean);
 		}
 		bean.setVats(vats);

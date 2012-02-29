@@ -2,7 +2,9 @@ package fr.mch.mdo.restaurant.dao.tables.hibernate;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -117,6 +119,56 @@ public class DefaultTableBillsDaoTest extends DefaultDaoServicesTestCase
 			this.getInstance().delete(updatedBean);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+	
+	@Override
+	public void doUpdateFieldsByKeysSpecific() {
+		IMdoBean newBean = null;
+		BigDecimal amount = BigDecimal.ONE;
+		DinnerTable dinnerTable = new DinnerTable();
+		dinnerTable.setId(1L);
+		Integer mealNumber = Integer.MAX_VALUE;
+		Integer order = Integer.MIN_VALUE;
+		Boolean printed = Boolean.TRUE;
+		String reference = "reference10";
+		newBean = createNewBean(amount, dinnerTable, mealNumber, order, printed, reference);
+		try {
+			// Create new bean to be updated
+			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean);
+			assertTrue("IMdoBean must be instance of " + TableBill.class, beanToBeUpdated instanceof TableBill);
+			TableBill castedBean = (TableBill) beanToBeUpdated;
+			assertNotNull("TableBill has a not be null ID", castedBean.getId());
+			assertEquals("Check TableBill order", order, castedBean.getOrder());
+			assertFalse("TableBill must not be deleted", castedBean.isDeleted());
+
+			// Update the created bean
+			Map<String, Object> fields = new HashMap<String, Object>();
+			Map<String, Object> keys = new HashMap<String, Object>();
+			castedBean.setAmount(BigDecimal.ONE);
+			castedBean.setMealNumber(1);
+			castedBean.setOrder(1);
+			castedBean.setPrinted(Boolean.FALSE);
+			castedBean.setReference("reference");
+			fields.put("amount", castedBean.getAmount());
+			fields.put("mealNumber", castedBean.getMealNumber());
+			fields.put("order", castedBean.getOrder());
+			fields.put("printed", castedBean.getPrinted());
+			fields.put("reference", castedBean.getReference());
+			keys.put("id", castedBean.getId());
+			this.getInstance().updateFieldsByKeys(fields, keys);
+			// Reload the modified bean
+			TableBill updatedBean = (TableBill) createNewBean();
+			updatedBean.setId(castedBean.getId());
+			this.getInstance().load(updatedBean);
+			assertEquals("Check updated fields ", castedBean.getAmount(), updatedBean.getAmount());
+			assertEquals("Check updated fields ", castedBean.getMealNumber(), updatedBean.getMealNumber());
+			assertEquals("Check updated fields ", castedBean.getOrder(), updatedBean.getOrder());
+			assertEquals("Check updated fields ", castedBean.getPrinted(), updatedBean.getPrinted());
+			assertEquals("Check updated fields ", castedBean.getReference(), updatedBean.getReference());
+			this.getInstance().delete(updatedBean);
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}
 	}
 

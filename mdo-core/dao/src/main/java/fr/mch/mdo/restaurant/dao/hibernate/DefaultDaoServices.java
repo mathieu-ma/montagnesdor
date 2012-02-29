@@ -12,7 +12,6 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -649,4 +648,52 @@ public abstract class DefaultDaoServices extends MdoDaoBase implements IDaoServi
 		return result;
 	}
 
+	@Override
+	public void updateFieldsByKeys(Map<String, Object> fields, Map<String, Object> keys) throws MdoDataBeanException {
+		this.updateFieldsByKeys(super.getBean().getClass(), fields, keys);
+	}
+	
+	@Override
+	public void updateFieldsByKeys(Class<? extends IMdoBean> clazz, Map<String, Object> fields, Map<String, Object> keys) throws MdoDataBeanException {
+		TransactionSession transactionSession = null;
+		if (fields != null && !fields.isEmpty() && keys != null && !keys.isEmpty()) {
+			try {
+				transactionSession = super.beginTransaction();
+	
+				Session session = transactionSession.getSession();
+				StringBuilder query = new StringBuilder("UPDATE " + clazz.getName() + " bean ");
+				query.append(" SET ");
+				for (String key : fields.keySet()) {
+					query.append(" bean.").append(key).append("=:").append(key).append(",");
+				}
+				query.deleteCharAt(query.lastIndexOf(","));
+				query.append(" WHERE 1=1 ");
+				for (String key : keys.keySet()) {
+					query.append(" AND bean.").append(key).append("=:").append(key);
+				}
+
+				Query hQuery = session.createQuery(query.toString());
+				hQuery.setProperties(fields);
+				hQuery.setProperties(keys);
+				
+				hQuery.executeUpdate();
+	
+				super.endTransaction(transactionSession, null);
+			} catch (Throwable e) {
+				logger.error("message.error.dao.fields.keys", new Object[] {clazz, fields, keys}, e);
+				transactionSession.getTransaction().rollback();
+				throw new MdoDataBeanException("message.error.dao.fields.keys", new Object[] {clazz, fields, keys}, e);
+			} finally {
+				try {
+					super.closeSession();
+				} catch (HibernateException e) {
+					logger.error("message.error.dao.session.close", e);
+					throw new MdoDataBeanException("message.error.dao.session.close", e);
+				}
+			}
+		} else {
+			logger.error("message.error.dao.fields.keys.empty", new Object[] {clazz, fields, keys});
+			throw new MdoDataBeanException("message.error.dao.fields.keys.empty", new Object[] {clazz, fields, keys});
+		}
+	}
 }

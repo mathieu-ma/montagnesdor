@@ -69,7 +69,16 @@
 				<configuration>
 					<encoding>UTF-8</encoding>
 				</configuration>
-			</plugin>			
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<!-- This is used in order to have more memory when level test log is low like DEBUG -->
+					<forkMode>pertest</forkMode>	
+					<argLine>-Xms10m -Xmx10m</argLine>
+				</configuration>
+			</plugin>					
 		</plugins>
 	</build>
 	<modules>

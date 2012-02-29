@@ -1,7 +1,9 @@
 package fr.mch.mdo.restaurant.dao.restaurants.hibernate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -105,6 +107,44 @@ public class DefaultRestaurantPrefixTablesDaoTest extends DefaultDaoServicesTest
 			this.getInstance().delete(updatedBean);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+	
+	@Override
+	public void doUpdateFieldsByKeysSpecific() {
+		IMdoBean newBean = null;
+		// Use the existing data in database
+		MdoTableAsEnum prefix = new MdoTableAsEnum();
+		prefix.setId(4L);
+		Restaurant restaurant = new Restaurant();
+		restaurant.setId(1L);
+		TableType type = new TableType();
+		type.setId(1L);
+		newBean = createNewBean(prefix, restaurant, type);
+		try {
+			// Create new bean to be updated
+			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean);
+			assertTrue("IMdoBean must be instance of " + RestaurantPrefixTable.class, beanToBeUpdated instanceof RestaurantPrefixTable);
+			RestaurantPrefixTable castedBean = (RestaurantPrefixTable) beanToBeUpdated;
+			assertNotNull("RestaurantPrefixTable prefix must not be null", castedBean.getPrefix());
+			assertEquals("RestaurantPrefixTable prefix name must be equals to the inserted value", prefix.toString(), castedBean.getPrefix().toString());
+			assertFalse("RestaurantPrefixTable must not be deleted", castedBean.isDeleted());
+
+			// Update the created bean
+			Map<String, Object> fields = new HashMap<String, Object>();
+			Map<String, Object> keys = new HashMap<String, Object>();
+			castedBean.setDeleted(true);
+			fields.put("deleted", castedBean.isDeleted());
+			keys.put("id", castedBean.getId());
+			this.getInstance().updateFieldsByKeys(fields, keys);
+			// Reload the modified bean
+			RestaurantPrefixTable updatedBean = (RestaurantPrefixTable) createNewBean();
+			updatedBean.setId(castedBean.getId());
+			this.getInstance().load(updatedBean);
+			assertEquals("Check updated fields ", castedBean.isDeleted(), updatedBean.isDeleted());
+			this.getInstance().delete(updatedBean);
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}
 	}
 

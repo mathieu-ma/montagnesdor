@@ -2,7 +2,9 @@ package fr.mch.mdo.restaurant.dao.products.hibernate;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -14,6 +16,7 @@ import fr.mch.mdo.restaurant.dao.beans.ValueAddedTax;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServicesTestCase;
 import fr.mch.mdo.restaurant.dao.products.IValueAddedTaxesDao;
 import fr.mch.mdo.restaurant.exception.MdoException;
+import fr.mch.mdo.test.MdoTestCase;
 
 public class DefaultValueAddedTaxesDaoTest extends DefaultDaoServicesTestCase 
 {
@@ -127,6 +130,39 @@ public class DefaultValueAddedTaxesDaoTest extends DefaultDaoServicesTestCase
 			assertTrue("ValueAddedTax must be deleted", updatedBean.isDeleted());
 		} catch (Exception e) {
 			fail(e.getMessage());
+		}
+	}
+
+	@Override
+	public void doUpdateFieldsByKeysSpecific() {
+		MdoTableAsEnum codeToBeUpdated = new MdoTableAsEnum();
+		// Use the existing data in database
+		codeToBeUpdated.setId(5L);
+		BigDecimal rateToBeUpdated = basicTestRate.add(new BigDecimal(0.4f));
+		try {
+			// Create new bean to be updated
+			IMdoBean beanToBeUpdated = this.getInstance().insert(createNewBean(codeToBeUpdated, rateToBeUpdated));
+			assertTrue("IMdoBean must be instance of " + ValueAddedTax.class, beanToBeUpdated instanceof ValueAddedTax);
+			ValueAddedTax castedBean = (ValueAddedTax) beanToBeUpdated;
+			assertEquals("ValueAddedTax code must be equals to unique key", codeToBeUpdated, castedBean.getCode());
+			assertEquals("ValueAddedTax rate must be equals", rateToBeUpdated, castedBean.getRate());
+			assertFalse("ValueAddedTax must not be deleted", castedBean.isDeleted());
+
+			// Update the created bean
+			Map<String, Object> fields = new HashMap<String, Object>();
+			Map<String, Object> keys = new HashMap<String, Object>();
+			castedBean.setRate(BigDecimal.ONE);
+			fields.put("rate", castedBean.getRate());
+			keys.put("id", castedBean.getId());
+			this.getInstance().updateFieldsByKeys(fields, keys);
+			// Reload the modified bean
+			ValueAddedTax updatedBean = (ValueAddedTax) createNewBean();
+			updatedBean.setId(castedBean.getId());
+			this.getInstance().load(updatedBean);
+			assertEquals("Check updated fields ", castedBean.getRate(), updatedBean.getRate());
+			this.getInstance().delete(updatedBean);
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}
 	}
 

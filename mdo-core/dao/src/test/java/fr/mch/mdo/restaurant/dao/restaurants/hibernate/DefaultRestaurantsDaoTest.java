@@ -4,8 +4,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import junit.framework.Test;
@@ -341,6 +343,127 @@ public class DefaultRestaurantsDaoTest extends DefaultDaoServicesTestCase
 		}
 	}
 
+	@Override
+	public void doUpdateFieldsByKeysSpecific() {
+		IMdoBean newBean = null;
+		Date registrationDate = Calendar.getInstance().getTime();
+		String reference = Long.toString(++basicRestaurantReference);
+		String name = "Kim-San 78";
+		String addressRoad = "3 place de la Piscine";
+		String addressZip = "95 334";
+		String addressCity = "Versaille";
+		String phone = "0130321200";
+		String vatRef = "1234567890";
+		String visaRef = "A1Z2E3R4T5Y6";
+		String tripleDESKey = "1A2B3C4D5E6F";
+		boolean vatByTakeaway = true;
+		BigDecimal takeawayBasicReduction = new BigDecimal(15);
+		BigDecimal takeawayMinAmountReduction = new BigDecimal(10);
+		// Use the existing data in database
+		HashSet<RestaurantPrefixTable> prefixTableNames = new HashSet<RestaurantPrefixTable>();
+		// Use the existing data in database
+		MdoTableAsEnum specificRound = new MdoTableAsEnum();
+		try {
+			specificRound = (MdoTableAsEnum) DaoServicesFactory.getMdoTableAsEnumsDao().findByPrimaryKey(new Long(2));
+		} catch (MdoException e) {
+			fail("Could not found the Specific Round.");
+		}
+		TableType defaultTableType = new TableType();
+		defaultTableType.setId(2L);
+		Set<RestaurantValueAddedTax> vats = new HashSet<RestaurantValueAddedTax>();
+		newBean = createNewBean(registrationDate, reference, name, addressRoad, addressZip, addressCity, phone, vatRef, visaRef, tripleDESKey, vatByTakeaway,
+				takeawayBasicReduction, takeawayMinAmountReduction, specificRound, defaultTableType, prefixTableNames, vats);
+
+		RestaurantPrefixTable restaurantPrefixTable = new RestaurantPrefixTable();
+		// Use the existing data in database
+		MdoTableAsEnum prefix = new MdoTableAsEnum();
+		try {
+			prefix = (MdoTableAsEnum) DaoServicesFactory.getMdoTableAsEnumsDao().findByPrimaryKey(2L);
+		} catch (MdoException e) {
+			fail("Could not found the prefix.");
+		}
+		restaurantPrefixTable.setPrefix(prefix);
+		TableType type = new TableType();
+		// Use the existing data in database
+		try {
+			type = (TableType) DaoServicesFactory.getTableTypesDao().findByPrimaryKey(2L);
+		} catch (MdoException e) {
+			fail("Could not found the type.");
+		}
+		restaurantPrefixTable.setType(type);
+		((Restaurant) newBean).addPrefixTableName(restaurantPrefixTable);
+
+		RestaurantValueAddedTax vat = new RestaurantValueAddedTax();
+		ValueAddedTax valueAddedTax = new ValueAddedTax();
+		valueAddedTax.setId(1L);
+		vat.setVat(valueAddedTax);
+		((Restaurant) newBean).addVat(vat);
+		vat = new RestaurantValueAddedTax();
+		valueAddedTax = new ValueAddedTax();
+		valueAddedTax.setId(2L);
+		vat.setVat(valueAddedTax);
+		((Restaurant) newBean).addVat(vat);
+		try {
+			// Create new bean to be updated
+			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean);
+			assertTrue("IMdoBean must be instance of " + Restaurant.class, beanToBeUpdated instanceof Restaurant);
+			Restaurant castedBean = (Restaurant) beanToBeUpdated;
+			assertNotNull("Restaurant name must not be null", castedBean.getName());
+			assertEquals("Restaurant name must be equals to the inserted value", name, castedBean.getName());
+			assertNotNull("Restaurant prefixeTakeawayNames must not be null", castedBean.getPrefixTableNames());
+			assertEquals("Check Restaurant prefixeTakeawayNames size", prefixTableNames.size(), castedBean.getPrefixTableNames().size());
+			assertNotNull("Restaurant vats must not be null", castedBean.getVats());
+			assertEquals("Check Restaurant vats size", vats.size(), castedBean.getVats().size());
+			assertFalse("Restaurant must not be deleted", castedBean.isDeleted());
+
+			// Update the created bean
+			Map<String, Object> fields = new HashMap<String, Object>();
+			Map<String, Object> keys = new HashMap<String, Object>();
+			castedBean.setAddressCity("addressCity");
+			castedBean.setAddressRoad("addressRoad");
+			castedBean.setAddressZip("addressZip");
+			castedBean.setName("name");
+			castedBean.setPhone("phone");
+			castedBean.setReference("reference");
+			castedBean.setRegistrationDate(new Date());
+			castedBean.setTakeawayMinAmountReduction(BigDecimal.TEN);
+			castedBean.setTripleDESKey("tripleDESKey");
+			castedBean.setVatRef("vatRef");
+			castedBean.setVisaRef("visaRef");
+			fields.put("addressCity", castedBean.getAddressCity());
+			fields.put("addressRoad", castedBean.getAddressRoad());
+			fields.put("addressZip", castedBean.getAddressZip());
+			fields.put("name", castedBean.getName());
+			fields.put("phone", castedBean.getPhone());
+			fields.put("reference", castedBean.getReference());
+			fields.put("registrationDate", castedBean.getRegistrationDate());
+			fields.put("takeawayMinAmountReduction", castedBean.getTakeawayBasicReduction());
+			fields.put("tripleDESKey", castedBean.getTripleDESKey());
+			fields.put("vatRef", castedBean.getVatRef());
+			fields.put("visaRef", castedBean.getVisaRef());
+			keys.put("id", castedBean.getId());
+			this.getInstance().updateFieldsByKeys(fields, keys);
+			// Reload the modified bean
+			Restaurant updatedBean = (Restaurant) createNewBean();
+			updatedBean.setId(castedBean.getId());
+			this.getInstance().load(updatedBean);
+			assertEquals("Check updated fields ", castedBean.getAddressCity(), updatedBean.getAddressCity());
+			assertEquals("Check updated fields ", castedBean.getAddressRoad(), updatedBean.getAddressRoad());
+			assertEquals("Check updated fields ", castedBean.getAddressZip(), updatedBean.getAddressZip());
+			assertEquals("Check updated fields ", castedBean.getName(), updatedBean.getName());
+			assertEquals("Check updated fields ", castedBean.getPhone(), updatedBean.getPhone());
+			assertEquals("Check updated fields ", castedBean.getReference(), updatedBean.getReference());
+//			assertEquals("Check updated fields ", castedBean.getRegistrationDate(), updatedBean.getRegistrationDate());
+			assertEquals("Check updated fields ", castedBean.getTakeawayBasicReduction(), updatedBean.getTakeawayBasicReduction());
+			assertEquals("Check updated fields ", castedBean.getTripleDESKey(), updatedBean.getTripleDESKey());
+			assertEquals("Check updated fields ", castedBean.getVatRef(), updatedBean.getVatRef());
+			assertEquals("Check updated fields ", castedBean.getVisaRef(), updatedBean.getVisaRef());
+			this.getInstance().delete(updatedBean);
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
+		}
+	}
+	
 	public void testFindRestaurantsByUser() {
 
 		IRestaurantsDao dao = (IRestaurantsDao) this.getInstance();

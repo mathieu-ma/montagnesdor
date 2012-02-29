@@ -4,8 +4,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import junit.framework.Test;
@@ -227,6 +229,67 @@ public class DefaultRevenuesDaoTest extends DefaultDaoServicesTestCase
 			this.getInstance().delete(updatedBean);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+	
+	@Override
+	public void doUpdateFieldsByKeysSpecific() {
+		IMdoBean newBean = null;
+		// Use the existing data in database
+		Restaurant restaurant = null;
+		try {
+			restaurant = (Restaurant) DaoServicesFactory.getRestaurantsDao().findByPrimaryKey(1L);
+		} catch (MdoException e) {
+			fail("Could not found the restaurant.");
+		}
+		assertNotNull("The restaurant must not be null.", restaurant);
+		Calendar calendar = Calendar.getInstance();
+		calendar.clear();
+		calendar.set(2010, 8, 15);
+		Date revenueDate = calendar.getTime();
+		TableType tableType = new TableType();
+		tableType.setId(2L);
+		Date printingDate = null;
+		Date closingDate = null;
+		BigDecimal amount = BigDecimal.ONE;
+		Set<RevenueCashing> cashings = new HashSet<RevenueCashing>();
+		Set<RevenueVat> vats = new HashSet<RevenueVat>();
+		newBean = createNewBean(restaurant, revenueDate, tableType, printingDate, closingDate, amount, cashings, vats);
+		try {
+			// Create new bean to be updated
+			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean);
+			assertTrue("IMdoBean must be instance of " + Revenue.class, beanToBeUpdated instanceof Revenue);
+			Revenue castedBean = (Revenue) beanToBeUpdated;
+			assertNotNull("Revenue amount must not be null", castedBean.getAmount());
+			assertEquals("Revenue amount must be equals to the inserted value", amount, castedBean.getAmount());
+			assertNotNull("Revenue cashings must not be null", castedBean.getCashings());
+			assertTrue("Revenue cashings must be empty", castedBean.getCashings().isEmpty());
+			assertFalse("Revenue must not be deleted", castedBean.isDeleted());
+
+			// Update the created bean
+			Map<String, Object> fields = new HashMap<String, Object>();
+			Map<String, Object> keys = new HashMap<String, Object>();
+			castedBean.setAmount(BigDecimal.ONE);
+			castedBean.setClosingDate(new Date());
+			castedBean.setPrintingDate(new Date());
+			castedBean.setRevenueDate(new Date());
+			fields.put("amount", castedBean.getAmount());
+			fields.put("closingDate", castedBean.getClosingDate());
+			fields.put("printingDate", castedBean.getPrintingDate());
+			fields.put("revenueDate", castedBean.getRevenueDate());
+			keys.put("id", castedBean.getId());
+			this.getInstance().updateFieldsByKeys(fields, keys);
+			// Reload the modified bean
+			Revenue updatedBean = (Revenue) createNewBean();
+			updatedBean.setId(castedBean.getId());
+			this.getInstance().load(updatedBean);
+			assertEquals("Check updated fields ", castedBean.getAmount(), updatedBean.getAmount());
+//			assertEquals("Check updated fields ", castedBean.getClosingDate(), updatedBean.getClosingDate());
+//			assertEquals("Check updated fields ", castedBean.getPrintingDate(), updatedBean.getPrintingDate());
+//			assertEquals("Check updated fields ", castedBean.getRevenueDate(), updatedBean.getRevenueDate());
+			this.getInstance().delete(updatedBean);
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}
 	}
 

@@ -1,8 +1,10 @@
 package fr.mch.mdo.restaurant.dao.users.hibernate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import junit.framework.Test;
@@ -21,6 +23,7 @@ import fr.mch.mdo.restaurant.dao.beans.UserRole;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServicesTestCase;
 import fr.mch.mdo.restaurant.dao.users.IUserAuthenticationsDao;
 import fr.mch.mdo.restaurant.exception.MdoException;
+import fr.mch.mdo.test.MdoTestCase;
 
 public class DefaultUserAuthenticationsDaoTest extends DefaultDaoServicesTestCase {
 	/**
@@ -232,6 +235,80 @@ public class DefaultUserAuthenticationsDaoTest extends DefaultDaoServicesTestCas
 			this.getInstance().delete(updatedBean);
 		} catch (Exception e) {
 			fail(e.getMessage());
+		}
+	}
+
+	@Override
+	public void doUpdateFieldsByKeysSpecific() {
+		IMdoBean newBean = null;
+		// Use the existing data in database
+		Locale printingLocale = new Locale();
+		printingLocale.setId(1L);
+		// Use the existing data in database
+		User user = new User();
+		user.setId(1L);
+		// Use the existing data in database
+		Restaurant restaurant = new Restaurant();
+		restaurant.setId(1L);
+		// Use the existing data in database
+		UserRole userRole = new UserRole();
+		userRole.setId(1L);
+		String login = "lchristophe";
+		String password = "lchristophe";
+		String levelPass1 = "lchristophe1";
+		String levelPass2 = "lchristophe2";
+		String levelPass3 = "lchristophe3";
+		Set<UserLocale> locales = new HashSet<UserLocale>();
+
+		newBean = createNewBean(printingLocale, user, restaurant, userRole, login, password, levelPass1, levelPass2, levelPass3, locales);
+
+		UserLocale userLocale = new UserLocale();
+		Locale locale = new Locale();
+		try {
+			locale = (Locale) DaoServicesFactory.getLocalesDao().findByPrimaryKey(1L);
+		} catch (MdoException e) {
+			fail("Could not found the locale.");
+		}
+		userLocale.setLocale(locale);
+		((UserAuthentication) newBean).addLocale(userLocale);
+
+		try {
+			// Create new bean to be updated
+			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean);
+			assertTrue("IMdoBean must be instance of " + UserAuthentication.class, beanToBeUpdated instanceof UserAuthentication);
+			UserAuthentication castedBean = (UserAuthentication) beanToBeUpdated;
+			assertEquals("UserAuthentication login must be equals to the inserted value", login, castedBean.getLogin());
+			assertNotNull("UserAuthentication locales must not be null", castedBean.getLocales());
+			assertEquals("Check UserAuthentication locales size", locales.size(), castedBean.getLocales().size());
+			assertFalse("UserAuthentication must not be deleted", castedBean.isDeleted());
+
+			// Update the created bean
+			Map<String, Object> fields = new HashMap<String, Object>();
+			Map<String, Object> keys = new HashMap<String, Object>();
+			castedBean.setLevelPass1("levelPass1");
+			castedBean.setLevelPass2("levelPass2");
+			castedBean.setLevelPass3("levelPass3");
+			castedBean.setLogin("login");
+			castedBean.setPassword("password");
+			fields.put("levelPass1", castedBean.getLevelPass1());
+			fields.put("levelPass2", castedBean.getLevelPass2());
+			fields.put("levelPass3", castedBean.getLevelPass3());
+			fields.put("login", castedBean.getLogin());
+			fields.put("password", castedBean.getPassword());
+			keys.put("id", castedBean.getId());
+			this.getInstance().updateFieldsByKeys(fields, keys);
+			// Reload the modified bean
+			UserAuthentication updatedBean = (UserAuthentication) createNewBean();
+			updatedBean.setId(castedBean.getId());
+			this.getInstance().load(updatedBean);
+			assertEquals("Check updated fields ", castedBean.getLevelPass1(), updatedBean.getLevelPass1());
+			assertEquals("Check updated fields ", castedBean.getLevelPass2(), updatedBean.getLevelPass2());
+			assertEquals("Check updated fields ", castedBean.getLevelPass3(), updatedBean.getLevelPass3());
+			assertEquals("Check updated fields ", castedBean.getLogin(), updatedBean.getLogin());
+			assertEquals("Check updated fields ", castedBean.getPassword(), updatedBean.getPassword());
+			this.getInstance().delete(updatedBean);
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}
 	}
 

@@ -171,15 +171,15 @@ public class DefaultOrderLinesAssembler extends AbstractAssembler implements IMa
 			dinnerTable.setId(dto.getDinnerTable().getId());
 		}
 		bean.setDinnerTable(dinnerTable);
-		bean.setLabel(bean.getLabel());
+		bean.setLabel(dto.getLabel());
 		Product product = (Product) productsAssembler.unmarshal(dto.getProduct());
 		bean.setProduct(product);
 		ProductPart productPart = (ProductPart) productPartsAssembler.unmarshal(dto.getProductPart());
 		bean.setProductPart(productPart);
 		ProductSpecialCode productSpecialCode = (ProductSpecialCode) productSpecialCodesAssembler.unmarshal(dto.getProductSpecialCode()); 
 		bean.setProductSpecialCode(productSpecialCode);
-		bean.setQuantity(bean.getQuantity());
-		bean.setUnitPrice(bean.getUnitPrice());
+		bean.setQuantity(dto.getQuantity());
+		bean.setUnitPrice(dto.getUnitPrice());
 		
 		return bean;
 	}

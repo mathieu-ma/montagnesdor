@@ -2,7 +2,9 @@ package fr.mch.mdo.restaurant.dao.revenues.hibernate;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -120,6 +122,42 @@ public class DefaultRevenueCashingsDaoTest extends DefaultDaoServicesTestCase
 			this.getInstance().delete(updatedBean);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+
+	@Override
+	public void doUpdateFieldsByKeysSpecific() {
+		IMdoBean newBean = null;
+		BigDecimal amount = BigDecimal.TEN;
+		Revenue revenue = new Revenue(); 
+		revenue.setId(1L);
+		MdoTableAsEnum type = new MdoTableAsEnum();
+		type.setId(38L);
+		newBean = createNewBean(amount, revenue, type);
+		try {
+			// Create new bean to be updated
+			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean);
+			assertTrue("IMdoBean must be instance of " + RevenueCashing.class, beanToBeUpdated instanceof RevenueCashing);
+			RevenueCashing castedBean = (RevenueCashing) beanToBeUpdated;
+			assertNotNull("RevenueCashing amount must not be null", castedBean.getAmount());
+			assertEquals("RevenueCashing amount must be equals to the inserted value", amount, castedBean.getAmount());
+			assertFalse("RevenueCashing must not be deleted", castedBean.isDeleted());
+
+			// Update the created bean
+			Map<String, Object> fields = new HashMap<String, Object>();
+			Map<String, Object> keys = new HashMap<String, Object>();
+			castedBean.setAmount(BigDecimal.ONE);
+			fields.put("amount", castedBean.getAmount());
+			keys.put("id", castedBean.getId());
+			this.getInstance().updateFieldsByKeys(fields, keys);
+			// Reload the modified bean
+			RevenueCashing updatedBean = (RevenueCashing) createNewBean();
+			updatedBean.setId(castedBean.getId());
+			this.getInstance().load(updatedBean);
+			assertEquals("Check updated fields ", castedBean.getAmount(), updatedBean.getAmount());
+			this.getInstance().delete(updatedBean);
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}
 	}
 

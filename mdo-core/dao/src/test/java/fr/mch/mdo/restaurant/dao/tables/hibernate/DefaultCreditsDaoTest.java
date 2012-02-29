@@ -3,7 +3,9 @@ package fr.mch.mdo.restaurant.dao.tables.hibernate;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -149,6 +151,62 @@ public class DefaultCreditsDaoTest extends DefaultDaoServicesTestCase
 			this.getInstance().delete(updatedBean);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+
+	@Override
+	public void doUpdateFieldsByKeysSpecific() {
+		IMdoBean newBean = null;
+		// Use the existing data in database
+		Restaurant restaurant = null;
+		try {
+			restaurant = (Restaurant) DaoServicesFactory.getRestaurantsDao().findByPrimaryKey(1L);
+		} catch (MdoException e) {
+			fail("Could not found the restaurant.");
+		}
+		assertNotNull("The restaurant must not be null.", restaurant);
+		String reference = DefaultDaoServicesTestCase.CREDIT_FIRST_REFERENCE.concat(String.valueOf(++incrementReference));
+		BigDecimal amount = BigDecimal.ZERO;
+		Date createdDate = new Date();
+		Date closingDate = null;
+		Boolean printed = Boolean.FALSE;
+		newBean = createNewBean(restaurant, reference, amount, createdDate, closingDate, printed);
+		try {
+			// Create new bean to be updated
+			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean);
+			assertTrue("IMdoBean must be instance of " + Credit.class, beanToBeUpdated instanceof Credit);
+			Credit castedBean = (Credit) beanToBeUpdated;
+			assertNotNull("Credit reference must not be null", castedBean.getReference());
+			assertEquals("Credit reference must be equals to the inserted value", reference, castedBean.getReference());
+			assertFalse("Credit must not be deleted", castedBean.isDeleted());
+
+			// Update the created bean
+			Map<String, Object> fields = new HashMap<String, Object>();
+			Map<String, Object> keys = new HashMap<String, Object>();
+			castedBean.setAmount(BigDecimal.ONE);
+			castedBean.setClosingDate(new Date());
+			castedBean.setCreatedDate(new Date());
+			castedBean.setPrinted(Boolean.TRUE);
+			castedBean.setReference("reference");
+			fields.put("amount", castedBean.getAmount());
+			fields.put("closingDate", castedBean.getClosingDate());
+			fields.put("createdDate", castedBean.getCreatedDate());
+			fields.put("printed", castedBean.getPrinted());
+			fields.put("reference", castedBean.getReference());
+			keys.put("id", castedBean.getId());
+			this.getInstance().updateFieldsByKeys(fields, keys);
+			// Reload the modified bean
+			Credit updatedBean = (Credit) createNewBean();
+			updatedBean.setId(castedBean.getId());
+			this.getInstance().load(updatedBean);
+			assertEquals("Check updated fields ", castedBean.getAmount(), updatedBean.getAmount());
+			assertEquals("Check updated fields ", castedBean.getClosingDate(), updatedBean.getClosingDate());
+			assertEquals("Check updated fields ", castedBean.getCreatedDate(), updatedBean.getCreatedDate());
+			assertEquals("Check updated fields ", castedBean.getPrinted(), updatedBean.getPrinted());
+			assertEquals("Check updated fields ", castedBean.getReference(), updatedBean.getReference());
+			this.getInstance().delete(updatedBean);
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}
 	}
 

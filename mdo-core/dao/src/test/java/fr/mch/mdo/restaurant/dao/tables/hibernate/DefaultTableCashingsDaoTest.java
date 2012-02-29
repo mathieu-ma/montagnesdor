@@ -3,8 +3,10 @@ package fr.mch.mdo.restaurant.dao.tables.hibernate;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import junit.framework.Test;
@@ -12,8 +14,8 @@ import junit.framework.TestSuite;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.dao.DaoServicesFactory;
 import fr.mch.mdo.restaurant.dao.IDaoServices;
-import fr.mch.mdo.restaurant.dao.MdoTableAsEnumTypeDao;
 import fr.mch.mdo.restaurant.dao.IMdoTableAsEnumsDao.TableCashingTypeName;
+import fr.mch.mdo.restaurant.dao.MdoTableAsEnumTypeDao;
 import fr.mch.mdo.restaurant.dao.beans.CashingType;
 import fr.mch.mdo.restaurant.dao.beans.DinnerTable;
 import fr.mch.mdo.restaurant.dao.beans.MdoTableAsEnum;
@@ -137,6 +139,52 @@ public class DefaultTableCashingsDaoTest extends DefaultDaoServicesTestCase
 			this.getInstance().delete(updatedBean);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+
+	@Override
+	public void doUpdateFieldsByKeysSpecific() {
+		TableCashing newBean = null;
+		DinnerTable dinnerTable = new DinnerTable();
+		// The others existing table id is already cashed. 
+		dinnerTable.setId(8L);
+		Date cashingDate = new Date();
+		Set<CashingType> cashingTypes = new HashSet<CashingType>();
+		newBean = (TableCashing) createNewBean(dinnerTable, cashingDate, cashingTypes);
+		CashingType cashingType = new CashingType();
+		MdoTableAsEnum type = new MdoTableAsEnum();
+		type.setId(38L);
+		cashingType.setType(type);
+		cashingType.setAmount(BigDecimal.TEN);
+		newBean.addCashingType(cashingType);
+		try {
+			// Create new bean to be updated
+			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean);
+			assertTrue("IMdoBean must be instance of " + TableCashing.class, beanToBeUpdated instanceof TableCashing);
+			TableCashing castedBean = (TableCashing) beanToBeUpdated;
+			assertNotNull("TableCashing has a not be null ID", castedBean.getId());
+			assertNotNull("Check TableCashing types", castedBean.getCashingTypes());
+			assertFalse("Check TableCashing types is not empty", castedBean.getCashingTypes().isEmpty());
+			assertFalse("TableCashing must not be deleted", castedBean.isDeleted());
+
+			// Update the created bean
+			Map<String, Object> fields = new HashMap<String, Object>();
+			Map<String, Object> keys = new HashMap<String, Object>();
+			castedBean.setCashingDate(new Date());
+			castedBean.setDeleted(false);
+			fields.put("cashingDate", castedBean.getCashingDate());
+			fields.put("deleted", castedBean.isDeleted());
+			keys.put("id", castedBean.getId());
+			this.getInstance().updateFieldsByKeys(fields, keys);
+			// Reload the modified bean
+			TableCashing updatedBean = (TableCashing) createNewBean();
+			updatedBean.setId(castedBean.getId());
+			this.getInstance().load(updatedBean);
+//			assertEquals("Check updated fields ", castedBean.getCashingDate(), updatedBean.getCashingDate());
+			assertEquals("Check updated fields ", castedBean.isDeleted(), updatedBean.isDeleted());
+			this.getInstance().delete(updatedBean);
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}
 	}
 

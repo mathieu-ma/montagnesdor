@@ -2,7 +2,9 @@ package fr.mch.mdo.restaurant.dao.revenues.hibernate;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -123,6 +125,46 @@ public class DefaultRevenueVatsDaoTest extends DefaultDaoServicesTestCase
 			this.getInstance().delete(updatedBean);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+
+	@Override
+	public void doUpdateFieldsByKeysSpecific() {
+		IMdoBean newBean = null;
+		BigDecimal amount = BigDecimal.TEN;
+		Revenue revenue = new Revenue(); 
+		revenue.setId(2L);
+		BigDecimal value = BigDecimal.ONE;
+		ValueAddedTax vat = new ValueAddedTax();
+		vat.setId(2L);
+		newBean = createNewBean(amount, revenue, value, vat);
+		try {
+			// Create new bean to be updated
+			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean);
+			assertTrue("IMdoBean must be instance of " + RevenueVat.class, beanToBeUpdated instanceof RevenueVat);
+			RevenueVat castedBean = (RevenueVat) beanToBeUpdated;
+			assertNotNull("RevenueVat amount must not be null", castedBean.getAmount());
+			assertEquals("RevenueVat amount must be equals to the inserted value", amount, castedBean.getAmount());
+			assertFalse("RevenueVat must not be deleted", castedBean.isDeleted());
+
+			// Update the created bean
+			Map<String, Object> fields = new HashMap<String, Object>();
+			Map<String, Object> keys = new HashMap<String, Object>();
+			castedBean.setAmount(BigDecimal.ONE);
+			castedBean.setValue(BigDecimal.TEN);
+			fields.put("amount", castedBean.getAmount());
+			fields.put("value", castedBean.getValue());
+			keys.put("id", castedBean.getId());
+			this.getInstance().updateFieldsByKeys(fields, keys);
+			// Reload the modified bean
+			RevenueVat updatedBean = (RevenueVat) createNewBean();
+			updatedBean.setId(castedBean.getId());
+			this.getInstance().load(updatedBean);
+			assertEquals("Check updated fields ", castedBean.getAmount(), updatedBean.getAmount());
+			assertEquals("Check updated fields ", castedBean.getValue(), updatedBean.getValue());
+			this.getInstance().delete(updatedBean);
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}
 	}
 

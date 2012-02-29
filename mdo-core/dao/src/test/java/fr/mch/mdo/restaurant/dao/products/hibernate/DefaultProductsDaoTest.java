@@ -207,6 +207,83 @@ public class DefaultProductsDaoTest extends DefaultDaoServicesTestCase
 		}
 	}
 
+	@Override
+	public void doUpdateFieldsByKeysSpecific() {
+		IMdoBean newBean = null;
+		String code = "C";
+		// Use the existing data in database
+		Restaurant restaurant = null;
+		try {
+			restaurant = (Restaurant) DaoServicesFactory.getRestaurantsDao().findByPrimaryKey(1L);
+		} catch (MdoException e) {
+			fail("Could not found the restaurant.");
+		}
+		assertNotNull("Restaurant must not be null", restaurant);
+		ValueAddedTax vat = new ValueAddedTax();
+		try {
+			vat = (ValueAddedTax) DaoServicesFactory.getValueAddedTaxesDao().findByPrimaryKey(1L);
+		} catch (MdoException e) {
+			fail("Could not found the vat.");
+		}
+		assertNotNull("VAT must not be null", vat);
+		BigDecimal price = new BigDecimal(12);
+
+		Set<ProductCategory> categories = new HashSet<ProductCategory>();
+
+		Map<Long, String> labels = new HashMap<Long, String>();
+		Long localeId = 1L;
+		String label = "Soupe Phnom Penh";
+		labels.put(localeId, label);
+		localeId = 2L;
+		label = "Soupe Phnom Penh ES";
+		labels.put(localeId, label);
+		newBean = createNewBean(restaurant, vat, code, price, categories, labels);
+
+		ProductCategory productCategory = new ProductCategory();
+		Category category = new Category();
+		category.setId(1L);
+		productCategory.setCategory(category);
+		BigDecimal quantity = new BigDecimal(1.7);
+		productCategory.setQuantity(quantity);
+		((Product) newBean).addCategory(productCategory);
+
+		try {
+			// Create new bean to be updated
+			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean);
+			assertTrue("IMdoBean must be instance of " + Product.class, beanToBeUpdated instanceof Product);
+			Product castedBean = (Product) beanToBeUpdated;
+			assertNotNull("Product code must not be null", castedBean.getCode());
+			assertEquals("Product name must be equals to the inserted value", code.toString(), castedBean.getCode().toString());
+			assertNotNull("Product labels must not be null", castedBean.getLabels());
+			assertEquals("Check Product labels size", labels.size(), castedBean.getLabels().size());
+			assertNotNull("Product categories must not be null", castedBean.getCategories());
+			assertEquals("Check Product categories size", categories.size(), castedBean.getCategories().size());
+			assertFalse("Product must not be deleted", castedBean.isDeleted());
+
+			// Update the created bean
+			Map<String, Object> fields = new HashMap<String, Object>();
+			Map<String, Object> keys = new HashMap<String, Object>();
+			castedBean.setCode("C#");
+			castedBean.setColorRGB("RGB");
+			castedBean.setPrice(BigDecimal.ZERO);
+			fields.put("code", castedBean.getCode());
+			fields.put("colorRGB", castedBean.getColorRGB());
+			fields.put("price", castedBean.getPrice());
+			keys.put("id", castedBean.getId());
+			this.getInstance().updateFieldsByKeys(fields, keys);
+			// Reload the modified bean
+			Product updatedBean = (Product) createNewBean();
+			updatedBean.setId(castedBean.getId());
+			this.getInstance().load(updatedBean);
+			assertEquals("Check updated fields ", castedBean.getCode(), updatedBean.getCode());
+			assertEquals("Check updated fields ", castedBean.getColorRGB(), updatedBean.getColorRGB());
+			assertEquals("Check updated fields ", castedBean.getPrice(), updatedBean.getPrice());
+			this.getInstance().delete(updatedBean);
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
+		}
+	}
+
 	private IMdoBean createNewBean(Restaurant restaurant, ValueAddedTax vat, String code, BigDecimal price, Set<ProductCategory> categories, Map<Long, String> labels) {
 		Product newBean = new Product();
 		newBean.setCode(code);

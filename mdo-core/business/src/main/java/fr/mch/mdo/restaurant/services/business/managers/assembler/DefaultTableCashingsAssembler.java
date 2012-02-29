@@ -1,11 +1,15 @@
 package fr.mch.mdo.restaurant.services.business.managers.assembler;
 
+import java.util.Set;
+
 import fr.mch.mdo.logs.ILogger;
 import fr.mch.mdo.logs.ILoggerBean;
 import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
+import fr.mch.mdo.restaurant.dao.beans.CashingType;
 import fr.mch.mdo.restaurant.dao.beans.DinnerTable;
 import fr.mch.mdo.restaurant.dao.beans.TableCashing;
+import fr.mch.mdo.restaurant.dto.beans.CashingTypeDto;
 import fr.mch.mdo.restaurant.dto.beans.DinnerTableDto;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.TableCashingDto;
@@ -16,12 +20,15 @@ public class DefaultTableCashingsAssembler extends AbstractAssembler implements 
 {
 	private ILogger logger;
 
+	private IManagerAssembler cashingTypesAssembler;
+
 	private static class LazyHolder {
 		private static IManagerAssembler instance = new DefaultTableCashingsAssembler(LoggerServiceImpl.getInstance().getLogger(DefaultTableCashingsAssembler.class.getName()));
 	}
 
 	private DefaultTableCashingsAssembler(ILogger logger) {
 		this.setLogger(logger);
+		this.cashingTypesAssembler = DefaultCashingTypesAssembler.getInstance(); 
 	}
 
 	public static IManagerAssembler getInstance() {
@@ -31,6 +38,7 @@ public class DefaultTableCashingsAssembler extends AbstractAssembler implements 
 	public DefaultTableCashingsAssembler() {
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public IMdoDtoBean marshal(IMdoDaoBean daoBean, MdoUserContext userContext) {
 		TableCashingDto dto = null;
@@ -44,10 +52,17 @@ public class DefaultTableCashingsAssembler extends AbstractAssembler implements 
 				dinnerTable.setId(bean.getDinnerTable().getId());
 				dto.setDinnerTable(dinnerTable);
 			}
+
+			Set<CashingTypeDto> cashingTypes = null;
+			if (bean.getCashingTypes() != null) {
+				cashingTypes = (Set) cashingTypesAssembler.marshal(bean.getCashingTypes(), userContext);
+			}
+			dto.setCashingTypes(cashingTypes);
 		}
 		return dto;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public IMdoDaoBean unmarshal(IMdoDtoBean dtoBean, IMdoDaoBean... parents) {
 		if (dtoBean == null) {
@@ -69,6 +84,12 @@ public class DefaultTableCashingsAssembler extends AbstractAssembler implements 
 		}
 		bean.setDinnerTable(dinnerTable);
 
+		Set<CashingType> cashingTypes = null;
+		if (dto.getCashingTypes() != null) {
+			cashingTypes = (Set) cashingTypesAssembler.unmarshal(dto.getCashingTypes(), bean);
+		}
+		bean.setCashingTypes(cashingTypes);
+		
 		return bean;
 	}
 

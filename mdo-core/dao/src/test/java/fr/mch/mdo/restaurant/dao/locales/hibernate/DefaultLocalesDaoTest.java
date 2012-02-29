@@ -1,7 +1,9 @@
 package fr.mch.mdo.restaurant.dao.locales.hibernate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -94,6 +96,36 @@ public class DefaultLocalesDaoTest extends DefaultDaoServicesTestCase
 			assertTrue("Locale must be deleted", updatedBean.isDeleted());
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+
+	@Override
+	public void doUpdateFieldsByKeysSpecific() {
+		String localeCodeToBeUpdated = java.util.Locale.JAPAN.getLanguage();
+		try {
+			// Create new bean to be updated
+			IMdoBean beanToBeUpdated = this.getInstance().insert(createNewBean(localeCodeToBeUpdated));
+			assertTrue("IMdoBean must be instance of " + Locale.class, beanToBeUpdated instanceof Locale);
+			Locale castedBean = (Locale) beanToBeUpdated;
+			assertNotNull("Locale language must not be null", castedBean.getLanguage());
+			assertEquals("Locale language must be equals to unique key", localeCodeToBeUpdated, castedBean.getLanguage());
+			assertFalse("Locale must not be deleted", castedBean.isDeleted());
+
+			// Update the created bean
+			Map<String, Object> fields = new HashMap<String, Object>();
+			Map<String, Object> keys = new HashMap<String, Object>();
+			castedBean.setLanguage(java.util.Locale.KOREA.getLanguage());
+			fields.put("language", castedBean.getLanguage());
+			keys.put("id", castedBean.getId());
+			this.getInstance().updateFieldsByKeys(fields, keys);
+			// Reload the modified bean
+			Locale updatedBean = (Locale) createNewBean();
+			updatedBean.setId(castedBean.getId());
+			this.getInstance().load(updatedBean);
+			assertEquals("Check updated fields ", castedBean.getLanguage(), updatedBean.getLanguage());
+			this.getInstance().delete(updatedBean);
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}
 	}
 

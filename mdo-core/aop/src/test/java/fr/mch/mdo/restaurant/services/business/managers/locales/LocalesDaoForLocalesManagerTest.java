@@ -1,6 +1,7 @@
 package fr.mch.mdo.restaurant.services.business.managers.locales;
 
 import java.util.List;
+import java.util.Map;
 
 import fr.mch.mdo.logs.ILogger;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
@@ -79,5 +80,15 @@ public class LocalesDaoForLocalesManagerTest implements ILocalesDao
 //	@Override
 	public Object getCurrentSession() throws MdoException {
 		return null;
+	}
+
+	@Override
+	public void updateFieldsByKeys(Map<String, Object> fields, Map<String, Object> keys)
+			throws MdoException {
+	}
+
+	@Override
+	public void updateFieldsByKeys(Class<? extends IMdoBean> clazz, Map<String, Object> fields, Map<String, Object> keys)
+			throws MdoException {
 	}
 }

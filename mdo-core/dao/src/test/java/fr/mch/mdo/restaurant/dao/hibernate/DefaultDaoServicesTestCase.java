@@ -2,7 +2,9 @@ package fr.mch.mdo.restaurant.dao.hibernate;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
@@ -47,6 +49,7 @@ public abstract class DefaultDaoServicesTestCase extends MdoDaoBasicTestCase
 	public void testAll() {
 		this.doInsert();
 		this.doUpdate();
+		this.doUpdateFieldsByKeys();
 		this.doLoad();
 		this.doFindByPrimaryKey();
 		this.doFindByUniqueKey();
@@ -159,7 +162,81 @@ public abstract class DefaultDaoServicesTestCase extends MdoDaoBasicTestCase
 		}
 	}
 
+	/**
+	 * This method tests the updateFieldsByKeys method of DAO part.
+	 */
+	public void doUpdateFieldsByKeys() {
+		// Update the created bean
+		
+		Map<Map<String, Object>, Map<String, Object>> fieldsKeys = new HashMap<Map<String,Object>, Map<String,Object>>();
+		// 1)
+		Map<String, Object> fields = new HashMap<String, Object>();
+		Map<String, Object> keys = new HashMap<String, Object>();
+		fieldsKeys.put(fields, keys);
+		// 2)
+		fields = null;
+		keys = null;
+		fieldsKeys.put(fields, keys);
+		// 3)
+		fields = new HashMap<String, Object>();
+		fields.put("titi", "toto");
+		keys = new HashMap<String, Object>();
+		fieldsKeys.put(fields, keys);
+		// 4)
+		fields = new HashMap<String, Object>();
+		keys = new HashMap<String, Object>();
+		keys.put("titi", "toto");
+		fieldsKeys.put(fields, keys);
+		// 5)
+		fields = new HashMap<String, Object>();
+		fields.put("titi", "toto");
+		keys = null;
+		fieldsKeys.put(fields, keys);
+		// 6)
+		fields = null;
+		keys = new HashMap<String, Object>();
+		keys.put("titi", "toto");
+		fieldsKeys.put(fields, keys);
+		// 7)
+		fields = new HashMap<String, Object>();
+		keys = null;
+		fieldsKeys.put(fields, keys);
+		// 8)
+		fields = null;
+		keys = new HashMap<String, Object>();
+		fieldsKeys.put(fields, keys);
+
+		for (Map<String, Object> key : fieldsKeys.keySet()) {
+			try {
+				this.getInstance().updateFieldsByKeys(key, fieldsKeys.get(key));
+				// Could not be there
+				fail(MdoTestCase.DEFAULT_FAILED_MESSAGE);
+			} catch (Exception e) {
+				assertTrue("Empty parameters exception", true);
+			}
+			try {
+				this.getInstance().updateFieldsByKeys(insertedBeanToBeDeleted.getClass(), key, fieldsKeys.get(key));
+				// Could not be there
+				fail(MdoTestCase.DEFAULT_FAILED_MESSAGE);
+			} catch (Exception e) {
+				assertTrue("Empty parameters exception", true);
+			}
+		}
+		doUpdateFieldsByKeysSpecific();
+	}
+
+	/**
+	 * This method tests the updateFieldsByKeys method of DAO part for.
+	 */
+	public abstract void doUpdateFieldsByKeysSpecific();
+	
+	/**
+	 * This method tests the update method of DAO part.
+	 */
 	public abstract void doUpdate();
 
+	/**
+	 * This method tests the findByUniqueKey method of DAO part.
+	 */
 	public abstract void doFindByUniqueKey();
 }

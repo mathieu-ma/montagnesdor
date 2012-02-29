@@ -134,6 +134,43 @@ public class DefaultProductSpecialCodesDaoTest extends DefaultDaoServicesTestCas
 		}
 	}
 
+	@Override
+	public void doUpdateFieldsByKeysSpecific() {
+		String shortCode = "%";
+		Restaurant restaurant = new Restaurant();
+		restaurant.setId(1L);
+		MdoTableAsEnum code = new MdoTableAsEnum();
+		code.setId(25L);
+		Map<Long, String> labels = new HashMap<Long, String>();
+		labels.put(1L, "Test 2");
+		try {
+			// Create new bean to be updated
+			IMdoBean beanToBeUpdated = this.getInstance().insert(createNewBean(shortCode, restaurant, code, labels));
+			assertTrue("IMdoBean must be instance of " + ProductSpecialCode.class, beanToBeUpdated instanceof ProductSpecialCode);
+			ProductSpecialCode castedBean = (ProductSpecialCode) beanToBeUpdated;
+			assertEquals("ProductSpecialCode short code must be equals to unique key", shortCode, castedBean.getShortCode());
+			assertNotNull("ProductSpecialCode labels must not be null", castedBean.getLabels());
+			assertEquals("Check ProductSpecialCode labels size", labels.size(), castedBean.getLabels().size());
+			assertFalse("ProductSpecialCode must not be deleted", castedBean.isDeleted());
+
+			// Update the created bean
+			Map<String, Object> fields = new HashMap<String, Object>();
+			Map<String, Object> keys = new HashMap<String, Object>();
+			castedBean.setShortCode("Z");
+			fields.put("shortCode", castedBean.getShortCode());
+			keys.put("id", castedBean.getId());
+			this.getInstance().updateFieldsByKeys(fields, keys);
+			// Reload the modified bean
+			ProductSpecialCode updatedBean = (ProductSpecialCode) createNewBean();
+			updatedBean.setId(castedBean.getId());
+			this.getInstance().load(updatedBean);
+			assertEquals("Check updated fields ", castedBean.getShortCode(), updatedBean.getShortCode());
+			this.getInstance().delete(updatedBean);
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
+		}
+	}
+	
 	public void testGetIdByCodeName() {
 		IProductSpecialCodesDao dao = (IProductSpecialCodesDao) this.getInstance();
 		try {

@@ -15,6 +15,7 @@ import fr.mch.mdo.restaurant.dao.beans.UserRole;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServicesTestCase;
 import fr.mch.mdo.restaurant.dao.users.IUserRolesDao;
 import fr.mch.mdo.restaurant.exception.MdoException;
+import fr.mch.mdo.test.MdoTestCase;
 
 public class DefaultUserRolesDaoTest extends DefaultDaoServicesTestCase 
 {
@@ -137,6 +138,53 @@ public class DefaultUserRolesDaoTest extends DefaultDaoServicesTestCase
 			this.getInstance().delete(updatedBean);
 		} catch (Exception e) {
 			fail(e.getMessage());
+		}
+	}
+
+	@Override
+	public void doUpdateFieldsByKeysSpecific() {
+		IMdoBean newBean = null;
+		// Use the existing data in database
+		MdoTableAsEnum code = new MdoTableAsEnum();
+		try {
+			code = (MdoTableAsEnum) DaoServicesFactory.getMdoTableAsEnumsDao().findByPrimaryKey(15L);
+		} catch (MdoException e) {
+			fail("Could not found the user role code.");
+		}
+		Map<Long, String> labels = new HashMap<Long, String>();
+		Long localeId = 1L;
+		String label = "Administrateuse";
+		labels.put(localeId, label);
+		localeId = 2L;
+		label = "Girly Administrator";
+		labels.put(localeId, label);
+		newBean = createNewBean(code, labels);
+		try {
+			// Create new bean to be updated
+			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean);
+			assertTrue("IMdoBean must be instance of " + UserRole.class, beanToBeUpdated instanceof UserRole);
+			UserRole castedBean = (UserRole) beanToBeUpdated;
+			assertNotNull("UserRole code must not be null", castedBean.getCode());
+			assertEquals("UserRole name must be equals to the inserted value", code.toString(), castedBean.getCode().toString());
+			assertNotNull("UserRole labels must not be null", castedBean.getLabels());
+			assertEquals("Check UserRole labels size", labels.size(), castedBean.getLabels().size());
+			assertFalse("UserRole must not be deleted", castedBean.isDeleted());
+
+			// Update the created bean
+			Map<String, Object> fields = new HashMap<String, Object>();
+			Map<String, Object> keys = new HashMap<String, Object>();
+			castedBean.setDeleted(false);
+			fields.put("deleted", castedBean.isDeleted());
+			keys.put("id", castedBean.getId());
+			this.getInstance().updateFieldsByKeys(fields, keys);
+			// Reload the modified bean
+			UserRole updatedBean = (UserRole) createNewBean();
+			updatedBean.setId(castedBean.getId());
+			this.getInstance().load(updatedBean);
+			assertEquals("Check updated fields ", castedBean.isDeleted(), updatedBean.isDeleted());
+			this.getInstance().delete(updatedBean);
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}
 	}
 
