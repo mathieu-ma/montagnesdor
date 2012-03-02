@@ -12,6 +12,7 @@ import fr.mch.mdo.restaurant.dao.DaoServicesFactory;
 import fr.mch.mdo.restaurant.dao.IDaoServices;
 import fr.mch.mdo.restaurant.dao.beans.MdoTableAsEnum;
 import fr.mch.mdo.restaurant.dao.beans.UserRole;
+import fr.mch.mdo.restaurant.dao.beans.UserRoleLanguage;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServicesTestCase;
 import fr.mch.mdo.restaurant.dao.users.IUserRolesDao;
 import fr.mch.mdo.restaurant.exception.MdoException;
@@ -142,7 +143,7 @@ public class DefaultUserRolesDaoTest extends DefaultDaoServicesTestCase
 	}
 
 	@Override
-	public void doUpdateFieldsByKeysSpecific() {
+	public void doUpdateFieldsAndDeleteByKeysSpecific() {
 		IMdoBean newBean = null;
 		// Use the existing data in database
 		MdoTableAsEnum code = new MdoTableAsEnum();
@@ -182,7 +183,29 @@ public class DefaultUserRolesDaoTest extends DefaultDaoServicesTestCase
 			updatedBean.setId(castedBean.getId());
 			this.getInstance().load(updatedBean);
 			assertEquals("Check updated fields ", castedBean.isDeleted(), updatedBean.isDeleted());
-			this.getInstance().delete(updatedBean);
+
+			// Delete the bean by keys
+			// Take the fields as keys
+			try {
+				super.doDeleteByKeysSpecific(updatedBean, keys, true);
+			} catch (Exception e) {
+				// We Have to delete following tables in the following order deleting the table t_user_role
+				// 1) t_user_role_language
+				// 2) t_user_authentication
+				// 3) t_user_locale
+				// 4) t_dinner_table
+				// 5) t_table_credit
+				// 6) t_table_bill
+				// 7) t_table_vat
+				// 8) t_order_line
+				// 9) t_table_cashing
+				// 10) t_cashing_type
+				Object parentId = keys.get("id");
+				Map<String, Object> childrenKeys = new HashMap<String, Object>();
+				childrenKeys.put("parentId", parentId);
+				super.doDeleteByKeysSpecific(UserRoleLanguage.class, childrenKeys);
+				super.doDeleteByKeysSpecific(updatedBean, keys);
+			}
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}

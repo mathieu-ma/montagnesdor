@@ -111,7 +111,7 @@ public class DefaultRestaurantPrefixTablesDaoTest extends DefaultDaoServicesTest
 	}
 	
 	@Override
-	public void doUpdateFieldsByKeysSpecific() {
+	public void doUpdateFieldsAndDeleteByKeysSpecific() {
 		IMdoBean newBean = null;
 		// Use the existing data in database
 		MdoTableAsEnum prefix = new MdoTableAsEnum();
@@ -142,7 +142,10 @@ public class DefaultRestaurantPrefixTablesDaoTest extends DefaultDaoServicesTest
 			updatedBean.setId(castedBean.getId());
 			this.getInstance().load(updatedBean);
 			assertEquals("Check updated fields ", castedBean.isDeleted(), updatedBean.isDeleted());
-			this.getInstance().delete(updatedBean);
+
+			// Delete the bean by keys
+			// Take the fields as keys
+			super.doDeleteByKeysSpecific(updatedBean, fields);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}

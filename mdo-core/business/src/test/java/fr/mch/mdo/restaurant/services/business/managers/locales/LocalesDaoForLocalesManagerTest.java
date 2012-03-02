@@ -83,12 +83,27 @@ public class LocalesDaoForLocalesManagerTest implements ILocalesDao
 	}
 
 	@Override
-	public void updateFieldsByKeys(Map<String, Object> fields, Map<String, Object> keys)
-			throws MdoException {
+	public void updateFieldsByKeys(Map<String, Object> fields, Map<String, Object> keys) throws MdoException {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public void updateFieldsByKeys(Class<? extends IMdoBean> clazz, Map<String, Object> fields, Map<String, Object> keys)
 			throws MdoException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteByKeys(Map<String, Object> keys) throws MdoException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteByKeys(Class<? extends IMdoBean> clazz, Map<String, Object> keys) throws MdoException {
+		// TODO Auto-generated method stub
+		
 	}
 }

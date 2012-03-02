@@ -9,6 +9,7 @@ import java.util.Map;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.dao.IDaoServices;
+import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.test.MdoTestCase;
 
 public abstract class DefaultDaoServicesTestCase extends MdoDaoBasicTestCase 
@@ -49,7 +50,7 @@ public abstract class DefaultDaoServicesTestCase extends MdoDaoBasicTestCase
 	public void testAll() {
 		this.doInsert();
 		this.doUpdate();
-		this.doUpdateFieldsByKeys();
+		this.doUpdateFieldsAndDeleteByKeys();
 		this.doLoad();
 		this.doFindByPrimaryKey();
 		this.doFindByUniqueKey();
@@ -165,7 +166,7 @@ public abstract class DefaultDaoServicesTestCase extends MdoDaoBasicTestCase
 	/**
 	 * This method tests the updateFieldsByKeys method of DAO part.
 	 */
-	public void doUpdateFieldsByKeys() {
+	public void doUpdateFieldsAndDeleteByKeys() {
 		// Update the created bean
 		
 		Map<Map<String, Object>, Map<String, Object>> fieldsKeys = new HashMap<Map<String,Object>, Map<String,Object>>();
@@ -222,13 +223,64 @@ public abstract class DefaultDaoServicesTestCase extends MdoDaoBasicTestCase
 				assertTrue("Empty parameters exception", true);
 			}
 		}
-		doUpdateFieldsByKeysSpecific();
+
+		for (Map<String, Object> key : fieldsKeys.keySet()) {
+			try {
+				this.getInstance().deleteByKeys(key);
+				// Could not be there
+				fail(MdoTestCase.DEFAULT_FAILED_MESSAGE);
+			} catch (Exception e) {
+				assertTrue("Empty parameters exception", true);
+			}
+			try {
+				this.getInstance().deleteByKeys(insertedBeanToBeDeleted.getClass(), key);
+				// Could not be there
+				fail(MdoTestCase.DEFAULT_FAILED_MESSAGE);
+			} catch (Exception e) {
+				assertTrue("Empty parameters exception", true);
+			}
+		}
+
+		doUpdateFieldsAndDeleteByKeysSpecific();
+	}
+
+	protected void doDeleteByKeysSpecific(IMdoBean bean, Map<String, Object> keys, boolean... isCascadeRequired) throws MdoException {
+		// Delete the bean by keys
+		try {
+			this.getInstance().deleteByKeys(bean.getClass(), keys);
+			try {
+				// Reload the deleted bean
+				this.getInstance().load(bean);
+				fail(MdoTestCase.DEFAULT_FAILED_MESSAGE);
+			} catch (Exception e) {
+				assertTrue("" + e, true);
+			}
+		} catch (MdoException e) {
+			if (isCascadeRequired.length>0 && isCascadeRequired[0]) {
+				throw e;
+			}
+			// Could not be there
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + e);
+		}
+	}
+
+	protected void doDeleteByKeysSpecific(Class<? extends IMdoBean> clazz, Map<String, Object> keys, boolean... isCascadeRequired) throws MdoException {
+		// Delete the bean by keys
+		try {
+			this.getInstance().deleteByKeys(clazz, keys);
+		} catch (MdoException e) {
+			if (isCascadeRequired.length>0 && isCascadeRequired[0]) {
+				throw e;
+			}
+			// Could not be there
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + e);
+		}
 	}
 
 	/**
-	 * This method tests the updateFieldsByKeys method of DAO part for.
+	 * This method tests the updateFieldsByKeys and deleteByKeys methods of DAO part for.
 	 */
-	public abstract void doUpdateFieldsByKeysSpecific();
+	public abstract void doUpdateFieldsAndDeleteByKeysSpecific();
 	
 	/**
 	 * This method tests the update method of DAO part.

@@ -129,7 +129,7 @@ public class DefaultRevenueVatsDaoTest extends DefaultDaoServicesTestCase
 	}
 
 	@Override
-	public void doUpdateFieldsByKeysSpecific() {
+	public void doUpdateFieldsAndDeleteByKeysSpecific() {
 		IMdoBean newBean = null;
 		BigDecimal amount = BigDecimal.TEN;
 		Revenue revenue = new Revenue(); 
@@ -162,7 +162,10 @@ public class DefaultRevenueVatsDaoTest extends DefaultDaoServicesTestCase
 			this.getInstance().load(updatedBean);
 			assertEquals("Check updated fields ", castedBean.getAmount(), updatedBean.getAmount());
 			assertEquals("Check updated fields ", castedBean.getValue(), updatedBean.getValue());
-			this.getInstance().delete(updatedBean);
+
+			// Delete the bean by keys
+			// Take the fields as keys
+			super.doDeleteByKeysSpecific(updatedBean, fields);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}

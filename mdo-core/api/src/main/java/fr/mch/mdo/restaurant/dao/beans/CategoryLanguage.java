@@ -6,64 +6,16 @@
  */
 package fr.mch.mdo.restaurant.dao.beans;
 
-import fr.mch.mdo.restaurant.beans.MdoDaoBean;
 
 /**
- * @author Mathieu MA sous conrad
+ * This class is used for t_category_language mapping.
  * 
- *         Cette classe est un mapping de la table t_category.
+ * @author Mathieu MA sous conrad
  */
-public class CategoryLanguage extends MdoDaoBean
+public class CategoryLanguage extends BeanLanguage
 {
     /**
-     * 
+     * Default Serial Version UID.
      */
     private static final long serialVersionUID = 1L;
-
-    /*
-     * cat_id serial, loc_id varchar(3) NOT NULL DEFAULT 'fr', ctl_label
-     * varchar(50) NOT NULL,
-     */
-    private Locale locale;
-
-    private Category category;
-
-    private String label;
-
-    /**
-     * @return
-     */
-    public String getLabel()
-    {
-	return label;
-    }
-
-    /**
-     * @param string
-     */
-    public void setLabel(String string)
-    {
-	label = string;
-    }
-
-    public Locale getLocale()
-    {
-        return locale;
-    }
-
-    public void setLocale(Locale locale)
-    {
-        this.locale = locale;
-    }
-
-    public Category getCategory()
-    {
-        return category;
-    }
-
-    public void setCategory(Category category)
-    {
-        this.category = category;
-    }
-
 }

@@ -22,13 +22,13 @@ public interface IDaoServices extends IDaoBase
 
     IMdoBean update(IMdoBean bean, boolean... isLazy) throws MdoException;
     /**
-     * Update fields "fields" of the bean by keys "keys".
+     * Update fields "fields" of the current bean by keys "keys".
      * This method allows to update in mass or only one row depending on the values in the keys map.
      * You can only update first level fields not child fields.
      * 
      * @param fields is a map of key property with values to be updated.
      * @param keys is a map of key property with values to be filtered.
-     * @throws MdoException
+     * @throws MdoException when any exception occur.
      */
     void updateFieldsByKeys(Map<String, Object> fields, Map<String, Object> keys) throws MdoException;
     /**
@@ -39,9 +39,26 @@ public interface IDaoServices extends IDaoBase
      * @param clazz the mapped class to be updated.
      * @param fields is a map of key property with values to be updated.
      * @param keys is a map of key property with values to be filtered.
-     * @throws MdoException
+     * @throws MdoException when any exception occur.
      */
     void updateFieldsByKeys(Class<? extends IMdoBean> clazz, Map<String, Object> fields, Map<String, Object> keys) throws MdoException;
 
     IMdoBean delete(IMdoBean bean, boolean... isLazy) throws MdoException;
+    /**
+     * Delete current bean by keys "keys".
+     * This method allows to delete in mass or only one row depending on the values in the keys map.
+     * 
+     * @param keys is a map of key property with values to be filtered.
+     * @throws MdoException when any exception occur.
+     */
+    void deleteByKeys(Map<String, Object> keys) throws MdoException;
+    /**
+     * Delete bean of class "clazz" by keys "keys".
+     * This method allows to delete in mass or only one row depending on the values in the keys map.
+     *  
+     * @param clazz the mapped class to be deleted.
+     * @param keys is a map of key property with values to be filtered.
+     * @throws MdoException when any exception occur.
+     */
+    void deleteByKeys(Class<? extends IMdoBean> clazz, Map<String, Object> keys) throws MdoException;
 }

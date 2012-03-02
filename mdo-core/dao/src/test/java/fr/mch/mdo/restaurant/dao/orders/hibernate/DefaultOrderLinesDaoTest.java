@@ -129,7 +129,7 @@ public class DefaultOrderLinesDaoTest extends DefaultDaoServicesTestCase
 	}
 
 	@Override
-	public void doUpdateFieldsByKeysSpecific() {
+	public void doUpdateFieldsAndDeleteByKeysSpecific() {
 		IMdoBean newBean = null;
 		BigDecimal amount = BigDecimal.TEN.multiply(BigDecimal.valueOf(2));
 		Credit credit =null;
@@ -176,7 +176,10 @@ public class DefaultOrderLinesDaoTest extends DefaultDaoServicesTestCase
 			assertEquals("Check updated fields ", castedBean.getLabel(), updatedBean.getLabel());
 			assertEquals("Check updated fields ", castedBean.getQuantity(), updatedBean.getQuantity());
 			assertEquals("Check updated fields ", castedBean.getUnitPrice(), updatedBean.getUnitPrice());
-			this.getInstance().delete(updatedBean);
+
+			// Delete the bean by keys
+			// Take the fields as keys
+			super.doDeleteByKeysSpecific(updatedBean, fields);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}

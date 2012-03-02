@@ -12,6 +12,7 @@ import fr.mch.mdo.restaurant.dao.DaoServicesFactory;
 import fr.mch.mdo.restaurant.dao.IDaoServices;
 import fr.mch.mdo.restaurant.dao.beans.MdoTableAsEnum;
 import fr.mch.mdo.restaurant.dao.beans.PrintingInformation;
+import fr.mch.mdo.restaurant.dao.beans.PrintingInformationLanguage;
 import fr.mch.mdo.restaurant.dao.beans.Restaurant;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServicesTestCase;
 import fr.mch.mdo.restaurant.dao.printings.IPrintingInformationsDao;
@@ -215,7 +216,7 @@ public class DefaultPrintingInformationsDaoTest extends DefaultDaoServicesTestCa
 	}
 	
 	@Override
-	public void doUpdateFieldsByKeysSpecific() {
+	public void doUpdateFieldsAndDeleteByKeysSpecific() {
 		IMdoBean newBean = null;
 		Restaurant restaurant = new Restaurant();
 		restaurant.setId(1L);
@@ -272,7 +273,20 @@ public class DefaultPrintingInformationsDaoTest extends DefaultDaoServicesTestCa
 			this.getInstance().load(updatedBean);
 			assertEquals("Check updated fields ", castedBean.getOrder(), updatedBean.getOrder());
 			assertEquals("Check updated fields ", castedBean.isDeleted(), updatedBean.isDeleted());
-			this.getInstance().delete(updatedBean);
+
+			// Delete the bean by keys
+			// Take the fields as keys
+			try {
+				super.doDeleteByKeysSpecific(updatedBean, keys, true);
+			} catch (Exception e) {
+				// We Have to delete following tables in the following order deleting the table t_printing_information
+				// 1) t_printing_information_language
+				Object parentId = keys.get("id");
+				Map<String, Object> childrenKeys = new HashMap<String, Object>();
+				childrenKeys.put("parentId", parentId);
+				super.doDeleteByKeysSpecific(PrintingInformationLanguage.class, childrenKeys);
+				super.doDeleteByKeysSpecific(updatedBean, keys);
+			}
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}

@@ -36,10 +36,9 @@ public interface IProductsDao  extends IDaoServices
     /**
      * This method tries to get the Product by code with minimum informations.
      * @param restaurantId the restaurant id.
-     * @param localeId the locale id for product label.
      * @param code the unique code.
      * @return Product with minimum informations.
      * @throws MdoException when any exception occur.
      */
-	IMdoBean getProductByCode(Long restaurantId, Long localeId, String code) throws MdoException;
+	IMdoBean getProductByCode(Long restaurantId, String code) throws MdoException;
 }

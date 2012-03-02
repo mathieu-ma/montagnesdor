@@ -155,7 +155,7 @@ public class DefaultCreditsDaoTest extends DefaultDaoServicesTestCase
 	}
 
 	@Override
-	public void doUpdateFieldsByKeysSpecific() {
+	public void doUpdateFieldsAndDeleteByKeysSpecific() {
 		IMdoBean newBean = null;
 		// Use the existing data in database
 		Restaurant restaurant = null;
@@ -204,7 +204,10 @@ public class DefaultCreditsDaoTest extends DefaultDaoServicesTestCase
 			assertEquals("Check updated fields ", castedBean.getCreatedDate(), updatedBean.getCreatedDate());
 			assertEquals("Check updated fields ", castedBean.getPrinted(), updatedBean.getPrinted());
 			assertEquals("Check updated fields ", castedBean.getReference(), updatedBean.getReference());
-			this.getInstance().delete(updatedBean);
+
+			// Delete the bean by keys
+			// Take the fields as keys
+			super.doDeleteByKeysSpecific(updatedBean, fields);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}

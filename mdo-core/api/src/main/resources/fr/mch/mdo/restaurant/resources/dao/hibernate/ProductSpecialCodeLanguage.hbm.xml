@@ -5,14 +5,14 @@
 
 <hibernate-mapping>
 
-	<class name="fr.mch.mdo.restaurant.dao.beans.CategoryLanguage" table="t_category_language">
-		<id name="id" column="ctl_id" type="long">
+	<class name="fr.mch.mdo.restaurant.dao.beans.ProductSpecialCodeLanguage" table="t_product_special_code_language">
+		<id name="id" column="pcl_id" type="long">
 			<generator class="increment" />
 		</id>
-		<property name="deleted" column="ctl_deleted" />
-		<property name="label" column="ctl_label" />
+		<property name="deleted" column="pcl_deleted" />
+		<property name="label" column="pcl_label" />
 		<property name="locId" column="loc_id" />
-		<property name="parentId" column="cat_id" />
+		<property name="parentId" column="psc_id" />
 	</class>
 
 </hibernate-mapping>

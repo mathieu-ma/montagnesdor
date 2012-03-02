@@ -9,60 +9,14 @@ package fr.mch.mdo.restaurant.dao.beans;
 import fr.mch.mdo.restaurant.beans.MdoDaoBean;
 
 /**
- * @author Mathieu MA sous conrad
+ * This class is used for t_order_part_language mapping.
  * 
- *         Cette classe est un mapping de la table t_order_part.
+ * @author Mathieu MA sous conrad
  */
-public class ProductPartLanguage extends MdoDaoBean
+public class ProductPartLanguage extends BeanLanguage
 {
-    /*
-     * prp_id int8 NOT NULL, ppl_label varchar(50) NOT NULL, loc_id varchar(3)
-     * NOT NULL DEFAULT 'fr',
-     */
-
     /**
-     * 
+     * Default Serial Version UID.
      */
-    private static final long serialVersionUID = 1L;
-    private Locale locale;
-    private ProductPart productPart;
-
-    private String label;
-
-    /**
-     * @return
-     */
-    public String getLabel()
-    {
-	return label;
-    }
-
-    /**
-     * @param string
-     */
-    public void setLabel(String string)
-    {
-	label = string;
-    }
-
-    public Locale getLocale()
-    {
-	return locale;
-    }
-
-    public void setLocale(Locale locale)
-    {
-	this.locale = locale;
-    }
-
-    public ProductPart getProductPart()
-    {
-	return productPart;
-    }
-
-    public void setProductPart(ProductPart productPart)
-    {
-	this.productPart = productPart;
-    }
-
+	private static final long serialVersionUID = 1L;
 }

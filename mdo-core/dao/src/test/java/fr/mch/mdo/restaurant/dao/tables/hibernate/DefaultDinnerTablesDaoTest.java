@@ -327,7 +327,7 @@ public class DefaultDinnerTablesDaoTest extends DefaultDaoServicesTestCase
 	}
 	
 	@Override
-	public void doUpdateFieldsByKeysSpecific() {
+	public void doUpdateFieldsAndDeleteByKeysSpecific() {
 		DinnerTable newBean = null;
 		Restaurant restaurant = new Restaurant();
 		restaurant.setId(1L);
@@ -427,7 +427,28 @@ public class DefaultDinnerTablesDaoTest extends DefaultDaoServicesTestCase
 			assertEquals("Check updated fields ", castedBean.getQuantitiesSum(), updatedBean.getQuantitiesSum());
 			assertEquals("Check updated fields ", castedBean.getReductionRatio(), updatedBean.getReductionRatio());
 			assertEquals("Check updated fields ", castedBean.getReductionRatioChanged(), updatedBean.getReductionRatioChanged());
-			this.getInstance().delete(updatedBean);
+
+			// Delete the bean by keys
+			// Take the fields as keys
+			try {
+				super.doDeleteByKeysSpecific(updatedBean, keys, true);
+			} catch (Exception e) {
+				// We Have to delete following tables in the following order deleting the table t_dinner_table.
+				// 1) t_table_credit
+				// 2) t_table_bill
+				// 3) t_table_vat
+				// 4) t_order_line
+				// 5) t_table_cashing
+				// 6) t_cashing_type
+				Object parentId = keys.get("id");
+				Map<String, Object> childrenKeys = new HashMap<String, Object>();
+				childrenKeys.put("dinnerTable.id", parentId);
+				super.doDeleteByKeysSpecific(TableBill.class, childrenKeys);
+				super.doDeleteByKeysSpecific(TableVat.class, childrenKeys);
+				super.doDeleteByKeysSpecific(OrderLine.class, childrenKeys);
+				super.doDeleteByKeysSpecific(TableCashing.class, childrenKeys);
+				super.doDeleteByKeysSpecific(updatedBean, keys);
+			}
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}

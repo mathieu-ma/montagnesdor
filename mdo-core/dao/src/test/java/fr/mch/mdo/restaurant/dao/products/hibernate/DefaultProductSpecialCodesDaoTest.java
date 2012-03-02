@@ -11,6 +11,7 @@ import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.dao.IDaoServices;
 import fr.mch.mdo.restaurant.dao.beans.MdoTableAsEnum;
 import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode;
+import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCodeLanguage;
 import fr.mch.mdo.restaurant.dao.beans.Restaurant;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServicesTestCase;
 import fr.mch.mdo.restaurant.dao.products.IProductSpecialCodesDao;
@@ -135,7 +136,7 @@ public class DefaultProductSpecialCodesDaoTest extends DefaultDaoServicesTestCas
 	}
 
 	@Override
-	public void doUpdateFieldsByKeysSpecific() {
+	public void doUpdateFieldsAndDeleteByKeysSpecific() {
 		String shortCode = "%";
 		Restaurant restaurant = new Restaurant();
 		restaurant.setId(1L);
@@ -165,7 +166,21 @@ public class DefaultProductSpecialCodesDaoTest extends DefaultDaoServicesTestCas
 			updatedBean.setId(castedBean.getId());
 			this.getInstance().load(updatedBean);
 			assertEquals("Check updated fields ", castedBean.getShortCode(), updatedBean.getShortCode());
-			this.getInstance().delete(updatedBean);
+
+			// Delete the bean by keys
+			// Take the fields as keys
+			try {
+				super.doDeleteByKeysSpecific(updatedBean, keys, true);
+			} catch (Exception e) {
+				// We Have to delete following tables in the following order deleting the table t_product_special_code
+				// 1) t_product_special_code_language
+				// 2) t_order_line
+				Object parentId = keys.get("id");
+				Map<String, Object> childrenKeys = new HashMap<String, Object>();
+				childrenKeys.put("parentId", parentId);
+				super.doDeleteByKeysSpecific(ProductSpecialCodeLanguage.class, childrenKeys);
+				super.doDeleteByKeysSpecific(updatedBean, keys);
+			}
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}

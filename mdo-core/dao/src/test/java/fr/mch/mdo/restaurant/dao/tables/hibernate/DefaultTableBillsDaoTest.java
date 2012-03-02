@@ -123,7 +123,7 @@ public class DefaultTableBillsDaoTest extends DefaultDaoServicesTestCase
 	}
 	
 	@Override
-	public void doUpdateFieldsByKeysSpecific() {
+	public void doUpdateFieldsAndDeleteByKeysSpecific() {
 		IMdoBean newBean = null;
 		BigDecimal amount = BigDecimal.ONE;
 		DinnerTable dinnerTable = new DinnerTable();
@@ -166,7 +166,10 @@ public class DefaultTableBillsDaoTest extends DefaultDaoServicesTestCase
 			assertEquals("Check updated fields ", castedBean.getOrder(), updatedBean.getOrder());
 			assertEquals("Check updated fields ", castedBean.getPrinted(), updatedBean.getPrinted());
 			assertEquals("Check updated fields ", castedBean.getReference(), updatedBean.getReference());
-			this.getInstance().delete(updatedBean);
+
+			// Delete the bean by keys
+			// Take the fields as keys
+			super.doDeleteByKeysSpecific(updatedBean, fields);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}

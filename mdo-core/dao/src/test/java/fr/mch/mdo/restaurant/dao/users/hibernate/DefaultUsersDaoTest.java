@@ -188,7 +188,7 @@ public class DefaultUsersDaoTest extends DefaultDaoServicesTestCase
 	}
 
 	@Override
-	public void doUpdateFieldsByKeysSpecific() {
+	public void doUpdateFieldsAndDeleteByKeysSpecific() {
 		IMdoBean newBean = null;
 		String name = "MA";
 		String forename1 = "Sui Tao";
@@ -248,7 +248,29 @@ public class DefaultUsersDaoTest extends DefaultDaoServicesTestCase
 			assertEquals("Check updated fields ", castedBean.getForename2(), updatedBean.getForename2());
 			assertEquals("Check updated fields ", castedBean.getName(), updatedBean.getName());
 			assertEquals("Check updated fields ", castedBean.isSex(), updatedBean.isSex());
-			this.getInstance().delete(updatedBean);
+
+			// Delete the bean by keys
+			// Take the fields as keys
+			try {
+				super.doDeleteByKeysSpecific(updatedBean, keys, true);
+			} catch (Exception e) {
+				// We Have to delete following tables in the following order deleting the table t_user
+				// 1) t_user_restaurant
+				// 2) t_user_authentication
+				// 3) t_user_locale
+				// 4) t_dinner_table
+				// 5) t_table_credit
+				// 6) t_table_bill
+				// 7) t_table_vat
+				// 8) t_order_line
+				// 9) t_table_cashing
+				// 10) t_cashing_type
+				Object parentId = keys.get("id");
+				Map<String, Object> childrenKeys = new HashMap<String, Object>();
+				childrenKeys.put("user.id", parentId);
+				super.doDeleteByKeysSpecific(UserRestaurant.class, childrenKeys);
+				super.doDeleteByKeysSpecific(updatedBean, keys);
+			}
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}

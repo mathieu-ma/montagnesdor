@@ -134,7 +134,7 @@ public class DefaultValueAddedTaxesDaoTest extends DefaultDaoServicesTestCase
 	}
 
 	@Override
-	public void doUpdateFieldsByKeysSpecific() {
+	public void doUpdateFieldsAndDeleteByKeysSpecific() {
 		MdoTableAsEnum codeToBeUpdated = new MdoTableAsEnum();
 		// Use the existing data in database
 		codeToBeUpdated.setId(5L);
@@ -160,7 +160,10 @@ public class DefaultValueAddedTaxesDaoTest extends DefaultDaoServicesTestCase
 			updatedBean.setId(castedBean.getId());
 			this.getInstance().load(updatedBean);
 			assertEquals("Check updated fields ", castedBean.getRate(), updatedBean.getRate());
-			this.getInstance().delete(updatedBean);
+
+			// Delete the bean by keys
+			// Take the fields as keys
+			super.doDeleteByKeysSpecific(updatedBean, fields);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}

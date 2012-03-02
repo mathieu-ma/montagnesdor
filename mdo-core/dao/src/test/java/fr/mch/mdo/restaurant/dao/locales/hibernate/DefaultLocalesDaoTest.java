@@ -100,7 +100,7 @@ public class DefaultLocalesDaoTest extends DefaultDaoServicesTestCase
 	}
 
 	@Override
-	public void doUpdateFieldsByKeysSpecific() {
+	public void doUpdateFieldsAndDeleteByKeysSpecific() {
 		String localeCodeToBeUpdated = java.util.Locale.JAPAN.getLanguage();
 		try {
 			// Create new bean to be updated
@@ -123,7 +123,10 @@ public class DefaultLocalesDaoTest extends DefaultDaoServicesTestCase
 			updatedBean.setId(castedBean.getId());
 			this.getInstance().load(updatedBean);
 			assertEquals("Check updated fields ", castedBean.getLanguage(), updatedBean.getLanguage());
-			this.getInstance().delete(updatedBean);
+
+			// Delete the bean by keys
+			// Take the fields as keys
+			super.doDeleteByKeysSpecific(updatedBean, fields);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}

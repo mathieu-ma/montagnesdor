@@ -10,11 +10,9 @@
 			<generator class="increment" />
 		</id>
 		<property name="deleted" column="ppl_deleted" />
-		<many-to-one name="locale" column="loc_id"
-			class="fr.mch.mdo.restaurant.dao.beans.Locale" />
-		<many-to-one name="productPart" column="prp_id"
-			class="fr.mch.mdo.restaurant.dao.beans.ProductPart" />
-		<property name="label" column="ppl_label" type="string" />
+		<property name="label" column="ppl_label" />
+		<property name="locId" column="loc_id" />
+		<property name="parentId" column="prp_id" />
 	</class>
 
 </hibernate-mapping>

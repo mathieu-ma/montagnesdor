@@ -16,6 +16,7 @@ import fr.mch.mdo.restaurant.dao.IDaoServices;
 import fr.mch.mdo.restaurant.dao.beans.Category;
 import fr.mch.mdo.restaurant.dao.beans.Product;
 import fr.mch.mdo.restaurant.dao.beans.ProductCategory;
+import fr.mch.mdo.restaurant.dao.beans.ProductLanguage;
 import fr.mch.mdo.restaurant.dao.beans.Restaurant;
 import fr.mch.mdo.restaurant.dao.beans.ValueAddedTax;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServicesTestCase;
@@ -208,7 +209,7 @@ public class DefaultProductsDaoTest extends DefaultDaoServicesTestCase
 	}
 
 	@Override
-	public void doUpdateFieldsByKeysSpecific() {
+	public void doUpdateFieldsAndDeleteByKeysSpecific() {
 		IMdoBean newBean = null;
 		String code = "C";
 		// Use the existing data in database
@@ -278,7 +279,26 @@ public class DefaultProductsDaoTest extends DefaultDaoServicesTestCase
 			assertEquals("Check updated fields ", castedBean.getCode(), updatedBean.getCode());
 			assertEquals("Check updated fields ", castedBean.getColorRGB(), updatedBean.getColorRGB());
 			assertEquals("Check updated fields ", castedBean.getPrice(), updatedBean.getPrice());
-			this.getInstance().delete(updatedBean);
+
+			// Delete the bean by keys
+			// Take the fields as keys
+			try {
+				super.doDeleteByKeysSpecific(updatedBean, keys, true);
+			} catch (Exception e) {
+				// We Have to delete following tables in the following order deleting the table t_product.
+				// 1) t_product_category
+				// 2) t_product_language
+				// 3) t_order_line
+				// 4) t_product_sold
+				Object parentId = keys.get("id");
+				Map<String, Object> childrenKeys = new HashMap<String, Object>();
+				childrenKeys.put("product.id", parentId);
+				super.doDeleteByKeysSpecific(ProductCategory.class, childrenKeys);
+				childrenKeys = new HashMap<String, Object>();
+				childrenKeys.put("parentId", parentId);
+				super.doDeleteByKeysSpecific(ProductLanguage.class, childrenKeys);
+				super.doDeleteByKeysSpecific(updatedBean, keys);
+			}
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}
@@ -386,12 +406,11 @@ public class DefaultProductsDaoTest extends DefaultDaoServicesTestCase
 	
 	public void testGetProductByCode() {
 		Long restaurantId = 1L;
-		Long localeId = 1L;
 		String prefixProductCode = "11";
 		try {
 			IProductsDao productsDao = (IProductsDao) this.getInstance();
 
-			Product product = (Product) productsDao.getProductByCode(restaurantId, localeId, prefixProductCode);
+			Product product = (Product) productsDao.getProductByCode(restaurantId, prefixProductCode);
 			assertNotNull("Product must not be null", product);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());

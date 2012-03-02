@@ -26,7 +26,8 @@
 			</list>
 		-->
 
-		<map name="labels" table="t_product_language">
+		<!-- The lazy false in labels is not efficient but we can suppose that for one product there no more 3 at 4 associated labels -->
+		<map name="labels" table="t_product_language" lazy="false">
 			<key column="pdt_id" />
 			<index column="loc_id" type="long" />
 			<element column="pdl_label" type="string" />

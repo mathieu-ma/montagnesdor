@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="fr.mch.mdo.restaurant.dao.beans.PrintingInformationLanguage" table="t_printing_information_language">
+		<id name="id" column="pil_id" type="long">
+			<generator class="increment" />
+		</id>
+		<property name="deleted" column="pil_deleted" />
+		<property name="label" column="pil_label" />
+		<property name="locId" column="loc_id" />
+		<property name="parentId" column="pin_id" />
+	</class>
+
+</hibernate-mapping>

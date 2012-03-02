@@ -239,7 +239,7 @@ public class DefaultUserAuthenticationsDaoTest extends DefaultDaoServicesTestCas
 	}
 
 	@Override
-	public void doUpdateFieldsByKeysSpecific() {
+	public void doUpdateFieldsAndDeleteByKeysSpecific() {
 		IMdoBean newBean = null;
 		// Use the existing data in database
 		Locale printingLocale = new Locale();
@@ -306,7 +306,27 @@ public class DefaultUserAuthenticationsDaoTest extends DefaultDaoServicesTestCas
 			assertEquals("Check updated fields ", castedBean.getLevelPass3(), updatedBean.getLevelPass3());
 			assertEquals("Check updated fields ", castedBean.getLogin(), updatedBean.getLogin());
 			assertEquals("Check updated fields ", castedBean.getPassword(), updatedBean.getPassword());
-			this.getInstance().delete(updatedBean);
+
+			// Delete the bean by keys
+			// Take the fields as keys
+			try {
+				super.doDeleteByKeysSpecific(updatedBean, keys, true);
+			} catch (Exception e) {
+				// We Have to delete following tables in the following order deleting the table t_user_authentication
+				// 1) t_user_locale
+				// 2) t_dinner_table
+				// 3) t_table_credit
+				// 4) t_table_bill
+				// 5) t_table_vat
+				// 6) t_order_line
+				// 7) t_table_cashing
+				// 8) t_cashing_type
+				Object parentId = keys.get("id");
+				Map<String, Object> childrenKeys = new HashMap<String, Object>();
+				childrenKeys.put("user.id", parentId);
+				super.doDeleteByKeysSpecific(UserLocale.class, childrenKeys);
+				super.doDeleteByKeysSpecific(updatedBean, keys);
+			}
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}

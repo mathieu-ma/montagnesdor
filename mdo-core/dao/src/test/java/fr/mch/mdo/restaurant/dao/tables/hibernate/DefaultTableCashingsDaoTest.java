@@ -143,7 +143,7 @@ public class DefaultTableCashingsDaoTest extends DefaultDaoServicesTestCase
 	}
 
 	@Override
-	public void doUpdateFieldsByKeysSpecific() {
+	public void doUpdateFieldsAndDeleteByKeysSpecific() {
 		TableCashing newBean = null;
 		DinnerTable dinnerTable = new DinnerTable();
 		// The others existing table id is already cashed. 
@@ -182,7 +182,20 @@ public class DefaultTableCashingsDaoTest extends DefaultDaoServicesTestCase
 			this.getInstance().load(updatedBean);
 //			assertEquals("Check updated fields ", castedBean.getCashingDate(), updatedBean.getCashingDate());
 			assertEquals("Check updated fields ", castedBean.isDeleted(), updatedBean.isDeleted());
-			this.getInstance().delete(updatedBean);
+
+			// Delete the bean by keys
+			// Take the fields as keys
+			try {
+				super.doDeleteByKeysSpecific(updatedBean, keys, true);
+			} catch (Exception e) {
+				// We Have to delete following tables in the following order deleting the table t_table_cashing
+				// 1) t_cashing_type
+				Object parentId = keys.get("id");
+				Map<String, Object> childrenKeys = new HashMap<String, Object>();
+				childrenKeys.put("tableCashing.id", parentId);
+				super.doDeleteByKeysSpecific(CashingType.class, childrenKeys);
+				super.doDeleteByKeysSpecific(updatedBean, keys);
+			}
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}

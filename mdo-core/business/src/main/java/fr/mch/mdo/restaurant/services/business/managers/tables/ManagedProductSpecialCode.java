@@ -77,7 +77,18 @@ public enum ManagedProductSpecialCode {
 
 	public Product getProductByCode(IProductsDao productsDao, Long restaurantId, Long localeId, String productCode) throws MdoException {
 		Product result = null;
-		result = (Product) productsDao.getProductByCode(restaurantId, localeId, productCode);
+		result = (Product) productsDao.getProductByCode(restaurantId, productCode);
+		// Return only one label
+		if (result != null) {
+			Map<Long, String> labels = result.getLabels();
+			if (labels != null && !labels.isEmpty()) {
+				String label = labels.get(localeId);
+				if (label == null) {
+					// Get the first one
+					label = labels.get(labels.keySet().iterator().next());
+				}
+			}
+		}
 		return result;
 	}
 

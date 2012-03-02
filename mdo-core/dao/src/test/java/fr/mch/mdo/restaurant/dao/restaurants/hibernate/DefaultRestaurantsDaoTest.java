@@ -344,7 +344,7 @@ public class DefaultRestaurantsDaoTest extends DefaultDaoServicesTestCase
 	}
 
 	@Override
-	public void doUpdateFieldsByKeysSpecific() {
+	public void doUpdateFieldsAndDeleteByKeysSpecific() {
 		IMdoBean newBean = null;
 		Date registrationDate = Calendar.getInstance().getTime();
 		String reference = Long.toString(++basicRestaurantReference);
@@ -458,7 +458,30 @@ public class DefaultRestaurantsDaoTest extends DefaultDaoServicesTestCase
 			assertEquals("Check updated fields ", castedBean.getTripleDESKey(), updatedBean.getTripleDESKey());
 			assertEquals("Check updated fields ", castedBean.getVatRef(), updatedBean.getVatRef());
 			assertEquals("Check updated fields ", castedBean.getVisaRef(), updatedBean.getVisaRef());
-			this.getInstance().delete(updatedBean);
+
+			// Delete the bean by keys
+			// Take the fields as keys
+			try {
+				super.doDeleteByKeysSpecific(updatedBean, keys, true);
+			} catch (Exception e) {
+				// We Have to delete following tables in the following order deleting the table t_restaurant.
+				// 1) t_user_restaurant
+				// 4) t_restaurant_vat
+				// 5) t_restaurant_prefix_table
+				// 2) t_user_authentication-->t_dinner_table, t_user_locale
+				// 6) t_printing_information-->t_printing_information_language
+				// 3) t_revenue-->t_revenue_vat, t_revenue_cashing
+				// 6) t_product-->t_product_category, t_product_language, t_order_line, t_product_sold
+				// 6) t_product_special_code-->t_product_special_code_language, t_order_line,
+				// 6) t_dinner_table-->t_table_credit, t_table_bill, t_table_vat, t_order_line, t_table_cashing, t_cashing_type
+				// 6) t_credit-->t_order_line
+				Object parentId = keys.get("id");
+				Map<String, Object> childrenKeys = new HashMap<String, Object>();
+				childrenKeys.put("restaurant.id", parentId);
+				super.doDeleteByKeysSpecific(RestaurantPrefixTable.class, childrenKeys);
+				super.doDeleteByKeysSpecific(RestaurantValueAddedTax.class, childrenKeys);
+				super.doDeleteByKeysSpecific(updatedBean, keys);
+			}
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}

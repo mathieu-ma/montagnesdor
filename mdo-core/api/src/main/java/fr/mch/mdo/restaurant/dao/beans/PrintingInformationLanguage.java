@@ -8,14 +8,15 @@ package fr.mch.mdo.restaurant.dao.beans;
 
 
 /**
- * @author Mathieu MA sous conrad
+ * This class is used for t_printing_information_language mapping.
  * 
- *         Cette classe est un mapping de la table t_user_role_language.
+ * @author Mathieu MA sous conrad
  */
-public class UserRoleLanguage extends BeanLanguage
+public class PrintingInformationLanguage extends BeanLanguage
 {
+
     /**
      * Default Serial Version UID.
      */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 }

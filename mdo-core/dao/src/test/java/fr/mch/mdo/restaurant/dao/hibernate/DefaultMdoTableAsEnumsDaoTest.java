@@ -129,7 +129,7 @@ public class DefaultMdoTableAsEnumsDaoTest extends DefaultDaoServicesTestCase
 	}
 
 	@Override
-	public void doUpdateFieldsByKeysSpecific() {
+	public void doUpdateFieldsAndDeleteByKeysSpecific() {
 		IMdoBean newBean = null;
 		MdoTableAsEnumTypeDao type = MdoTableAsEnumTypeDao.PREFIX_TABLE_NAME;
 		String name = "D";
@@ -170,7 +170,10 @@ public class DefaultMdoTableAsEnumsDaoTest extends DefaultDaoServicesTestCase
 			assertEquals("Check updated fields ", castedBean.getOrder(), updatedBean.getOrder());
 			assertEquals("Check updated fields ", castedBean.getLanguageKeyLabel(), updatedBean.getLanguageKeyLabel());
 			assertEquals("Check updated fields ", castedBean.getDefaultLabel(), updatedBean.getDefaultLabel());
-			this.getInstance().delete(updatedBean);
+
+			// Delete the bean by keys
+			// Take the fields as keys
+			super.doDeleteByKeysSpecific(updatedBean, fields);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}

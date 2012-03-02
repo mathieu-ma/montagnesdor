@@ -153,7 +153,7 @@ public class DefaultProductSoldsDaoTest extends DefaultDaoServicesTestCase
 	}
 
 	@Override
-	public void doUpdateFieldsByKeysSpecific() {
+	public void doUpdateFieldsAndDeleteByKeysSpecific() {
 		IMdoBean newBean = null;
 		Calendar calendar = Calendar.getInstance();
 		calendar.clear();
@@ -192,7 +192,10 @@ public class DefaultProductSoldsDaoTest extends DefaultDaoServicesTestCase
 			assertEquals("Check updated fields ", castedBean.getSoldDay(), updatedBean.getSoldDay());
 			assertEquals("Check updated fields ", castedBean.getSoldMonth(), updatedBean.getSoldMonth());
 			assertEquals("Check updated fields ", castedBean.getSoldYear(), updatedBean.getSoldYear());
-			this.getInstance().delete(updatedBean);
+
+			// Delete the bean by keys
+			// Take the fields as keys
+			super.doDeleteByKeysSpecific(updatedBean, fields);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + " " + e.getMessage());
 		}
