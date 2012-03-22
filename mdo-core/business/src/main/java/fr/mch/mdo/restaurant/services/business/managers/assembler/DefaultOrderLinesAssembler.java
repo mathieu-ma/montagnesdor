@@ -10,6 +10,7 @@ import fr.mch.mdo.restaurant.dao.beans.OrderLine;
 import fr.mch.mdo.restaurant.dao.beans.Product;
 import fr.mch.mdo.restaurant.dao.beans.ProductPart;
 import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode;
+import fr.mch.mdo.restaurant.dao.beans.ValueAddedTax;
 import fr.mch.mdo.restaurant.dto.beans.CreditDto;
 import fr.mch.mdo.restaurant.dto.beans.DinnerTableDto;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
@@ -17,6 +18,7 @@ import fr.mch.mdo.restaurant.dto.beans.OrderLineDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductPartDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductSpecialCodeDto;
+import fr.mch.mdo.restaurant.dto.beans.ValueAddedTaxDto;
 import fr.mch.mdo.restaurant.services.business.managers.tables.ManagedProductSpecialCode;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 import fr.mch.mdo.utils.IManagerAssembler;
@@ -29,7 +31,8 @@ public class DefaultOrderLinesAssembler extends AbstractAssembler implements IMa
 	private IManagerAssembler productPartsAssembler; 
 	private IManagerAssembler productSpecialCodesAssembler;
 	private IManagerAssembler creditsAssembler;
-	
+	private IManagerAssembler vatsAssembler;
+
 	private static class LazyHolder {
 		private static IManagerAssembler instance = new DefaultOrderLinesAssembler(LoggerServiceImpl.getInstance().getLogger(DefaultOrderLinesAssembler.class.getName()));
 	}
@@ -40,6 +43,7 @@ public class DefaultOrderLinesAssembler extends AbstractAssembler implements IMa
 		this.productPartsAssembler = DefaultProductPartsAssembler.getInstance();
 		this.productSpecialCodesAssembler = DefaultProductSpecialCodesAssembler.getInstance();
 		this.creditsAssembler = DefaultCreditsAssembler.getInstance();
+		this.vatsAssembler = DefaultValueAddedTaxesAssembler.getInstance();
 	}
 
 	public static IManagerAssembler getInstance() {
@@ -105,6 +109,20 @@ public class DefaultOrderLinesAssembler extends AbstractAssembler implements IMa
 		this.creditsAssembler = creditsAssembler;
 	}
 
+	/**
+	 * @return the vatsAssembler
+	 */
+	public IManagerAssembler getVatsAssembler() {
+		return vatsAssembler;
+	}
+
+	/**
+	 * @param vatsAssembler the vatsAssembler to set
+	 */
+	public void setVatsAssembler(IManagerAssembler vatsAssembler) {
+		this.vatsAssembler = vatsAssembler;
+	}
+
 	@Override
 	public IMdoDtoBean marshal(IMdoDaoBean daoBean, MdoUserContext userContext) {
 		OrderLineDto dto = null;
@@ -130,6 +148,11 @@ public class DefaultOrderLinesAssembler extends AbstractAssembler implements IMa
 			dto.setDataCode(dataCode);
 			CreditDto credit = (CreditDto) creditsAssembler.marshal(bean.getCredit(), userContext);
 			dto.setCredit(credit);
+			ValueAddedTaxDto vat = null;
+			if (bean.getVat() != null) {
+				vat = (ValueAddedTaxDto) vatsAssembler.marshal(bean.getVat(), userContext);
+			}
+			dto.setVat(vat);
 			if (bean.getDinnerTable() != null) {
 				DinnerTableDto dinnerTable = new DinnerTableDto();
 				dinnerTable.setId(bean.getDinnerTable().getId());
@@ -161,6 +184,11 @@ public class DefaultOrderLinesAssembler extends AbstractAssembler implements IMa
 		//bean.setCode(code);
 		Credit credit = (Credit) creditsAssembler.unmarshal(dto.getCredit());
 		bean.setCredit(credit);
+		ValueAddedTax vat = null;
+		if (dto.getVat() != null) {
+			vat = (ValueAddedTax) vatsAssembler.unmarshal(dto.getVat());
+		}
+		bean.setVat(vat);
 		DinnerTable dinnerTable = null;
 		if (parents != null && parents.length == 1) {
 			dinnerTable = (DinnerTable) parents[0];

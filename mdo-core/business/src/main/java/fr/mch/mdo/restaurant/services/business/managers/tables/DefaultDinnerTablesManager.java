@@ -25,6 +25,7 @@ import fr.mch.mdo.restaurant.dao.beans.TableCredit;
 import fr.mch.mdo.restaurant.dao.beans.TableType;
 import fr.mch.mdo.restaurant.dao.beans.TableVat;
 import fr.mch.mdo.restaurant.dao.beans.UserAuthentication;
+import fr.mch.mdo.restaurant.dao.beans.ValueAddedTax;
 import fr.mch.mdo.restaurant.dao.orders.IOrderLinesDao;
 import fr.mch.mdo.restaurant.dao.orders.hibernate.DefaultOrderLinesDao;
 import fr.mch.mdo.restaurant.dao.products.IProductSpecialCodesDao;
@@ -46,6 +47,7 @@ import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.services.business.managers.AbstractAdministrationManager;
 import fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultDinnerTablesAssembler;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
+import fr.mch.mdo.utils.IDinnerTablesManagerAssembler;
 import fr.mch.mdo.utils.IManagerAssembler;
 
 public class DefaultDinnerTablesManager extends AbstractAdministrationManager implements IDinnerTablesManager
@@ -327,7 +329,17 @@ deltaTime = System.currentTimeMillis();
 				orderLine.setAmount(orderLine.getQuantity().multiply(orderLine.getUnitPrice()));
 				// Maybe don't have to store in database
 				orderLineToBeSaved.setAmount(orderLine.getAmount());
+				// Fill VAT depends on product in catalog, or new/old order line.
+				ValueAddedTax vat = new ValueAddedTax();
+				Long vatId = orderLine.getVat().getId();
+				
 				if (orderLine.getId() == null) {
+					if (vatId == null) {
+						// Set default VAT from restaurant.
+						vatId = userContext.getUserAuthentication().getRestaurant().getVat().getId();
+					}
+					vat.setId(vatId);
+					orderLineToBeSaved.setVat(vat);
 					dao.insert(orderLineToBeSaved);
 				} else {
 					// Load the order line from data base in order to subtract in sums
@@ -336,6 +348,12 @@ deltaTime = System.currentTimeMillis();
 					//dao.load(oldOrderLine);
 					OrderLine oldOrderLine = orderLinesDao.getOrderLine(orderLineToBeSaved.getId());
 
+					if (vatId == null) {
+						// Set default VAT the last entry.
+						vatId = oldOrderLine.getVat().getId();
+					}
+					vat.setId(vatId);
+					orderLineToBeSaved.setVat(vat);
 					
 					// Subtract because this will be added later
 					if (tableToBeSaved.getAmountsSum() == null) {
@@ -388,13 +406,13 @@ deltaTime = System.currentTimeMillis();
 		// Get dinner table
 		DinnerTable dinnerTable = null;
 		try {
-			dinnerTable = daoCasted.findByNumber(userContext.getUserAuthentication().getRestaurant().getId(), number);
+			dinnerTable = daoCasted.displayTableByNumber(userContext.getUserAuthentication().getRestaurant().getId(), number);
 		} catch (MdoException e) {
 			logger.error("message.error.business.DefaultDinnerTablesManager.findTableByNumber", new Object[]{number}, e);
 			throw new MdoBusinessException("message.error.business.DefaultDinnerTablesManager.findTableByNumber", new Object[]{number}, e);
 		}
 
-		result = (DinnerTableDto) assembler.marshal(dinnerTable, userContext);
+		result = (DinnerTableDto)((IDinnerTablesManagerAssembler) assembler).marshal(dinnerTable, userContext);
 		
 		return result;
 	}
@@ -503,8 +521,7 @@ deltaTime = System.currentTimeMillis();
 		Long restaurantId = ((MdoUserContext) userContext).getUserAuthentication().getRestaurant().getId();
 		// Get list of non cashing dinner tables
 		try {
-			// TODO not use assembler.marshal but get only required fields to be displayed
-			result = assembler.marshal(((IDinnerTablesDao) dao).findAllFreeTables(restaurantId), userContext);
+			result = ((IDinnerTablesManagerAssembler) assembler).marshalFreeTables(((IDinnerTablesDao) dao).findAllFreeTables(restaurantId), userContext);
 		} catch (MdoException e) {
 			logger.error("message.error.business.DefaultDinnerTablesManager.findAllFreeTables", e);
 			throw new MdoBusinessException("message.error.business.DefaultDinnerTablesManager.findAllFreeTables", e);

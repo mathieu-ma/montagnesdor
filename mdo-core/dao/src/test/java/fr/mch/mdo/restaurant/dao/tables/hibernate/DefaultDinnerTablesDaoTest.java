@@ -123,6 +123,9 @@ public class DefaultDinnerTablesDaoTest extends DefaultDaoServicesTestCase
 		ProductSpecialCode productSpecialCode = new ProductSpecialCode();
 		productSpecialCode.setId(1L);
 		orderLine.setProductSpecialCode(productSpecialCode);
+		ValueAddedTax vat = new ValueAddedTax();
+		vat.setId(1L);
+		orderLine.setVat(vat);
 		dinnerTable.addOrderLine(orderLine);
 
 		return dinnerTable;
@@ -193,7 +196,7 @@ public class DefaultDinnerTablesDaoTest extends DefaultDaoServicesTestCase
 				assertNotNull("DinnerTable number must not be null", castedBean.getNumber());
 				assertEquals("DinnerTable number must be equals to the lookup one", number, castedBean.getNumber());
 				assertNotNull("DinnerTable orders not null", castedBean.getOrders());
-				assertEquals("DinnerTable orders size equals", 2, castedBean.getOrders().size());
+				assertEquals("DinnerTable orders size equals", 3, castedBean.getOrders().size());
 				assertNotNull("DinnerTable TableBills not null", castedBean.getBills());
 				assertEquals("DinnerTable TableBills size equals", 1, castedBean.getBills().size());
 				assertNotNull("DinnerTable Credits not null", castedBean.getCredits());
@@ -251,6 +254,9 @@ public class DefaultDinnerTablesDaoTest extends DefaultDaoServicesTestCase
 		ProductSpecialCode productSpecialCode = new ProductSpecialCode();
 		productSpecialCode.setId(1L);
 		orderLine.setProductSpecialCode(productSpecialCode);
+		ValueAddedTax vat = new ValueAddedTax();
+		vat.setId(1L);
+		orderLine.setVat(vat);
 		newBean.addOrderLine(orderLine);
 		TableBill bill = new TableBill();
 		bill.setAmount(BigDecimal.ONE);
@@ -262,8 +268,6 @@ public class DefaultDinnerTablesDaoTest extends DefaultDaoServicesTestCase
 		TableVat tableVat = new TableVat();
 		tableVat.setAmount(BigDecimal.ONE);
 		tableVat.setValue(BigDecimal.TEN);
-		ValueAddedTax vat = new ValueAddedTax();
-		vat.setId(1L);
 		tableVat.setVat(vat);
 		newBean.addTableVat(tableVat);
 		try {
@@ -289,6 +293,7 @@ public class DefaultDinnerTablesDaoTest extends DefaultDaoServicesTestCase
 			productSpecialCode = new ProductSpecialCode();
 			productSpecialCode.setId(1L);
 			orderLine.setProductSpecialCode(productSpecialCode);
+			orderLine.setVat(vat);
 			castedBean.addOrderLine(orderLine);
 
 			bill = new TableBill();
@@ -368,6 +373,9 @@ public class DefaultDinnerTablesDaoTest extends DefaultDaoServicesTestCase
 		ProductSpecialCode productSpecialCode = new ProductSpecialCode();
 		productSpecialCode.setId(1L);
 		orderLine.setProductSpecialCode(productSpecialCode);
+		ValueAddedTax vat = new ValueAddedTax();
+		vat.setId(1L);
+		orderLine.setVat(vat);
 		newBean.addOrderLine(orderLine);
 		TableBill bill = new TableBill();
 		bill.setAmount(BigDecimal.ONE);
@@ -379,8 +387,6 @@ public class DefaultDinnerTablesDaoTest extends DefaultDaoServicesTestCase
 		TableVat tableVat = new TableVat();
 		tableVat.setAmount(BigDecimal.ONE);
 		tableVat.setValue(BigDecimal.TEN);
-		ValueAddedTax vat = new ValueAddedTax();
-		vat.setId(1L);
 		tableVat.setVat(vat);
 		newBean.addTableVat(tableVat);
 		try {
@@ -550,6 +556,9 @@ public class DefaultDinnerTablesDaoTest extends DefaultDaoServicesTestCase
 		orderLine.setLabel("Test");
 		orderLine.setUnitPrice(new BigDecimal(2.1));
 		orderLine.setAmount(orderLine.getQuantity().multiply(orderLine.getUnitPrice()));
+		ValueAddedTax vat = new ValueAddedTax();
+		vat.setId(1L);
+		orderLine.setVat(vat);
 
 		try {
 			assertNull("Order Line id must be null", orderLine.getId());
@@ -622,4 +631,30 @@ public class DefaultDinnerTablesDaoTest extends DefaultDaoServicesTestCase
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
+
+
+	public void testFindByNumber() {
+		IDinnerTablesDao iDinnerTablesDao = (IDinnerTablesDao) this.getInstance();
+		try {
+			Long restaurantId = Long.valueOf(1);
+			String tableNumber = "12";
+			DinnerTable dinnerTable = iDinnerTablesDao.findByNumber(restaurantId, tableNumber);
+			assertNotNull("Check Dinner Table", dinnerTable);
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+	public void testDisplayTableByNumber() {
+		IDinnerTablesDao iDinnerTablesDao = (IDinnerTablesDao) this.getInstance();
+		assertTrue(true);
+		try {
+			Long restaurantId = Long.valueOf(1);
+			String tableNumber = "12";
+			DinnerTable dinnerTable = iDinnerTablesDao.displayTableByNumber(restaurantId, tableNumber);
+			assertNotNull("Check Dinner Table", dinnerTable);
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+
 }

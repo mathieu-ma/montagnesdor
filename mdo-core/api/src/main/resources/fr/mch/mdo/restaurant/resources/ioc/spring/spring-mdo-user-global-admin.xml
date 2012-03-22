@@ -22,6 +22,17 @@
 	<bean id="TableType" class="fr.mch.mdo.restaurant.dto.beans.TableTypeDto">
 		<property name="code" ref="MdoTableType" />
 	</bean>
+	<bean id="MdoTableAsEnumVat" class="fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto">
+		<property name="defaultLabel" value="5.50" />
+		<property name="languageKeyLabel" value="VALUE_ADDED_TAX.DEFAULT.0" />
+		<property name="name" value="DEFAULT" />
+		<property name="order" value="0" />
+		<property name="type" value="VALUE_ADDED_TAX" />
+	</bean>
+	<bean id="Vat" class="fr.mch.mdo.restaurant.dto.beans.ValueAddedTaxDto">
+		<property name="code" ref="MdoTableAsEnumVat" />
+		<property name="rate" value="5.50" />
+	</bean>
 	<bean id="RestaurantGlobalAdmin" class="fr.mch.mdo.restaurant.dto.beans.RestaurantDto">
 		<property name="reference" value="RESTAURANT_GLOBAL_ADMIN" />
 		<property name="name" value="RESTAURANT GLOBAL ADMIN" />
@@ -41,6 +52,7 @@
 
 		<property name="specificRound" ref="SpecificRound" />
 		<property name="defaultTableType" ref="TableType" />
+		<property name="vat" ref="Vat" />
 	</bean>
 
 	<bean id="UserRoleCode" class="fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto">

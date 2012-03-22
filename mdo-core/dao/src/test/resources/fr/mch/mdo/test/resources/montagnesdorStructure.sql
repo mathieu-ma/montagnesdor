@@ -158,10 +158,12 @@ CREATE TABLE t_restaurant (
   res_takeaway_min_amount_reduction numeric(12,4) NOT null,
   res_specific_round integer NOT null,
   tbt_id integer NOT null,
+  vat_id integer NOT null,
   res_deleted BOOLEAN DEFAULT false NOT null,
   CONSTRAINT res_id_uni UNIQUE (res_id),
   CONSTRAINT res_specific_round_fk FOREIGN KEY (res_specific_round) REFERENCES t_enum (enm_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
   CONSTRAINT res_tbt_id_fk FOREIGN KEY (tbt_id) REFERENCES t_table_type (tbt_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT res_vat_id_fk FOREIGN KEY (vat_id) REFERENCES t_value_added_tax (vat_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
   CONSTRAINT res_reference_uni UNIQUE (res_reference)
 );
 -- COMMENT Statement is used for PostGresql but this is also compatible with HSQLDB 2.0.
@@ -184,6 +186,7 @@ COMMENT ON COLUMN t_restaurant.res_takeaway_min_amount_reduction IS 'This is the
 --res_specific_round 1 = HALF ROUND 2 = TENTH ROUND
 COMMENT ON COLUMN t_restaurant.res_specific_round IS 'This is the specific round to apply on all amounts calculations. It is a foreign that refers to the t_enum table for type SPECIFIC_ROUND_CALCULATION.';
 COMMENT ON COLUMN t_restaurant.tbt_id IS 'This is the default table type. It is a foreign that refers to the t_table_type table. It is used to specify the dinner table type which can be EAT_IN, TAKEAWAY, ....';
+COMMENT ON COLUMN t_restaurant.vat_id IS 'This is a foreign key that refers to t_value_added_tax. It is used to specify the default VAT order line when the former order line is not define a product in restaurant catalog.';
 COMMENT ON COLUMN t_restaurant.res_deleted IS 'This is used for logical deletion.';
 -- For PostGresql, the sequence is marked as "*{OWNED BY" the column, so that it will be dropped if the column or table is dropped.
 ALTER SEQUENCE t_restaurant_res_id_seq *{OWNED BY t_restaurant.res_id};
@@ -763,6 +766,7 @@ CREATE TABLE t_order_line (
   pdt_id integer,
   cre_id integer,
   prp_id integer,
+  vat_id integer NOT null,
   orl_quantity numeric(12,4) DEFAULT 0.00 NOT null,
   orl_label VARCHAR(255) NOT null,
   orl_unit_price numeric(12,4) DEFAULT 0.00 NOT null,
@@ -773,7 +777,8 @@ CREATE TABLE t_order_line (
   CONSTRAINT orl_psc_id_fk FOREIGN KEY (psc_id) REFERENCES t_product_special_code (psc_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
   CONSTRAINT orl_pdt_id_fk FOREIGN KEY (pdt_id) REFERENCES t_product (pdt_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
   CONSTRAINT orl_cre_id_fk FOREIGN KEY (cre_id) REFERENCES t_credit (cre_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
-  CONSTRAINT orl_prp_id_fk FOREIGN KEY (prp_id) REFERENCES t_product_part (prp_id) ON UPDATE RESTRICT ON DELETE RESTRICT
+  CONSTRAINT orl_prp_id_fk FOREIGN KEY (prp_id) REFERENCES t_product_part (prp_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT orl_vat_id_fk FOREIGN KEY (vat_id) REFERENCES t_value_added_tax (vat_id) ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 -- COMMENT Statement is used for PostGresql but this is also compatible with HSQLDB 2.0.
 COMMENT ON TABLE t_order_line IS 'This table is used for order lines depending on the specific dinner table.';
@@ -783,6 +788,7 @@ COMMENT ON COLUMN t_order_line.psc_id IS 'This is a foreign key that refers to t
 COMMENT ON COLUMN t_order_line.pdt_id IS 'This is a foreign key that refers to t_product. It is used to specify the product. If this field is null then the order line depends on the product special code psc_id which must not be null.';
 COMMENT ON COLUMN t_order_line.cre_id IS 'This is a foreign key that refers to t_credit. It is used to specify the credit consumed. If this field is NOT null then the order line depends on the product special code psc_id which must not be null with code value equals to @.';
 COMMENT ON COLUMN t_order_line.prp_id IS 'This is a foreign key that refers to t_product_part. It is used to specify the product part the order line belongs: ENTREE, PLAT or DESSERT for example.';
+COMMENT ON COLUMN t_order_line.vat_id IS 'This is a foreign key that refers to t_value_added_tax. It is used to specify the Value Added Tax. Usually, the VAT of order line depends directly on the product. But in some case, the order line is not in the products catalog, so this order line is manually entered and the VAT is set by default but can be changed on demand. It is used to calculate the vat amount of this order line.';
 COMMENT ON COLUMN t_order_line.orl_quantity IS 'This is the quantity of the product.';
 COMMENT ON COLUMN t_order_line.orl_label IS 'This is the label of the product. If the psc_id is of type "/" then the label is the user entry description. If the psc_id is null then the label is the label of the product pdt_id depending on the user locale.';
 COMMENT ON COLUMN t_order_line.orl_unit_price IS 'This is the unit price of the order line. Here, we do not take into account the quantity.';

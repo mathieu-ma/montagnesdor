@@ -19,6 +19,7 @@
 			</c:when>
 			<c:when test="${method=='displayDinnerTable'}">
 				<tiles:putAttribute name="body" value="/jsp/tables-orders/orders-body.jsp" />
+				<tiles:putAttribute name="footer" value="/jsp/tables-orders/orders-footer.jsp" />
 			</c:when>
 			<c:otherwise>
 				<tiles:putAttribute name="body" value="/jsp/tables-orders/list-body.jsp" />

@@ -44,6 +44,8 @@ public interface IDinnerTablesDao extends IDaoServices
      */
     DinnerTable findByNumber(Long restaurantId, String number, boolean... isLazy) throws MdoException;
 
+    DinnerTable displayTableByNumber(Long restaurantId, String number) throws MdoException;
+
     /**
      * This method tries to know if a table with the specified table number is free.
      * The dinner table with the specified table number is consider as free if the table number doesn't exist in the specified restaurant

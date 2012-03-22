@@ -38,6 +38,8 @@
 				</tfoot>
 				<tbody id="body-orders">
 					<c:set var="index" value="0" />
+<c:if test="${empty dinnerTable }">
+ 
 					<s:iterator value="form.dtoBean.orders" id="order" status="status">
 						<c:set var="cssStyleBgColor" value="" />
 						<c:if test="${not empty order.product.colorRGB}"><c:set var="cssStyleBgColor">style="background-color: #${order.product.colorRGB}"</c:set></c:if>
@@ -51,7 +53,21 @@
 							<td class="cell4"><s:property value="%{amount!=null?getText('format.number.decimal.3.2',{amount}):''}"/></td>
 						</tr>		
 					</s:iterator>
-				</tbody>
+</c:if>					
+ <c:if test="${not empty dinnerTable }">
+ 					<c:forEach items="${dinnerTable.orders}" var="order">
+						<c:set var="cssStyleBgColor" value="" />
+						<c:set var="dataCode" value="" />
+						<tr>
+							<td class="cell0"><c:out value="${order.quantity}" /></td>
+							<td class="cell1"><c:out value="${order.product.code}" /></td>
+							<td class="cell1"><c:out value="${order.label}" /></td>
+							<td class="cell3"><c:out value="${order.unitPrice}"/></td>
+							<td class="cell4"><c:out value="${order.amount}"/></td>
+						</tr>		
+					</c:forEach>
+ </c:if>
+ 				</tbody>
 			</table>
 		</div>
 	</div>

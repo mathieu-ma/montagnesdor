@@ -1,9 +1,12 @@
 package fr.mch.mdo.restaurant.services.business.managers.assembler;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import fr.mch.mdo.logs.ILogger;
+import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.beans.DinnerTable;
@@ -196,10 +199,14 @@ public class DefaultDinnerTablesAssembler extends AbstractAssembler implements I
 			dto = new DinnerTableDto();
 			// Dinner Table
 			dto.setId(bean.getId());
-			//dto.setAmountsSum(bean.getAmountsSum());
-			dto.setAmountsSum(bean.getAmountsSumByFormula());
-			//dto.setAmountPay(bean.getAmountPay());
-			dto.setAmountPay(bean.getAmountPayByFormula());
+			dto.setAmountsSum(bean.getAmountsSum());
+			if (dto.getAmountsSum() == null) {
+				dto.setAmountsSum(bean.getAmountsSumByFormula());
+			}
+			dto.setAmountPay(bean.getAmountPay());
+			if (dto.getAmountPay() == null) {
+				dto.setAmountPay(bean.getAmountPayByFormula());
+			}
 			Set<TableBillDto> bills = null;
 			if (bean.getBills() != null) {
 				bills = (Set) tableBillsAssembler.marshal(bean.getBills(), userContext);
@@ -223,8 +230,10 @@ public class DefaultDinnerTablesAssembler extends AbstractAssembler implements I
 			}
 			dto.setOrders(orders);
 			dto.setPrintingDate(bean.getPrintingDate());
-			//dto.setQuantitiesSum(bean.getQuantitiesSum());
-			dto.setQuantitiesSum(bean.getQuantitiesSumByFormula());
+			dto.setQuantitiesSum(bean.getQuantitiesSum());
+			if (dto.getQuantitiesSum() == null) {
+				dto.setQuantitiesSum(bean.getQuantitiesSumByFormula());
+			}
 			dto.setReductionRatio(bean.getReductionRatio());
 			dto.setReductionRatioChanged(bean.getReductionRatioChanged());
 			dto.setRegistrationDate(bean.getRegistrationDate());
@@ -312,5 +321,61 @@ public class DefaultDinnerTablesAssembler extends AbstractAssembler implements I
 	@Override
 	public void setLogger(ILogger logger) {
 		this.logger = logger;
+	}
+
+	private IMdoDtoBean marshalFreeTable(IMdoDaoBean daoBean, MdoUserContext userContext) {
+		DinnerTableDto dto = null;
+		if (daoBean != null) {
+			DinnerTable bean = (DinnerTable) daoBean;
+			dto = new DinnerTableDto();
+			// Dinner Table
+			dto.setId(bean.getId());
+			dto.setAmountsSum(bean.getAmountsSum());
+			if (dto.getAmountsSum() == null) {
+				dto.setAmountsSum(bean.getAmountsSumByFormula());
+			}
+			dto.setAmountPay(bean.getAmountPay());
+			if (dto.getAmountPay() == null) {
+				dto.setAmountPay(bean.getAmountPayByFormula());
+			}
+			dto.setCustomersNumber(bean.getCustomersNumber());
+			dto.setNumber(bean.getNumber());
+			dto.setPrintingDate(bean.getPrintingDate());
+			dto.setQuantitiesSum(bean.getQuantitiesSum());
+			if (dto.getQuantitiesSum() == null) {
+				dto.setQuantitiesSum(bean.getQuantitiesSumByFormula());
+			}
+			dto.setReductionRatio(bean.getReductionRatio());
+			dto.setReductionRatioChanged(bean.getReductionRatioChanged());
+			dto.setRegistrationDate(bean.getRegistrationDate());
+			dto.setRoo_id(null);
+		}
+		return dto;
+	}
+
+	@Override
+	public List<IMdoDtoBean> marshalFreeTables(List<? extends IMdoBean> list, MdoUserContext userContext) {
+		List<IMdoDtoBean> result = new ArrayList<IMdoDtoBean>();
+		if (list != null) {
+			for (IMdoBean iMdoBean : list) {
+				result.add(marshalFreeTable((IMdoDaoBean) iMdoBean, userContext));
+			}
+		}
+		return result;
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public IMdoDtoBean marshalFreeTableByNumber(IMdoDaoBean daoBean, MdoUserContext userContext) {
+		DinnerTableDto dto = (DinnerTableDto) marshalFreeTable(daoBean, userContext);
+		if (dto != null) {
+			DinnerTable bean = (DinnerTable) daoBean;
+			Set<OrderLineDto> orders = null;
+			if (bean.getOrders() != null) {
+				orders = (Set) orderLinesAssembler.marshal(bean.getOrders(), userContext);
+			}
+			dto.setOrders(orders);
+		}
+		return dto;
 	}
 }

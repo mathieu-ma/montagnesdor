@@ -73,8 +73,10 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 		defaultTableType.setId(1L);
 		Set<RestaurantValueAddedTaxDto> vats = null;
 		Set<RestaurantPrefixTableDto> prefixTableNames = new HashSet<RestaurantPrefixTableDto>();
+		ValueAddedTaxDto orderLineDefaultVat = new ValueAddedTaxDto();
+		orderLineDefaultVat.setId(1L);
 		RestaurantDto restaurant = (RestaurantDto) createNewBean(registrationDate, reference, name, addressRoad, addressZip, addressCity, phone, vatRef, visaRef, tripleDESKey,
-				vatByTakeaway, takeawayBasicReduction, takeawayMinAmountReduction, specificRound, defaultTableType, vats, prefixTableNames);
+				vatByTakeaway, takeawayBasicReduction, takeawayMinAmountReduction, specificRound, defaultTableType, vats, prefixTableNames, orderLineDefaultVat);
 
 		RestaurantPrefixTableDto restaurantPrefixTable = new RestaurantPrefixTableDto();
 		MdoTableAsEnumDto prefix = new MdoTableAsEnumDto();
@@ -122,8 +124,10 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 		defaultTableType.setId(2L);
 		Set<RestaurantValueAddedTaxDto> vats = new HashSet<RestaurantValueAddedTaxDto>();
 		Set<RestaurantPrefixTableDto> prefixTableNames = new HashSet<RestaurantPrefixTableDto>();
+		ValueAddedTaxDto orderLineDefaultVat = new ValueAddedTaxDto();
+		orderLineDefaultVat.setId(1L);
 		newBean = createNewBean(registrationDate, reference, name, addressRoad, addressZip, addressCity, phone, vatRef, visaRef, tripleDESKey, vatByTakeaway,
-				takeawayBasicReduction, takeawayMinAmountReduction, specificRound, defaultTableType, vats, prefixTableNames);
+				takeawayBasicReduction, takeawayMinAmountReduction, specificRound, defaultTableType, vats, prefixTableNames, orderLineDefaultVat);
 
 		RestaurantValueAddedTaxDto vat = new RestaurantValueAddedTaxDto();
 		ValueAddedTaxDto valueAddedTax = new ValueAddedTaxDto();
@@ -156,8 +160,10 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 		defaultTableType.setId(1L);
 		vats = new HashSet<RestaurantValueAddedTaxDto>();
 		prefixTableNames = null;
+		orderLineDefaultVat = new ValueAddedTaxDto();
+		orderLineDefaultVat.setId(1L);
 		newBean = createNewBean(registrationDate, reference, name, addressRoad, addressZip, addressCity, phone, vatRef, visaRef, tripleDESKey, vatByTakeaway,
-				takeawayBasicReduction, takeawayMinAmountReduction, specificRound, defaultTableType, vats, prefixTableNames);
+				takeawayBasicReduction, takeawayMinAmountReduction, specificRound, defaultTableType, vats, prefixTableNames, orderLineDefaultVat);
 
 		vat = new RestaurantValueAddedTaxDto();
 		valueAddedTax = new ValueAddedTaxDto();
@@ -197,8 +203,10 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 		defaultTableType.setId(2L);
 		Set<RestaurantValueAddedTaxDto> vats = new HashSet<RestaurantValueAddedTaxDto>();
 		Set<RestaurantPrefixTableDto> prefixTableNames = new HashSet<RestaurantPrefixTableDto>();
+		ValueAddedTaxDto orderLineDefaultVat = new ValueAddedTaxDto();
+		orderLineDefaultVat.setId(1L);
 		newBean = createNewBean(registrationDate, reference, name, addressRoad, addressZip, addressCity, phone, vatRef, visaRef, tripleDESKey, vatByTakeaway,
-				takeawayBasicReduction, takeawayMinAmountReduction, specificRound, defaultTableType, vats, prefixTableNames);
+				takeawayBasicReduction, takeawayMinAmountReduction, specificRound, defaultTableType, vats, prefixTableNames, orderLineDefaultVat);
 
 		// VATs part
 		RestaurantValueAddedTaxDto vat = new RestaurantValueAddedTaxDto();
@@ -370,7 +378,7 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 
 	private IMdoDtoBean createNewBean(Date registrationDate, String reference, String name, String addressRoad, String addressZip, String addressCity, String phone, String vatRef,
 			String visaRef, String tripleDESKey, boolean vatByTakeaway, BigDecimal takeawayBasicReduction, BigDecimal takeawayMinAmountReduction, MdoTableAsEnumDto specificRound,
-			TableTypeDto defaultTableType, Set<RestaurantValueAddedTaxDto> vats, Set<RestaurantPrefixTableDto> prefixTableNames) {
+			TableTypeDto defaultTableType, Set<RestaurantValueAddedTaxDto> vats, Set<RestaurantPrefixTableDto> prefixTableNames, ValueAddedTaxDto vat) {
 
 		RestaurantDto newBean = new RestaurantDto();
 		newBean.setRegistrationDate(registrationDate);
@@ -390,6 +398,7 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 		newBean.setDefaultTableType(defaultTableType);
 		newBean.setVats(vats);
 		newBean.setPrefixTableNames(prefixTableNames);
+		newBean.setVat(vat);
 		return newBean;
 	}
 }

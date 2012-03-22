@@ -54,6 +54,15 @@ public class OrderLineDto extends MdoDtoBean
 	 */
 	private ProductPartDto productPart;
 	/**
+	 * This is a foreign key that refers to t_value_added_tax. 
+	 * It is used to specify the Value Added Tax.
+	 * Usually, the VAT of order line depends directly on the product.
+	 * But in some case, the order line is not in the products catalog, 
+	 * so this order line is manually entered and the VAT is set by default but can be changed on demand.
+	 * It is used to calculate the vat amount of this order line. 
+	 */
+	private ValueAddedTaxDto vat;
+	/**
 	 * This is the quantity of the product.
 	 */
 	private BigDecimal quantity;
@@ -160,6 +169,20 @@ public class OrderLineDto extends MdoDtoBean
 	}
 
 	/**
+	 * @return the vat
+	 */
+	public ValueAddedTaxDto getVat() {
+		return vat;
+	}
+
+	/**
+	 * @param vat the vat to set
+	 */
+	public void setVat(ValueAddedTaxDto vat) {
+		this.vat = vat;
+	}
+
+	/**
 	 * @return the quantity
 	 */
 	public BigDecimal getQuantity() {
@@ -250,7 +273,8 @@ public class OrderLineDto extends MdoDtoBean
 
 	@Override
 	public String toString() {
-		return "OrderLine [amount=" + amount + ", credit=" + credit + ", label=" + label + ", product=" + product + ", productPart=" + productPart + ", productSpecialCode=" + productSpecialCode
+		return "OrderLine [amount=" + amount + ", credit=" + credit + ", label=" + label + ", product=" + product 
+				+ ", productPart=" + productPart + ", productSpecialCode=" + productSpecialCode + ", vat=" + vat
 				+ ", quantity=" + quantity + ", unitPrice=" + unitPrice + ", id=" + id + "]";
 	}
 }

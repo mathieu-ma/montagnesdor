@@ -16,6 +16,7 @@ import fr.mch.mdo.restaurant.dao.beans.OrderLine;
 import fr.mch.mdo.restaurant.dao.beans.Product;
 import fr.mch.mdo.restaurant.dao.beans.ProductPart;
 import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode;
+import fr.mch.mdo.restaurant.dao.beans.ValueAddedTax;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServicesTestCase;
 import fr.mch.mdo.restaurant.dao.orders.IOrderLinesDao;
 import fr.mch.mdo.test.MdoTestCase;
@@ -58,7 +59,9 @@ public class DefaultOrderLinesDaoTest extends DefaultDaoServicesTestCase
 		productSpecialCode.setId(1L);
 		BigDecimal quantity = BigDecimal.TEN; 
 		BigDecimal unitPrice = BigDecimal.ZERO;
-		return createNewBean(amount, credit, dinnerTable, label, product, productPart, productSpecialCode, quantity, unitPrice);
+		ValueAddedTax vat = new ValueAddedTax();
+		vat.setId(1L);
+		return createNewBean(amount, credit, dinnerTable, label, product, productPart, productSpecialCode, quantity, unitPrice, vat);
 	}
 
 	protected List<IMdoBean> createListBeans() {
@@ -76,7 +79,9 @@ public class DefaultOrderLinesDaoTest extends DefaultDaoServicesTestCase
 		productSpecialCode.setId(1L);
 		BigDecimal quantity = BigDecimal.TEN.multiply(BigDecimal.valueOf(2)); 
 		BigDecimal unitPrice = BigDecimal.ONE;
-		list.add(createNewBean(amount, credit, dinnerTable, label, product, productPart, productSpecialCode, quantity, unitPrice));
+		ValueAddedTax vat = new ValueAddedTax();
+		vat.setId(1L);
+		list.add(createNewBean(amount, credit, dinnerTable, label, product, productPart, productSpecialCode, quantity, unitPrice, vat));
 		return list;
 	}
 
@@ -101,7 +106,9 @@ public class DefaultOrderLinesDaoTest extends DefaultDaoServicesTestCase
 		productSpecialCode.setId(1L);
 		BigDecimal quantity = BigDecimal.TEN.divide(BigDecimal.valueOf(2)); 
 		BigDecimal unitPrice = BigDecimal.ONE;
-		newBean = createNewBean(amount, credit, dinnerTable, label, product, productPart, productSpecialCode, quantity, unitPrice);
+		ValueAddedTax vat = new ValueAddedTax();
+		vat.setId(1L);
+		newBean = createNewBean(amount, credit, dinnerTable, label, product, productPart, productSpecialCode, quantity, unitPrice, vat);
 		try {
 			// Create new bean to be updated
 			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean);
@@ -144,7 +151,9 @@ public class DefaultOrderLinesDaoTest extends DefaultDaoServicesTestCase
 		productSpecialCode.setId(1L);
 		BigDecimal quantity = BigDecimal.TEN.divide(BigDecimal.valueOf(2)); 
 		BigDecimal unitPrice = BigDecimal.ONE;
-		newBean = createNewBean(amount, credit, dinnerTable, label, product, productPart, productSpecialCode, quantity, unitPrice);
+		ValueAddedTax vat = new ValueAddedTax();
+		vat.setId(1L);
+		newBean = createNewBean(amount, credit, dinnerTable, label, product, productPart, productSpecialCode, quantity, unitPrice, vat);
 		try {
 			// Create new bean to be updated
 			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean);
@@ -191,7 +200,7 @@ public class DefaultOrderLinesDaoTest extends DefaultDaoServicesTestCase
 	}
 
 	private IMdoBean createNewBean(BigDecimal amount, Credit credit, DinnerTable dinnerTable, String label, Product product, ProductPart productPart,
-			ProductSpecialCode productSpecialCode, BigDecimal quantity, BigDecimal unitPrice) {
+			ProductSpecialCode productSpecialCode, BigDecimal quantity, BigDecimal unitPrice, ValueAddedTax vat) {
 		
 		OrderLine newBean = new OrderLine();
 		newBean.setAmount(amount);
@@ -203,6 +212,7 @@ public class DefaultOrderLinesDaoTest extends DefaultDaoServicesTestCase
 		newBean.setProductSpecialCode(productSpecialCode);
 		newBean.setQuantity(quantity);
 		newBean.setUnitPrice(unitPrice);
+		newBean.setVat(vat);
 		
 		return newBean;
 	}

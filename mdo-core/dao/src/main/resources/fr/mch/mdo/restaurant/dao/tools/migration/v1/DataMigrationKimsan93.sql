@@ -134,50 +134,6 @@ INSERT INTO t_value_added_tax (vat_code_enm_id, vat_rate, vat_deleted) SELECT en
 INSERT INTO t_table_type (tbt_code_enm_id, tbt_deleted) SELECT enm_id, false FROM t_enum WHERE t_enum.enm_language_key_label='TABLE_TYPE.EAT_IN.0';
 INSERT INTO t_table_type (tbt_code_enm_id, tbt_deleted) SELECT enm_id, false FROM t_enum WHERE t_enum.enm_language_key_label='TABLE_TYPE.TAKE_AWAY.1';
 
-
--- Step 2.2
---COMMENT ON TABLE t_restaurant IS 'This table contains the restaurants informations.';
---COMMENT ON COLUMN t_restaurant.res_id IS 'This is primary key of this table.';
---COMMENT ON COLUMN t_restaurant.res_registration_date IS 'This is the restaurant creation date in the application.';
---COMMENT ON COLUMN t_restaurant.res_reference IS 'This is the restaurant reference in the application.';
---COMMENT ON COLUMN t_restaurant.res_name IS 'This is the restaurant name.';
---COMMENT ON COLUMN t_restaurant.res_address_road IS 'This is the restaurant address road.';
---COMMENT ON COLUMN t_restaurant.res_address_zip IS 'This is the restaurant address zip code.';
---COMMENT ON COLUMN t_restaurant.res_address_city IS 'This is the restaurant address city.';
---COMMENT ON COLUMN t_restaurant.res_phone IS 'This is the restaurant phone number.';
---COMMENT ON COLUMN t_restaurant.res_vat_ref IS 'This is the restaurant V.A.T(Value Added Taxes) reference.';
---COMMENT ON COLUMN t_restaurant.res_visa_ref IS 'This is the restaurant visa reference.';
---COMMENT ON COLUMN t_restaurant.res_triple_DES_key IS 'This is the restaurant triple DES key.';
---COMMENT ON COLUMN t_restaurant.res_vat_by_takeaway IS 'This is used to know if we have to apply the V.A.T(Value Added Taxes) when it is a takeaway table. The default value is true.';
---COMMENT ON COLUMN t_restaurant.res_takeaway_basic_reduction IS 'This is the restaurant reduction for takeaway table we have to apply. This field depends on the field res_takeaway_min_amount_reduction.';
---COMMENT ON COLUMN t_restaurant.res_takeaway_min_amount_reduction IS 'This is the minimum amount value to apply a reduction for takeaway table.';
---COMMENT ON COLUMN t_restaurant.res_specific_round IS 'This is the specific round to apply on all amounts calculations. It is a foreign that refers to the t_enum table for type SPECIFIC_ROUND_CALCULATION.';
---COMMENT ON COLUMN t_restaurant.tbt_id IS 'This is the default table type. It is a foreign that refers to the t_table_type table. It is used to specify the dinner table type which can be EAT_IN, TAKEAWAY, ....';
---COMMENT ON COLUMN t_restaurant.res_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_restaurant (res_registration_date, res_reference, res_name, res_address_road, res_address_zip, res_address_city, res_phone, res_vat_ref, res_visa_ref, res_triple_DES_key, res_vat_by_takeaway, res_takeaway_basic_reduction, res_takeaway_min_amount_reduction, res_specific_round, tbt_id, res_deleted) 
-SELECT CURRENT_TIMESTAMP, '10203040506070', 'Kim-San', '11 allée Clémencet', '93340', 'Le Raincy', '01 43 02 50 90', 'FR 19 313 105 397 000 19', '313 105 397', 'F5E4D3C2B1A0', true, 10, 15, 
-t_enum.enm_id, t_table_type.tbt_id, false 
-FROM t_enum, t_table_type JOIN t_enum enm_table_type ON enm_table_type.enm_id = t_table_type.tbt_code_enm_id  
-WHERE t_enum.enm_language_key_label='SPECIFIC_ROUND.HALF_ROUND.0'
-AND enm_table_type.enm_language_key_label='TABLE_TYPE.EAT_IN.0';
-
---COMMENT ON TABLE t_restaurant_prefix_table IS 'This table is a association table. This table is used to store the list of restaurant table prefix names. These prefix names is used to know that a table is considered as a takeaway table.';
---COMMENT ON COLUMN t_restaurant_prefix_table.rpt_id IS 'This is primary key of this table.';
---COMMENT ON COLUMN t_restaurant_prefix_table.res_id IS 'This is a foreign key that refers to t_restaurant. This field and the other tbt_id and rpt_prefix_enm_id fields consist of a unique field.';
---COMMENT ON COLUMN t_restaurant_prefix_table.tbt_id IS 'This is a foreign key that refers to t_table_type. This field and the other res_id and rpt_prefix_enm_id fields consist of a unique field.';
---COMMENT ON COLUMN t_restaurant_prefix_table.rpt_prefix_enm_id IS 'This is a foreign key that refers to t_enum table for type PREFIX_TAKEAWAY_TABLE_NAME. This field and the other res_id and tbt_id fields consist of a unique field.';
---COMMENT ON COLUMN t_restaurant_prefix_table.rpt_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_restaurant_prefix_table (res_id, tbt_id, rpt_prefix_enm_id, rpt_deleted) SELECT t_restaurant.res_id, t_table_type.tbt_id, enum1.enm_id, false FROM t_restaurant, t_table_type JOIN t_enum enum1 ON enum1.enm_id = t_table_type.tbt_code_enm_id, t_enum enum2 WHERE t_restaurant.res_reference = '10203040506070' AND enum1.enm_language_key_label = 'TABLE_TYPE.TAKE_AWAY.1' AND enum2.enm_language_key_label = 'PREFIX_TABLE_NAME.E.0';
-
-
---COMMENT ON TABLE t_restaurant_vat IS 'This table is used for restaurant value added tax. Each restaurant has a list of value added tax.';
---COMMENT ON COLUMN t_restaurant_vat.rvt_id IS 'This is primary key of this table.';
---COMMENT ON COLUMN t_restaurant_vat.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant. This field and the other vat_id field consist of a unique field.';
---COMMENT ON COLUMN t_restaurant_vat.vat_id IS 'This is a foreign key that refers to t_value_added_tax. It is used to specify the value added tax. This field and the other res_id field consist of a unique field.';
---COMMENT ON COLUMN t_restaurant_vat.rvt_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_restaurant_vat (res_id, vat_id, rvt_deleted) SELECT t_restaurant.res_id, t_value_added_tax.vat_id, false FROM t_value_added_tax JOIN t_enum ON t_enum.enm_id = t_value_added_tax.vat_code_enm_id, t_restaurant WHERE enm_language_key_label='VALUE_ADDED_TAX.DEFAULT.0' AND t_restaurant.res_reference = '10203040506070';
-INSERT INTO t_restaurant_vat (res_id, vat_id, rvt_deleted) SELECT t_restaurant.res_id, t_value_added_tax.vat_id, false FROM t_value_added_tax JOIN t_enum ON t_enum.enm_id = t_value_added_tax.vat_code_enm_id, t_restaurant WHERE enm_language_key_label='VALUE_ADDED_TAX.ALCOHOL.1' AND t_restaurant.res_reference = '10203040506070';
-
 --COMMENT ON TABLE t_locale IS 'This table is used for i18n.';
 --COMMENT ON COLUMN t_locale.loc_id IS 'This is primary key of this table.';
 --COMMENT ON COLUMN t_locale.loc_language IS 'This is language ISO code.';
@@ -185,57 +141,6 @@ INSERT INTO t_restaurant_vat (res_id, vat_id, rvt_deleted) SELECT t_restaurant.r
 INSERT INTO t_locale (loc_language, loc_deleted) VALUES('fr', false);
 INSERT INTO t_locale (loc_language, loc_deleted) VALUES('en', false);
 INSERT INTO t_locale (loc_language, loc_deleted) VALUES('zh', false);
-
---COMMENT ON TABLE t_printing_information IS 'This table is used for printing custom informations on specific restaurant.';
---COMMENT ON COLUMN t_printing_information.pin_id IS 'This is primary key of this table.';
---COMMENT ON COLUMN t_printing_information.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant.';
---COMMENT ON COLUMN t_printing_information.pin_order IS 'It is used to specify the order of the printing information.';
---COMMENT ON COLUMN t_printing_information.pin_alignment_enm_id IS 'This is a foreign key that refers to t_enum. It is used to specify the alignment of the printing information.';
---COMMENT ON COLUMN t_printing_information.pin_size_enm_id IS 'This is a foreign key that refers to t_enum. It is used to specify the size of the printing information.';
---COMMENT ON COLUMN t_printing_information.pin_part_enm_id IS 'This is a foreign key that refers to t_enum. It is used to specify the part of the printing information.';
---COMMENT ON COLUMN t_printing_information.pin_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_printing_information (res_id, pin_order, pin_alignment_enm_id, pin_size_enm_id, pin_part_enm_id, pin_deleted) 
-SELECT t_restaurant.res_id, 0, PRINTING_INFORMATION_ALIGNMENT.enm_id, PRINTING_INFORMATION_SIZE.enm_id, PRINTING_INFORMATION_PART.enm_id, false 
-FROM t_restaurant, t_enum AS PRINTING_INFORMATION_ALIGNMENT, t_enum AS PRINTING_INFORMATION_SIZE, t_enum AS PRINTING_INFORMATION_PART 
-WHERE t_restaurant.res_reference = '10203040506070' 
-AND PRINTING_INFORMATION_ALIGNMENT.enm_language_key_label='PRINTING_INFORMATION_ALIGNMENT.CENTER.1' 
-AND PRINTING_INFORMATION_SIZE.enm_language_key_label='PRINTING_INFORMATION_SIZE.SMALL.0' 
-AND PRINTING_INFORMATION_PART.enm_language_key_label='PRINTING_INFORMATION_PART.FOOTER.1';
-
---COMMENT ON TABLE t_printing_information_language IS 'This table is used for printing custom informations on specific restaurant depending on the specific language.';
---COMMENT ON COLUMN t_printing_information_language.pil_id IS 'This is primary key of this table.';
---COMMENT ON COLUMN t_printing_information_language.pin_id IS 'This is a foreign key that refers to t_printing_information. It is used to specify the printing information on specific restaurant. This field and the other loc_id field consist of a unique field.';
---COMMENT ON COLUMN t_printing_information_language.loc_id IS 'This is a foreign key that refers to t_locale. It is used to specify the language of the printing information. This field and the other pin_id field consist of a unique field.';
---COMMENT ON COLUMN t_printing_information_language.pil_label IS 'This is the label of the printing information depending on the language.';
---COMMENT ON COLUMN t_printing_information_language.pil_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_printing_information_language (pin_id, loc_id, pil_label, pil_deleted) 
-SELECT t_printing_information.pin_id, t_locale.loc_id, 
-'Merci de votre visite', false 
-FROM t_locale, 
-t_printing_information JOIN t_restaurant ON t_restaurant.res_id = t_printing_information.res_id
-JOIN t_enum pin_alignment_enm ON pin_alignment_enm.enm_id = t_printing_information.pin_alignment_enm_id
-JOIN t_enum pin_size_enm ON pin_size_enm.enm_id = t_printing_information.pin_size_enm_id
-JOIN t_enum pin_part_enm ON pin_part_enm.enm_id = t_printing_information.pin_part_enm_id
-WHERE t_locale.loc_language='fr' 
-AND t_restaurant.res_reference='10203040506070'
-AND t_printing_information.pin_order=0
-AND pin_alignment_enm.enm_language_key_label='PRINTING_INFORMATION_ALIGNMENT.CENTER.1'
-AND pin_size_enm.enm_language_key_label='PRINTING_INFORMATION_SIZE.SMALL.0'
-AND pin_part_enm.enm_language_key_label='PRINTING_INFORMATION_PART.FOOTER.1';
-INSERT INTO t_printing_information_language (pin_id, loc_id, pil_label, pil_deleted) 
-SELECT t_printing_information.pin_id, t_locale.loc_id, 
-'Thanks for you visit', false 
-FROM t_locale, 
-t_printing_information JOIN t_restaurant ON t_restaurant.res_id = t_printing_information.res_id
-JOIN t_enum pin_alignment_enm ON pin_alignment_enm.enm_id = t_printing_information.pin_alignment_enm_id
-JOIN t_enum pin_size_enm ON pin_size_enm.enm_id = t_printing_information.pin_size_enm_id
-JOIN t_enum pin_part_enm ON pin_part_enm.enm_id = t_printing_information.pin_part_enm_id
-WHERE t_locale.loc_language='en' 
-AND t_restaurant.res_reference='10203040506070'
-AND t_printing_information.pin_order=0
-AND pin_alignment_enm.enm_language_key_label='PRINTING_INFORMATION_ALIGNMENT.CENTER.1'
-AND pin_size_enm.enm_language_key_label='PRINTING_INFORMATION_SIZE.SMALL.0'
-AND pin_part_enm.enm_language_key_label='PRINTING_INFORMATION_PART.FOOTER.1';
 
 --COMMENT ON TABLE t_user_role IS 'This table is used for user role.';
 --COMMENT ON COLUMN t_user_role.uro_id IS 'This is primary key of this table.';
@@ -276,53 +181,6 @@ INSERT INTO t_user_role_language (uro_id, loc_id, url_label, url_deleted) SELECT
 --COMMENT ON COLUMN t_user.usr_deleted IS 'This is used for logical deletion.';
 INSERT INTO t_user (usr_name, usr_forename1, usr_forename2, usr_birthdate, usr_sex, usr_title_enm_id, usr_picture, usr_deleted) SELECT 'MA', 'Chhui Huy', 'Mathieu', '1970-08-15 15:08:19', true, t_enum.enm_id, null, false FROM t_enum WHERE t_enum.enm_language_key_label='USER_TITLE.MISTER.0';
 INSERT INTO t_user (usr_name, usr_forename1, usr_forename2, usr_birthdate, usr_sex, usr_title_enm_id, usr_picture, usr_deleted) SELECT 'MA', 'Sui Tao', 'Edouard', '1968-10-04 04:10:19', true, t_enum.enm_id, null, false FROM t_enum WHERE t_enum.enm_language_key_label='USER_TITLE.MISTER.0';
-
---COMMENT ON TABLE t_user_restaurant IS 'This table is used to specify that a user has or works in several users.';
---COMMENT ON COLUMN t_user_restaurant.urt_id IS 'This is primary key of this table.';
---COMMENT ON COLUMN t_user_restaurant.usr_id IS 'This is a foreign key that refers to t_user. It is used to specify the user restaurant. This field and the other res_id field consist of a unique field.';
---COMMENT ON COLUMN t_user_restaurant.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant of the user. This field and the other usr_id field consist of a unique field.';
---COMMENT ON COLUMN t_user_restaurant.urt_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_user_restaurant (usr_id, res_id, urt_deleted) SELECT t_user.usr_id, t_restaurant.res_id, false FROM t_user, t_restaurant WHERE t_user.usr_name='MA' AND t_user.usr_forename1='Chhui Huy' AND t_restaurant.res_reference = '10203040506070';
-INSERT INTO t_user_restaurant (usr_id, res_id, urt_deleted) SELECT t_user.usr_id, t_restaurant.res_id, false FROM t_user, t_restaurant WHERE t_user.usr_name='MA' AND t_user.usr_forename1='Sui Tao' AND t_restaurant.res_reference = '10203040506070';
-
-
---COMMENT ON TABLE t_user_authentication IS 'This table is used for users authentication.';
---COMMENT ON COLUMN t_user_authentication.aut_id IS 'This is primary key of this table.';
---COMMENT ON COLUMN t_user_authentication.loc_id IS 'This is a foreign key that refers to t_locale. It is used to specify the printing language.';
---COMMENT ON COLUMN t_user_authentication.usr_id IS 'This is a foreign key that refers to t_user. It is used to specify the authenticated user.';
---COMMENT ON COLUMN t_user_authentication.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant of the authenticated user.';
---COMMENT ON COLUMN t_user_authentication.uro_id IS 'This is a foreign key that refers to t_user_role. It is used to specify the role of the authenticated user.';
---COMMENT ON COLUMN t_user_authentication.aut_login IS 'This is the authenticated user login. It is an unique field.';
---COMMENT ON COLUMN t_user_authentication.aut_password IS 'This is the authenticated user password.';
---COMMENT ON COLUMN t_user_authentication.aut_level_pass1 IS 'This is the authenticated user password level 1.';
---COMMENT ON COLUMN t_user_authentication.aut_level_pass2 IS 'This is the authenticated user password level 2.';
---COMMENT ON COLUMN t_user_authentication.aut_level_pass3 IS 'This is the authenticated user password level 3.';
---COMMENT ON COLUMN t_user_authentication.aut_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_user_authentication (loc_id, usr_id, res_id, uro_id, aut_login, aut_password, aut_level_pass1, aut_level_pass2, aut_level_pass3, aut_deleted) SELECT t_locale.loc_id, t_user.usr_id, t_restaurant.res_id, t_user_role.uro_id, 'mch', 'mch', 'mch1', 'mch2', 'mch3', false
-FROM t_locale, t_user, t_restaurant, t_user_role JOIN t_enum ON t_enum.enm_id = t_user_role.uro_code_enm_id
-WHERE t_locale.loc_language='fr' AND t_user.usr_name='MA' AND t_user.usr_forename1='Chhui Huy' AND t_restaurant.res_reference = '10203040506070' AND t_enum.enm_language_key_label='USER_ROLE.GLOBAL_ADMINISTRATOR.0';
-INSERT INTO t_user_authentication (loc_id, usr_id, res_id, uro_id, aut_login, aut_password, aut_level_pass1, aut_level_pass2, aut_level_pass3, aut_deleted) SELECT t_locale.loc_id, t_user.usr_id, t_restaurant.res_id, t_user_role.uro_id, 'mst', 'mst', 'mst1', 'mst2', 'mst3', false
-FROM t_locale, t_user, t_restaurant, t_user_role JOIN t_enum ON t_enum.enm_id = t_user_role.uro_code_enm_id
-WHERE t_locale.loc_language='fr' AND t_user.usr_name='MA' AND t_user.usr_forename1='Sui Tao' AND t_restaurant.res_reference = '10203040506070' AND t_enum.enm_language_key_label='USER_ROLE.ADMINISTRATOR.1';
-INSERT INTO t_user_authentication (loc_id, usr_id, res_id, uro_id, aut_login, aut_password, aut_level_pass1, aut_level_pass2, aut_level_pass3, aut_deleted) SELECT t_locale.loc_id, t_user.usr_id, t_restaurant.res_id, t_user_role.uro_id, 'kimsan', 'kimsan', 'kimsan1', 'kimsan2', 'kimsan3', false
-FROM t_locale, t_user, t_restaurant, t_user_role JOIN t_enum ON t_enum.enm_id = t_user_role.uro_code_enm_id
-WHERE t_locale.loc_language='fr' AND t_user.usr_name='MA' AND t_user.usr_forename1='Sui Tao' AND t_restaurant.res_reference = '10203040506070' AND t_enum.enm_language_key_label='USER_ROLE.ADMINISTRATOR.1';
-
---COMMENT ON TABLE t_user_locale IS 'This table is used to specify the authenticated user locales.';
---COMMENT ON COLUMN t_user_locale.ulo_id IS 'This is primary key of this table.';
---COMMENT ON COLUMN t_user_locale.aut_id IS 'This is a foreign key that refers to t_user_authentication. It is used to specify the authenticated user. This field and the other loc_id field consist of a unique field.';
---COMMENT ON COLUMN t_user_locale.loc_id IS 'This is a foreign key that refers to t_locale. It is used to specify the authenticated user locale. This field and the other aut_id field consist of a unique field.';
---COMMENT ON COLUMN t_user_locale.ulo_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_user_locale (aut_id, loc_id, ulo_deleted) SELECT t_user_authentication.aut_id, t_locale.loc_id, false FROM t_locale, t_user_authentication WHERE t_locale.loc_language='fr' AND t_user_authentication.aut_login='mch';
-INSERT INTO t_user_locale (aut_id, loc_id, ulo_deleted) SELECT t_user_authentication.aut_id, t_locale.loc_id, false FROM t_locale, t_user_authentication WHERE t_locale.loc_language='en' AND t_user_authentication.aut_login='mch';
-INSERT INTO t_user_locale (aut_id, loc_id, ulo_deleted) SELECT t_user_authentication.aut_id, t_locale.loc_id, false FROM t_locale, t_user_authentication WHERE t_locale.loc_language='zh' AND t_user_authentication.aut_login='mch';
-INSERT INTO t_user_locale (aut_id, loc_id, ulo_deleted) SELECT t_user_authentication.aut_id, t_locale.loc_id, false FROM t_locale, t_user_authentication WHERE t_locale.loc_language='fr' AND t_user_authentication.aut_login='mst';
-INSERT INTO t_user_locale (aut_id, loc_id, ulo_deleted) SELECT t_user_authentication.aut_id, t_locale.loc_id, false FROM t_locale, t_user_authentication WHERE t_locale.loc_language='en' AND t_user_authentication.aut_login='mst';
-INSERT INTO t_user_locale (aut_id, loc_id, ulo_deleted) SELECT t_user_authentication.aut_id, t_locale.loc_id, false FROM t_locale, t_user_authentication WHERE t_locale.loc_language='zh' AND t_user_authentication.aut_login='mst';
-INSERT INTO t_user_locale (aut_id, loc_id, ulo_deleted) SELECT t_user_authentication.aut_id, t_locale.loc_id, false FROM t_locale, t_user_authentication WHERE t_locale.loc_language='fr' AND t_user_authentication.aut_login='kimsan';
-INSERT INTO t_user_locale (aut_id, loc_id, ulo_deleted) SELECT t_user_authentication.aut_id, t_locale.loc_id, false FROM t_locale, t_user_authentication WHERE t_locale.loc_language='en' AND t_user_authentication.aut_login='kimsan';
-INSERT INTO t_user_locale (aut_id, loc_id, ulo_deleted) SELECT t_user_authentication.aut_id, t_locale.loc_id, false FROM t_locale, t_user_authentication WHERE t_locale.loc_language='zh' AND t_user_authentication.aut_login='kimsan';
-
 
 --COMMENT ON TABLE t_category IS 'This table is used for product category.';
 --COMMENT ON COLUMN t_category.cat_id IS 'This is primary key of this table.';
@@ -396,35 +254,6 @@ INSERT INTO t_category_language (cat_id, loc_id, ctl_label, ctl_deleted) SELECT 
 INSERT INTO t_category_language (cat_id, loc_id, ctl_label, ctl_deleted) SELECT t_category.cat_id, t_locale.loc_id, 'Ice Cream', false FROM t_locale, t_category JOIN t_enum ON t_enum.enm_id = t_category.cat_code_enm_id WHERE t_locale.loc_language='en' AND t_enum.enm_language_key_label='CATEGORY.ICE_CREAM.18';
 INSERT INTO t_category_language (cat_id, loc_id, ctl_label, ctl_deleted) SELECT t_category.cat_id, t_locale.loc_id, 'Infusion', false FROM t_locale, t_category JOIN t_enum ON t_enum.enm_id = t_category.cat_code_enm_id WHERE t_locale.loc_language='en' AND t_enum.enm_language_key_label='CATEGORY.INFUSION.19';
 
---COMMENT ON TABLE t_product_special_code IS 'This table is used for product special code.';
---COMMENT ON COLUMN t_product_special_code.psc_id IS 'This is primary key of this table.';
---COMMENT ON COLUMN t_product_special_code.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant.';
---COMMENT ON COLUMN t_product_special_code.psc_short_code IS 'This is used to specify the short code enter by user.';
---COMMENT ON COLUMN t_product_special_code.psc_code_enm_id IS 'This is a foreign key that refers to t_enum. It is used to specify the product special code.';
---COMMENT ON COLUMN t_product_special_code.psc_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_product_special_code (res_id, psc_short_code, psc_code_enm_id, psc_deleted) SELECT t_restaurant.res_id, '', t_enum.enm_id, false FROM t_restaurant, t_enum WHERE t_restaurant.res_reference = '10203040506070' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.DEFAULT.0';
-INSERT INTO t_product_special_code (res_id, psc_short_code, psc_code_enm_id, psc_deleted) SELECT t_restaurant.res_id, '#', t_enum.enm_id, false FROM t_restaurant, t_enum WHERE t_restaurant.res_reference = '10203040506070' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.OFFERED_PRODUCT.1';
-INSERT INTO t_product_special_code (res_id, psc_short_code, psc_code_enm_id, psc_deleted) SELECT t_restaurant.res_id, '-', t_enum.enm_id, false FROM t_restaurant, t_enum WHERE t_restaurant.res_reference = '10203040506070' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.DISCOUNT_ORDER.2';
-INSERT INTO t_product_special_code (res_id, psc_short_code, psc_code_enm_id, psc_deleted) SELECT t_restaurant.res_id, '/', t_enum.enm_id, false FROM t_restaurant, t_enum WHERE t_restaurant.res_reference = '10203040506070' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.USER_ORDER.3';
-INSERT INTO t_product_special_code (res_id, psc_short_code, psc_code_enm_id, psc_deleted) SELECT t_restaurant.res_id, '@', t_enum.enm_id, false FROM t_restaurant, t_enum WHERE t_restaurant.res_reference = '10203040506070' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.CREDIT.4';
-
---COMMENT ON TABLE t_product_special_code_language IS 'This table is used for product special code depending on the specific language.';
---COMMENT ON COLUMN t_product_special_code_language.pcl_id IS 'This is primary key of this table.';
---COMMENT ON COLUMN t_product_special_code_language.psc_id IS 'This is a foreign key that refers to t_product_special_code. It is used to specify the product special code. This field and the other loc_id field consist of a unique field.';
---COMMENT ON COLUMN t_product_special_code_language.loc_id IS 'This is a foreign key that refers to t_locale. It is used to specify the language of the product special code. This field and the other psc_id field consist of a unique field.';
---COMMENT ON COLUMN t_product_special_code_language.pcl_label IS 'This is the label of the product special code depending on the language.';
---COMMENT ON COLUMN t_product_special_code_language.pcl_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_product_special_code_language (psc_id, loc_id, pcl_label, pcl_deleted) SELECT t_product_special_code.psc_id, t_locale.loc_id, 'Rien', false FROM t_locale, t_product_special_code JOIN t_enum ON t_enum.enm_id = t_product_special_code.psc_code_enm_id WHERE t_locale.loc_language='fr' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.DEFAULT.0';
-INSERT INTO t_product_special_code_language (psc_id, loc_id, pcl_label, pcl_deleted) SELECT t_product_special_code.psc_id, t_locale.loc_id, 'Produit Offert', false FROM t_locale, t_product_special_code JOIN t_enum ON t_enum.enm_id = t_product_special_code.psc_code_enm_id WHERE t_locale.loc_language='fr' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.OFFERED_PRODUCT.1';
-INSERT INTO t_product_special_code_language (psc_id, loc_id, pcl_label, pcl_deleted) SELECT t_product_special_code.psc_id, t_locale.loc_id, 'Réduction', false FROM t_locale, t_product_special_code JOIN t_enum ON t_enum.enm_id = t_product_special_code.psc_code_enm_id WHERE t_locale.loc_language='fr' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.DISCOUNT_ORDER.2';
-INSERT INTO t_product_special_code_language (psc_id, loc_id, pcl_label, pcl_deleted) SELECT t_product_special_code.psc_id, t_locale.loc_id, '', false FROM t_locale, t_product_special_code JOIN t_enum ON t_enum.enm_id = t_product_special_code.psc_code_enm_id WHERE t_locale.loc_language='fr' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.USER_ORDER.3';
-INSERT INTO t_product_special_code_language (psc_id, loc_id, pcl_label, pcl_deleted) SELECT t_product_special_code.psc_id, t_locale.loc_id, 'Avoir', false FROM t_locale, t_product_special_code JOIN t_enum ON t_enum.enm_id = t_product_special_code.psc_code_enm_id WHERE t_locale.loc_language='fr' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.USER_CREDIT.4';
-INSERT INTO t_product_special_code_language (psc_id, loc_id, pcl_label, pcl_deleted) SELECT t_product_special_code.psc_id, t_locale.loc_id, 'Nothing', false FROM t_locale, t_product_special_code JOIN t_enum ON t_enum.enm_id = t_product_special_code.psc_code_enm_id WHERE t_locale.loc_language='en' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.DEFAULT.0';
-INSERT INTO t_product_special_code_language (psc_id, loc_id, pcl_label, pcl_deleted) SELECT t_product_special_code.psc_id, t_locale.loc_id, 'Offered Product', false FROM t_locale, t_product_special_code JOIN t_enum ON t_enum.enm_id = t_product_special_code.psc_code_enm_id WHERE t_locale.loc_language='en' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.OFFERED_PRODUCT.1';
-INSERT INTO t_product_special_code_language (psc_id, loc_id, pcl_label, pcl_deleted) SELECT t_product_special_code.psc_id, t_locale.loc_id, 'Discount', false FROM t_locale, t_product_special_code JOIN t_enum ON t_enum.enm_id = t_product_special_code.psc_code_enm_id WHERE t_locale.loc_language='en' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.DISCOUNT_ORDER.2';
-INSERT INTO t_product_special_code_language (psc_id, loc_id, pcl_label, pcl_deleted) SELECT t_product_special_code.psc_id, t_locale.loc_id, '', false FROM t_locale, t_product_special_code JOIN t_enum ON t_enum.enm_id = t_product_special_code.psc_code_enm_id WHERE t_locale.loc_language='en' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.USER_ORDER.3';
-INSERT INTO t_product_special_code_language (psc_id, loc_id, pcl_label, pcl_deleted) SELECT t_product_special_code.psc_id, t_locale.loc_id, 'Credit', false FROM t_locale, t_product_special_code JOIN t_enum ON t_enum.enm_id = t_product_special_code.psc_code_enm_id WHERE t_locale.loc_language='en' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.USER_CREDIT.4';
-
 --COMMENT ON TABLE t_product_part IS 'This table is used for product part.';
 --COMMENT ON COLUMN t_product_part.prp_id IS 'This is primary key of this table.';
 --COMMENT ON COLUMN t_product_part.prp_code_enm_id IS 'This is a foreign key that refers to t_enum. It is used to specify the product part: ENTREE, PLAT DE RESISTANCE, DESSERT, CAFE...';
@@ -454,3 +283,179 @@ INSERT INTO t_product_part_language (prp_id, loc_id, ppl_label, ppl_deleted) SEL
 INSERT INTO t_product_part_language (prp_id, loc_id, ppl_label, ppl_deleted) SELECT t_product_part.prp_id, t_locale.loc_id, 'Main Course', false FROM t_locale, t_product_part JOIN t_enum ON t_enum.enm_id = t_product_part.prp_code_enm_id WHERE t_locale.loc_language='en' AND t_enum.enm_language_key_label='PRODUCT_PART.MAIN_COURSE.3';
 INSERT INTO t_product_part_language (prp_id, loc_id, ppl_label, ppl_deleted) SELECT t_product_part.prp_id, t_locale.loc_id, 'Dessert', false FROM t_locale, t_product_part JOIN t_enum ON t_enum.enm_id = t_product_part.prp_code_enm_id WHERE t_locale.loc_language='en' AND t_enum.enm_language_key_label='PRODUCT_PART.DESSERT.4';
 INSERT INTO t_product_part_language (prp_id, loc_id, ppl_label, ppl_deleted) SELECT t_product_part.prp_id, t_locale.loc_id, 'Digestif', false FROM t_locale, t_product_part JOIN t_enum ON t_enum.enm_id = t_product_part.prp_code_enm_id WHERE t_locale.loc_language='en' AND t_enum.enm_language_key_label='PRODUCT_PART.DIGESTIF.5';
+
+
+-- Step 2.2
+--COMMENT ON TABLE t_restaurant IS 'This table contains the restaurants informations.';
+--COMMENT ON COLUMN t_restaurant.res_id IS 'This is primary key of this table.';
+--COMMENT ON COLUMN t_restaurant.res_registration_date IS 'This is the restaurant creation date in the application.';
+--COMMENT ON COLUMN t_restaurant.res_reference IS 'This is the restaurant reference in the application.';
+--COMMENT ON COLUMN t_restaurant.res_name IS 'This is the restaurant name.';
+--COMMENT ON COLUMN t_restaurant.res_address_road IS 'This is the restaurant address road.';
+--COMMENT ON COLUMN t_restaurant.res_address_zip IS 'This is the restaurant address zip code.';
+--COMMENT ON COLUMN t_restaurant.res_address_city IS 'This is the restaurant address city.';
+--COMMENT ON COLUMN t_restaurant.res_phone IS 'This is the restaurant phone number.';
+--COMMENT ON COLUMN t_restaurant.res_vat_ref IS 'This is the restaurant V.A.T(Value Added Taxes) reference.';
+--COMMENT ON COLUMN t_restaurant.res_visa_ref IS 'This is the restaurant visa reference.';
+--COMMENT ON COLUMN t_restaurant.res_triple_DES_key IS 'This is the restaurant triple DES key.';
+--COMMENT ON COLUMN t_restaurant.res_vat_by_takeaway IS 'This is used to know if we have to apply the V.A.T(Value Added Taxes) when it is a takeaway table. The default value is true.';
+--COMMENT ON COLUMN t_restaurant.res_takeaway_basic_reduction IS 'This is the restaurant reduction for takeaway table we have to apply. This field depends on the field res_takeaway_min_amount_reduction.';
+--COMMENT ON COLUMN t_restaurant.res_takeaway_min_amount_reduction IS 'This is the minimum amount value to apply a reduction for takeaway table.';
+--COMMENT ON COLUMN t_restaurant.res_specific_round IS 'This is the specific round to apply on all amounts calculations. It is a foreign that refers to the t_enum table for type SPECIFIC_ROUND_CALCULATION.';
+--COMMENT ON COLUMN t_restaurant.tbt_id IS 'This is the default table type. It is a foreign that refers to the t_table_type table. It is used to specify the dinner table type which can be EAT_IN, TAKEAWAY, ....';
+--COMMENT ON COLUMN t_restaurant.vat_id IS 'This is a foreign key that refers to t_value_added_tax. It is used to specify the default VAT custom order line when the former order line is not defined by a product in restaurant catalog.';
+INSERT INTO t_restaurant (res_registration_date, res_reference, res_name, res_address_road, res_address_zip, res_address_city, res_phone, res_vat_ref, res_visa_ref, res_triple_DES_key, res_vat_by_takeaway, res_takeaway_basic_reduction, res_takeaway_min_amount_reduction, res_specific_round, tbt_id, vat_id, res_deleted) 
+SELECT CURRENT_TIMESTAMP, '10203040506070', 'Kim-San', '11 allée Clémencet', '93340', 'Le Raincy', '01 43 02 50 90', 'FR 19 313 105 397 000 19', '313 105 397', 'F5E4D3C2B1A0', true, 10, 15, 
+t_enum.enm_id, t_table_type.tbt_id, t_value_added_tax.vat_id, false 
+FROM t_enum, t_table_type JOIN t_enum enm_table_type ON enm_table_type.enm_id = t_table_type.tbt_code_enm_id,
+t_value_added_tax JOIN t_enum enm_vat ON enm_vat.enm_id = t_value_added_tax.vat_code_enm_id
+WHERE t_enum.enm_language_key_label='SPECIFIC_ROUND.HALF_ROUND.0'
+AND enm_table_type.enm_language_key_label='TABLE_TYPE.EAT_IN.0'
+AND enm_vat.enm_language_key_label='VALUE_ADDED_TAX.DEFAULT.0';
+
+
+--COMMENT ON TABLE t_restaurant_prefix_table IS 'This table is a association table. This table is used to store the list of restaurant table prefix names. These prefix names is used to know that a table is considered as a takeaway table.';
+--COMMENT ON COLUMN t_restaurant_prefix_table.rpt_id IS 'This is primary key of this table.';
+--COMMENT ON COLUMN t_restaurant_prefix_table.res_id IS 'This is a foreign key that refers to t_restaurant. This field and the other tbt_id and rpt_prefix_enm_id fields consist of a unique field.';
+--COMMENT ON COLUMN t_restaurant_prefix_table.tbt_id IS 'This is a foreign key that refers to t_table_type. This field and the other res_id and rpt_prefix_enm_id fields consist of a unique field.';
+--COMMENT ON COLUMN t_restaurant_prefix_table.rpt_prefix_enm_id IS 'This is a foreign key that refers to t_enum table for type PREFIX_TAKEAWAY_TABLE_NAME. This field and the other res_id and tbt_id fields consist of a unique field.';
+--COMMENT ON COLUMN t_restaurant_prefix_table.rpt_deleted IS 'This is used for logical deletion.';
+INSERT INTO t_restaurant_prefix_table (res_id, tbt_id, rpt_prefix_enm_id, rpt_deleted) SELECT t_restaurant.res_id, t_table_type.tbt_id, enum1.enm_id, false FROM t_restaurant, t_table_type JOIN t_enum enum1 ON enum1.enm_id = t_table_type.tbt_code_enm_id, t_enum enum2 WHERE t_restaurant.res_reference = '10203040506070' AND enum1.enm_language_key_label = 'TABLE_TYPE.TAKE_AWAY.1' AND enum2.enm_language_key_label = 'PREFIX_TABLE_NAME.E.0';
+
+
+--COMMENT ON TABLE t_restaurant_vat IS 'This table is used for restaurant value added tax. Each restaurant has a list of value added tax.';
+--COMMENT ON COLUMN t_restaurant_vat.rvt_id IS 'This is primary key of this table.';
+--COMMENT ON COLUMN t_restaurant_vat.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant. This field and the other vat_id field consist of a unique field.';
+--COMMENT ON COLUMN t_restaurant_vat.vat_id IS 'This is a foreign key that refers to t_value_added_tax. It is used to specify the value added tax. This field and the other res_id field consist of a unique field.';
+--COMMENT ON COLUMN t_restaurant_vat.rvt_deleted IS 'This is used for logical deletion.';
+INSERT INTO t_restaurant_vat (res_id, vat_id, rvt_deleted) SELECT t_restaurant.res_id, t_value_added_tax.vat_id, false FROM t_value_added_tax JOIN t_enum ON t_enum.enm_id = t_value_added_tax.vat_code_enm_id, t_restaurant WHERE enm_language_key_label='VALUE_ADDED_TAX.DEFAULT.0' AND t_restaurant.res_reference = '10203040506070';
+INSERT INTO t_restaurant_vat (res_id, vat_id, rvt_deleted) SELECT t_restaurant.res_id, t_value_added_tax.vat_id, false FROM t_value_added_tax JOIN t_enum ON t_enum.enm_id = t_value_added_tax.vat_code_enm_id, t_restaurant WHERE enm_language_key_label='VALUE_ADDED_TAX.ALCOHOL.1' AND t_restaurant.res_reference = '10203040506070';
+
+--COMMENT ON TABLE t_printing_information IS 'This table is used for printing custom informations on specific restaurant.';
+--COMMENT ON COLUMN t_printing_information.pin_id IS 'This is primary key of this table.';
+--COMMENT ON COLUMN t_printing_information.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant.';
+--COMMENT ON COLUMN t_printing_information.pin_order IS 'It is used to specify the order of the printing information.';
+--COMMENT ON COLUMN t_printing_information.pin_alignment_enm_id IS 'This is a foreign key that refers to t_enum. It is used to specify the alignment of the printing information.';
+--COMMENT ON COLUMN t_printing_information.pin_size_enm_id IS 'This is a foreign key that refers to t_enum. It is used to specify the size of the printing information.';
+--COMMENT ON COLUMN t_printing_information.pin_part_enm_id IS 'This is a foreign key that refers to t_enum. It is used to specify the part of the printing information.';
+--COMMENT ON COLUMN t_printing_information.pin_deleted IS 'This is used for logical deletion.';
+INSERT INTO t_printing_information (res_id, pin_order, pin_alignment_enm_id, pin_size_enm_id, pin_part_enm_id, pin_deleted) 
+SELECT t_restaurant.res_id, 0, PRINTING_INFORMATION_ALIGNMENT.enm_id, PRINTING_INFORMATION_SIZE.enm_id, PRINTING_INFORMATION_PART.enm_id, false 
+FROM t_restaurant, t_enum AS PRINTING_INFORMATION_ALIGNMENT, t_enum AS PRINTING_INFORMATION_SIZE, t_enum AS PRINTING_INFORMATION_PART 
+WHERE t_restaurant.res_reference = '10203040506070' 
+AND PRINTING_INFORMATION_ALIGNMENT.enm_language_key_label='PRINTING_INFORMATION_ALIGNMENT.CENTER.1' 
+AND PRINTING_INFORMATION_SIZE.enm_language_key_label='PRINTING_INFORMATION_SIZE.SMALL.0' 
+AND PRINTING_INFORMATION_PART.enm_language_key_label='PRINTING_INFORMATION_PART.FOOTER.1';
+
+--COMMENT ON TABLE t_printing_information_language IS 'This table is used for printing custom informations on specific restaurant depending on the specific language.';
+--COMMENT ON COLUMN t_printing_information_language.pil_id IS 'This is primary key of this table.';
+--COMMENT ON COLUMN t_printing_information_language.pin_id IS 'This is a foreign key that refers to t_printing_information. It is used to specify the printing information on specific restaurant. This field and the other loc_id field consist of a unique field.';
+--COMMENT ON COLUMN t_printing_information_language.loc_id IS 'This is a foreign key that refers to t_locale. It is used to specify the language of the printing information. This field and the other pin_id field consist of a unique field.';
+--COMMENT ON COLUMN t_printing_information_language.pil_label IS 'This is the label of the printing information depending on the language.';
+--COMMENT ON COLUMN t_printing_information_language.pil_deleted IS 'This is used for logical deletion.';
+INSERT INTO t_printing_information_language (pin_id, loc_id, pil_label, pil_deleted) 
+SELECT t_printing_information.pin_id, t_locale.loc_id, 
+'Merci de votre visite', false 
+FROM t_locale, 
+t_printing_information JOIN t_restaurant ON t_restaurant.res_id = t_printing_information.res_id
+JOIN t_enum pin_alignment_enm ON pin_alignment_enm.enm_id = t_printing_information.pin_alignment_enm_id
+JOIN t_enum pin_size_enm ON pin_size_enm.enm_id = t_printing_information.pin_size_enm_id
+JOIN t_enum pin_part_enm ON pin_part_enm.enm_id = t_printing_information.pin_part_enm_id
+WHERE t_locale.loc_language='fr' 
+AND t_restaurant.res_reference='10203040506070'
+AND t_printing_information.pin_order=0
+AND pin_alignment_enm.enm_language_key_label='PRINTING_INFORMATION_ALIGNMENT.CENTER.1'
+AND pin_size_enm.enm_language_key_label='PRINTING_INFORMATION_SIZE.SMALL.0'
+AND pin_part_enm.enm_language_key_label='PRINTING_INFORMATION_PART.FOOTER.1';
+INSERT INTO t_printing_information_language (pin_id, loc_id, pil_label, pil_deleted) 
+SELECT t_printing_information.pin_id, t_locale.loc_id, 
+'Thanks for you visit', false 
+FROM t_locale, 
+t_printing_information JOIN t_restaurant ON t_restaurant.res_id = t_printing_information.res_id
+JOIN t_enum pin_alignment_enm ON pin_alignment_enm.enm_id = t_printing_information.pin_alignment_enm_id
+JOIN t_enum pin_size_enm ON pin_size_enm.enm_id = t_printing_information.pin_size_enm_id
+JOIN t_enum pin_part_enm ON pin_part_enm.enm_id = t_printing_information.pin_part_enm_id
+WHERE t_locale.loc_language='en' 
+AND t_restaurant.res_reference='10203040506070'
+AND t_printing_information.pin_order=0
+AND pin_alignment_enm.enm_language_key_label='PRINTING_INFORMATION_ALIGNMENT.CENTER.1'
+AND pin_size_enm.enm_language_key_label='PRINTING_INFORMATION_SIZE.SMALL.0'
+AND pin_part_enm.enm_language_key_label='PRINTING_INFORMATION_PART.FOOTER.1';
+
+
+--COMMENT ON TABLE t_user_restaurant IS 'This table is used to specify that a user has or works in several users.';
+--COMMENT ON COLUMN t_user_restaurant.urt_id IS 'This is primary key of this table.';
+--COMMENT ON COLUMN t_user_restaurant.usr_id IS 'This is a foreign key that refers to t_user. It is used to specify the user restaurant. This field and the other res_id field consist of a unique field.';
+--COMMENT ON COLUMN t_user_restaurant.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant of the user. This field and the other usr_id field consist of a unique field.';
+--COMMENT ON COLUMN t_user_restaurant.urt_deleted IS 'This is used for logical deletion.';
+INSERT INTO t_user_restaurant (usr_id, res_id, urt_deleted) SELECT t_user.usr_id, t_restaurant.res_id, false FROM t_user, t_restaurant WHERE t_user.usr_name='MA' AND t_user.usr_forename1='Chhui Huy' AND t_restaurant.res_reference = '10203040506070';
+INSERT INTO t_user_restaurant (usr_id, res_id, urt_deleted) SELECT t_user.usr_id, t_restaurant.res_id, false FROM t_user, t_restaurant WHERE t_user.usr_name='MA' AND t_user.usr_forename1='Sui Tao' AND t_restaurant.res_reference = '10203040506070';
+
+
+--COMMENT ON TABLE t_user_authentication IS 'This table is used for users authentication.';
+--COMMENT ON COLUMN t_user_authentication.aut_id IS 'This is primary key of this table.';
+--COMMENT ON COLUMN t_user_authentication.loc_id IS 'This is a foreign key that refers to t_locale. It is used to specify the printing language.';
+--COMMENT ON COLUMN t_user_authentication.usr_id IS 'This is a foreign key that refers to t_user. It is used to specify the authenticated user.';
+--COMMENT ON COLUMN t_user_authentication.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant of the authenticated user.';
+--COMMENT ON COLUMN t_user_authentication.uro_id IS 'This is a foreign key that refers to t_user_role. It is used to specify the role of the authenticated user.';
+--COMMENT ON COLUMN t_user_authentication.aut_login IS 'This is the authenticated user login. It is an unique field.';
+--COMMENT ON COLUMN t_user_authentication.aut_password IS 'This is the authenticated user password.';
+--COMMENT ON COLUMN t_user_authentication.aut_level_pass1 IS 'This is the authenticated user password level 1.';
+--COMMENT ON COLUMN t_user_authentication.aut_level_pass2 IS 'This is the authenticated user password level 2.';
+--COMMENT ON COLUMN t_user_authentication.aut_level_pass3 IS 'This is the authenticated user password level 3.';
+--COMMENT ON COLUMN t_user_authentication.aut_deleted IS 'This is used for logical deletion.';
+INSERT INTO t_user_authentication (loc_id, usr_id, res_id, uro_id, aut_login, aut_password, aut_level_pass1, aut_level_pass2, aut_level_pass3, aut_deleted) SELECT t_locale.loc_id, t_user.usr_id, t_restaurant.res_id, t_user_role.uro_id, 'mch', 'mch', 'mch1', 'mch2', 'mch3', false
+FROM t_locale, t_user, t_restaurant, t_user_role JOIN t_enum ON t_enum.enm_id = t_user_role.uro_code_enm_id
+WHERE t_locale.loc_language='fr' AND t_user.usr_name='MA' AND t_user.usr_forename1='Chhui Huy' AND t_restaurant.res_reference = '10203040506070' AND t_enum.enm_language_key_label='USER_ROLE.GLOBAL_ADMINISTRATOR.0';
+INSERT INTO t_user_authentication (loc_id, usr_id, res_id, uro_id, aut_login, aut_password, aut_level_pass1, aut_level_pass2, aut_level_pass3, aut_deleted) SELECT t_locale.loc_id, t_user.usr_id, t_restaurant.res_id, t_user_role.uro_id, 'mst', 'mst', 'mst1', 'mst2', 'mst3', false
+FROM t_locale, t_user, t_restaurant, t_user_role JOIN t_enum ON t_enum.enm_id = t_user_role.uro_code_enm_id
+WHERE t_locale.loc_language='fr' AND t_user.usr_name='MA' AND t_user.usr_forename1='Sui Tao' AND t_restaurant.res_reference = '10203040506070' AND t_enum.enm_language_key_label='USER_ROLE.ADMINISTRATOR.1';
+INSERT INTO t_user_authentication (loc_id, usr_id, res_id, uro_id, aut_login, aut_password, aut_level_pass1, aut_level_pass2, aut_level_pass3, aut_deleted) SELECT t_locale.loc_id, t_user.usr_id, t_restaurant.res_id, t_user_role.uro_id, 'kimsan', 'kimsan', 'kimsan1', 'kimsan2', 'kimsan3', false
+FROM t_locale, t_user, t_restaurant, t_user_role JOIN t_enum ON t_enum.enm_id = t_user_role.uro_code_enm_id
+WHERE t_locale.loc_language='fr' AND t_user.usr_name='MA' AND t_user.usr_forename1='Sui Tao' AND t_restaurant.res_reference = '10203040506070' AND t_enum.enm_language_key_label='USER_ROLE.ADMINISTRATOR.1';
+
+--COMMENT ON TABLE t_user_locale IS 'This table is used to specify the authenticated user locales.';
+--COMMENT ON COLUMN t_user_locale.ulo_id IS 'This is primary key of this table.';
+--COMMENT ON COLUMN t_user_locale.aut_id IS 'This is a foreign key that refers to t_user_authentication. It is used to specify the authenticated user. This field and the other loc_id field consist of a unique field.';
+--COMMENT ON COLUMN t_user_locale.loc_id IS 'This is a foreign key that refers to t_locale. It is used to specify the authenticated user locale. This field and the other aut_id field consist of a unique field.';
+--COMMENT ON COLUMN t_user_locale.ulo_deleted IS 'This is used for logical deletion.';
+INSERT INTO t_user_locale (aut_id, loc_id, ulo_deleted) SELECT t_user_authentication.aut_id, t_locale.loc_id, false FROM t_locale, t_user_authentication WHERE t_locale.loc_language='fr' AND t_user_authentication.aut_login='mch';
+INSERT INTO t_user_locale (aut_id, loc_id, ulo_deleted) SELECT t_user_authentication.aut_id, t_locale.loc_id, false FROM t_locale, t_user_authentication WHERE t_locale.loc_language='en' AND t_user_authentication.aut_login='mch';
+INSERT INTO t_user_locale (aut_id, loc_id, ulo_deleted) SELECT t_user_authentication.aut_id, t_locale.loc_id, false FROM t_locale, t_user_authentication WHERE t_locale.loc_language='zh' AND t_user_authentication.aut_login='mch';
+INSERT INTO t_user_locale (aut_id, loc_id, ulo_deleted) SELECT t_user_authentication.aut_id, t_locale.loc_id, false FROM t_locale, t_user_authentication WHERE t_locale.loc_language='fr' AND t_user_authentication.aut_login='mst';
+INSERT INTO t_user_locale (aut_id, loc_id, ulo_deleted) SELECT t_user_authentication.aut_id, t_locale.loc_id, false FROM t_locale, t_user_authentication WHERE t_locale.loc_language='en' AND t_user_authentication.aut_login='mst';
+INSERT INTO t_user_locale (aut_id, loc_id, ulo_deleted) SELECT t_user_authentication.aut_id, t_locale.loc_id, false FROM t_locale, t_user_authentication WHERE t_locale.loc_language='zh' AND t_user_authentication.aut_login='mst';
+INSERT INTO t_user_locale (aut_id, loc_id, ulo_deleted) SELECT t_user_authentication.aut_id, t_locale.loc_id, false FROM t_locale, t_user_authentication WHERE t_locale.loc_language='fr' AND t_user_authentication.aut_login='kimsan';
+INSERT INTO t_user_locale (aut_id, loc_id, ulo_deleted) SELECT t_user_authentication.aut_id, t_locale.loc_id, false FROM t_locale, t_user_authentication WHERE t_locale.loc_language='en' AND t_user_authentication.aut_login='kimsan';
+INSERT INTO t_user_locale (aut_id, loc_id, ulo_deleted) SELECT t_user_authentication.aut_id, t_locale.loc_id, false FROM t_locale, t_user_authentication WHERE t_locale.loc_language='zh' AND t_user_authentication.aut_login='kimsan';
+
+
+--COMMENT ON TABLE t_product_special_code IS 'This table is used for product special code.';
+--COMMENT ON COLUMN t_product_special_code.psc_id IS 'This is primary key of this table.';
+--COMMENT ON COLUMN t_product_special_code.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant.';
+--COMMENT ON COLUMN t_product_special_code.psc_short_code IS 'This is used to specify the short code enter by user.';
+--COMMENT ON COLUMN t_product_special_code.psc_code_enm_id IS 'This is a foreign key that refers to t_enum. It is used to specify the product special code.';
+--COMMENT ON COLUMN t_product_special_code.psc_deleted IS 'This is used for logical deletion.';
+INSERT INTO t_product_special_code (res_id, psc_short_code, psc_code_enm_id, psc_deleted) SELECT t_restaurant.res_id, '', t_enum.enm_id, false FROM t_restaurant, t_enum WHERE t_restaurant.res_reference = '10203040506070' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.DEFAULT.0';
+INSERT INTO t_product_special_code (res_id, psc_short_code, psc_code_enm_id, psc_deleted) SELECT t_restaurant.res_id, '#', t_enum.enm_id, false FROM t_restaurant, t_enum WHERE t_restaurant.res_reference = '10203040506070' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.OFFERED_PRODUCT.1';
+INSERT INTO t_product_special_code (res_id, psc_short_code, psc_code_enm_id, psc_deleted) SELECT t_restaurant.res_id, '-', t_enum.enm_id, false FROM t_restaurant, t_enum WHERE t_restaurant.res_reference = '10203040506070' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.DISCOUNT_ORDER.2';
+INSERT INTO t_product_special_code (res_id, psc_short_code, psc_code_enm_id, psc_deleted) SELECT t_restaurant.res_id, '/', t_enum.enm_id, false FROM t_restaurant, t_enum WHERE t_restaurant.res_reference = '10203040506070' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.USER_ORDER.3';
+INSERT INTO t_product_special_code (res_id, psc_short_code, psc_code_enm_id, psc_deleted) SELECT t_restaurant.res_id, '@', t_enum.enm_id, false FROM t_restaurant, t_enum WHERE t_restaurant.res_reference = '10203040506070' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.CREDIT.4';
+
+--COMMENT ON TABLE t_product_special_code_language IS 'This table is used for product special code depending on the specific language.';
+--COMMENT ON COLUMN t_product_special_code_language.pcl_id IS 'This is primary key of this table.';
+--COMMENT ON COLUMN t_product_special_code_language.psc_id IS 'This is a foreign key that refers to t_product_special_code. It is used to specify the product special code. This field and the other loc_id field consist of a unique field.';
+--COMMENT ON COLUMN t_product_special_code_language.loc_id IS 'This is a foreign key that refers to t_locale. It is used to specify the language of the product special code. This field and the other psc_id field consist of a unique field.';
+--COMMENT ON COLUMN t_product_special_code_language.pcl_label IS 'This is the label of the product special code depending on the language.';
+--COMMENT ON COLUMN t_product_special_code_language.pcl_deleted IS 'This is used for logical deletion.';
+INSERT INTO t_product_special_code_language (psc_id, loc_id, pcl_label, pcl_deleted) SELECT t_product_special_code.psc_id, t_locale.loc_id, 'Rien', false FROM t_locale, t_product_special_code JOIN t_enum ON t_enum.enm_id = t_product_special_code.psc_code_enm_id WHERE t_locale.loc_language='fr' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.DEFAULT.0';
+INSERT INTO t_product_special_code_language (psc_id, loc_id, pcl_label, pcl_deleted) SELECT t_product_special_code.psc_id, t_locale.loc_id, 'Produit Offert', false FROM t_locale, t_product_special_code JOIN t_enum ON t_enum.enm_id = t_product_special_code.psc_code_enm_id WHERE t_locale.loc_language='fr' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.OFFERED_PRODUCT.1';
+INSERT INTO t_product_special_code_language (psc_id, loc_id, pcl_label, pcl_deleted) SELECT t_product_special_code.psc_id, t_locale.loc_id, 'Réduction', false FROM t_locale, t_product_special_code JOIN t_enum ON t_enum.enm_id = t_product_special_code.psc_code_enm_id WHERE t_locale.loc_language='fr' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.DISCOUNT_ORDER.2';
+INSERT INTO t_product_special_code_language (psc_id, loc_id, pcl_label, pcl_deleted) SELECT t_product_special_code.psc_id, t_locale.loc_id, '', false FROM t_locale, t_product_special_code JOIN t_enum ON t_enum.enm_id = t_product_special_code.psc_code_enm_id WHERE t_locale.loc_language='fr' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.USER_ORDER.3';
+INSERT INTO t_product_special_code_language (psc_id, loc_id, pcl_label, pcl_deleted) SELECT t_product_special_code.psc_id, t_locale.loc_id, 'Avoir', false FROM t_locale, t_product_special_code JOIN t_enum ON t_enum.enm_id = t_product_special_code.psc_code_enm_id WHERE t_locale.loc_language='fr' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.USER_CREDIT.4';
+INSERT INTO t_product_special_code_language (psc_id, loc_id, pcl_label, pcl_deleted) SELECT t_product_special_code.psc_id, t_locale.loc_id, 'Nothing', false FROM t_locale, t_product_special_code JOIN t_enum ON t_enum.enm_id = t_product_special_code.psc_code_enm_id WHERE t_locale.loc_language='en' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.DEFAULT.0';
+INSERT INTO t_product_special_code_language (psc_id, loc_id, pcl_label, pcl_deleted) SELECT t_product_special_code.psc_id, t_locale.loc_id, 'Offered Product', false FROM t_locale, t_product_special_code JOIN t_enum ON t_enum.enm_id = t_product_special_code.psc_code_enm_id WHERE t_locale.loc_language='en' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.OFFERED_PRODUCT.1';
+INSERT INTO t_product_special_code_language (psc_id, loc_id, pcl_label, pcl_deleted) SELECT t_product_special_code.psc_id, t_locale.loc_id, 'Discount', false FROM t_locale, t_product_special_code JOIN t_enum ON t_enum.enm_id = t_product_special_code.psc_code_enm_id WHERE t_locale.loc_language='en' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.DISCOUNT_ORDER.2';
+INSERT INTO t_product_special_code_language (psc_id, loc_id, pcl_label, pcl_deleted) SELECT t_product_special_code.psc_id, t_locale.loc_id, '', false FROM t_locale, t_product_special_code JOIN t_enum ON t_enum.enm_id = t_product_special_code.psc_code_enm_id WHERE t_locale.loc_language='en' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.USER_ORDER.3';
+INSERT INTO t_product_special_code_language (psc_id, loc_id, pcl_label, pcl_deleted) SELECT t_product_special_code.psc_id, t_locale.loc_id, 'Credit', false FROM t_locale, t_product_special_code JOIN t_enum ON t_enum.enm_id = t_product_special_code.psc_code_enm_id WHERE t_locale.loc_language='en' AND t_enum.enm_language_key_label='PRODUCT_SPECIAL_CODE.USER_CREDIT.4';
+

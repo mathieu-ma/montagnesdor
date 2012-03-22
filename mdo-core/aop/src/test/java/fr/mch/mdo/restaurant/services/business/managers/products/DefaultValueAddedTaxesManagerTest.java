@@ -138,4 +138,29 @@ public class DefaultValueAddedTaxesManagerTest extends DefaultAdministrationMana
 		newBean.setRate(rate);
 		return newBean;
 	}
+
+	/**
+	 * Test the method findByCodeName.
+	 */
+	public void testFindByCodeName() {
+		String codeName = null;
+		try {
+			((IValueAddedTaxesManager) this.getInstance()).findByCodeName(codeName, DefaultAdministrationManagerTest.userContext);
+			fail(DEFAULT_FAILED_MESSAGE);
+		} catch (MdoException e) {
+			assertNotNull("Exception because codeName null", e);
+		}
+		try {
+			codeName = "";
+			ValueAddedTaxDto vat = ((IValueAddedTaxesManager) this.getInstance()).findByCodeName(codeName, DefaultAdministrationManagerTest.userContext);
+			assertNull("ValueAddedTaxDto must be null", vat);
+
+			codeName = "ALCOHOL";
+			vat = ((IValueAddedTaxesManager) this.getInstance()).findByCodeName(codeName, DefaultAdministrationManagerTest.userContext);
+			assertNotNull("TableTypeDto must NOT be null", vat);
+			assertEquals("Check TableTypeDto code name", codeName, vat.getCode().getName());
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
 }

@@ -2,8 +2,10 @@ package fr.mch.mdo.restaurant.dao.tables.hibernate;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +18,10 @@ import fr.mch.mdo.logs.ILogger;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.dao.beans.DinnerTable;
+import fr.mch.mdo.restaurant.dao.beans.MdoTableAsEnum;
 import fr.mch.mdo.restaurant.dao.beans.OrderLine;
+import fr.mch.mdo.restaurant.dao.beans.Product;
+import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode;
 import fr.mch.mdo.restaurant.dao.beans.TableCashing;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServices;
 import fr.mch.mdo.restaurant.dao.hibernate.TransactionSession;
@@ -83,8 +88,9 @@ public class DefaultDinnerTablesDao extends DefaultDaoServices implements IDinne
 		criterias.add(new MdoCriteria("restaurant.id", PropertiesRestrictions.EQUALS, restaurantId));
 		criterias.add(new MdoCriteria("cashing.id", CriteriaSpecification.LEFT_JOIN, PropertiesRestrictions.IS_NULL, null));
 		// Only select id and number fields
-		criterias.add(new MdoCriteria("id", PropertiesRestrictions.PROJECTION, Projections.property("number")));
-		criterias.add(new MdoCriteria("number", PropertiesRestrictions.PROJECTION, Projections.property("number")));
+		criterias.add(new MdoCriteria("id", PropertiesRestrictions.PROJECTION, null));
+		criterias.add(new MdoCriteria("number", PropertiesRestrictions.PROJECTION, null));
+		
 		@SuppressWarnings("unchecked")
 		List<Object[]> list = super.findByPropertiesRestrictions(criterias, false);
 		for (Iterator<Object[]> iterator = list.iterator(); iterator.hasNext();) {
@@ -104,7 +110,7 @@ public class DefaultDinnerTablesDao extends DefaultDaoServices implements IDinne
 		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
 		criterias.add(new MdoCriteria("number", PropertiesRestrictions.EQUALS, number));
 		criterias.add(new MdoCriteria("restaurant.id", PropertiesRestrictions.EQUALS, restaurantId));
-		criterias.add(new MdoCriteria("cashing.id", CriteriaSpecification.LEFT_JOIN, PropertiesRestrictions.IS_NULL, null));
+		criterias.add(new MdoCriteria("cashing.id", CriteriaSpecification.LEFT_JOIN, PropertiesRestrictions.IS_NULL));
 		criterias.add(new MdoCriteria("customersNumber", PropertiesRestrictions.PROJECTION, Projections.property("customersNumber")));
 		Object object = super.uniqueResult(super.findByCriteria(super.getBean().getClass(), criterias));
 		if (object != null) {
@@ -121,40 +127,141 @@ public class DefaultDinnerTablesDao extends DefaultDaoServices implements IDinne
 		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
 		criterias.add(new MdoCriteria("number", PropertiesRestrictions.EQUALS, number));
 		criterias.add(new MdoCriteria("restaurant.id", PropertiesRestrictions.EQUALS, restaurantId));
-		criterias.add(new MdoCriteria("cashing.id", CriteriaSpecification.LEFT_JOIN, PropertiesRestrictions.IS_NULL, null));
+		criterias.add(new MdoCriteria("cashing.id", CriteriaSpecification.LEFT_JOIN, PropertiesRestrictions.IS_NULL));
 
 		return (DinnerTable) super.uniqueResult(super.findByCriteria(super.getBean().getClass(), criterias, isLazy));
 	}
 
 	@Override
-	public void updateReductionRatio(Long dinnerTableId, BigDecimal reductionRatio, Boolean reductionRatioChanged, BigDecimal amountPay) throws MdoDataBeanException {
-		try {
-			TransactionSession transactionSession = super.beginTransaction();
+	public DinnerTable displayTableByNumber(Long restaurantId, String number) throws MdoDataBeanException {
+		DinnerTable result = null;
 
-			Session session = transactionSession.getSession();
-			session.createQuery("Update DinnerTable dinnerTable set " +
-					" dinnerTable.reductionRatio = :reductionRatio, " +
-					" dinnerTable.reductionRatioChanged = :reductionRatioChanged, " +
-					" dinnerTable.amountPay = :amountPay " +
-					" WHERE dinnerTable.id="+dinnerTableId).setBigDecimal("reductionRatio", reductionRatio)
-					.setBoolean("reductionRatioChanged", reductionRatioChanged).setBigDecimal("amountPay", amountPay).executeUpdate();
+		// Dinner Table part
+		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
+		criterias.add(new MdoCriteria("number", PropertiesRestrictions.EQUALS, number));
+		criterias.add(new MdoCriteria("restaurant.id", PropertiesRestrictions.EQUALS, restaurantId));
+		// Only the one who cashing date is null: in SQL Standard, 
+		// if unique constraint is on 2 fields then the values of the 2 fields could be (1, null), (1, null)
+		criterias.add(new MdoCriteria("cashing.id", CriteriaSpecification.LEFT_JOIN, PropertiesRestrictions.IS_NULL));
+
+		// Only select needed fields
+		criterias.add(new MdoCriteria("id", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("customersNumber", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("registrationDate", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("printingDate", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("reductionRatio", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("reductionRatioChanged", PropertiesRestrictions.PROJECTION));
+		
+		Object[] dinnerTable = (Object[]) super.uniqueResult(super.findByCriteria(super.getBean().getClass(), criterias, true));
+		
+		if (dinnerTable != null) {
+			result = new DinnerTable();
+			result.setNumber(number);
 			
+			int index = 0;
+			Long id = (Long) dinnerTable[index++];
+			Integer customersNumber = (Integer) dinnerTable[index++];
+			Date registrationDate = (Date) dinnerTable[index++];
+			Date printingDate = (Date) dinnerTable[index++];
+			BigDecimal reductionRatio = (BigDecimal) dinnerTable[index++];
+			Boolean reductionRatioChanged = (Boolean) dinnerTable[index++];
+			result.setId(id);
+			result.setCustomersNumber(customersNumber);
+			result.setRegistrationDate(registrationDate);
+			result.setPrintingDate(printingDate);
+			if (reductionRatio == null) {
+				reductionRatio = BigDecimal.ZERO;	
+			}
+			result.setReductionRatio(reductionRatio);
+			result.setReductionRatioChanged(reductionRatioChanged);
 
-			super.endTransaction(transactionSession, null, true);
-		} catch (HibernateException e) {
-			super.getLogger().error("message.error.dao.save", new Object[] { getBean().getClass().getName(), "DinnerTable" }, e);
-			throw new MdoDataBeanException("message.error.dao.save", new Object[] { getBean().getClass().getName(), "DinnerTable" }, e);
-		} catch (Exception e) {
-			super.getLogger().error("message.error.dao.save", new Object[] { getBean().getClass().getName(), "DinnerTable" }, e);
-			throw new MdoDataBeanException("message.error.dao.save", new Object[] { getBean().getClass().getName(), "DinnerTable" }, e);
-		} finally {
-			try {
-				super.closeSession();
-			} catch (HibernateException e) {
-				super.getLogger().error("message.error.dao.session.close", e);
-				throw new MdoDataBeanException("message.error.dao.session.close", e);
+			// Orders Part
+			criterias.clear();
+			criterias.add(new MdoCriteria("dinnerTable.id", PropertiesRestrictions.EQUALS, result.getId()));
+			// We must use the 2 following lines because we want left outer join.
+			// If we comment the 2 following lines, we will have inner join so order lines without product id will not get.
+			criterias.add(new MdoCriteria("productSpecialCode.id", CriteriaSpecification.LEFT_JOIN, PropertiesRestrictions.DEFAULT));
+			criterias.add(new MdoCriteria("product.id", CriteriaSpecification.LEFT_JOIN, PropertiesRestrictions.DEFAULT));
+
+			// Only select needed fields
+			criterias.add(new MdoCriteria("id", PropertiesRestrictions.PROJECTION));
+			criterias.add(new MdoCriteria("quantity", PropertiesRestrictions.PROJECTION));
+			criterias.add(new MdoCriteria("label", PropertiesRestrictions.PROJECTION));
+			criterias.add(new MdoCriteria("unitPrice", PropertiesRestrictions.PROJECTION));
+			criterias.add(new MdoCriteria("amount", PropertiesRestrictions.PROJECTION));
+
+//				criterias.add(new MdoCriteria("product", PropertiesRestrictions.PROJECTION));
+//				criterias.add(new MdoCriteria("productSpecialCode", PropertiesRestrictions.PROJECTION));
+			// These 3 lines is used to build the code
+			criterias.add(new MdoCriteria("product.code", PropertiesRestrictions.PROJECTION));
+			criterias.add(new MdoCriteria("productSpecialCode.shortCode", PropertiesRestrictions.PROJECTION));
+			criterias.add(new MdoCriteria("productSpecialCode.code.name", PropertiesRestrictions.PROJECTION));
+
+			criterias.add(new MdoCriteria("label", PropertiesRestrictions.ORDER, Boolean.FALSE));
+
+			List<?> orders = super.findByCriteria(OrderLine.class, criterias, true);
+			BigDecimal quantitiesSum = BigDecimal.ZERO;
+			BigDecimal amountsSum = BigDecimal.ZERO;
+			if (orders != null) {
+				LinkedHashSet<OrderLine> buildOrders = new LinkedHashSet<OrderLine>();
+				for (Object object : orders) {
+					Object[] arrays = (Object[]) object;
+					OrderLine orderLine = new OrderLine();
+					index = 0;
+					id = (Long) arrays[index++];
+					BigDecimal quantity = (BigDecimal) arrays[index++];
+					String label = (String) arrays[index++];
+					BigDecimal unitPrice = (BigDecimal) arrays[index++];
+					BigDecimal amount = (BigDecimal) arrays[index++];
+					String productCode = (String) arrays[index++];
+					String productSpecialCodeShortCode = (String) arrays[index++];
+					String productSpecialCodeCodeName = (String) arrays[index++];
+					orderLine.setId(id);
+					orderLine.setQuantity(quantity);
+					orderLine.setLabel(label);
+					orderLine.setUnitPrice(unitPrice);
+					orderLine.setAmount(amount);
+					if (productCode != null) {
+						Product product = new Product();
+						product.setCode(productCode);
+						orderLine.setProduct(product);
+					}
+					if (productSpecialCodeShortCode != null) {
+						ProductSpecialCode productSpecialCode = new ProductSpecialCode();
+						productSpecialCode.setShortCode(productSpecialCodeShortCode);
+						MdoTableAsEnum code = new MdoTableAsEnum();
+						code.setName(productSpecialCodeCodeName);
+						productSpecialCode.setCode(code);
+						orderLine.setProductSpecialCode(productSpecialCode);
+					}
+					buildOrders.add(orderLine);
+					// Assume that the quantity is never null; 
+					quantitiesSum = quantitiesSum.add(quantity);
+					// Assume that the amount is never null; 
+					amountsSum = amountsSum.add(amount);
+				}
+				result.setOrders(buildOrders);
+				
+				result.setQuantitiesSum(quantitiesSum);
+				result.setAmountsSum(amountsSum);
+				// Assume that the amountsSum and reductionRatio are never null; 
+				BigDecimal amountPay = result.getReductionRatio().multiply(amountsSum).divide(new BigDecimal(100));
+				result.setAmountPay(amountPay);
 			}
 		}
+		
+		return result;
+	}
+
+	@Override
+	public void updateReductionRatio(Long dinnerTableId, BigDecimal reductionRatio, Boolean reductionRatioChanged, BigDecimal amountPay) throws MdoDataBeanException {
+		Map<String, Object> fields = new HashMap<String, Object>();
+		fields.put("reductionRatio", reductionRatio);
+		fields.put("reductionRatioChanged", reductionRatioChanged);
+		fields.put("amountPay", amountPay);
+		Map<String, Object> keys = new HashMap<String, Object>();
+		keys.put("id", dinnerTableId);
+		super.updateFieldsByKeys(fields, keys);
 	}
 
 	@Override
@@ -169,28 +276,9 @@ public class DefaultDinnerTablesDao extends DefaultDaoServices implements IDinne
 
 	@Override
 	public void removeOrderLine(OrderLine orderLine) throws MdoDataBeanException {
-		try {
-			TransactionSession transactionSession = super.beginTransaction();
-
-			Session session = transactionSession.getSession();
-			session.createQuery("DELETE OrderLine orderLine WHERE orderLine.id="+orderLine.getId()).executeUpdate();
-			
-
-			super.endTransaction(transactionSession, orderLine, true);
-		} catch (HibernateException e) {
-			super.getLogger().error("message.error.dao.delete", new Object[] { getBean().getClass().getName(), orderLine }, e);
-			throw new MdoDataBeanException("message.error.dao.delete", new Object[] { getBean().getClass().getName(), orderLine }, e);
-		} catch (Exception e) {
-			super.getLogger().error("message.error.dao.delete", new Object[] { getBean().getClass().getName(), orderLine }, e);
-			throw new MdoDataBeanException("message.error.dao.delete", new Object[] { getBean().getClass().getName(), orderLine }, e);
-		} finally {
-			try {
-				super.closeSession();
-			} catch (HibernateException e) {
-				super.getLogger().error("message.error.dao.session.close", e);
-				throw new MdoDataBeanException("message.error.dao.session.close", e);
-			}
-		}
+		Map<String, Object> keys = new HashMap<String, Object>();
+		keys.put("id", orderLine.getId());
+		super.deleteByKeys(OrderLine.class, keys);
 	}
 
 	@Override
@@ -218,7 +306,7 @@ public class DefaultDinnerTablesDao extends DefaultDaoServices implements IDinne
 		criterias.add(new MdoCriteria("restaurant.id", PropertiesRestrictions.EQUALS, restaurantId));
 		criterias.add(new MdoCriteria("cashing.id", CriteriaSpecification.LEFT_JOIN, PropertiesRestrictions.IS_NULL, null));
 
-		result = super.findByPropertiesRestrictions(criterias, false);
+		result = super.findByPropertiesRestrictions(criterias, true);
 		
 		return result;
 	}

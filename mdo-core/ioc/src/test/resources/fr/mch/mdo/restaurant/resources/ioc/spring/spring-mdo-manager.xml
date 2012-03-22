@@ -72,6 +72,7 @@
 		<property name="restaurantVatsAssembler" ref="RestaurantVatsAssembler" />
 		<property name="restaurantPrefixTablesAssembler" ref="RestaurantPrefixTablesAssembler" />
 		<property name="productSpecialCodesAssembler" ref="ProductSpecialCodesAssembler" />
+		<property name="vatsAssembler" ref="VatsAssembler" />		
 	</bean>
 	<bean id="UserRestaurantsAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultUserRestaurantsAssembler">
 		<property name="logger">
@@ -211,6 +212,7 @@
 		<property name="productPartsAssembler" ref="ProductPartsAssembler" />
 		<property name="productSpecialCodesAssembler" ref="ProductSpecialCodesAssembler" />
 		<property name="creditsAssembler" ref="CreditsAssembler" />
+		<property name="vatsAssembler" ref="VatsAssembler" />
 	</bean>
 	<bean id="DinnerTablesAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultDinnerTablesAssembler">
 		<property name="logger">

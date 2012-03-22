@@ -25,6 +25,7 @@ public abstract class DefaultDaoServices extends MdoDaoBase implements IDaoServi
 {
 	protected enum PropertiesRestrictions 
 	{
+		DEFAULT(),
 		EQUALS() {
 			public Criteria add(Criteria criteria, String property, Object value, ProjectionList projectionList) {
 				return criteria.add(Restrictions.eq(property, value));
@@ -42,7 +43,11 @@ public abstract class DefaultDaoServices extends MdoDaoBase implements IDaoServi
 		},
 		ORDER() {
 			public Criteria add(Criteria criteria, String property, Object value, ProjectionList projectionList) {
-				return criteria.addOrder(Order.asc(property));
+				Order order = Order.asc(property);
+				if (Boolean.FALSE.equals(value)) {
+					order = Order.desc(property);
+				}
+				return criteria.addOrder(order);
 			}
 		},
 		PROJECTION() {
@@ -69,7 +74,7 @@ public abstract class DefaultDaoServices extends MdoDaoBase implements IDaoServi
 			}
 		};
 		public Criteria add(Criteria criteria, String property, Object value, ProjectionList projectionList) {
-			return null;
+			return criteria;
 		}
 	}
 
@@ -280,7 +285,7 @@ public abstract class DefaultDaoServices extends MdoDaoBase implements IDaoServi
 		return this.findByUniqueKey(super.getBean().getClass(), propertyValueMap, isLazy);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected Object findByUniqueKey(Class<? extends IMdoBean> clazz, Map<String, Object> propertyValueMap, boolean... isLazy) throws MdoDataBeanException {
 		Object result = null;
 
@@ -290,7 +295,7 @@ public abstract class DefaultDaoServices extends MdoDaoBase implements IDaoServi
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected Object uniqueResult(List list) throws MdoDataBeanException {
 		Object result = null;
 
@@ -306,7 +311,7 @@ public abstract class DefaultDaoServices extends MdoDaoBase implements IDaoServi
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected List findByProperties(Map<String, Object> propertyValueMap, boolean... isLazy) throws MdoDataBeanException {
 		return this.findByProperties(super.getBean().getClass(), propertyValueMap, isLazy);
 	}
@@ -432,7 +437,7 @@ public abstract class DefaultDaoServices extends MdoDaoBase implements IDaoServi
 
 	protected class MdoCriteria {
 		private String property;
-		private int aliasJoinType = CriteriaSpecification.INNER_JOIN;
+		private int aliasJoinType;
 		private PropertiesRestrictions restriction;
 		private Object restrictionValue;
 		
@@ -443,10 +448,16 @@ public abstract class DefaultDaoServices extends MdoDaoBase implements IDaoServi
 			this.restrictionValue = restrictionValue;
 		}
 
+		public MdoCriteria(String property, int aliasJoinType, PropertiesRestrictions restriction) {
+			this(property, aliasJoinType, restriction, null);
+		}
+
 		public MdoCriteria(String property, PropertiesRestrictions restriction, Object restrictionValue) {
-			this.property = property;
-			this.restriction = restriction;
-			this.restrictionValue = restrictionValue;
+			this(property, CriteriaSpecification.INNER_JOIN, restriction, restrictionValue);
+		}
+
+		public MdoCriteria(String property, PropertiesRestrictions restriction) {
+			this(property, CriteriaSpecification.INNER_JOIN, restriction, null);
 		}
 
 		/**
@@ -504,7 +515,7 @@ public abstract class DefaultDaoServices extends MdoDaoBase implements IDaoServi
 		}
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected List findByProperties(Class<? extends IMdoBean> clazz, Map<String, Object> propertyValueMap, boolean... isLazy) throws MdoDataBeanException {
 
 		if (propertyValueMap == null) {
@@ -521,13 +532,13 @@ public abstract class DefaultDaoServices extends MdoDaoBase implements IDaoServi
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected List findByPropertiesRestrictions(List<MdoCriteria> criterias, boolean... isLazy) throws MdoDataBeanException {
 
 		return this.findByPropertiesRestrictions(super.getBean().getClass(), criterias, isLazy);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected List findByPropertiesRestrictions(Class<? extends IMdoBean> clazz, List<MdoCriteria> criterias, boolean... isLazy)
 			throws MdoDataBeanException {
 
@@ -541,7 +552,7 @@ public abstract class DefaultDaoServices extends MdoDaoBase implements IDaoServi
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected List findByCriteria(Class<? extends IMdoBean> clazz, List<MdoCriteria> criterias, boolean... isLazy) throws MdoDataBeanException {
 
 		if (criterias == null) {
@@ -614,7 +625,7 @@ public abstract class DefaultDaoServices extends MdoDaoBase implements IDaoServi
 		return result;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public List findAllByQuery(String queryName, Map values, boolean... isLazy) throws MdoDataBeanException {
 		List result = null;
 		try {

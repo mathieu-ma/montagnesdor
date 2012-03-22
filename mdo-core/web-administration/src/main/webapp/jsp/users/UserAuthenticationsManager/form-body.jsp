@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="/struts-tags" prefix="s" %>
 
-<script type="text/javascript" src="<c:out value="${pageContext.request.contextPath}"/>/javascript/user-authentications.js1"></script>
+<script type="text/javascript" src="<c:out value="${pageContext.request.contextPath}"/>/javascript/user-authentications.js"></script>
 
 <s:form action="UserAuthenticationsManagerCUD" method="post" validate="false">
 	<div id="tabs" class="ui-tabs ui-widget ui-widget-content ui-corner-all">

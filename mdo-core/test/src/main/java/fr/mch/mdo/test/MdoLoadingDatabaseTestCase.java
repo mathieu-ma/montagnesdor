@@ -98,7 +98,8 @@ public abstract class MdoLoadingDatabaseTestCase extends MdoTestCase
 	}
 
 	// Files to be loaded
-	protected URL[] fileURLs = { ITestResources.class.getResource("montagnesdorStructure.sql"),
+	protected URL[] fileURLs = { 
+			ITestResources.class.getResource("montagnesdorStructure.sql"),
 			ITestResources.class.getResource("montagnesdorDatas.sql") 
 	};
 

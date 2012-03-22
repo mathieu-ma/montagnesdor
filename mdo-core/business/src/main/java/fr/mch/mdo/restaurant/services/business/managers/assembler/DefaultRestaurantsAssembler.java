@@ -15,6 +15,7 @@ import fr.mch.mdo.restaurant.dao.beans.Restaurant;
 import fr.mch.mdo.restaurant.dao.beans.RestaurantPrefixTable;
 import fr.mch.mdo.restaurant.dao.beans.RestaurantValueAddedTax;
 import fr.mch.mdo.restaurant.dao.beans.TableType;
+import fr.mch.mdo.restaurant.dao.beans.ValueAddedTax;
 import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.ProductSpecialCodeDto;
@@ -22,6 +23,7 @@ import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantPrefixTableDto;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantValueAddedTaxDto;
 import fr.mch.mdo.restaurant.dto.beans.TableTypeDto;
+import fr.mch.mdo.restaurant.dto.beans.ValueAddedTaxDto;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 import fr.mch.mdo.utils.IManagerAssembler;
 
@@ -34,6 +36,7 @@ public class DefaultRestaurantsAssembler extends AbstractAssembler implements IM
 	private IManagerAssembler restaurantVatsAssembler;
 	private IManagerAssembler restaurantPrefixTablesAssembler;
 	private IManagerAssembler productSpecialCodesAssembler;
+	private IManagerAssembler vatsAssembler;
 
 	private static class LazyHolder {
 		private static IManagerAssembler instance = new DefaultRestaurantsAssembler(LoggerServiceImpl.getInstance().getLogger(DefaultRestaurantsAssembler.class.getName()));
@@ -46,6 +49,7 @@ public class DefaultRestaurantsAssembler extends AbstractAssembler implements IM
 		this.restaurantVatsAssembler = DefaultRestaurantValueAddedTaxesAssembler.getInstance();
 		this.restaurantPrefixTablesAssembler = DefaultRestaurantPrefixTablesAssembler.getInstance();
 		this.productSpecialCodesAssembler = DefaultProductSpecialCodesAssembler.getInstance();
+		this.vatsAssembler = DefaultValueAddedTaxesAssembler.getInstance();
 	}
 
 	public static IManagerAssembler getInstance() {
@@ -113,6 +117,20 @@ public class DefaultRestaurantsAssembler extends AbstractAssembler implements IM
 		this.productSpecialCodesAssembler = productSpecialCodesAssembler;
 	}
 
+	/**
+	 * @return the vatsAssembler
+	 */
+	public IManagerAssembler getVatsAssembler() {
+		return vatsAssembler;
+	}
+
+	/**
+	 * @param vatsAssembler the vatsAssembler to set
+	 */
+	public void setVatsAssembler(IManagerAssembler vatsAssembler) {
+		this.vatsAssembler = vatsAssembler;
+	}
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public IMdoDtoBean marshal(IMdoDaoBean daoBean, MdoUserContext userContext) {
@@ -138,6 +156,11 @@ public class DefaultRestaurantsAssembler extends AbstractAssembler implements IM
 				defaultTableType = (TableTypeDto) tableTypesAssembler.marshal(bean.getDefaultTableType(), userContext);
 			}
 			dto.setDefaultTableType(defaultTableType);
+			ValueAddedTaxDto orderLineDefaultVat = null;
+			if (bean.getVat() != null) {
+				orderLineDefaultVat = (ValueAddedTaxDto) vatsAssembler.marshal(bean.getVat(), userContext);
+			}
+			dto.setVat(orderLineDefaultVat);
 			dto.setTakeawayBasicReduction(bean.getTakeawayBasicReduction());
 			dto.setTakeawayMinAmountReduction(bean.getTakeawayMinAmountReduction());
 			dto.setTripleDESKey(bean.getTripleDESKey());
@@ -198,6 +221,11 @@ public class DefaultRestaurantsAssembler extends AbstractAssembler implements IM
 			defaultTableType = (TableType) tableTypesAssembler.unmarshal(dto.getDefaultTableType());
 		}
 		bean.setDefaultTableType(defaultTableType);
+		ValueAddedTax orderLineDefaultVat = null;
+		if (dto.getVat() != null) {
+			orderLineDefaultVat = (ValueAddedTax) vatsAssembler.unmarshal(dto.getVat());
+		}
+		bean.setVat(orderLineDefaultVat);
 		bean.setTakeawayBasicReduction(dto.getTakeawayBasicReduction());
 		bean.setTakeawayMinAmountReduction(dto.getTakeawayMinAmountReduction());
 		bean.setTripleDESKey(dto.getTripleDESKey());

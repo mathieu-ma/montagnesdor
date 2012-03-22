@@ -101,8 +101,11 @@ public class DataMigrationDinnerTableWork extends DataMigrationWork
 				DinnerTable table = iterator.next();
 				// Fill t_order_line
 				table.setOrders(new HashSet<OrderLine>());
-				ps = connection.prepareStatement("SELECT orl_quantity, pdt_id, orl_special_code_value, orl_label, orl_unit_price, orl_amount" +
-						" FROM t_order_line WHERE dtb_id=" + table.getId());
+				ps = connection.prepareStatement("SELECT orl_quantity, t_order_line.pdt_id PDT_ID, t_value_added_tax.vat_value VAT_VALUE, orl_special_code_value, orl_label, orl_unit_price, orl_amount" +
+						" FROM t_order_line " +
+						" LEFT OUTER JOIN t_product ON t_product.pdt_id = t_order_line.pdt_id" +
+						" JOIN t_value_added_tax ON t_value_added_tax.vat_id = t_product.vat_id " +
+						" WHERE dtb_id=" + table.getId());
 				rs = ps.executeQuery();
 				rsMetaData = rs.getMetaData();
 				maxColumn = rsMetaData.getColumnCount();
@@ -202,20 +205,22 @@ public class DataMigrationDinnerTableWork extends DataMigrationWork
 				Set<OrderLine> orders = table.getOrders(); 
 				for (Iterator<OrderLine> iterator2 = orders.iterator(); iterator2.hasNext();) {
 					OrderLine orderLine = iterator2.next();
-					String insertProduct = "INSERT INTO t_order_line (dtb_id, psc_id, pdt_id, cre_id, prp_id, orl_quantity, orl_label, orl_unit_price, orl_amount, orl_deleted) SELECT t_dinner_table.dtb_id," +
-							" t_product_special_code.psc_id, t_product.pdt_id, null, t_product_part.prp_id, " + 
+					String insertProduct = "INSERT INTO t_order_line (dtb_id, psc_id, pdt_id, cre_id, prp_id, vat_id, orl_quantity, orl_label, orl_unit_price, orl_amount, orl_deleted) SELECT t_dinner_table.dtb_id," +
+							" t_product_special_code.psc_id, t_product.pdt_id, null, t_product_part.prp_id, t_value_added_tax.vat_id, " + 
 							orderLine.getQuantity() + ", " + this.getLabel(orderLine.getLabel()) + ", " + orderLine.getUnitPrice() + ", " + orderLine.getAmount() + ", false" +    
 						" FROM t_dinner_table JOIN t_restaurant restaurant_dinner_table ON restaurant_dinner_table.res_id=t_dinner_table.res_id," +
 							" t_product_special_code JOIN t_enum product_special_code_enum ON product_special_code_enum.enm_id=t_product_special_code.psc_code_enm_id JOIN t_restaurant restaurant_psc ON restaurant_psc.res_id=t_product_special_code.res_id, " +
 							" t_product," +
-							" t_product_part JOIN t_enum product_part_enum ON product_part_enum.enm_id=t_product_part.prp_code_enm_id " +
-						" WHERE 1=1 " +
+							" t_product_part JOIN t_enum product_part_enum ON product_part_enum.enm_id=t_product_part.prp_code_enm_id, " +
+							" t_value_added_tax " +
+							" WHERE 1=1 " +
 							" AND product_part_enum.enm_language_key_label='PRODUCT_PART.MISCELLANEOUS.0' " +
 							" AND t_product.pdt_code= " + this.getProductV1ToV2(productSpecialCodeV1ToV2, orderLine.getProduct().getCode(), orderLine.getProductSpecialCode().getCode().getLanguageKeyLabel()) + "" +
 							" AND product_special_code_enum.enm_language_key_label='" + this.getProductSpecialCodeV1ToV2(productSpecialCodeV1ToV2, orderLine.getProduct().getCode()) + "'" +
 							" AND restaurant_psc.res_reference = '" + restaurantReference + "'" +
 							" AND t_dinner_table.dtb_code='" + table.getNumber() + "'" +
 							" AND t_dinner_table.dtb_registration_date=" + this.formatDate(sdfTimes, table.getRegistrationDate()) + "" +
+							" AND t_value_added_tax.vat_rate=" + vatRateFormat.format(orderLine.getVat().getRate().doubleValue()) + "" +
 							" AND restaurant_dinner_table.res_reference = '" + restaurantReference + "';";
 
 					if ("/".equals(orderLine.getProduct().getCode())) {
@@ -437,6 +442,17 @@ public class DataMigrationDinnerTableWork extends DataMigrationWork
 				if (value != null) {
 					orderLine.setAmount(new BigDecimal(value.toString()));
 				}
+			}
+		},  
+		VAT_VALUE() {
+			public void fillValue(OrderLine orderLine, Object value) {
+				ValueAddedTax vat = new ValueAddedTax();
+				if (value != null) {
+					vat.setRate(new BigDecimal(value.toString()));
+				} else {
+					vat.setRate(new BigDecimal(5.5));
+				}
+				orderLine.setVat(vat);
 			}
 		};
 		

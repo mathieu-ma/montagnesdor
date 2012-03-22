@@ -98,6 +98,11 @@ public class RestaurantDto extends MdoDtoBean
 	 * It is used to specify the dinner table type which can be EAT_IN, TAKEAWAY, ....
 	 */
 	private TableTypeDto defaultTableType;
+    /**
+	 * This is a foreign key that refers to t_value_added_tax. 
+     * It is used to specify the default VAT custom order line when the former order line is not defined by a product in restaurant catalog.'
+     */
+    private ValueAddedTaxDto vat;
 
     /**
      * List of vats for this restaurant
@@ -297,6 +302,18 @@ public class RestaurantDto extends MdoDtoBean
 		return defaultTableType;
 	}
 	/**
+	 * @return the vat
+	 */
+	public ValueAddedTaxDto getVat() {
+		return vat;
+	}
+	/**
+	 * @param vat the vat to set
+	 */
+	public void setVat(ValueAddedTaxDto vat) {
+		this.vat = vat;
+	}
+	/**
      * @return the vats
      */
     public Set<RestaurantValueAddedTaxDto> getVats() {
@@ -346,18 +363,19 @@ public class RestaurantDto extends MdoDtoBean
 	public Set<ProductSpecialCodeDto> getProductSpecialCodes() {
 		return productSpecialCodes;
 	}
-	@Override
-    public String toString() {
-	return "RestaurantDto [addressCity=" + addressCity + ", addressRoad="
-		+ addressRoad + ", addressZip=" + addressZip + ", name=" + name
-		+ ", phone=" + phone + ", reference=" + reference
-		+ ", registrationDate=" + registrationDate + ", specificRound="
-		+ specificRound + ", takeawayBasicReduction="
-		+ takeawayBasicReduction + ", takeawayMinAmountReduction="
-		+ takeawayMinAmountReduction + ", tripleDESKey=" + tripleDESKey
-		+ ", vatByTakeaway=" + vatByTakeaway + ", vatRef=" + vatRef
-		+ ", vats=" + vats + ", visaRef=" + visaRef + ", id=" + id
-		+ "]";
-    }
 
+	@Override
+	public String toString() {
+		return "RestaurantDto [registrationDate=" + registrationDate
+				+ ", reference=" + reference + ", name=" + name
+				+ ", addressRoad=" + addressRoad + ", addressZip=" + addressZip
+				+ ", addressCity=" + addressCity + ", phone=" + phone
+				+ ", vatRef=" + vatRef + ", visaRef=" + visaRef
+				+ ", tripleDESKey=" + tripleDESKey + ", vatByTakeaway="
+				+ vatByTakeaway + ", takeawayBasicReduction="
+				+ takeawayBasicReduction + ", takeawayMinAmountReduction="
+				+ takeawayMinAmountReduction + ", specificRound="
+				+ specificRound + ", defaultTableType=" + defaultTableType
+				+ ", vat=" + vat + ", id=" + id + "]";
+	}
 }

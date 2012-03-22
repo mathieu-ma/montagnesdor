@@ -78,8 +78,10 @@ public class DefaultRestaurantsDaoTest extends DefaultDaoServicesTestCase
 		defaultTableType.setId(1L);
 		Set<RestaurantPrefixTable> prefixTableNames = new HashSet<RestaurantPrefixTable>();
 		Set<RestaurantValueAddedTax> vats = null;
+		ValueAddedTax orderLineDefaultVat = new ValueAddedTax();
+		orderLineDefaultVat.setId(1L);
 		Restaurant restaurant = (Restaurant) createNewBean(registrationDate, reference, name, addressRoad, addressZip, addressCity, phone, vatRef, visaRef, tripleDESKey,
-				vatByTakeaway, takeawayBasicReduction, takeawayMinAmountReduction, specificRound, defaultTableType, prefixTableNames, vats);
+				vatByTakeaway, takeawayBasicReduction, takeawayMinAmountReduction, specificRound, defaultTableType, prefixTableNames, vats, orderLineDefaultVat);
 
 		RestaurantPrefixTable restaurantPrefixTable = new RestaurantPrefixTable();
 		MdoTableAsEnum prefix = new MdoTableAsEnum();
@@ -127,8 +129,10 @@ public class DefaultRestaurantsDaoTest extends DefaultDaoServicesTestCase
 		defaultTableType.setId(2L);
 		Set<RestaurantPrefixTable> prefixTableNames = new HashSet<RestaurantPrefixTable>();
 		Set<RestaurantValueAddedTax> vats = new HashSet<RestaurantValueAddedTax>();
+		ValueAddedTax orderLineDefaultVat = new ValueAddedTax();
+		orderLineDefaultVat.setId(1L);
 		newBean = createNewBean(registrationDate, reference, name, addressRoad, addressZip, addressCity, phone, vatRef, visaRef, tripleDESKey, vatByTakeaway,
-				takeawayBasicReduction, takeawayMinAmountReduction, specificRound, defaultTableType, prefixTableNames, vats);
+				takeawayBasicReduction, takeawayMinAmountReduction, specificRound, defaultTableType, prefixTableNames, vats, orderLineDefaultVat);
 
 		RestaurantPrefixTable restaurantPrefixTable = new RestaurantPrefixTable();
 		MdoTableAsEnum prefix = new MdoTableAsEnum();
@@ -180,8 +184,10 @@ public class DefaultRestaurantsDaoTest extends DefaultDaoServicesTestCase
 		defaultTableType = new TableType();
 		defaultTableType.setId(1L);
 		vats = new HashSet<RestaurantValueAddedTax>();
+		orderLineDefaultVat = new ValueAddedTax();
+		orderLineDefaultVat.setId(2L);
 		newBean = createNewBean(registrationDate, reference, name, addressRoad, addressZip, addressCity, phone, vatRef, visaRef, tripleDESKey, vatByTakeaway,
-				takeawayBasicReduction, takeawayMinAmountReduction, specificRound, defaultTableType, prefixTableNames, vats);
+				takeawayBasicReduction, takeawayMinAmountReduction, specificRound, defaultTableType, prefixTableNames, vats, orderLineDefaultVat);
 
 		restaurantPrefixTable = new RestaurantPrefixTable();
 		// Use the existing data in database
@@ -267,8 +273,10 @@ public class DefaultRestaurantsDaoTest extends DefaultDaoServicesTestCase
 		TableType defaultTableType = new TableType();
 		defaultTableType.setId(2L);
 		Set<RestaurantValueAddedTax> vats = new HashSet<RestaurantValueAddedTax>();
+		ValueAddedTax orderLineDefaultVat = new ValueAddedTax();
+		orderLineDefaultVat.setId(1L);
 		newBean = createNewBean(registrationDate, reference, name, addressRoad, addressZip, addressCity, phone, vatRef, visaRef, tripleDESKey, vatByTakeaway,
-				takeawayBasicReduction, takeawayMinAmountReduction, specificRound, defaultTableType, prefixTableNames, vats);
+				takeawayBasicReduction, takeawayMinAmountReduction, specificRound, defaultTableType, prefixTableNames, vats, orderLineDefaultVat);
 
 		RestaurantPrefixTable restaurantPrefixTable = new RestaurantPrefixTable();
 		// Use the existing data in database
@@ -371,8 +379,10 @@ public class DefaultRestaurantsDaoTest extends DefaultDaoServicesTestCase
 		TableType defaultTableType = new TableType();
 		defaultTableType.setId(2L);
 		Set<RestaurantValueAddedTax> vats = new HashSet<RestaurantValueAddedTax>();
+		ValueAddedTax orderLineDefaultVat = new ValueAddedTax();
+		orderLineDefaultVat.setId(1L);
 		newBean = createNewBean(registrationDate, reference, name, addressRoad, addressZip, addressCity, phone, vatRef, visaRef, tripleDESKey, vatByTakeaway,
-				takeawayBasicReduction, takeawayMinAmountReduction, specificRound, defaultTableType, prefixTableNames, vats);
+				takeawayBasicReduction, takeawayMinAmountReduction, specificRound, defaultTableType, prefixTableNames, vats, orderLineDefaultVat);
 
 		RestaurantPrefixTable restaurantPrefixTable = new RestaurantPrefixTable();
 		// Use the existing data in database
@@ -466,15 +476,15 @@ public class DefaultRestaurantsDaoTest extends DefaultDaoServicesTestCase
 			} catch (Exception e) {
 				// We Have to delete following tables in the following order deleting the table t_restaurant.
 				// 1) t_user_restaurant
-				// 4) t_restaurant_vat
-				// 5) t_restaurant_prefix_table
-				// 2) t_user_authentication-->t_dinner_table, t_user_locale
-				// 6) t_printing_information-->t_printing_information_language
-				// 3) t_revenue-->t_revenue_vat, t_revenue_cashing
-				// 6) t_product-->t_product_category, t_product_language, t_order_line, t_product_sold
-				// 6) t_product_special_code-->t_product_special_code_language, t_order_line,
-				// 6) t_dinner_table-->t_table_credit, t_table_bill, t_table_vat, t_order_line, t_table_cashing, t_cashing_type
-				// 6) t_credit-->t_order_line
+				// 2) t_restaurant_vat
+				// 3) t_restaurant_prefix_table
+				// 4) t_user_authentication-->t_dinner_table, t_user_locale
+				// 5) t_printing_information-->t_printing_information_language
+				// 6) t_revenue-->t_revenue_vat, t_revenue_cashing
+				// 7) t_product-->t_product_category, t_product_language, t_order_line, t_product_sold
+				// 8) t_product_special_code-->t_product_special_code_language, t_order_line,
+				// 9) t_dinner_table-->t_table_credit, t_table_bill, t_table_vat, t_order_line, t_table_cashing, t_cashing_type
+				// 10) t_credit-->t_order_line
 				Object parentId = keys.get("id");
 				Map<String, Object> childrenKeys = new HashMap<String, Object>();
 				childrenKeys.put("restaurant.id", parentId);
@@ -525,7 +535,7 @@ public class DefaultRestaurantsDaoTest extends DefaultDaoServicesTestCase
 
 	private IMdoBean createNewBean(Date registrationDate, String reference, String name, String addressRoad, String addressZip, String addressCity, String phone, String vatRef,
 			String visaRef, String tripleDESKey, boolean vatByTakeaway, BigDecimal takeawayBasicReduction, BigDecimal takeawayMinAmountReduction, MdoTableAsEnum specificRound,
-			TableType defaultTableType, Set<RestaurantPrefixTable> prefixTableNames, Set<RestaurantValueAddedTax> vats) {
+			TableType defaultTableType, Set<RestaurantPrefixTable> prefixTableNames, Set<RestaurantValueAddedTax> vats, ValueAddedTax vat) {
 		Restaurant newBean = new Restaurant();
 		newBean.setRegistrationDate(registrationDate);
 		newBean.setReference(reference);
@@ -544,6 +554,7 @@ public class DefaultRestaurantsDaoTest extends DefaultDaoServicesTestCase
 		newBean.setDefaultTableType(defaultTableType);
 		newBean.setPrefixTableNames(prefixTableNames);
 		newBean.setVats(vats);
+		newBean.setVat(vat);
 		return newBean;
 	}
 

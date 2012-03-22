@@ -24,6 +24,7 @@ import fr.mch.mdo.restaurant.dto.beans.TableCreditDto;
 import fr.mch.mdo.restaurant.dto.beans.TableTypeDto;
 import fr.mch.mdo.restaurant.dto.beans.TableVatDto;
 import fr.mch.mdo.restaurant.dto.beans.UserAuthenticationDto;
+import fr.mch.mdo.restaurant.dto.beans.ValueAddedTaxDto;
 import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.services.business.managers.DefaultAdministrationManagerTest;
 import fr.mch.mdo.restaurant.services.business.managers.IAdministrationManager;
@@ -101,6 +102,9 @@ public class DefaultDinnerTablesManagerTest extends DefaultAdministrationManager
 		ProductSpecialCodeDto productSpecialCode = new ProductSpecialCodeDto();
 		productSpecialCode.setId(1L);
 		orderLine.setProductSpecialCode(productSpecialCode);
+		ValueAddedTaxDto vat = new ValueAddedTaxDto();
+		vat.setId(1L);
+		orderLine.setVat(vat);
 		dinnerTable.addOrderLine(orderLine);
 
 		return dinnerTable;
@@ -155,6 +159,9 @@ public class DefaultDinnerTablesManagerTest extends DefaultAdministrationManager
 		ProductSpecialCodeDto productSpecialCode = new ProductSpecialCodeDto();
 		productSpecialCode.setId(1L);
 		orderLine.setProductSpecialCode(productSpecialCode);
+		ValueAddedTaxDto vat = new ValueAddedTaxDto();
+		vat.setId(1L);
+		orderLine.setVat(vat);
 		dinnerTable.addOrderLine(orderLine);
 
 		list.add(dinnerTable);
@@ -209,6 +216,9 @@ public class DefaultDinnerTablesManagerTest extends DefaultAdministrationManager
 		ProductSpecialCodeDto productSpecialCode = new ProductSpecialCodeDto();
 		productSpecialCode.setId(1L);
 		orderLine.setProductSpecialCode(productSpecialCode);
+		ValueAddedTaxDto vat = new ValueAddedTaxDto();
+		vat.setId(1L);
+		orderLine.setVat(vat);
 		dinnerTable.addOrderLine(orderLine);
 
 		try {
@@ -339,4 +349,14 @@ public class DefaultDinnerTablesManagerTest extends DefaultAdministrationManager
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
+
+	public void testFindTableByNumber() {
+		try {
+			String number = "12D";
+			DinnerTableDto dinnerTable = (DinnerTableDto) ((IDinnerTablesManager) this.getInstance()).findTableByNumber(userContext, number);
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+
 }

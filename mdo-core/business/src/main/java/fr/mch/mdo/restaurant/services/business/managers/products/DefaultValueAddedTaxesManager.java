@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.mch.mdo.logs.ILogger;
+import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.products.IValueAddedTaxesDao;
 import fr.mch.mdo.restaurant.dao.products.hibernate.DefaultValueAddedTaxesDao;
@@ -97,6 +98,18 @@ public class DefaultValueAddedTaxesManager extends AbstractAdministrationManager
 			}
 		}
 
+		return result;
+	}
+	
+	@Override
+	public ValueAddedTaxDto findByCodeName(String codeName, MdoUserContext userContext) throws MdoBusinessException {
+		ValueAddedTaxDto result = null;
+		try {
+			result = (ValueAddedTaxDto) assembler.marshal((IMdoDaoBean) super.dao.findByUniqueKey(codeName), userContext);
+		} catch (MdoException e) {
+			logger.error("message.error.business.DefaultValueAddedTaxesManager.findByCodeName", new Object[]{codeName}, e);
+			throw new MdoBusinessException("message.error.business.DefaultValueAddedTaxesManager.findByCodeName", new Object[]{codeName}, e);
+		}
 		return result;
 	}
 }

@@ -9,6 +9,7 @@ import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.OrderLineDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductSpecialCodeDto;
+import fr.mch.mdo.restaurant.dto.beans.ValueAddedTaxDto;
 import fr.mch.mdo.restaurant.exception.MdoException;
 
 public enum ManagedProductSpecialCode {
@@ -30,6 +31,8 @@ public enum ManagedProductSpecialCode {
 			return code!=null && code.length() == 1;
 		}
 		public void fillOrderLine(MdoUserContext userContext, Product product, OrderLineDto orderLine) {
+			// For setting VAT
+			super.fillOrderLine(userContext, product, orderLine);
 			// Currently the dataCode is used for merging 2 rows
 			orderLine.setDataCode("");
 		}
@@ -63,6 +66,7 @@ public enum ManagedProductSpecialCode {
 	}
 
 	public void fillOrderLine(MdoUserContext userContext, Product product, OrderLineDto orderLine) {
+		ValueAddedTaxDto vat = new ValueAddedTaxDto();
 		if (product != null) {
 			ProductDto productDto = new ProductDto();
 			productDto.setId(product.getId());
@@ -71,7 +75,10 @@ public enum ManagedProductSpecialCode {
 			// Update unit price and label...
 			orderLine.setLabel(this.getLabel(product.getLabels(), userContext.getCurrentLocale().getId()));
 			orderLine.setUnitPrice(product.getPrice());
+			vat.setId(product.getVat().getId());
 		}
+		// Always set the vat even if the id is null
+		orderLine.setVat(vat);
 		orderLine.setDataCode(orderLine.getCode());
 	}
 

@@ -21,6 +21,7 @@
 		<many-to-one name="product" column="pdt_id" />
 		<many-to-one name="credit" column="cre_id" />
 		<many-to-one name="productPart" column="prp_id" />
+		<many-to-one name="vat" column="vat_id" />
 
 	</class>
 

@@ -107,6 +107,14 @@ INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_langua
 INSERT INTO t_table_type VALUES(1, 34, false);
 INSERT INTO t_table_type VALUES(2, 35, false);
 
+--COMMENT ON TABLE t_value_added_tax IS 'This table is used for product value added tax.';
+--COMMENT ON COLUMN t_value_added_tax.vat_id IS 'This is primary key of this table.';
+--COMMENT ON COLUMN t_value_added_tax.vat_code_enm_id IS 'This is the code of the value added tax. This is a unique field. It is a foreign that refers to the t_enum table for type VAT.';
+--COMMENT ON COLUMN t_value_added_tax.vat_rate IS 'This is rate of value added tax. This is a unique field.';
+--COMMENT ON COLUMN t_value_added_tax.vat_deleted IS 'This is used for logical deletion.';
+INSERT INTO t_value_added_tax VALUES(1, 32, 19.60, false);
+INSERT INTO t_value_added_tax VALUES(2, 33, 5.50, false);
+
 --COMMENT ON TABLE t_restaurant IS 'This table contains the restaurants informations.';
 --COMMENT ON COLUMN t_restaurant.res_id IS 'This is primary key of this table.';
 --COMMENT ON COLUMN t_restaurant.res_registration_date IS 'This is the restaurant creation date in the application.';
@@ -124,15 +132,16 @@ INSERT INTO t_table_type VALUES(2, 35, false);
 --COMMENT ON COLUMN t_restaurant.res_takeaway_min_amount_reduction IS 'This is the minimum amount value to apply a reduction for takeaway table.';
 --COMMENT ON COLUMN t_restaurant.res_specific_round IS 'This is the specific round to apply on all amounts calculations. It is a foreign that refers to the t_enum table for type SPECIFIC_ROUND_CALCULATION.';
 --COMMENT ON COLUMN t_restaurant.tbt_id IS 'This is the default table type. It is a foreign that refers to the t_table_type table. It is used to specify the dinner table type which can be EAT_IN, TAKEAWAY, ....';
+--COMMENT ON COLUMN t_restaurant.vat_id IS 'This is a foreign key that refers to t_value_added_tax. It is used to specify the default VAT custom order line when the former order line is not defined by a product in restaurant catalog.';
 --COMMENT ON COLUMN t_restaurant.res_deleted IS 'This is used for logical deletion.';
 INSERT INTO t_restaurant VALUES(1, '1970-08-15 15:08:19', '10203040506070', 
 'Kim-San', '11 allée Clémencet', '93340', 'Le Raincy', '01 43 02 50 90', 
 '1234567890', '0987654321', 'F5E4D3C2B1A0',
-true, 10, 15, 2, 1, false);
+true, 10, 15, 2, 1, 1, false);
 INSERT INTO t_restaurant VALUES(2, '1970-08-15 15:08:19', '10203040506070B0', 
 'Kim-San', '11 allée Clémencet', '93340', 'Le Raincy', '01 43 02 50 90', 
 '1234567890', '0987654321', 'F5E4D3C2B1A0',
-true, 10, 15, 2, 2, false);
+true, 10, 15, 2, 2, 2, false);
 
 --COMMENT ON TABLE t_restaurant_prefix_table IS 'This table is a association table. This table is used to store the list of restaurant table prefix names. These prefix names is used to know that a table is considered as a takeaway table.';
 --COMMENT ON COLUMN t_restaurant_prefix_table.rpt_id IS 'This is primary key of this table.';
@@ -141,14 +150,6 @@ true, 10, 15, 2, 2, false);
 --COMMENT ON COLUMN t_restaurant_prefix_table.rpt_prefix_enm_id IS 'This is a foreign key that refers to t_enum table for type PREFIX_TAKEAWAY_TABLE_NAME. This field and the other res_id and tbt_id fields consist of a unique field.';
 --COMMENT ON COLUMN t_restaurant_prefix_table.rpt_deleted IS 'This is used for logical deletion.';
 INSERT INTO t_restaurant_prefix_table VALUES(1, 1, 1, 1, false);
-
---COMMENT ON TABLE t_value_added_tax IS 'This table is used for product value added tax.';
---COMMENT ON COLUMN t_value_added_tax.vat_id IS 'This is primary key of this table.';
---COMMENT ON COLUMN t_value_added_tax.vat_code_enm_id IS 'This is the code of the value added tax. This is a unique field. It is a foreign that refers to the t_enum table for type VAT.';
---COMMENT ON COLUMN t_value_added_tax.vat_rate IS 'This is rate of value added tax. This is a unique field.';
---COMMENT ON COLUMN t_value_added_tax.vat_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_value_added_tax VALUES(1, 32, 19.60, false);
-INSERT INTO t_value_added_tax VALUES(2, 33, 5.50, false);
 
 --COMMENT ON TABLE t_restaurant_vat IS 'This table is used for restaurant value added tax. Each restaurant has a list of value added tax.';
 --COMMENT ON COLUMN t_restaurant_vat.rvt_id IS 'This is primary key of this table.';
@@ -300,13 +301,15 @@ INSERT INTO t_dinner_table VALUES(8, 2, '25', 1, null, 2, 3, 23, 0, 23, '1970-08
 --COMMENT ON COLUMN t_order_line.pdt_id IS 'This is a foreign key that refers to t_product. It is used to specify the product. If this field is null then the order line depends on the product special code psc_id which must not be null.';
 --COMMENT ON COLUMN t_order_line.cre_id IS 'This is a foreign key that refers to t_credit. It is used to specify the credit consumed. If this field is NOT null then the order line depends on the product special code psc_id which must not be null with code value equals to @.';
 --COMMENT ON COLUMN t_order_line.prp_id IS 'This is a foreign key that refers to t_product_part. It is used to specify the product part the order line belongs: ENTREE, PLAT or DESSERT for example.';
+--COMMENT ON COLUMN t_order_line.vat_id IS 'This is a foreign key that refers to t_value_added_tax. It is used to specify the Value Added Tax. Usually, the VAT of order line depends directly on the product. But in some case, the order line is not in the products catalog, so this order line is manually entered and the VAT is set by default but can be changed on demand. It is used to calculate the vat amount of this order line.';
 --COMMENT ON COLUMN t_order_line.orl_quantity IS 'This is the quantity of the product.';
 --COMMENT ON COLUMN t_order_line.orl_label IS 'This is the label of the product. If the psc_id is of type "/" then the label is the user entry description. If the psc_id is null then the label is the label of the product pdt_id depending on the user locale.';
 --COMMENT ON COLUMN t_order_line.orl_unit_price IS 'This is the unit price of the order line. Here, we do not take into account the quantity.';
 --COMMENT ON COLUMN t_order_line.orl_amount IS 'This is the amount of the order line. The value is equals to orl_quantity multiply by orl_unit_price.';
 --COMMENT ON COLUMN t_order_line.orl_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_order_line VALUES(1, 1, 1, 1, 1, 1, 2.5, 'Nems', 5.4, 13.5, false);
-INSERT INTO t_order_line VALUES(2, 1, 1, 1, 1, 1, 5, 'Nems', 5, 25, false);
+INSERT INTO t_order_line VALUES(1, 1, 1, 1, 1, 1, 1, 2.5, 'Nems', 5.4, 13.5, false);
+INSERT INTO t_order_line VALUES(2, 1, 1, 1, 1, 1, 1, 5, 'Nems', 5, 25, false);
+INSERT INTO t_order_line VALUES(3, 1, 1, null, null, null, 1, 4, 'Roule Ma Poule', 6.66, 26.64, false);
 
 --COMMENT ON TABLE t_table_credit IS 'This table is used for dinner table credits. This table is used for credits dinner tables association. For a given dinner table, we could have several credits but often just one. These credits must have the cre_closing_date value equals to null.';
 --COMMENT ON COLUMN t_table_credit.tcr_id IS 'This is primary key of this table.';

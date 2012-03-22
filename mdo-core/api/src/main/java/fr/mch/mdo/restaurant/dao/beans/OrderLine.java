@@ -74,6 +74,15 @@ public class OrderLine extends MdoDaoBean
      * The value is equals to orl_quantity multiply by orl_unit_price.
      */
     private BigDecimal amount;
+	/**
+	 * This is a foreign key that refers to t_value_added_tax. 
+	 * It is used to specify the Value Added Tax.
+	 * Usually, the VAT of order line depends directly on the product.
+	 * But in some case, the order line is not in the products catalog, 
+	 * so this order line is manually entered and the VAT is set by default but can be changed on demand.
+	 * It is used to calculate the vat amount of this order line. 
+	 */
+    private ValueAddedTax vat;
     
     /**
      * @return the dinnerTable
@@ -183,10 +192,22 @@ public class OrderLine extends MdoDaoBean
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
+    /**
+     * @return the vat
+     */
+    public ValueAddedTax getVat() {
+        return vat;
+    }
+    /**
+     * @param vat the vat to set
+     */
+    public void setVat(ValueAddedTax vat) {
+        this.vat = vat;
+    }
 
     @Override
     public String toString() {
-	return "OrderLine [amount=" + amount + ", credit=" + credit + ", label=" + label
+	return "OrderLine [vat=" + vat + ", amount=" + amount + ", credit=" + credit + ", label=" + label
 		+ ", product=" + product + ", productPart=" + productPart
 		+ ", productSpecialCode=" + productSpecialCode + ", quantity="
 		+ quantity + ", unitPrice=" + unitPrice + ", deleted="

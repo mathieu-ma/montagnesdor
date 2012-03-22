@@ -60,6 +60,7 @@ public final class TablesOrdersWebAction extends RestaurantWebAction
 //			throw new MdoDinnerTableAlreadyInUseException("fr.mch.mdo.restaurant.web.struts.actions.displayDinnerTable.in.use");
 		}
 		try {
+			// TODO Replace by displayDinnerTable
 			dtoBean = manager.findTableByNumber(userContext, tableNumber);
 			if (dtoBean != null) {
 				dtoBean.setCustomersNumber(customersNumber);
@@ -81,7 +82,7 @@ public final class TablesOrdersWebAction extends RestaurantWebAction
 
 		return result;
 	}
-
+	
 	public String autoCompleteTablesNames() throws Exception {
 		String forwardPage = "ajax-response-auto-complete-tables-names";
 

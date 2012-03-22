@@ -28,6 +28,7 @@
 
 		<many-to-one name="specificRound" column="res_specific_round" />
 		<many-to-one name="defaultTableType" column="tbt_id" />
+		<many-to-one name="vat" column="vat_id" />
 
 		<set name="prefixTableNames" cascade="all-delete-orphan" inverse="true" table="t_restaurant_prefix_table">
 			<key column="res_id" />
