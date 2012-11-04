@@ -37,6 +37,18 @@ import org.apache.log4j.RollingFileAppender;
  * In oder to used this class in Linux OS, we have to give permission for connected user by following these 2 steps:
  * 1) adduser $connectedUser uucp
  * 2) adduser $connectedUser dialout
+ *
+ * Warnings:
+ * I) On linux Ubuntu 2.6.38-11 and RXTX 2.2-pre2, 
+ * 		if we want to receive data from serial port terminal, 
+ * 		NEVER set the event serialPort.notifyOnOutputEmpty at true in method PrinterSimulator.openSerialPort. 
+ * II) In order to run this class, we have 2 choices depending on how you are going to run it:
+ * 		1) If you run it in command line then add the system property java.library.path and point to the right folder.
+ * 		2) If you run it in eclipse, 
+ * 			2.1) Open the "Package Explorer", 
+ * 			2.2) "Alt + Enter" on the rxtx jar file(in "Referenced Libraries"), 
+ * 			2.3) Enter into "Native Lirary" menu,
+ * 			2.4) Point to the right location path.
  * 
  * @author user
  * 
@@ -82,10 +94,10 @@ public class PrinterSimulator extends JFrame
 		}
 
 		try {
-			System.load("/home/mathieu/development/workspace/mdo-core/applet/serial-port-printer/src/main/resources/rxtx/lib64/linux/librxtxSerial.so");
-			System.load("/home/mathieu/development/workspace/mdo-core/applet/serial-port-printer/src/main/resources/rxtx/lib64/linux/librxtxParallel.so");
+//			System.load("/home/mathieu/development/workspace/mdo-core/applet/serial-port-printer/src/main/resources/rxtx/lib64/linux/librxtxSerial.so");
+//			System.load("/home/mathieu/development/workspace/mdo-core/applet/serial-port-printer/src/main/resources/rxtx/lib64/linux/librxtxParallel.so");
 			System.setProperty("java.library.path", "/home/mathieu/development/workspace/mdo-core/applet/serial-port-printer/src/main/resources/rxtx/lib64/linux/");
-			//System.loadLibrary("rxtxSerial");
+//			System.loadLibrary("rxtxSerial");
 			CommDriver driver = (CommDriver) Class.forName(driverName).newInstance();
 			driver.initialize();
 		} catch (Exception e) {
@@ -139,7 +151,6 @@ public class PrinterSimulator extends JFrame
 					//logger.info("Impossible de recuperer de l'identifiant du port série de communication après " + attempt + " tentative(s)");
 					logger.info("Could not find any serial port communication after " + attempt + " try(ies)");
 				}
-
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -230,12 +241,15 @@ public class PrinterSimulator extends JFrame
 					serialPort = (SerialPort) portId.open("montagnesdor", Integer.parseInt(resource.getString("pause")) * 2);
 					serialPort.setSerialPortParams(Integer.parseInt(resource.getString("serialportBauds")), Integer.parseInt(resource.getString("serialportBits")),
 							Integer.parseInt(resource.getString("serialportStopBits")), Integer.parseInt(resource.getString("serialportParity")));
+					
 					serialPort.addEventListener(new PrinterSerialPortEventListener());
 					serialPort.setOutputBufferSize(20);
 					// Set notifyOnDataAvailable to true to allow event driven
 					// input.
 					serialPort.notifyOnDataAvailable(true);
-					serialPort.notifyOnOutputEmpty(true);
+					// Don't use this event serialPort.notifyOnOutputEmpty if you want to receive data from serial port terminal 
+					// only on linux Ubuntu 2.6.38-11 and RXTX 2.2-pre2
+					//serialPort.notifyOnOutputEmpty(true);
 					serialPort.notifyOnDSR(true);
 					serialPort.notifyOnBreakInterrupt(true);
 					serialPort.notifyOnCarrierDetect(true);
@@ -287,6 +301,16 @@ public class PrinterSimulator extends JFrame
 	}
 
 
+	/**
+	 * In order to run this class, we have 2 choices depending on how you are going to run it:
+	 * 1) If you run it in command line then add the system property java.library.path and point to the right folder.
+	 * 2) If you run it in eclipse, 
+	 * 		2.1) Open the "Package Explorer", 
+	 * 		2.2) "Alt + Enter" on the rxtx jar file(in "Referenced Libraries"), 
+	 * 		2.3) Enter into "Native Lirary" menu,
+	 * 		2.4) Point to the right location path.
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		// This is used to prevent null pointer exception for logging, this maybe not need in next rxtx release.
 		System.setProperty("gnu.io.log.mode", "PRINT_MODE");
@@ -370,24 +394,24 @@ public class PrinterSimulator extends JFrame
 				logger.info("removeButton");
 			}
 			if (e.getActionCommand().equals("DATA")) {
-				logger.info("Données à envoyer");
+				String donnees = dataToSendArea.getText().trim();
+				logger.info("Données à envoyer : " + donnees);
 				logger.info("Taille du buffer " + serialPort.getOutputBufferSize());
 				logger.info("Etat Modem " + serialPort.isDSR());
 				logger.info("Etat Ordinateur " + serialPort.isDTR());
-				String donnees = dataToSendArea.getText().trim();
 				byte[] dataToBeSent = donnees.getBytes();
 				if (!donnees.equals("")) {
 					try {
-						if (serialPort.isDSR()) {
+//						if (serialPort.isDSR()) {
 							logger.info("Données envoyées : " + donnees);
 							printDataInHexa(dataToBeSent);
 							OutputStream os = serialPort.getOutputStream();
 							os.write(dataToBeSent);
 							os.flush();
 							os.close();
-						} else {
-							logger.info("DTE occupée");
-						}
+//						} else {
+//							logger.info("DTE occupée");
+//						}
 					} catch (Exception ex) {
 						logger.info("Erreur d'envoie de Données", ex);
 					}
@@ -455,25 +479,29 @@ public class PrinterSimulator extends JFrame
 
 			case SerialPortEvent.DATA_AVAILABLE:
 				logger.info("serialPort.notifyOnDataAvailable(true) SerialPortEvent.DATA_AVAILABLE : " + SerialPortEvent.DATA_AVAILABLE);
-
-				serialPort.setDTR(false);
-				logger.info("SerialPortEvent.DATA_AVAILABLE : " + SerialPortEvent.DATA_AVAILABLE);
-				try {
-					BufferedInputStream bis = new BufferedInputStream(serialPort.getInputStream());
-					byte[] data = new byte[bis.available()];
-					logger.info("Taille des Données reçues " + bis.available());
-					bis.read(data);
-
-					logger.info("Données réelles reçues: " + new String(data));
-
-					dataRecievedArea.append(printDataInHexa(data));
-
-				} catch (Exception e) {
-				}
-				serialPort.setDTR(true);
+				readSerial();
 				break;
 
 			}
+		}
+	}
+	
+	private void readSerial() {
+		
+		try {
+			if (serialPort.getInputStream().available() > 0) {
+				BufferedInputStream bis = new BufferedInputStream(serialPort.getInputStream());
+				serialPort.setDTR(false);
+				byte[] data = new byte[bis.available()];
+				logger.info("Taille des Données reçues " + bis.available());
+				bis.read(data);
+	
+				logger.info("Données réelles reçues: " + new String(data));
+	
+				dataRecievedArea.append(printDataInHexa(data));
+				serialPort.setDTR(true);
+			}
+		} catch (Exception e) {
 		}
 	}
 }

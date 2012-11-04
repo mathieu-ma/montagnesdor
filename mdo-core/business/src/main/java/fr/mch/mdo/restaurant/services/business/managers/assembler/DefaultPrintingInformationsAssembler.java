@@ -8,7 +8,6 @@ import fr.mch.mdo.restaurant.dao.beans.MdoTableAsEnum;
 import fr.mch.mdo.restaurant.dao.beans.PrintingInformation;
 import fr.mch.mdo.restaurant.dao.beans.Restaurant;
 import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.PrintingInformationDto;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
@@ -56,20 +55,20 @@ public class DefaultPrintingInformationsAssembler extends AbstractAssembler impl
 	}
 
 	@Override
-	public IMdoDtoBean marshal(IMdoDaoBean daoBean, MdoUserContext userContext) {
+	public IMdoDtoBean marshal(IMdoDaoBean daoBean) {
 		PrintingInformationDto dto = null;
 		if (daoBean != null) {
 			PrintingInformation bean = (PrintingInformation) daoBean;
 			dto = new PrintingInformationDto();
 			dto.setId(bean.getId());
 			dto.setOrder(bean.getOrder());
-			MdoTableAsEnumDto alignment = (MdoTableAsEnumDto) mdoTableAsEnumsAssembler.marshal(bean.getAlignment(), userContext);
+			MdoTableAsEnumDto alignment = (MdoTableAsEnumDto) mdoTableAsEnumsAssembler.marshal(bean.getAlignment());
 			dto.setAlignment(alignment);
-			MdoTableAsEnumDto part = (MdoTableAsEnumDto) mdoTableAsEnumsAssembler.marshal(bean.getPart(), userContext);
+			MdoTableAsEnumDto part = (MdoTableAsEnumDto) mdoTableAsEnumsAssembler.marshal(bean.getPart());
 			dto.setPart(part);
-			MdoTableAsEnumDto size = (MdoTableAsEnumDto) mdoTableAsEnumsAssembler.marshal(bean.getSize(), userContext);
+			MdoTableAsEnumDto size = (MdoTableAsEnumDto) mdoTableAsEnumsAssembler.marshal(bean.getSize());
 			dto.setSize(size);
-			RestaurantDto restaurant = (RestaurantDto) restaurantsAssembler.marshal(bean.getRestaurant(), userContext);
+			RestaurantDto restaurant = (RestaurantDto) restaurantsAssembler.marshal(bean.getRestaurant());
 			dto.setRestaurant(restaurant);
 			dto.setLabels(super.getLabels(bean.getLabels()));
 		}

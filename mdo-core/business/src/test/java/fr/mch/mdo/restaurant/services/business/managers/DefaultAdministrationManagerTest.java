@@ -43,7 +43,7 @@ public abstract class DefaultAdministrationManagerTest extends MdoBusinessBasicT
 			userContext.setCurrentLocale(currentLocale);
 			UserAuthenticationDto user = null;
 			try {
-				user = (UserAuthenticationDto) DefaultUserAuthenticationsManager.getInstance().findByPrimaryKey(1L, userContext, false);
+				user = (UserAuthenticationDto) DefaultUserAuthenticationsManager.getInstance().findByPrimaryKey(1L, false);
 			} catch (MdoException e) {
 				fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 			}
@@ -87,7 +87,7 @@ public abstract class DefaultAdministrationManagerTest extends MdoBusinessBasicT
 			assertNotNull("dto Bean must not be null", dtoBean);
 			assertNull("dto Bean id is null", dtoBean.getId());
 			// Be careful to not insert data already exist in database
-			insertedBeanToBeDeleted = this.getInstance().insert(dtoBean, userContext);
+			insertedBeanToBeDeleted = this.getInstance().insert(dtoBean);
 			assertNotNull("Bean id is not null now", insertedBeanToBeDeleted.getId());
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getLocalizedMessage());
@@ -101,7 +101,7 @@ public abstract class DefaultAdministrationManagerTest extends MdoBusinessBasicT
 			IMdoDtoBean bean = createNewBean();
 			assertNull("Bean id is null", bean.getId());
 			bean.setId(primaryKey);
-			bean = getInstance().load(bean, userContext);
+			bean = getInstance().load(bean);
 			assertNotNull("bean must not be null", bean);
 			assertNotNull("Bean id is not null", bean.getId());
 		} catch (Exception e) {
@@ -111,7 +111,7 @@ public abstract class DefaultAdministrationManagerTest extends MdoBusinessBasicT
 
 	public void doFindByPrimaryKey(boolean... lazy) {
 		try {
-			IMdoDtoBean bean = getInstance().findByPrimaryKey(primaryKey, userContext);
+			IMdoDtoBean bean = getInstance().findByPrimaryKey(primaryKey);
 			assertNotNull("Bean is not null", bean);
 			assertNotNull("Bean id is not null", bean.getId());
 			assertEquals("Bean id is equals to the searched id", primaryKey, bean.getId());
@@ -132,9 +132,9 @@ public abstract class DefaultAdministrationManagerTest extends MdoBusinessBasicT
 				for (IMdoBean bean : beans) {
 					assertTrue("The bean must be an instance of IMdoDaoBean", bean instanceof IMdoDtoBean);
 					// Create
-					insertedBeans.add(getInstance().insert((IMdoDtoBean) bean, userContext));
+					insertedBeans.add(getInstance().insert((IMdoDtoBean) bean));
 				}
-				List<IMdoDtoBean> list = getInstance().findAll(userContext);
+				List<IMdoDtoBean> list = getInstance().findAll();
 				assertNotNull("list must not be null", list);
 				assertFalse("list must not be empty", list.isEmpty());
 				assertTrue("The findAll list size must be greateror equals than beans list size", list.size() >= beans.size());
@@ -150,7 +150,7 @@ public abstract class DefaultAdministrationManagerTest extends MdoBusinessBasicT
 					}
 					assertTrue("bean must be in the findAllList", beanInFindAllList);
 					// Remove after created
-					getInstance().delete((IMdoDtoBean) bean, userContext);
+					getInstance().delete((IMdoDtoBean) bean);
 				}
 			}
 		} catch (Exception e) {
@@ -163,8 +163,8 @@ public abstract class DefaultAdministrationManagerTest extends MdoBusinessBasicT
 			// Create bean to be deleted
 			assertNotNull("Inserted bean must not be null", insertedBeanToBeDeleted);
 			// Delete the created bean
-			getInstance().delete(insertedBeanToBeDeleted, userContext);
-			IMdoBean deletedBean = getInstance().findByPrimaryKey(insertedBeanToBeDeleted.getId(), userContext);
+			getInstance().delete(insertedBeanToBeDeleted);
+			IMdoBean deletedBean = getInstance().findByPrimaryKey(insertedBeanToBeDeleted.getId());
 			assertNull("deletedBean must be null", deletedBean);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getLocalizedMessage());

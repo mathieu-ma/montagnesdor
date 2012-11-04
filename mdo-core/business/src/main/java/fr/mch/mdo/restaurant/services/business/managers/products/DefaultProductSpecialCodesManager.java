@@ -11,10 +11,10 @@ import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode;
 import fr.mch.mdo.restaurant.dao.products.IProductSpecialCodesDao;
 import fr.mch.mdo.restaurant.dao.products.hibernate.DefaultProductSpecialCodesDao;
 import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
+import fr.mch.mdo.restaurant.dto.beans.LocaleDto;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.ProductSpecialCodeDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductSpecialCodesManagerViewBean;
-import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
 import fr.mch.mdo.restaurant.exception.MdoBusinessException;
 import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.services.business.managers.AbstractAdministrationManagerLabelable;
@@ -24,7 +24,6 @@ import fr.mch.mdo.restaurant.services.business.managers.locales.DefaultLocalesMa
 import fr.mch.mdo.restaurant.services.business.managers.locales.ILocalesManager;
 import fr.mch.mdo.restaurant.services.business.managers.restaurants.DefaultRestaurantsManager;
 import fr.mch.mdo.restaurant.services.business.managers.restaurants.IRestaurantsManager;
-import fr.mch.mdo.restaurant.services.business.managers.tables.ManagedProductSpecialCode;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 import fr.mch.mdo.utils.IManagerAssembler;
 
@@ -134,14 +133,15 @@ public class DefaultProductSpecialCodesManager extends AbstractAdministrationMan
 //	}
 	
 	@Override
-	public void processList(IAdministrationManagerViewBean viewBean, MdoUserContext userContext, boolean... lazy) throws MdoBusinessException {
-		super.processList(viewBean, userContext, lazy);
+	public void processList(IAdministrationManagerViewBean viewBean, LocaleDto locale, boolean... lazy) throws MdoBusinessException {
+		super.processList(viewBean, lazy);
 		ProductSpecialCodesManagerViewBean productSpecialCodesManagerViewBean = (ProductSpecialCodesManagerViewBean) viewBean;
 		try {
-			productSpecialCodesManagerViewBean.setRestaurants(this.restaurantsManager.findAll(userContext, lazy));
-			productSpecialCodesManagerViewBean.setLabels(super.getLabels(userContext.getCurrentLocale()));
-			productSpecialCodesManagerViewBean.setLanguages(this.localesManager.getLanguages(userContext.getCurrentLocale().getLanguageCode()));
-			productSpecialCodesManagerViewBean.setCodes(this.getRemainingList(mdoTableAsEnumsManager.getProductSpecialCodes(userContext), userContext));
+			productSpecialCodesManagerViewBean.setRestaurants(this.restaurantsManager.findAll(lazy));
+			productSpecialCodesManagerViewBean.setLabels(super.getLabels(locale));
+			productSpecialCodesManagerViewBean.setLanguages(this.localesManager.getLanguages(locale.getLanguageCode()));
+			productSpecialCodesManagerViewBean.setCodes(this.getRemainingList(mdoTableAsEnumsManager.getProductSpecialCodes()));
+
 		} catch (Exception e) {
 			logger.error("message.error.administration.business.find.all", e);
 			throw new MdoBusinessException("message.error.administration.business.find.all", e);
@@ -154,11 +154,11 @@ public class DefaultProductSpecialCodesManager extends AbstractAdministrationMan
 	 * @param userContext user context.
 	 * @return a restricted list.
 	 */
-	private List<IMdoDtoBean> getRemainingList(List<IMdoDtoBean> listAll, MdoUserContext userContext) {
+	private List<IMdoDtoBean> getRemainingList(List<IMdoDtoBean> listAll) {
 		List<IMdoDtoBean> result = new ArrayList<IMdoDtoBean>(listAll);
 		List<IMdoDtoBean> excludedList = new ArrayList<IMdoDtoBean>();
 		try {
-			excludedList = super.findAll(userContext);
+			excludedList = super.findAll();
 		} catch (MdoBusinessException e) {
 			logger.warn("message.error.administration.business.find.all", e);
 		}
@@ -181,7 +181,7 @@ public class DefaultProductSpecialCodesManager extends AbstractAdministrationMan
 		try {
 			List<IMdoBean> list = ((IProductSpecialCodesDao) dao).findAllByRestaurant(restaurantId);
 			if (list != null) {
-				result = assembler.marshal(list, userContext);
+				result = assembler.marshal(list);
 			}
 		} catch (MdoException e) {
 			logger.error("message.error.administration.business.product.special.codes.by.restaurant", new Object[] {restaurantId}, e);

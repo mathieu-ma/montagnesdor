@@ -43,7 +43,22 @@ public interface IDaoServices extends IDaoBase
      */
     void updateFieldsByKeys(Class<? extends IMdoBean> clazz, Map<String, Object> fields, Map<String, Object> keys) throws MdoException;
 
+    /**
+     * 
+     * @param bean
+     * @param isLazy
+     * @return
+     * @throws MdoException
+     */
     IMdoBean delete(IMdoBean bean, boolean... isLazy) throws MdoException;
+
+    /**
+     * 
+     * @param id
+     * @throws MdoException
+     */
+    void delete(Long id) throws MdoException;
+
     /**
      * Delete current bean by keys "keys".
      * This method allows to delete in mass or only one row depending on the values in the keys map.

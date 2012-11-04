@@ -744,4 +744,6 @@ div.colorpicker {
 /*	END: Color picker   	*/
 /****************************/
 
- 	
+.readonly {
+	color: #808080;
+}

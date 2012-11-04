@@ -10,7 +10,6 @@
  */
 package fr.mch.mdo.restaurant.dto.beans;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -77,15 +76,6 @@ public class RestaurantDto extends MdoDtoBean
      */
     private boolean vatByTakeaway = false;
     /**
-     * This is the restaurant reduction for takeaway table we have to apply.
-     * This field depends on the field res_takeaway_min_amount_reduction.
-     */
-    private BigDecimal takeawayBasicReduction = new BigDecimal(10);
-    /**
-     * This is the minimum amount value to apply a reduction for take-away table.
-     */
-    private BigDecimal takeawayMinAmountReduction = new BigDecimal(15);
-    /**
      * This is the specific round to apply on all amounts calculations.
      * It is a foreign that refers to the t_enum table for type SPECIFIC_ROUND_CALCULATION.
      * <!--1 = HALF ROUND-->
@@ -108,10 +98,18 @@ public class RestaurantDto extends MdoDtoBean
      * List of vats for this restaurant
      */
     private Set<RestaurantValueAddedTaxDto> vats = new HashSet<RestaurantValueAddedTaxDto>();
-    /**
+	/**
+	 * List of VAT table types for take-away table(for instance).
+	 */
+	private Set<RestaurantVatTableTypeDto> vatTableTypes = new HashSet<RestaurantVatTableTypeDto>();
+   /**
      * List of prefix table names for this restaurant
      */
     private Set<RestaurantPrefixTableDto> prefixTableNames = new HashSet<RestaurantPrefixTableDto>();
+    /**
+     * List of reduction tables for this restaurant
+     */
+    private Set<RestaurantReductionTableDto> reductionTables = new HashSet<RestaurantReductionTableDto>();
     /**
      * Array of prefix take-away names
      */
@@ -254,30 +252,6 @@ public class RestaurantDto extends MdoDtoBean
         this.vatByTakeaway = vatByTakeaway;
     }
     /**
-     * @return the takeawayBasicReduction
-     */
-    public BigDecimal getTakeawayBasicReduction() {
-        return takeawayBasicReduction;
-    }
-    /**
-     * @param takeawayBasicReduction the takeawayBasicReduction to set
-     */
-    public void setTakeawayBasicReduction(BigDecimal takeawayBasicReduction) {
-        this.takeawayBasicReduction = takeawayBasicReduction;
-    }
-    /**
-     * @return the takeawayMinAmountReduction
-     */
-    public BigDecimal getTakeawayMinAmountReduction() {
-        return takeawayMinAmountReduction;
-    }
-    /**
-     * @param takeawayMinAmountReduction the takeawayMinAmountReduction to set
-     */
-    public void setTakeawayMinAmountReduction(BigDecimal takeawayMinAmountReduction) {
-        this.takeawayMinAmountReduction = takeawayMinAmountReduction;
-    }
-    /**
      * @return the specificRound
      */
     public MdoTableAsEnumDto getSpecificRound() {
@@ -327,6 +301,18 @@ public class RestaurantDto extends MdoDtoBean
     }
 
     /**
+	 * @return the vatTableTypes
+	 */
+	public Set<RestaurantVatTableTypeDto> getVatTableTypes() {
+		return vatTableTypes;
+	}
+	/**
+	 * @param vatTableTypes the vatTableTypes to set
+	 */
+	public void setVatTableTypes(Set<RestaurantVatTableTypeDto> vatTableTypes) {
+		this.vatTableTypes = vatTableTypes;
+	}
+	/**
 	 * @param prefixTableNames the prefixTableNames to set
 	 */
 	public void setPrefixTableNames(Set<RestaurantPrefixTableDto> prefixTableNames) {
@@ -339,6 +325,18 @@ public class RestaurantDto extends MdoDtoBean
 		return prefixTableNames;
 	}
 
+	/**
+	 * @return the reductionTables
+	 */
+	public Set<RestaurantReductionTableDto> getReductionTables() {
+		return reductionTables;
+	}
+	/**
+	 * @param reductionTables the reductionTables to set
+	 */
+	public void setReductionTables(Set<RestaurantReductionTableDto> reductionTables) {
+		this.reductionTables = reductionTables;
+	}
 	/**
 	 * @param prefixTakeawayNames the prefixTakeawayNames to set
 	 */
@@ -371,11 +369,8 @@ public class RestaurantDto extends MdoDtoBean
 				+ ", addressRoad=" + addressRoad + ", addressZip=" + addressZip
 				+ ", addressCity=" + addressCity + ", phone=" + phone
 				+ ", vatRef=" + vatRef + ", visaRef=" + visaRef
-				+ ", tripleDESKey=" + tripleDESKey + ", vatByTakeaway="
-				+ vatByTakeaway + ", takeawayBasicReduction="
-				+ takeawayBasicReduction + ", takeawayMinAmountReduction="
-				+ takeawayMinAmountReduction + ", specificRound="
-				+ specificRound + ", defaultTableType=" + defaultTableType
+				+ ", tripleDESKey=" + tripleDESKey + ", vatByTakeaway=" + vatByTakeaway
+				+ ", specificRound=" + specificRound + ", defaultTableType=" + defaultTableType
 				+ ", vat=" + vat + ", id=" + id + "]";
 	}
 }

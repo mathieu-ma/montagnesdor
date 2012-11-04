@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="fr.mch.mdo.restaurant.dao.beans.RestaurantReductionTable" table="t_restaurant_reduction_table">
+		<id name="id" column="rrt_id" type="long">
+			<generator class="increment" />
+		</id>
+		<property name="minAmount" column="rrt_min_amount" />
+		<property name="value" column="rrt_value" />
+		<property name="deleted" column="rrt_deleted" />
+				
+		<many-to-one name="restaurant" column="res_id" not-null="true" />
+		<many-to-one name="type" column="tbt_id" />
+
+	</class>
+
+</hibernate-mapping>

@@ -61,8 +61,7 @@ public class DefaultValueAddedTaxesManagerTest extends DefaultAdministrationMana
 		try {
 			// Do not use code.setId because the find list test uses compareTo
 			// of ValueAddedTax
-			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsAssembler.getInstance().marshal((IMdoDaoBean) DaoServicesFactory.getMdoTableAsEnumsDao().findByPrimaryKey(2L),
-					userContext);
+			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsAssembler.getInstance().marshal((IMdoDaoBean) DaoServicesFactory.getMdoTableAsEnumsDao().findByPrimaryKey(2L));
 		} catch (MdoException e) {
 			fail("Could not found the vat code.");
 		}
@@ -73,8 +72,7 @@ public class DefaultValueAddedTaxesManagerTest extends DefaultAdministrationMana
 		try {
 			// Do not use code.setId because the find list test uses compareTo
 			// of ValueAddedTax
-			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsAssembler.getInstance().marshal((IMdoDaoBean) DaoServicesFactory.getMdoTableAsEnumsDao().findByPrimaryKey(3L),
-					userContext);
+			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsAssembler.getInstance().marshal((IMdoDaoBean) DaoServicesFactory.getMdoTableAsEnumsDao().findByPrimaryKey(3L));
 		} catch (MdoException e) {
 			fail("Could not found the vat code.");
 		}
@@ -91,7 +89,7 @@ public class DefaultValueAddedTaxesManagerTest extends DefaultAdministrationMana
 		BigDecimal rateToBeUpdated = basicTestRate.add(new BigDecimal(0.4f));
 		try {
 			// Create new bean to be updated
-			IMdoBean beanToBeUpdated = this.getInstance().insert(createNewBean(codeToBeUpdated, rateToBeUpdated), userContext);
+			IMdoBean beanToBeUpdated = this.getInstance().insert(createNewBean(codeToBeUpdated, rateToBeUpdated));
 			assertTrue("IMdoBean must be instance of " + ValueAddedTaxDto.class, beanToBeUpdated instanceof ValueAddedTaxDto);
 			ValueAddedTaxDto castedBean = (ValueAddedTaxDto) beanToBeUpdated;
 			assertEquals("ValueAddedTaxDto code must be equals to unique key", codeToBeUpdated, castedBean.getCode());
@@ -101,11 +99,11 @@ public class DefaultValueAddedTaxesManagerTest extends DefaultAdministrationMana
 			// Use the existing data in database
 			codeToBeUpdated.setId(5L);
 			castedBean.setRate(basicTestRate.add(new BigDecimal(0.5f)));
-			this.getInstance().update(castedBean, userContext);
+			this.getInstance().update(castedBean);
 			// Reload the modified bean
 			ValueAddedTaxDto updatedBean = new ValueAddedTaxDto();
 			updatedBean.setId(castedBean.getId());
-			updatedBean = (ValueAddedTaxDto) this.getInstance().load(updatedBean, userContext);
+			updatedBean = (ValueAddedTaxDto) this.getInstance().load(updatedBean);
 			assertEquals("ValueAddedTaxDto code must be equals to unique key", castedBean.getCode().getId(), updatedBean.getCode().getId());
 			assertEquals("ValueAddedTaxDto rate must be equals", super.decimalFormat.format(castedBean.getRate()), super.decimalFormat.format(updatedBean.getRate()));
 		} catch (Exception e) {
@@ -117,7 +115,7 @@ public class DefaultValueAddedTaxesManagerTest extends DefaultAdministrationMana
 	public void doProcessList() {
 		ValueAddedTaxesManagerViewBean viewBean = new ValueAddedTaxesManagerViewBean();
 		try {
-			this.getInstance().processList(viewBean, DefaultAdministrationManagerTest.userContext);
+			this.getInstance().processList(viewBean);
 			assertNotNull("Main list not be null", viewBean.getList());
 			assertFalse("Main list not be empty", viewBean.getList().isEmpty());
 			assertNotNull("Code list not be null", viewBean.getCodes());
@@ -145,18 +143,18 @@ public class DefaultValueAddedTaxesManagerTest extends DefaultAdministrationMana
 	public void testFindByCodeName() {
 		String codeName = null;
 		try {
-			((IValueAddedTaxesManager) this.getInstance()).findByCodeName(codeName, DefaultAdministrationManagerTest.userContext);
+			((IValueAddedTaxesManager) this.getInstance()).findByCodeName(codeName);
 			fail(DEFAULT_FAILED_MESSAGE);
 		} catch (MdoException e) {
 			assertNotNull("Exception because codeName null", e);
 		}
 		try {
 			codeName = "";
-			ValueAddedTaxDto vat = ((IValueAddedTaxesManager) this.getInstance()).findByCodeName(codeName, DefaultAdministrationManagerTest.userContext);
+			ValueAddedTaxDto vat = ((IValueAddedTaxesManager) this.getInstance()).findByCodeName(codeName);
 			assertNull("ValueAddedTaxDto must be null", vat);
 
 			codeName = "ALCOHOL";
-			vat = ((IValueAddedTaxesManager) this.getInstance()).findByCodeName(codeName, DefaultAdministrationManagerTest.userContext);
+			vat = ((IValueAddedTaxesManager) this.getInstance()).findByCodeName(codeName);
 			assertNotNull("TableTypeDto must NOT be null", vat);
 			assertEquals("Check TableTypeDto code name", codeName, vat.getCode().getName());
 		} catch (MdoException e) {

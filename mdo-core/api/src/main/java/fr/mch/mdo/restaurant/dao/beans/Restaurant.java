@@ -10,7 +10,6 @@
  */
 package fr.mch.mdo.restaurant.dao.beans;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -75,20 +74,16 @@ public class Restaurant extends MdoDaoBean {
 	private String tripleDESKey;
 	/**
 	 * This is used to know if we have to apply the V.A.T(Value Added Taxes)
-	 * when it is a takeaway table. The default value is true. Permet de savoir
-	 * comment stocker les montants dans la table t_vat_table
+	 * when it is a takeaway table. The default value is true.
+	 * 
+	 * Permet de savoir comment stocker les montants dans la table t_vat_table.
+	 * Avant, pour une table à emporter, le montant de la TVA était appliqué sur le montant global des produits consommés de la table.  
+	 * Actuelllement, quelque soit la table, le montant de la TVA dépend de chaque produit consommé de la table.
+	 * 
+	 * TODO: Maybe create new table t_restaurant_vat_table. The new table is a associated table with vat, restaurant, and table type.
+	 * And we will have private Set<RestaurantVatTable> vatTables;
 	 */
 	private boolean vatByTakeaway = false;
-	/**
-	 * This is the restaurant reduction for takeaway table we have to apply.
-	 * This field depends on the field res_takeaway_min_amount_reduction.
-	 */
-	private BigDecimal takeawayBasicReduction = new BigDecimal(10);
-	/**
-	 * This is the minimum amount value to apply a reduction for take-away
-	 * table.
-	 */
-	private BigDecimal takeawayMinAmountReduction = new BigDecimal(15);
 	/**
 	 * This is the specific round to apply on all amounts calculations. It is a
 	 * foreign that refers to the t_enum table for type
@@ -108,14 +103,25 @@ public class Restaurant extends MdoDaoBean {
     private ValueAddedTax vat;
 	
 	/**
-	 * List of prefixes table name for take-away table
+	 * List of prefixes table names for take-away table(for instance).
 	 */
 	private Set<RestaurantPrefixTable> prefixTableNames;
+
+	/**
+	 * List of reduction tables. For example, a take-away table may have a reduction depending on a minimum amount.
+	 */
+	private Set<RestaurantReductionTable> reductionTables;
+
 	/**
 	 * List of vats for this restaurant
 	 */
 	private Set<RestaurantValueAddedTax> vats;
 
+	/**
+	 * List of VAT table types for take-away table(for instance).
+	 */
+	private Set<RestaurantVatTableType> vatTableTypes;
+	
     /**
      * Map of ProductSpecialCode with key == short code and value == ProductSpecialCode
      */
@@ -179,36 +185,6 @@ public class Restaurant extends MdoDaoBean {
 	 */
 	public void setPhone(String phone) {
 		this.phone = phone;
-	}
-
-	/**
-	 * @return Renvoie takeawayBasicReduction.
-	 */
-	public BigDecimal getTakeawayBasicReduction() {
-		return takeawayBasicReduction;
-	}
-
-	/**
-	 * @param takeawayBasicReduction
-	 *            takeawayBasicReduction à définir.
-	 */
-	public void setTakeawayBasicReduction(BigDecimal takeawayBasicReduction) {
-		this.takeawayBasicReduction = takeawayBasicReduction;
-	}
-
-	/**
-	 * @return Renvoie takeawayMinAmountReduction.
-	 */
-	public BigDecimal getTakeawayMinAmountReduction() {
-		return takeawayMinAmountReduction;
-	}
-
-	/**
-	 * @param takeawayMinAmountReduction
-	 *            takeawayMinAmountReduction à définir.
-	 */
-	public void setTakeawayMinAmountReduction(BigDecimal takeawayMinAmountReduction) {
-		this.takeawayMinAmountReduction = takeawayMinAmountReduction;
 	}
 
 	/**
@@ -349,6 +325,36 @@ public class Restaurant extends MdoDaoBean {
 	}
 
 	/**
+	 * @return the reductionTables
+	 */
+	public Set<RestaurantReductionTable> getReductionTables() {
+		return reductionTables;
+	}
+
+	/**
+	 * @param reductionTables the reductionTables to set
+	 */
+	public void setReductionTables(Set<RestaurantReductionTable> reductionTables) {
+		this.reductionTables = reductionTables;
+	}
+
+	/**
+	 * Add RestaurantValueAddedTax to vats
+	 * 
+	 * @param restaurantReductionTable
+	 *            the restaurant Reduction Table
+	 */
+	public void addReductionTable(RestaurantReductionTable restaurantReductionTable) {
+		if (reductionTables == null) {
+			reductionTables = new HashSet<RestaurantReductionTable>();
+		}
+		if (restaurantReductionTable != null) {
+			restaurantReductionTable.setRestaurant(this);
+		}
+		reductionTables.add(restaurantReductionTable);
+	}
+
+	/**
 	 * @param vats
 	 *            the vats to set
 	 */
@@ -364,10 +370,40 @@ public class Restaurant extends MdoDaoBean {
 	}
 
 	/**
+	 * @return the vatTableTypes
+	 */
+	public Set<RestaurantVatTableType> getVatTableTypes() {
+		return vatTableTypes;
+	}
+
+	/**
+	 * @param vatTableTypes the vatTableTypes to set
+	 */
+	public void setVatTableTypes(Set<RestaurantVatTableType> vatTableTypes) {
+		this.vatTableTypes = vatTableTypes;
+	}
+
+	/**
+	 * Add RestaurantVatTableType to vatTableTypes
+	 * 
+	 * @param vatTableType
+	 *            the VAT table type
+	 */
+	public void addVatTableType(RestaurantVatTableType vatTableType) {
+		if (vatTableTypes == null) {
+			vatTableTypes = new HashSet<RestaurantVatTableType>();
+		}
+		if (vatTableType != null) {
+			vatTableType.setRestaurant(this);
+		}
+		vatTableTypes.add(vatTableType);
+	}
+
+	/**
 	 * Add RestaurantValueAddedTax to vats
 	 * 
-	 * @param orderLine
-	 *            the order line
+	 * @param vat
+	 *            the vat
 	 */
 	public void addVat(RestaurantValueAddedTax vat) {
 		if (vats == null) {
@@ -463,16 +499,11 @@ public class Restaurant extends MdoDaoBean {
 
 	@Override
 	public String toString() {
-		return "Restaurant [rooms=" + rooms + ", registrationDate="
-				+ registrationDate + ", reference=" + reference + ", name="
-				+ name + ", addressRoad=" + addressRoad + ", addressZip="
-				+ addressZip + ", addressCity=" + addressCity + ", phone="
-				+ phone + ", vatRef=" + vatRef + ", visaRef=" + visaRef
-				+ ", tripleDESKey=" + tripleDESKey + ", vatByTakeaway="
-				+ vatByTakeaway + ", takeawayBasicReduction="
-				+ takeawayBasicReduction + ", takeawayMinAmountReduction="
-				+ takeawayMinAmountReduction + ", specificRound="
-				+ specificRound + ", defaultTableType=" + defaultTableType
+		return "Restaurant [rooms=" + rooms + ", registrationDate="	+ registrationDate + ", reference=" + reference
+				+ ", name="	+ name + ", addressRoad=" + addressRoad + ", addressZip=" + addressZip 
+				+ ", addressCity=" + addressCity + ", phone=" + phone + ", vatRef=" + vatRef + ", visaRef=" + visaRef
+				+ ", tripleDESKey=" + tripleDESKey + ", vatByTakeaway="	+ vatByTakeaway 
+				+ ", specificRound=" + specificRound + ", defaultTableType=" + defaultTableType
 				+ ", vat=" + vat + ", id=" + id + ", deleted=" + deleted + "]";
 	}
 }

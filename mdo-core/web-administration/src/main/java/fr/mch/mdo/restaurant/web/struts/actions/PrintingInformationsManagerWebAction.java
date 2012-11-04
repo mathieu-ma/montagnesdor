@@ -5,6 +5,7 @@ import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.PrintingInformationDto;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
+import fr.mch.mdo.restaurant.exception.MdoBusinessException;
 import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.ioc.spring.WebAdministrationBeanFactory;
 import fr.mch.mdo.restaurant.services.business.managers.printings.IPrintingInformationsManager;
@@ -54,7 +55,7 @@ public class PrintingInformationsManagerWebAction extends AdministrationManagerL
 				IAdministrationManagerViewBean viewBean = ((IMdoAdministrationForm) super.getForm()).getViewBean();
 				if (viewBean != null && dtoBean.getRestaurant() != null) {
 					IPrintingInformationsManager manager = (IPrintingInformationsManager) administrationManager;
-					viewBean.setList(manager.getList(dtoBean.getRestaurant().getId(), userContext));
+					viewBean.setList(manager.getList(dtoBean.getRestaurant().getId()));
 				}
 			}
 		}
@@ -62,13 +63,13 @@ public class PrintingInformationsManagerWebAction extends AdministrationManagerL
 	}
 	
 	@Override
-	public String save() {
+	public String save() throws MdoBusinessException {
 		super.save();
 		// Reload the restaurant bean
 		PrintingInformationDto dtoBean = ((PrintingInformationDto) super.getForm().getDtoBean());
 		RestaurantDto restaurant = dtoBean.getRestaurant();
 		try {
-			restaurant = (RestaurantDto) restaurantsManager.findByPrimaryKey(dtoBean.getRestaurant().getId(), (MdoUserContext) super.getForm().getUserContext(), false);
+			restaurant = (RestaurantDto) restaurantsManager.findByPrimaryKey(dtoBean.getRestaurant().getId(), false);
 		} catch (MdoException e) {
 			super.addActionError(super.getText("error.action.technical", new String[] {this.getClass().getName(), "save"}));
 		}

@@ -10,7 +10,6 @@ import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.IDao;
 import fr.mch.mdo.restaurant.dao.IDaoServices;
 import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.exception.MdoBusinessException;
 import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.utils.IManagerAssembler;
@@ -50,22 +49,22 @@ public abstract class AbstractAdministrationManager implements IAdministrationMa
 	}
 
 	@Override
-	public IMdoDtoBean save(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
+	public IMdoDtoBean save(IMdoDtoBean dtoBean) throws MdoBusinessException {
 		if (dtoBean != null) {
 			if (dtoBean.getId() == null) {
-				dtoBean = insert(dtoBean, userContext);
+				dtoBean = insert(dtoBean);
 			} else {
-				dtoBean = update(dtoBean, userContext);
+				dtoBean = update(dtoBean);
 			}
 		}
 		return dtoBean;
 	}
 
 	@Override
-	public IMdoDtoBean insert(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
+	public IMdoDtoBean insert(IMdoDtoBean dtoBean) throws MdoBusinessException {
 		IMdoBean daoBean = assembler.unmarshal(dtoBean);
 		try {
-			return assembler.marshal((IMdoDaoBean) dao.insert(daoBean), userContext);
+			return assembler.marshal((IMdoDaoBean) dao.insert(daoBean));
 		} catch (MdoException e) {
 			logger.error("message.error.administration.business.save", e);
 			throw new MdoBusinessException("message.error.administration.business.save", e);
@@ -73,10 +72,10 @@ public abstract class AbstractAdministrationManager implements IAdministrationMa
 	}
 
 	@Override
-	public IMdoDtoBean update(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
+	public IMdoDtoBean update(IMdoDtoBean dtoBean) throws MdoBusinessException {
 		IMdoBean daoBean = assembler.unmarshal(dtoBean);
 		try {
-			return assembler.marshal((IMdoDaoBean) dao.update(daoBean), userContext);
+			return assembler.marshal((IMdoDaoBean) dao.update(daoBean));
 		} catch (MdoException e) {
 			logger.error("message.error.administration.business.save", e);
 			throw new MdoBusinessException("message.error.administration.business.save", e);
@@ -84,10 +83,10 @@ public abstract class AbstractAdministrationManager implements IAdministrationMa
 	}
 
 	@Override
-	public IMdoDtoBean findByPrimaryKey(Long id, MdoUserContext userContext, boolean... lazy) throws MdoBusinessException {
+	public IMdoDtoBean findByPrimaryKey(Long id, boolean... lazy) throws MdoBusinessException {
 		if (id != null) {
 			try {
-				return assembler.marshal((IMdoDaoBean) dao.findByPrimaryKey(id, lazy), userContext);
+				return assembler.marshal((IMdoDaoBean) dao.findByPrimaryKey(id, lazy));
 			} catch (MdoException e) {
 				logger.error("message.error.administration.business.find", new Object[] { id }, e);
 				throw new MdoBusinessException("message.error.administration.business.find", new Object[] { id }, e);
@@ -99,10 +98,10 @@ public abstract class AbstractAdministrationManager implements IAdministrationMa
 	}
 
 	@Override
-	public IMdoDtoBean delete(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
+	public IMdoDtoBean delete(IMdoDtoBean dtoBean) throws MdoBusinessException {
 		IMdoBean daoBean = assembler.unmarshal(dtoBean);
 		try {
-			return assembler.marshal((IMdoDaoBean) dao.delete(daoBean), userContext);
+			return assembler.marshal((IMdoDaoBean) dao.delete(daoBean));
 		} catch (MdoException e) {
 			logger.error("message.error.administration.business.delete", e);
 			throw new MdoBusinessException("message.error.administration.business.delete", e);
@@ -110,11 +109,11 @@ public abstract class AbstractAdministrationManager implements IAdministrationMa
 	}
 
 	@Override
-	public IMdoDtoBean load(IMdoDtoBean dtoBean, MdoUserContext userContext, boolean... lazy) throws MdoBusinessException {
+	public IMdoDtoBean load(IMdoDtoBean dtoBean, boolean... lazy) throws MdoBusinessException {
 		IMdoBean daoBean = assembler.unmarshal(dtoBean);
 		try {
 			dao.load(daoBean, lazy);
-			return assembler.marshal((IMdoDaoBean) daoBean, userContext);
+			return assembler.marshal((IMdoDaoBean) daoBean);
 		} catch (MdoException e) {
 			logger.error("message.error.administration.business.find", new Object[] { daoBean }, e);
 			throw new MdoBusinessException("message.error.administration.business.find", new Object[] { daoBean }, e);
@@ -122,12 +121,12 @@ public abstract class AbstractAdministrationManager implements IAdministrationMa
 	}
 
 	@Override
-	public List<IMdoDtoBean> findAll(MdoUserContext userContext, boolean... lazy) throws MdoBusinessException {
+	public List<IMdoDtoBean> findAll(boolean... lazy) throws MdoBusinessException {
 		List<IMdoDtoBean> result = new ArrayList<IMdoDtoBean>();
 		try {
 			List<IMdoBean> list = dao.findAll(lazy);
 			if (list != null) {
-				result = assembler.marshal(list, userContext);
+				result = assembler.marshal(list);
 			}
 		} catch (MdoException e) {
 			logger.error("message.error.administration.business.find.all", e);
@@ -138,8 +137,8 @@ public abstract class AbstractAdministrationManager implements IAdministrationMa
 	}
 
 	@Override
-	public void processList(IAdministrationManagerViewBean viewBean, MdoUserContext userContext, boolean... lazy) throws MdoBusinessException {
-		viewBean.setList(this.findAll(userContext, lazy));
+	public void processList(IAdministrationManagerViewBean viewBean, boolean... lazy) throws MdoBusinessException {
+		viewBean.setList(this.findAll(lazy));
 		// throw new
 		// MdoBusinessException("message.error.generic.method.not.implemented");
 	}

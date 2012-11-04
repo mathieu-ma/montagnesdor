@@ -7,10 +7,11 @@ import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.beans.MdoTableAsEnum;
 import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode;
 import fr.mch.mdo.restaurant.dao.beans.Restaurant;
+import fr.mch.mdo.restaurant.dao.beans.ValueAddedTax;
 import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.ProductSpecialCodeDto;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
+import fr.mch.mdo.restaurant.dto.beans.ValueAddedTaxDto;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 import fr.mch.mdo.utils.IManagerAssembler;
 
@@ -22,6 +23,7 @@ public class DefaultProductSpecialCodesAssembler extends AbstractAssembler imple
 	
 	private IManagerAssembler restaurantsAssembler;
 	
+	private IManagerAssembler vatsAssembler;
 
 	private static class LazyHolder {
 		private static IManagerAssembler instance = new DefaultProductSpecialCodesAssembler(
@@ -32,6 +34,7 @@ public class DefaultProductSpecialCodesAssembler extends AbstractAssembler imple
 		this.setLogger(logger);
 		this.mdoTableAsEnumsAssembler = DefaultMdoTableAsEnumsAssembler.getInstance();
 		this.restaurantsAssembler = DefaultRestaurantsAssembler.getInstance();
+		this.vatsAssembler = DefaultValueAddedTaxesAssembler.getInstance();
 	}
 
 	public static IManagerAssembler getInstance() {
@@ -57,22 +60,38 @@ public class DefaultProductSpecialCodesAssembler extends AbstractAssembler imple
 		this.restaurantsAssembler = restaurantsAssembler;
 	}
 
+	/**
+	 * @return the vatsAssembler
+	 */
+	public IManagerAssembler getVatsAssembler() {
+		return vatsAssembler;
+	}
+
+	/**
+	 * @param vatsAssembler the vatsAssembler to set
+	 */
+	public void setVatsAssembler(IManagerAssembler vatsAssembler) {
+		this.vatsAssembler = vatsAssembler;
+	}
+
 	@Override
-	public IMdoDtoBean marshal(IMdoDaoBean daoBean, MdoUserContext userContext) {
+	public IMdoDtoBean marshal(IMdoDaoBean daoBean) {
 		ProductSpecialCodeDto dto = null;
 		if (daoBean != null) {
 			ProductSpecialCode bean = (ProductSpecialCode) daoBean;
 			dto = new ProductSpecialCodeDto();
 			dto.setId(bean.getId());
 			dto.setShortCode(bean.getShortCode());
-//			RestaurantDto restaurant = (RestaurantDto) restaurantsAssembler.marshal(bean.getRestaurant(), userContext);
 			if(bean.getRestaurant() != null) {
-				RestaurantDto restaurant = new RestaurantDto();
-				restaurant.setId(bean.getRestaurant().getId());
+				RestaurantDto restaurant = (RestaurantDto) restaurantsAssembler.marshal(bean.getRestaurant());
+//				RestaurantDto restaurant = new RestaurantDto();
+//				restaurant.setId(bean.getRestaurant().getId());
 				dto.setRestaurant(restaurant);
 			}
-			MdoTableAsEnumDto code = (MdoTableAsEnumDto) mdoTableAsEnumsAssembler.marshal(bean.getCode(), userContext);
+			MdoTableAsEnumDto code = (MdoTableAsEnumDto) mdoTableAsEnumsAssembler.marshal(bean.getCode());
 			dto.setCode(code);
+			ValueAddedTaxDto vat = (ValueAddedTaxDto) vatsAssembler.marshal(bean.getVat()); 
+			dto.setVat(vat);
 			dto.setLabels(bean.getLabels());
 		}
 		return dto;
@@ -100,6 +119,8 @@ public class DefaultProductSpecialCodesAssembler extends AbstractAssembler imple
 		bean.setRestaurant(restaurant);
 		MdoTableAsEnum code = (MdoTableAsEnum) mdoTableAsEnumsAssembler.unmarshal(dto.getCode());
 		bean.setCode(code);
+		ValueAddedTax vat = (ValueAddedTax) vatsAssembler.unmarshal(dto.getVat());
+		bean.setVat(vat);
 		bean.setLabels(dto.getLabels());
 		return bean;
 	}

@@ -7,7 +7,6 @@ import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.beans.DinnerTable;
 import fr.mch.mdo.restaurant.dao.beans.TableBill;
 import fr.mch.mdo.restaurant.dto.beans.DinnerTableDto;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.TableBillDto;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 import fr.mch.mdo.utils.IManagerAssembler;
@@ -32,7 +31,7 @@ public class DefaultTableBillsAssembler extends AbstractAssembler implements IMa
 	}
 
 	@Override
-	public IMdoDtoBean marshal(IMdoDaoBean daoBean, MdoUserContext userContext) {
+	public IMdoDtoBean marshal(IMdoDaoBean daoBean) {
 		TableBillDto dto = null;
 		if (daoBean != null) {
 			TableBill bean = (TableBill) daoBean;

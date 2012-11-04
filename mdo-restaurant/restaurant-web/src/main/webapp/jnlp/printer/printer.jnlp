@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<jnlp codebase="http://localhost:9080/web-restaurant/jnlp/printer">
+	<information>
+    	<title>POS Printer</title>
+    	<vendor>Mathieu MA</vendor>
+    	<description>Serial Port/USB POS Printer</description>
+    	<description kind="short">Serial Port/USB POS Printer</description>
+    	<icon href="/favicon.png" />
+    	<icon kind="splash" href="/favicon.png" />
+    	<offline-allowed/>
+    	<security>
+			<j2ee-application-client-permissions/>
+		</security>
+  	</information>
+	
+	<security>
+		<all-permissions/>
+	</security>
+	
+	<resources>
+    	<j2se version="1.5+"/>
+    	<jar href="SPrinterJms.jar"/>
+  	</resources>
+   	<resources os="Linux">
+		<nativelib href="Slinux-64-rxtx-library.jar" />		
+	</resources>
+			
+	<application-desc main-class="fr.mch.mdo.jms.client.MdoPrinter"/>
+
+</jnlp>

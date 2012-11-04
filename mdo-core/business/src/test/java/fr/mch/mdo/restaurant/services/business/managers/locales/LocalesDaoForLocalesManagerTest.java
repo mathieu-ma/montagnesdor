@@ -106,4 +106,10 @@ public class LocalesDaoForLocalesManagerTest implements ILocalesDao
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void delete(Long id) throws MdoException {
+		// TODO Auto-generated method stub
+		
+	}
 }

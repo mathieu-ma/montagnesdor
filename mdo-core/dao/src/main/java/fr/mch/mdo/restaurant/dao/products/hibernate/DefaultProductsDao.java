@@ -56,7 +56,7 @@ public class DefaultProductsDao extends DefaultDaoServices implements IProductsD
 	}
 
 	@Override
-	public IMdoBean findByCode(Long restaurantId, String code) throws MdoException {
+	public IMdoBean find(Long restaurantId, String code) throws MdoDataBeanException {
 		Map<String, Object> propertyValueMap = new HashMap<String, Object>();
 		propertyValueMap.put("restaurant.id", restaurantId);
 		propertyValueMap.put("code", code);
@@ -64,7 +64,7 @@ public class DefaultProductsDao extends DefaultDaoServices implements IProductsD
 	}
 
 	@Override
-	public IMdoBean findByCode(String restaurantReference, String code) throws MdoException {
+	public IMdoBean find(String restaurantReference, String code) throws MdoDataBeanException {
 		Map<String, Object> propertyValueMap = new HashMap<String, Object>();
 		propertyValueMap.put("restaurant.reference", restaurantReference);
 		propertyValueMap.put("code", code);
@@ -144,19 +144,4 @@ public class DefaultProductsDao extends DefaultDaoServices implements IProductsD
 		result = super.findByPropertiesRestrictions(criterias, false);
 		return result;
 	}
-
-	@Override
-	public IMdoBean getProductByCode(Long restaurantId, String code) throws MdoDataBeanException {
-		Product result = null;
-		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
-		criterias.add(new MdoCriteria("restaurant.id", PropertiesRestrictions.EQUALS, restaurantId));
-		criterias.add(new MdoCriteria("code", PropertiesRestrictions.EQUALS, code));
-
-		// Here we set lazy true but in the Product XML mapping there is lazy false for labels so we always get labels.
-		// This is not efficient but we always want product having at least a label.
-		result = (Product) super.uniqueResult(super.findByCriteria(Product.class, criterias, true));
-
-		return result;
-	}
-
 }

@@ -31,8 +31,10 @@ DROP TABLE IF EXISTS t_user_role;
 DROP TABLE IF EXISTS t_printing_information_language;
 DROP TABLE IF EXISTS t_printing_information;
 DROP TABLE IF EXISTS t_locale;
+DROP TABLE IF EXISTS t_restaurant_vat_table_type;
 DROP TABLE IF EXISTS t_restaurant_vat;
 DROP TABLE IF EXISTS t_restaurant_prefix_table;
+DROP TABLE IF EXISTS t_restaurant_reduction_table;
 DROP TABLE IF EXISTS t_restaurant;
 DROP TABLE IF EXISTS t_table_type;
 DROP TABLE IF EXISTS t_value_added_tax;
@@ -68,7 +70,9 @@ DROP SEQUENCE IF EXISTS t_user_role_uro_id_seq;
 DROP SEQUENCE IF EXISTS t_printing_information_language_pil_id_seq;
 DROP SEQUENCE IF EXISTS t_printing_information_pin_id_seq;
 DROP SEQUENCE IF EXISTS t_locale_loc_id_seq;
+DROP SEQUENCE IF EXISTS t_restaurant_vat_table_type_vtt_id_seq;
 DROP SEQUENCE IF EXISTS t_restaurant_vat_rvt_id_seq;
+DROP SEQUENCE IF EXISTS t_restaurant_reduction_table_rrt_id_seq;
 DROP SEQUENCE IF EXISTS t_restaurant_prefix_table_rpt_id_seq;
 DROP SEQUENCE IF EXISTS t_restaurant_res_id_seq;
 DROP SEQUENCE IF EXISTS t_table_type_tbt_id_seq;
@@ -154,8 +158,6 @@ CREATE TABLE t_restaurant (
   res_visa_ref VARCHAR(25) NOT null,
   res_triple_DES_key VARCHAR(24) NOT null,
   res_vat_by_takeaway BOOLEAN DEFAULT true NOT null,
-  res_takeaway_basic_reduction numeric(12,4) NOT null,
-  res_takeaway_min_amount_reduction numeric(12,4) NOT null,
   res_specific_round integer NOT null,
   tbt_id integer NOT null,
   vat_id integer NOT null,
@@ -181,8 +183,6 @@ COMMENT ON COLUMN t_restaurant.res_vat_ref IS 'This is the restaurant V.A.T(Valu
 COMMENT ON COLUMN t_restaurant.res_visa_ref IS 'This is the restaurant visa reference.';
 COMMENT ON COLUMN t_restaurant.res_triple_DES_key IS 'This is the restaurant triple DES key.';
 COMMENT ON COLUMN t_restaurant.res_vat_by_takeaway IS 'This is used to know if we have to apply the V.A.T(Value Added Taxes) when it is a takeaway table. The default value is true.';
-COMMENT ON COLUMN t_restaurant.res_takeaway_basic_reduction IS 'This is the restaurant reduction for takeaway table we have to apply. This field depends on the field res_takeaway_min_amount_reduction.';
-COMMENT ON COLUMN t_restaurant.res_takeaway_min_amount_reduction IS 'This is the minimum amount value to apply a reduction for takeaway table.';
 --res_specific_round 1 = HALF ROUND 2 = TENTH ROUND
 COMMENT ON COLUMN t_restaurant.res_specific_round IS 'This is the specific round to apply on all amounts calculations. It is a foreign that refers to the t_enum table for type SPECIFIC_ROUND_CALCULATION.';
 COMMENT ON COLUMN t_restaurant.tbt_id IS 'This is the default table type. It is a foreign that refers to the t_table_type table. It is used to specify the dinner table type which can be EAT_IN, TAKEAWAY, ....';
@@ -190,7 +190,6 @@ COMMENT ON COLUMN t_restaurant.vat_id IS 'This is a foreign key that refers to t
 COMMENT ON COLUMN t_restaurant.res_deleted IS 'This is used for logical deletion.';
 -- For PostGresql, the sequence is marked as "*{OWNED BY" the column, so that it will be dropped if the column or table is dropped.
 ALTER SEQUENCE t_restaurant_res_id_seq *{OWNED BY t_restaurant.res_id};
-
 
 -- New START
 CREATE SEQUENCE t_restaurant_prefix_table_rpt_id_seq;
@@ -217,6 +216,31 @@ COMMENT ON COLUMN t_restaurant_prefix_table.rpt_deleted IS 'This is used for log
 ALTER SEQUENCE t_restaurant_prefix_table_rpt_id_seq *{OWNED BY t_restaurant_prefix_table.rpt_id};
 
 -- New START
+CREATE SEQUENCE t_restaurant_reduction_table_rrt_id_seq;
+CREATE TABLE t_restaurant_reduction_table (
+  rrt_id integer *{DEFAULT NEXTVAL('t_restaurant_reduction_table_rrt_id_seq')} NOT null PRIMARY KEY,
+  res_id integer NOT null,
+  tbt_id integer NOT null,
+  rrt_min_amount numeric(12,4) NOT null,
+  rrt_value numeric(12,4) NOT null,
+  rrt_deleted BOOLEAN DEFAULT false NOT null,
+  CONSTRAINT rrt_id_uni UNIQUE (rrt_id),
+  CONSTRAINT rrt_res_id_tbt_id_uni UNIQUE (res_id, tbt_id),
+  CONSTRAINT rrt_res_id_fk FOREIGN KEY (res_id) REFERENCES t_restaurant (res_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT rrt_tbt_id_fk FOREIGN KEY (tbt_id) REFERENCES t_table_type (tbt_id) ON UPDATE RESTRICT ON DELETE RESTRICT
+);
+-- COMMENT Statement is used for PostGresql but this is also compatible with HSQLDB 2.0.
+COMMENT ON TABLE t_restaurant_reduction_table IS 'This table is a association table. This table is used to store the list of reductions depending on table type associated to a restaurant. Each row is table type with a specific reduction. For example, a take-away table may have a reduction ratio/value if the minimum amount is reached.';
+COMMENT ON COLUMN t_restaurant_reduction_table.rrt_id IS 'This is primary key of this table.';
+COMMENT ON COLUMN t_restaurant_reduction_table.res_id IS 'This is a foreign key that refers to t_restaurant. This field and the other tbt_id field consist of a unique field.';
+COMMENT ON COLUMN t_restaurant_reduction_table.tbt_id IS 'This is a foreign key that refers to t_table_type. This field and the other res_id field consist of a unique field. It could be TAKE_AWAY type or EAT_IN type.';
+COMMENT ON COLUMN t_restaurant_reduction_table.rrt_min_amount IS 'This is the minimum amount in which we can apply the reduction.';
+COMMENT ON COLUMN t_restaurant_reduction_table.rrt_value IS 'This is the reduction value to apply when the minimum amount is reached. The value could be a ratio or an amount.';
+COMMENT ON COLUMN t_restaurant_reduction_table.rrt_deleted IS 'This is used for logical deletion.';
+-- For PostGresql, the sequence is marked as "*{OWNED BY" the column, so that it will be dropped if the column or table is dropped.
+ALTER SEQUENCE t_restaurant_reduction_table_rrt_id_seq *{OWNED BY t_restaurant_reduction_table.rrt_id};
+
+-- New START
 CREATE SEQUENCE t_restaurant_vat_rvt_id_seq;
 CREATE TABLE t_restaurant_vat (
   rvt_id integer *{DEFAULT NEXTVAL('t_restaurant_vat_rvt_id_seq')} NOT null PRIMARY KEY,
@@ -236,6 +260,30 @@ COMMENT ON COLUMN t_restaurant_vat.vat_id IS 'This is a foreign key that refers 
 COMMENT ON COLUMN t_restaurant_vat.rvt_deleted IS 'This is used for logical deletion.';
 -- For PostGresql, the sequence is marked as "*{OWNED BY" the column, so that it will be dropped if the column or table is dropped.
 ALTER SEQUENCE t_restaurant_vat_rvt_id_seq *{OWNED BY t_restaurant_vat.rvt_id};
+
+-- New START
+CREATE SEQUENCE t_restaurant_vat_table_type_vtt_id_seq;
+CREATE TABLE t_restaurant_vat_table_type (
+  vtt_id integer *{DEFAULT NEXTVAL('t_restaurant_vat_table_type_vtt_id_seq')} NOT null PRIMARY KEY,
+  res_id integer NOT null,
+  vat_id integer NOT null,
+  tbt_id integer NOT null,
+  vtt_deleted BOOLEAN DEFAULT false NOT null,
+  CONSTRAINT vtt_id_uni UNIQUE (vtt_id),
+  CONSTRAINT vtt_res_id_vat_id_tbt_id_uni UNIQUE (res_id, vat_id, tbt_id),
+  CONSTRAINT vtt_res_id_fk FOREIGN KEY (res_id) REFERENCES t_restaurant (res_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT vtt_vat_id_fk FOREIGN KEY (vat_id) REFERENCES t_value_added_tax (vat_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT vtt_tbt_id_fk FOREIGN KEY (tbt_id) REFERENCES t_table_type (tbt_id) ON UPDATE RESTRICT ON DELETE RESTRICT
+);
+-- COMMENT Statement is used for PostGresql but this is also compatible with HSQLDB 2.0.
+COMMENT ON TABLE t_restaurant_vat_table_type IS 'This table is used for applying VAT to the whole table type, i.e, not by order lines.';
+COMMENT ON COLUMN t_restaurant_vat_table_type.vtt_id IS 'This is primary key of this table.';
+COMMENT ON COLUMN t_restaurant_vat_table_type.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant. This field and the others vat_id and tbt_id fields consist of a unique field.';
+COMMENT ON COLUMN t_restaurant_vat_table_type.vat_id IS 'This is a foreign key that refers to t_value_added_tax. It is used to specify the value added tax. This field and the others res_id and tbt_id fields consist of a unique field.';
+COMMENT ON COLUMN t_restaurant_vat_table_type.tbt_id IS 'This is a foreign key that refers to t_table_type. This field and the others res_id and vat_id fields consist of a unique field. It could be TAKE_AWAY type or EAT_IN type.';
+COMMENT ON COLUMN t_restaurant_vat_table_type.vtt_deleted IS 'This is used for logical deletion.';
+-- For PostGresql, the sequence is marked as "*{OWNED BY" the column, so that it will be dropped if the column or table is dropped.
+ALTER SEQUENCE t_restaurant_vat_table_type_vtt_id_seq *{OWNED BY t_restaurant_vat_table_type.vtt_id};
 
 -- New START
 CREATE SEQUENCE t_locale_loc_id_seq;
@@ -502,6 +550,7 @@ CREATE TABLE t_product_special_code (
   res_id integer,
   psc_short_code VARCHAR(1),
   psc_code_enm_id integer NOT null,
+  vat_id integer,
   psc_deleted BOOLEAN DEFAULT false NOT null,
   CONSTRAINT psc_id_uni UNIQUE (psc_id),
   CONSTRAINT psc_psc_code_enum_id_uni UNIQUE (psc_code_enm_id),
@@ -509,7 +558,8 @@ CREATE TABLE t_product_special_code (
 --  CONSTRAINT psc_res_id_psc_code_enum_id_uni UNIQUE (res_id, psc_code_enm_id),
 --  CONSTRAINT psc_res_id_psc_short_code_psc_enum_id_uni UNIQUE (res_id, psc_short_code, psc_code_enm_id),
   CONSTRAINT psc_code_enm_id_fk FOREIGN KEY (psc_code_enm_id) REFERENCES t_enum (enm_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
-  CONSTRAINT psc_res_id_fk FOREIGN KEY (res_id) REFERENCES t_restaurant (res_id) ON UPDATE RESTRICT ON DELETE RESTRICT
+  CONSTRAINT psc_res_id_fk FOREIGN KEY (res_id) REFERENCES t_restaurant (res_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT psc_vat_id_fk FOREIGN KEY (vat_id) REFERENCES t_value_added_tax (vat_id) ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 -- COMMENT Statement is used for PostGresql but this is also compatible with HSQLDB 2.0.
 COMMENT ON TABLE t_product_special_code IS 'This table is used for product special code.';
@@ -517,6 +567,7 @@ COMMENT ON COLUMN t_product_special_code.psc_id IS 'This is primary key of this 
 COMMENT ON COLUMN t_product_special_code.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant. Currently NOT USED.';
 COMMENT ON COLUMN t_product_special_code.psc_short_code IS 'This is used to specify the short code enter by user.Currently NOT USED.';
 COMMENT ON COLUMN t_product_special_code.psc_code_enm_id IS 'This is a foreign key that refers to t_enum. It is used to specify the product special code.';
+COMMENT ON COLUMN t_product_special_code.vat_id IS 'This is a foreign key that refers to t_value_added_tax. It is used to specify the product special code value added tax.';
 COMMENT ON COLUMN t_product_special_code.psc_deleted IS 'This is used for logical deletion.';
 -- For PostGresql, the sequence is marked as "*{OWNED BY" the column, so that it will be dropped if the column or table is dropped.
 ALTER SEQUENCE t_product_special_code_psc_id_seq *{OWNED BY t_product_special_code.psc_id};
@@ -732,7 +783,7 @@ CREATE TABLE t_dinner_table (
   tbt_id integer NOT null,  
   dtb_deleted BOOLEAN DEFAULT false NOT null,
   CONSTRAINT dtb_id_uni UNIQUE (dtb_id),
-  CONSTRAINT dtb_res_id_dtb_code_dtb_cashing_date_uni UNIQUE (res_id, dtb_code, dtb_registration_date),
+  CONSTRAINT dtb_res_id_dtb_code_dtb_registration_date_uni UNIQUE (res_id, dtb_code, dtb_registration_date),
   CONSTRAINT dtb_res_id_fk FOREIGN KEY (res_id) REFERENCES t_restaurant (res_id) ON UPDATE RESTRICT ON DELETE RESTRICT, 
   CONSTRAINT dtb_aut_id_fk FOREIGN KEY (aut_id) REFERENCES t_user_authentication (aut_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
   CONSTRAINT dtb_tbt_id_fk FOREIGN KEY (tbt_id) REFERENCES t_table_type (tbt_id) ON UPDATE RESTRICT ON DELETE RESTRICT 

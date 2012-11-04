@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.security.auth.Subject;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
@@ -18,8 +16,6 @@ import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.beans.Locale;
 import fr.mch.mdo.restaurant.dto.beans.LocaleDto;
 import fr.mch.mdo.restaurant.dto.beans.LocalesManagerViewBean;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
-import fr.mch.mdo.restaurant.dto.beans.UserAuthenticationDto;
 import fr.mch.mdo.restaurant.dto.beans.UserLocaleDto;
 import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.services.business.managers.DefaultAdministrationManagerTest;
@@ -68,18 +64,18 @@ public class DefaultLocalesManagerTest extends DefaultAdministrationManagerTest
 		String localeCodeToBeUpdated = java.util.Locale.GERMAN.getLanguage();
 		try {
 			// Create new bean to be updated
-			IMdoBean beanToBeUpdated = this.getInstance().insert(createNewBean(localeCodeToBeUpdated), DefaultAdministrationManagerTest.userContext);
+			IMdoBean beanToBeUpdated = this.getInstance().insert(createNewBean(localeCodeToBeUpdated));
 			assertTrue("IMdoBean must be instance of " + Locale.class, beanToBeUpdated instanceof LocaleDto);
 			LocaleDto castedBean = (LocaleDto) beanToBeUpdated;
 			assertNotNull("Locale language must not be null", castedBean.getLanguageCode());
 			assertEquals("Locale language must be equals to unique key", localeCodeToBeUpdated, castedBean.getLanguageCode());
 			// Update the created bean
 			castedBean.setLanguageCode(java.util.Locale.ITALIAN.getLanguage());
-			this.getInstance().update(castedBean, DefaultAdministrationManagerTest.userContext);
+			this.getInstance().update(castedBean);
 			// Reload the modified bean
 			LocaleDto updatedBean = new LocaleDto();
 			updatedBean.setId(castedBean.getId());
-			IMdoBean loadedBean = this.getInstance().load(updatedBean, DefaultAdministrationManagerTest.userContext);
+			IMdoBean loadedBean = this.getInstance().load(updatedBean);
 			assertTrue("IMdoBean must be instance of " + LocaleDto.class, loadedBean instanceof LocaleDto);
 			updatedBean = (LocaleDto) loadedBean;
 			assertNotNull("Locale language must not be null", updatedBean.getLanguageCode());
@@ -93,7 +89,7 @@ public class DefaultLocalesManagerTest extends DefaultAdministrationManagerTest
 	public void doProcessList() {
 		LocalesManagerViewBean viewBean = new LocalesManagerViewBean();
 		try {
-			this.getInstance().processList(viewBean, DefaultAdministrationManagerTest.userContext);
+			((ILocalesManager) this.getInstance()).processList(viewBean, DefaultAdministrationManagerTest.userContext.getCurrentLocale());
 			assertNotNull("Main list not be null", viewBean.getList());
 			assertFalse("Main list not be empty", viewBean.getList().isEmpty());
 			assertNotNull("Languages list not be null", viewBean.getLanguages());
@@ -112,13 +108,13 @@ public class DefaultLocalesManagerTest extends DefaultAdministrationManagerTest
 		ILocalesManager manager = (ILocalesManager) this.getInstance();
 		try {
 			String languageCode = "fr";
-			LocaleDto bean = (LocaleDto) manager.findByLanguage(languageCode, userContext);
+			LocaleDto bean = (LocaleDto) manager.findByLanguage(languageCode);
 			assertNotNull("Bean is not null", bean);
 			assertNotNull("Bean id is not null", bean.getId());
 			assertEquals("Bean id is equals to the searched id", languageCode, bean.getLanguageCode());
 
 			languageCode = "nono";
-			bean = (LocaleDto) manager.findByLanguage(languageCode, userContext);
+			bean = (LocaleDto) manager.findByLanguage(languageCode);
 			assertNull("Bean is not null", bean);
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
@@ -137,7 +133,7 @@ public class DefaultLocalesManagerTest extends DefaultAdministrationManagerTest
 		assertNotNull("Check Available Languages size", map);
 		List<IMdoDtoBean> locales = new ArrayList<IMdoDtoBean>();
 		try {
-			locales = manager.findAll(userContext);
+			locales = manager.findAll();
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -218,7 +214,7 @@ public class DefaultLocalesManagerTest extends DefaultAdministrationManagerTest
 		ILocalesManager manager = (ILocalesManager) this.getInstance();
 		List<IMdoDtoBean> locales = new ArrayList<IMdoDtoBean>();
 		try {
-			locales = manager.findAll(userContext);
+			locales = manager.findAll();
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -244,7 +240,7 @@ public class DefaultLocalesManagerTest extends DefaultAdministrationManagerTest
 	public void testGetLanguageLocales() {
 		ILocalesManager manager = (ILocalesManager) this.getInstance();
 		try {
-			List<LocaleDto> sortedList = manager.getLanguageLocales(userContext);
+			List<LocaleDto> sortedList = manager.getLanguageLocales(DefaultAdministrationManagerTest.userContext.getCurrentLocale().getLanguageCode());
 			assertNotNull("sortedList is not null", sortedList);
 			// Check that the list is sorted by Display Language
 			Set<String> displayLanguagesSet = new HashSet<String>();
@@ -278,122 +274,94 @@ public class DefaultLocalesManagerTest extends DefaultAdministrationManagerTest
 		LocaleDto dto = null;
 		// Locale null
 		java.util.Locale currentLocale = null;
-		// MdoUserContext null
-		MdoUserContext userContextX = null;
+		// defaultLocales null
+		Set<UserLocaleDto> defaultLocales = null;
 		try {
-			dto = manager.findLocale(currentLocale, userContextX);
+			dto = manager.findLocale(currentLocale, defaultLocales);
 			assertNotNull("Check LocaleDto not null", dto);
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
-		// MdoUserContext null
+		// defaultLocales null
 		// && currentLocale not in database
 		currentLocale = new java.util.Locale(availableLanguages.keySet().iterator().next());
 		try {
-			dto = manager.findLocale(currentLocale, userContextX);
+			dto = manager.findLocale(currentLocale, defaultLocales);
 			assertNotNull("Check LocaleDto not null", dto);
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 
-		// MdoUserContext not null
+		// defaultLocales not null and empty
 		// && dao.findAll() return null
-		userContextX = new MdoUserContext(new Subject());
+		defaultLocales = new HashSet<UserLocaleDto>();
 		Object backupDao = super.getField(manager, "dao");
 		super.setField(manager, "dao", new LocalesDaoForLocalesManagerTest());
 		try {
-			dto = manager.findLocale(currentLocale, userContextX);
+			dto = manager.findLocale(currentLocale, defaultLocales);
 			assertNotNull("Check LocaleDto not null", dto);
-		} catch (Exception e) {
-			assertTrue("No dao session: ", e instanceof NullPointerException);
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		} finally {
 			// Backup dao
 			super.setField(manager, "dao", backupDao);
 		}
 
-		// MdoUserContext not null
-		// && UserAuthenticationDto not null
-		UserAuthenticationDto userAuthentication = new UserAuthenticationDto();
-		userContextX.setUserAuthentication(userAuthentication);
-		try {
-			dto = manager.findLocale(currentLocale, userContextX);
-			assertNotNull("Check LocaleDto not null", dto);
-		} catch (MdoException e) {
-			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
-		}
-
-		// MdoUserContext not null
-		// && UserAuthenticationDto not null
-		// && locales not null && empty
-		Set<UserLocaleDto> locales = new HashSet<UserLocaleDto>();
-		userAuthentication.setLocales(locales);
-		try {
-			dto = manager.findLocale(currentLocale, userContextX);
-			assertNotNull("Check LocaleDto not null", dto);
-		} catch (MdoException e) {
-			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
-		}
-
-		// MdoUserContext not null && UserAuthenticationDto not null
-		// && locales not null and not empty
+		// defaultLocales not null and not empty
 		// && UserLocaleDto null
 		UserLocaleDto userLocaleDto = null;
-		locales.add(userLocaleDto);
+		defaultLocales.add(userLocaleDto);
 		try {
-			dto = manager.findLocale(currentLocale, userContextX);
+			dto = manager.findLocale(currentLocale, defaultLocales);
 			assertNotNull("Check LocaleDto not null", dto);
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 
-		// MdoUserContext not null && UserAuthenticationDto not null
-		// && locales not null and not empty
+		// locales not null and not empty
 		// && UserLocaleDto not null
 		userLocaleDto = new UserLocaleDto();
-		locales.add(userLocaleDto);
+		defaultLocales.add(userLocaleDto);
 		try {
-			dto = manager.findLocale(currentLocale, userContextX);
+			dto = manager.findLocale(currentLocale, defaultLocales);
 			assertNotNull("Check LocaleDto not null", dto);
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 
-		// MdoUserContext not null && UserAuthenticationDto not null
-		// && locales not null and not empty
+		// locales not null and not empty
 		// && UserLocaleDto not null
 		// && LocaleDto not null
 		LocaleDto localeDto = new LocaleDto();
 		userLocaleDto.setLocale(localeDto);
 		try {
-			dto = manager.findLocale(currentLocale, userContextX);
+			dto = manager.findLocale(currentLocale, defaultLocales);
 			assertNotNull("Check LocaleDto not null", dto);
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 
-		// MdoUserContext not null && UserAuthenticationDto not null
-		// && locales not null and not empty
+		// locales not null and not empty
 		// && UserLocaleDto not null
 		// && LocaleDto not null
 		// && languageCode not null
 		String languageCode = "";
 		localeDto.setLanguageCode(languageCode);
 		try {
-			dto = manager.findLocale(currentLocale, userContextX);
+			dto = manager.findLocale(currentLocale, defaultLocales);
 			assertNotNull("Check LocaleDto not null", dto);
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 
-		// MdoUserContext not null && UserAuthenticationDto not null
-		// && locales not null and not empty
+		// locales not null and not empty
 		// && UserLocaleDto not null
 		// && LocaleDto not null
 		// && languageCode not null && equals to the current locale
 		languageCode = currentLocale.getLanguage();
 		localeDto.setLanguageCode(languageCode);
 		try {
-			dto = manager.findLocale(currentLocale, userContextX);
+			dto = manager.findLocale(currentLocale, defaultLocales);
 			assertNotNull("Check LocaleDto not null", dto);
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());

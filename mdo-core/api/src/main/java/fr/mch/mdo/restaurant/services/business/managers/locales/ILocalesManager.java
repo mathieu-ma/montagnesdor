@@ -3,10 +3,12 @@ package fr.mch.mdo.restaurant.services.business.managers.locales;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import fr.mch.mdo.restaurant.beans.IMdoBean;
+import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.LocaleDto;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
+import fr.mch.mdo.restaurant.dto.beans.UserLocaleDto;
 import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.services.business.managers.IAdministrationManager;
 
@@ -65,13 +67,14 @@ public interface ILocalesManager extends IAdministrationManager
 	/**
 	 * Find the locale by language. 
 	 * @param language the ISO language.
-	 * @param userContext the user context.
 	 * @return a found locale.
      * @throws MdoException if any exception occur.
 	 */
-	IMdoBean findByLanguage(Object language, MdoUserContext userContext) throws MdoException;
+	IMdoBean findByLanguage(String language) throws MdoException;
     
-	LocaleDto findLocale(Locale locale, MdoUserContext userContext) throws MdoException;
+	LocaleDto findLocale(Locale locale, Set<UserLocaleDto> defaultLocales) throws MdoException;
 
-	List<LocaleDto> getLanguageLocales(MdoUserContext userContext) throws MdoException;
+	List<LocaleDto> getLanguageLocales(String defaultLanguageCode) throws MdoException;
+	
+	void processList(IAdministrationManagerViewBean viewBean, LocaleDto locale, boolean... lazy) throws MdoException;
 }

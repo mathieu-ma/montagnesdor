@@ -12,7 +12,7 @@ import fr.mch.mdo.restaurant.dao.products.hibernate.DefaultCategoriesDao;
 import fr.mch.mdo.restaurant.dto.beans.CategoriesManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.CategoryDto;
 import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
+import fr.mch.mdo.restaurant.dto.beans.LocaleDto;
 import fr.mch.mdo.restaurant.exception.MdoBusinessException;
 import fr.mch.mdo.restaurant.services.business.managers.AbstractAdministrationManagerLabelable;
 import fr.mch.mdo.restaurant.services.business.managers.DefaultMdoTableAsEnumsManager;
@@ -91,13 +91,13 @@ public class DefaultCategoriesManager extends AbstractAdministrationManagerLabel
 	}
 
 	@Override
-	public void processList(IAdministrationManagerViewBean viewBean, MdoUserContext userContext, boolean... lazy) throws MdoBusinessException {
-		super.processList(viewBean, userContext, lazy);
+	public void processList(IAdministrationManagerViewBean viewBean, LocaleDto locale, boolean... lazy) throws MdoBusinessException {
+		super.processList(viewBean, lazy);
 		CategoriesManagerViewBean categoriesManagerViewBean = (CategoriesManagerViewBean) viewBean;
 		try {
-			categoriesManagerViewBean.setLabels(super.getLabels(userContext.getCurrentLocale()));
-			categoriesManagerViewBean.setLanguages(this.localesManager.getLanguages(userContext.getCurrentLocale().getLanguageCode()));
-			categoriesManagerViewBean.setCodes(this.getRemainingList(mdoTableAsEnumsManager.getCategories(userContext), userContext));
+			categoriesManagerViewBean.setLabels(super.getLabels(locale));
+			categoriesManagerViewBean.setLanguages(this.localesManager.getLanguages(locale.getLanguageCode()));
+			categoriesManagerViewBean.setCodes(this.getRemainingList(mdoTableAsEnumsManager.getCategories()));
 		} catch (Exception e) {
 			logger.error("message.error.administration.business.find.all", e);
 			throw new MdoBusinessException("message.error.administration.business.find.all", e);
@@ -110,11 +110,11 @@ public class DefaultCategoriesManager extends AbstractAdministrationManagerLabel
 	 * @param userContext user context.
 	 * @return a restricted list.
 	 */
-	private List<IMdoDtoBean> getRemainingList(List<IMdoDtoBean> listAll, MdoUserContext userContext) {
+	private List<IMdoDtoBean> getRemainingList(List<IMdoDtoBean> listAll) {
 		List<IMdoDtoBean> result = new ArrayList<IMdoDtoBean>(listAll);
 		List<IMdoDtoBean> excludedList = new ArrayList<IMdoDtoBean>();
 		try {
-			excludedList = super.findAll(userContext);
+			excludedList = super.findAll();
 		} catch (MdoBusinessException e) {
 			logger.warn("message.error.administration.business.find.all", e);
 		}

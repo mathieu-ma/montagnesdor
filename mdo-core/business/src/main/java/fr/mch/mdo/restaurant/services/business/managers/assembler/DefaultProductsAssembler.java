@@ -11,7 +11,6 @@ import fr.mch.mdo.restaurant.dao.beans.Product;
 import fr.mch.mdo.restaurant.dao.beans.ProductCategory;
 import fr.mch.mdo.restaurant.dao.beans.Restaurant;
 import fr.mch.mdo.restaurant.dao.beans.ValueAddedTax;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.ProductCategoryDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductDto;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
@@ -71,7 +70,7 @@ public class DefaultProductsAssembler extends AbstractAssembler implements IMana
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public IMdoDtoBean marshal(IMdoDaoBean daoBean, MdoUserContext userContext) {
+	public IMdoDtoBean marshal(IMdoDaoBean daoBean) {
 		ProductDto dto = null;
 		if (daoBean != null) {
 			Product bean = (Product) daoBean;
@@ -80,12 +79,12 @@ public class DefaultProductsAssembler extends AbstractAssembler implements IMana
 			dto.setCode(bean.getCode());
 			dto.setColorRGB(bean.getColorRGB());
 			dto.setPrice(bean.getPrice());
-			RestaurantDto restaurant = (RestaurantDto) restaurantsAssembler.marshal(bean.getRestaurant(), userContext);
+			RestaurantDto restaurant = (RestaurantDto) restaurantsAssembler.marshal(bean.getRestaurant());
 			dto.setRestaurant(restaurant);
-			ValueAddedTaxDto vat = (ValueAddedTaxDto) vatsAssembler.marshal(bean.getVat(), userContext); 
+			ValueAddedTaxDto vat = (ValueAddedTaxDto) vatsAssembler.marshal(bean.getVat()); 
 			dto.setVat(vat);
 			@SuppressWarnings("rawtypes")
-			Set<ProductCategoryDto> categories = (Set) productCategoriesAssembler.marshal(bean.getCategories(), userContext);
+			Set<ProductCategoryDto> categories = (Set) productCategoriesAssembler.marshal(bean.getCategories());
 			dto.setCategories(categories);
 			dto.setLabels(super.getLabels(bean.getLabels()));
 		}

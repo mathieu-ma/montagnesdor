@@ -8,7 +8,6 @@ import fr.mch.mdo.restaurant.dao.beans.Category;
 import fr.mch.mdo.restaurant.dao.beans.MdoTableAsEnum;
 import fr.mch.mdo.restaurant.dto.beans.CategoryDto;
 import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 import fr.mch.mdo.utils.IManagerAssembler;
 
@@ -44,13 +43,13 @@ public class DefaultCategoriesAssembler extends AbstractAssembler implements IMa
 	}
 
 	@Override
-	public IMdoDtoBean marshal(IMdoDaoBean daoBean, MdoUserContext userContext) {
+	public IMdoDtoBean marshal(IMdoDaoBean daoBean) {
 		CategoryDto dto = null;
 		if (daoBean != null) {
 			Category bean = (Category) daoBean;
 			dto = new CategoryDto();
 			dto.setId(bean.getId());
-			MdoTableAsEnumDto code = (MdoTableAsEnumDto) mdoTableAsEnumsAssembler.marshal(bean.getCode(), userContext);
+			MdoTableAsEnumDto code = (MdoTableAsEnumDto) mdoTableAsEnumsAssembler.marshal(bean.getCode());
 			dto.setCode(code);
 			dto.setLabels(super.getLabels(bean.getLabels()));
 		}

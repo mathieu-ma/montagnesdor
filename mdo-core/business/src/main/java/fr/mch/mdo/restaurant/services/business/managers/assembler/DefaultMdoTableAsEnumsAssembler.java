@@ -6,7 +6,6 @@ import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.beans.MdoTableAsEnum;
 import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 import fr.mch.mdo.utils.IManagerAssembler;
 
@@ -31,7 +30,7 @@ public class DefaultMdoTableAsEnumsAssembler extends AbstractAssembler implement
 	}
 
 	@Override
-	public IMdoDtoBean marshal(IMdoDaoBean daoBean, MdoUserContext userContext) {
+	public IMdoDtoBean marshal(IMdoDaoBean daoBean) {
 		MdoTableAsEnumDto dto = null;
 		if (daoBean != null) {
 			MdoTableAsEnum bean = (MdoTableAsEnum) daoBean;

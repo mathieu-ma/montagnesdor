@@ -1,0 +1,72 @@
+grant Principal * * 
+{
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/Logon";
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/orders/Logon";
+};
+
+
+grant Principal fr.mch.mdo.restaurant.services.authorization.jaas.TypedPrincipal "USER" 
+{
+};
+
+grant Principal fr.mch.mdo.restaurant.services.authorization.jaas.TypedPrincipal "ADMINISTRATOR" 
+{
+	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/orders/RedirectToSchemeHTTP";
+
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/orders/AjaxI18nMessages";  	
+
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/orders/ChangeEntryDate";
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/orders/TablesOrders";
+
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/orders/User";
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/orders/ChangePassword";
+};
+
+grant Principal fr.mch.mdo.restaurant.services.authorization.jaas.TypedPrincipal "GLOBAL_ADMINISTRATOR" 
+{
+	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/RedirectToSchemeHTTP";
+
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/AjaxI18nMessages";  	
+
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/LocalesManager";  	
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/LocalesManagerCUD";  	
+
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/MdoTableAsEnumsManager";
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/MdoTableAsEnumsManagerCUD";
+
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/TableTypesManager";
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/TableTypesManagerCUD";
+
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/RestaurantsManager";  	
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/RestaurantsManagerCUD";  	
+
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/UserRolesManager";
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/UserRolesManagerCUD";
+
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/UserAuthenticationsManager";
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/UserAuthenticationsManagerCUD";
+
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/UsersManager";  	
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/UsersManagerCUD";  	
+
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/CategoriesManager";  	
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/CategoriesManagerCUD";  	
+
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/ProductSpecialCodesManager";  	
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/ProductSpecialCodesManagerCUD";  	
+
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/ProductPartsManager";  	
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/ProductPartsManagerCUD";  	
+
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/ValueAddedTaxesManager";  	
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/ValueAddedTaxesManagerCUD";  	
+
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/ProductsManager";  	
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/ProductsManagerCUD";  	
+
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/PrintingInformationsManager";  	
+  	permission fr.mch.mdo.restaurant.services.authorization.jaas.URLPermission "/administration/PrintingInformationsManagerCUD";  	
+
+};
+
+

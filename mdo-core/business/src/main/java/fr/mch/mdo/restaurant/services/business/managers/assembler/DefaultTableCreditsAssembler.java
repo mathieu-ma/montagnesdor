@@ -9,7 +9,6 @@ import fr.mch.mdo.restaurant.dao.beans.DinnerTable;
 import fr.mch.mdo.restaurant.dao.beans.TableCredit;
 import fr.mch.mdo.restaurant.dto.beans.CreditDto;
 import fr.mch.mdo.restaurant.dto.beans.DinnerTableDto;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.TableCreditDto;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 import fr.mch.mdo.utils.IManagerAssembler;
@@ -51,13 +50,13 @@ public class DefaultTableCreditsAssembler extends AbstractAssembler implements I
 	}
 
 	@Override
-	public IMdoDtoBean marshal(IMdoDaoBean daoBean, MdoUserContext userContext) {
+	public IMdoDtoBean marshal(IMdoDaoBean daoBean) {
 		TableCreditDto dto = null;
 		if (daoBean != null) {
 			TableCredit bean = (TableCredit) daoBean;
 			dto = new TableCreditDto();
 			dto.setId(bean.getId());
-			CreditDto credit = (CreditDto) creditsAssembler.marshal(bean.getCredit(), userContext);
+			CreditDto credit = (CreditDto) creditsAssembler.marshal(bean.getCredit());
 			dto.setCredit(credit);
 			if (bean.getDinnerTable() != null) {
 				DinnerTableDto dinnerTable = new DinnerTableDto();

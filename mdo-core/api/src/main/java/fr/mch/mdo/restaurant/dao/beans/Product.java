@@ -56,6 +56,11 @@ public class Product extends MdoDaoBean implements IBeanLabelable
 	private Map<Long, String> labels;
 
 	/**
+	 * This is used for i18n label.
+	 */
+	private Set<ProductLanguage> productLanguages;
+	
+	/**
 	 * This is used to detail product categories.
 	 */
 	private Set<ProductCategory> categories;
@@ -143,6 +148,20 @@ public class Product extends MdoDaoBean implements IBeanLabelable
 	}
 
 	/**
+	 * @return the productLanguages
+	 */
+	public Set<ProductLanguage> getProductLanguages() {
+		return productLanguages;
+	}
+
+	/**
+	 * @param productLanguages the productLanguages to set
+	 */
+	public void setProductLanguages(Set<ProductLanguage> productLanguages) {
+		this.productLanguages = productLanguages;
+	}
+
+	/**
 	 * @param labels
 	 *            the labels to set
 	 */
@@ -214,8 +233,11 @@ public class Product extends MdoDaoBean implements IBeanLabelable
 
 	@Override
 	public String toString() {
-		return "Product [categories=" + categories + ", code=" + code + ", colorRGB=" + colorRGB + ", labels=" + labels + ", price=" + price + ", restaurant=" + restaurant
-				+ ", vat=" + vat + ", deleted=" + deleted + ", id=" + id + "]";
+		return "Product [restaurant=" + restaurant + ", code=" + code
+				+ ", price=" + price + ", colorRGB=" + colorRGB + ", vat="
+				+ vat + ", labels=" + labels + ", productLanguages="
+				+ productLanguages + ", categories=" + categories + ", id="
+				+ id + ", deleted=" + deleted + "]";
 	}
 
 }

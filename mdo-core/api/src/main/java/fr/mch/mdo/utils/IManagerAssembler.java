@@ -6,15 +6,14 @@ import java.util.Set;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 
 public interface IManagerAssembler
 {
-    IMdoDtoBean marshal(IMdoDaoBean daoBean, MdoUserContext userContext);
+    IMdoDtoBean marshal(IMdoDaoBean daoBean);
 
-    List<IMdoDtoBean> marshal(List<? extends IMdoBean> list, MdoUserContext userContext);
+    List<IMdoDtoBean> marshal(List<? extends IMdoBean> list);
 
-    Set<IMdoDtoBean> marshal(Set<? extends IMdoBean> set, MdoUserContext userContext);
+    Set<IMdoDtoBean> marshal(Set<? extends IMdoBean> set);
 
     List<IMdoDaoBean> unmarshal(List<? extends IMdoBean> list, IMdoDaoBean... parents);
 

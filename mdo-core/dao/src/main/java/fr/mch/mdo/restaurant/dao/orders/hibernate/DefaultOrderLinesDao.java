@@ -1,17 +1,22 @@
 package fr.mch.mdo.restaurant.dao.orders.hibernate;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.criterion.Projections;
+import org.hibernate.transform.ResultTransformer;
 
 import fr.mch.mdo.logs.ILogger;
+import fr.mch.mdo.restaurant.Constants;
+import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.dao.beans.OrderLine;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServices;
+import fr.mch.mdo.restaurant.dao.hibernate.MdoAliasToBean;
 import fr.mch.mdo.restaurant.dao.orders.IOrderLinesDao;
-import fr.mch.mdo.restaurant.exception.MdoException;
+import fr.mch.mdo.restaurant.exception.MdoDataBeanException;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 
 public class DefaultOrderLinesDao extends DefaultDaoServices implements IOrderLinesDao 
@@ -34,26 +39,53 @@ public class DefaultOrderLinesDao extends DefaultDaoServices implements IOrderLi
 	}
 
 	@Override
-	public OrderLine getOrderLine(Long id) throws MdoException {
+	public IMdoBean getOrderLine(Long id) throws MdoDataBeanException {
 		OrderLine result = null;
 		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
 		criterias.add(new MdoCriteria("id", PropertiesRestrictions.EQUALS, id));
 		
-		criterias.add(new MdoCriteria("quantity", PropertiesRestrictions.PROJECTION, Projections.property("quantity")));
-		criterias.add(new MdoCriteria("label", PropertiesRestrictions.PROJECTION, Projections.property("label")));
-		criterias.add(new MdoCriteria("unitPrice", PropertiesRestrictions.PROJECTION, Projections.property("unitPrice")));
-		criterias.add(new MdoCriteria("amount", PropertiesRestrictions.PROJECTION, Projections.property("amount")));
+		criterias.add(new MdoCriteria("quantity", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("label", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("unitPrice", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("amount", PropertiesRestrictions.PROJECTION));
 
-		Object[] object = (Object[]) super.uniqueResult(super.findByCriteria(super.getBean().getClass(), criterias));
-		if (object != null) {
-			result = new OrderLine();
-			result.setId(id);
-			result.setQuantity(new BigDecimal(object[0].toString()));
-			result.setLabel((String) object[1]);
-			result.setUnitPrice(new BigDecimal(object[2].toString()));
-			result.setAmount(new BigDecimal(object[3].toString()));
-		}
+		result = (OrderLine) super.uniqueResult(super.findByCriteria(super.getBean().getClass(), OrderLine.class, criterias, true));
 		
 		return result;
 	}
+	
+	@Override
+	public int getOrderLinesSize(Long dinnerTableId) throws MdoDataBeanException {
+		int result = 0;
+
+		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
+		criterias.add(new MdoCriteria("dinnerTable.id", PropertiesRestrictions.EQUALS, dinnerTableId));
+		criterias.add(new MdoCriteria("count", PropertiesRestrictions.PROJECTION_ROW_COUNT, Projections.rowCount()));
+		Object object = super.uniqueResult(super.findByCriteria(OrderLine.class, criterias));
+		if (object != null) {
+			result = new Integer(object.toString());
+		}
+
+		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<OrderLine> findAllScalarFieldsByDinnerTableId(Long dinnerTableId, Long locId) throws MdoDataBeanException {
+		List<OrderLine> result = new ArrayList<OrderLine>();
+		
+		Map<String, Object> values = new HashMap<String, Object>();
+		values.put("dinnerTableId", dinnerTableId);
+		values.put("locId", locId);
+		ResultTransformer resultTransformer = new MdoAliasToBean(OrderLine.class, new String[] {
+			"id", "quantity", "unitPrice", "amount", 
+			"productSpecialCode.shortCode", "productSpecialCode.code.name", 
+			"product.code", "label"
+		});
+
+		result = super.findAllByQuery(Constants.HQL_ORDER_LINE_FIND_BY_DINNER_TABLE_ID, values, resultTransformer);
+
+		return result;
+	}
+
 }

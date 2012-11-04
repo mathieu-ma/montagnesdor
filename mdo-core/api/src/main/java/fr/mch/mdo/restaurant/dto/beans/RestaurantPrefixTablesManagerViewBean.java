@@ -20,25 +20,9 @@ public class RestaurantPrefixTablesManagerViewBean extends AdministrationManager
      */
 	private static final long serialVersionUID = 1L;
 	
-	private List<IMdoDtoBean> restaurants;
-
 	private List<IMdoDtoBean> types;
 
 	private List<IMdoDtoBean> prefixes;
-
-	/**
-	 * @return the restaurants
-	 */
-	public List<IMdoDtoBean> getRestaurants() {
-		return restaurants;
-	}
-
-	/**
-	 * @param restaurants the restaurants to set
-	 */
-	public void setRestaurants(List<IMdoDtoBean> restaurants) {
-		this.restaurants = restaurants;
-	}
 
 	/**
 	 * @return the types

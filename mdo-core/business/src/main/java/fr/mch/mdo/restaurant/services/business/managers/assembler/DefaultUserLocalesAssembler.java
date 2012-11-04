@@ -8,7 +8,6 @@ import fr.mch.mdo.restaurant.dao.beans.Locale;
 import fr.mch.mdo.restaurant.dao.beans.UserAuthentication;
 import fr.mch.mdo.restaurant.dao.beans.UserLocale;
 import fr.mch.mdo.restaurant.dto.beans.LocaleDto;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.UserAuthenticationDto;
 import fr.mch.mdo.restaurant.dto.beans.UserLocaleDto;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
@@ -45,13 +44,13 @@ public class DefaultUserLocalesAssembler extends AbstractAssembler implements IM
 	}
 
 	@Override
-	public IMdoDtoBean marshal(IMdoDaoBean daoBean, MdoUserContext userContext) {
+	public IMdoDtoBean marshal(IMdoDaoBean daoBean) {
 		UserLocaleDto dto = null;
 		if (daoBean != null) {
 			UserLocale bean = (UserLocale) daoBean;
 			dto = new UserLocaleDto();
 			dto.setId(bean.getId());
-			LocaleDto locale = (LocaleDto) localesAssembler.marshal(bean.getLocale(), userContext);
+			LocaleDto locale = (LocaleDto) localesAssembler.marshal(bean.getLocale());
 			dto.setLocale(locale);
 			UserAuthenticationDto user = null;
 			dto.setUser(user);

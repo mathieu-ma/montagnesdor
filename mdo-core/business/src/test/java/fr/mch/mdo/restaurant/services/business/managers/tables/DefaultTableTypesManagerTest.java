@@ -47,7 +47,7 @@ public class DefaultTableTypesManagerTest extends DefaultAdministrationManagerTe
 		// Use the existing data in database
 		code.setId(1L);
 		try {
-			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId(), userContext);
+			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -61,7 +61,7 @@ public class DefaultTableTypesManagerTest extends DefaultAdministrationManagerTe
 		// Use the existing data in database
 		code.setId(2L);
 		try {
-			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId(), userContext);
+			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -70,7 +70,7 @@ public class DefaultTableTypesManagerTest extends DefaultAdministrationManagerTe
 		code = new MdoTableAsEnumDto();
 		code.setId(3L);
 		try {
-			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId(), userContext);
+			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -84,27 +84,27 @@ public class DefaultTableTypesManagerTest extends DefaultAdministrationManagerTe
 		// Use the existing data in database
 		code.setId(4L);
 		try {
-			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId(), userContext);
+			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 		try {
 			// Create new bean to be updated
-			IMdoBean beanToBeUpdated = this.getInstance().insert(createNewBean(code), DefaultAdministrationManagerTest.userContext);
+			IMdoBean beanToBeUpdated = this.getInstance().insert(createNewBean(code));
 			assertTrue("IMdoBean must be instance of " + Locale.class, beanToBeUpdated instanceof TableTypeDto);
 			TableTypeDto castedBean = (TableTypeDto) beanToBeUpdated;
 			assertNotNull("TableTypeDto code must not be null", castedBean.getCode());
 			assertEquals("TableTypeDto code must be equals to unique key", code.getLanguageKeyLabel(), castedBean.getCode().getLanguageKeyLabel());
 			// Use the existing data in database
 			code.setId(5L);
-			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId(), userContext);
+			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId());
 			// Update the created bean
 			castedBean.setCode(code);
-			castedBean = (TableTypeDto) this.getInstance().update(castedBean, DefaultAdministrationManagerTest.userContext);
+			castedBean = (TableTypeDto) this.getInstance().update(castedBean);
 			// Reload the modified bean
 			TableTypeDto updatedBean = new TableTypeDto();
 			updatedBean.setId(castedBean.getId());
-			IMdoBean loadedBean = this.getInstance().load(updatedBean, DefaultAdministrationManagerTest.userContext);
+			IMdoBean loadedBean = this.getInstance().load(updatedBean);
 			assertTrue("IMdoBean must be instance of " + TableTypeDto.class, loadedBean instanceof TableTypeDto);
 			updatedBean = (TableTypeDto) loadedBean;
 			assertNotNull("TableTypeDto code must not be null", updatedBean.getCode());
@@ -118,7 +118,7 @@ public class DefaultTableTypesManagerTest extends DefaultAdministrationManagerTe
 	public void doProcessList() {
 		TableTypesManagerViewBean viewBean = new TableTypesManagerViewBean();
 		try {
-			this.getInstance().processList(viewBean, DefaultAdministrationManagerTest.userContext);
+			this.getInstance().processList(viewBean);
 			assertNotNull("Main list not be null", viewBean.getList());
 			assertFalse("Main list not be empty", viewBean.getList().isEmpty());
 			assertNotNull("Codes list not be null", viewBean.getCodes());
@@ -136,18 +136,18 @@ public class DefaultTableTypesManagerTest extends DefaultAdministrationManagerTe
 	public void testFindByCodeName() {
 		String codeName = null;
 		try {
-			((ITableTypesManager) this.getInstance()).findByCodeName(codeName, DefaultAdministrationManagerTest.userContext);
+			((ITableTypesManager) this.getInstance()).findByCodeName(codeName);
 			fail(DEFAULT_FAILED_MESSAGE);
 		} catch (MdoException e) {
 			assertNotNull("Exception because codeName null", e);
 		}
 		try {
 			codeName = "";
-			TableTypeDto tableType = ((ITableTypesManager) this.getInstance()).findByCodeName(codeName, DefaultAdministrationManagerTest.userContext);
+			TableTypeDto tableType = ((ITableTypesManager) this.getInstance()).findByCodeName(codeName);
 			assertNull("TableTypeDto must be null", tableType);
 
 			codeName = "TAKE_AWAY";
-			tableType = ((ITableTypesManager) this.getInstance()).findByCodeName(codeName, DefaultAdministrationManagerTest.userContext);
+			tableType = ((ITableTypesManager) this.getInstance()).findByCodeName(codeName);
 			assertNotNull("TableTypeDto must NOT be null", tableType);
 			assertEquals("Check TableTypeDto code name", codeName, tableType.getCode().getName());
 		} catch (MdoException e) {

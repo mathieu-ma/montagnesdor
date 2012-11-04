@@ -11,6 +11,7 @@ import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dto.beans.UserDto;
 import fr.mch.mdo.restaurant.dto.beans.UserRestaurantDto;
 import fr.mch.mdo.restaurant.dto.beans.UsersManagerViewBean;
+import fr.mch.mdo.restaurant.exception.MdoBusinessException;
 import fr.mch.mdo.restaurant.ioc.spring.WebAdministrationBeanFactory;
 import fr.mch.mdo.restaurant.ui.forms.IMdoAdministrationForm;
 import fr.mch.mdo.restaurant.ui.forms.UsersManagerForm;
@@ -56,7 +57,7 @@ public class UsersManagerWebAction extends AdministrationManagerAction
 	}
 
 	@Override
-	public String save() {
+	public String save() throws MdoBusinessException {
 		
 		this.processSave(new String[] {null});
 		// Return to the list
@@ -87,7 +88,7 @@ public class UsersManagerWebAction extends AdministrationManagerAction
 		viewBean.setRestaurants(availableRestaurants);
 	}
 
-	private void processSave(String... restaurantIdToRemove) {
+	private void processSave(String... restaurantIdToRemove) throws MdoBusinessException {
 		if (restaurantIdToRemove != null && restaurantIdToRemove.length == 1) {
 			removeRestaurantBeforeSaving(restaurantIdToRemove[0]);
 		}

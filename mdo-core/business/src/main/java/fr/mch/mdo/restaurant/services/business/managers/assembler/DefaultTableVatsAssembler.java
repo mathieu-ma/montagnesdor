@@ -8,7 +8,6 @@ import fr.mch.mdo.restaurant.dao.beans.DinnerTable;
 import fr.mch.mdo.restaurant.dao.beans.TableVat;
 import fr.mch.mdo.restaurant.dao.beans.ValueAddedTax;
 import fr.mch.mdo.restaurant.dto.beans.DinnerTableDto;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.TableVatDto;
 import fr.mch.mdo.restaurant.dto.beans.ValueAddedTaxDto;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
@@ -51,7 +50,7 @@ public class DefaultTableVatsAssembler extends AbstractAssembler implements IMan
 	}
 
 	@Override
-	public IMdoDtoBean marshal(IMdoDaoBean daoBean, MdoUserContext userContext) {
+	public IMdoDtoBean marshal(IMdoDaoBean daoBean) {
 		TableVatDto dto = null;
 		if (daoBean != null) {
 			TableVat bean = (TableVat) daoBean;
@@ -64,7 +63,7 @@ public class DefaultTableVatsAssembler extends AbstractAssembler implements IMan
 				dto.setDinnerTable(dinnerTable);
 			}
 			dto.setValue(bean.getValue());
-			ValueAddedTaxDto vat = (ValueAddedTaxDto) vatsAssembler.marshal(bean.getVat(), userContext);
+			ValueAddedTaxDto vat = (ValueAddedTaxDto) vatsAssembler.marshal(bean.getVat());
 			dto.setVat(vat);
 		}
 		return dto;

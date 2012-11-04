@@ -8,11 +8,9 @@ import fr.mch.mdo.logs.ILoggerBean;
 import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.beans.MdoTableAsEnum;
-import fr.mch.mdo.restaurant.dao.beans.RestaurantValueAddedTax;
 import fr.mch.mdo.restaurant.dao.beans.User;
 import fr.mch.mdo.restaurant.dao.beans.UserRestaurant;
 import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.UserDto;
 import fr.mch.mdo.restaurant.dto.beans.UserRestaurantDto;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
@@ -59,7 +57,7 @@ public class DefaultUsersAssembler extends AbstractAssembler implements IManager
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public IMdoDtoBean marshal(IMdoDaoBean daoBean, MdoUserContext userContext) {
+	public IMdoDtoBean marshal(IMdoDaoBean daoBean) {
 		UserDto dto = null;
 		if (daoBean != null) {
 			User bean = (User) daoBean;
@@ -70,9 +68,9 @@ public class DefaultUsersAssembler extends AbstractAssembler implements IManager
 			dto.setForename2(bean.getForename2());
 			dto.setName(bean.getName());
 			dto.setSex(bean.isSex());
-			MdoTableAsEnumDto title = (MdoTableAsEnumDto) mdoTableAsEnumsAssembler.marshal(bean.getTitle(), userContext);
+			MdoTableAsEnumDto title = (MdoTableAsEnumDto) mdoTableAsEnumsAssembler.marshal(bean.getTitle());
 			dto.setTitle(title);
-			Set<UserRestaurantDto> restaurants = (Set) userRestaurantsAssembler.marshal(bean.getRestaurants(), userContext);
+			Set<UserRestaurantDto> restaurants = (Set) userRestaurantsAssembler.marshal(bean.getRestaurants());
 			dto.setRestaurants(restaurants);
 		}
 		return dto;

@@ -7,7 +7,6 @@ import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.beans.MdoTableAsEnum;
 import fr.mch.mdo.restaurant.dao.beans.ValueAddedTax;
 import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.ValueAddedTaxDto;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 import fr.mch.mdo.utils.IManagerAssembler;
@@ -35,14 +34,14 @@ public class DefaultValueAddedTaxesAssembler extends AbstractAssembler implement
 	}
 
 	@Override
-	public IMdoDtoBean marshal(IMdoDaoBean daoBean, MdoUserContext userContext) {
+	public IMdoDtoBean marshal(IMdoDaoBean daoBean) {
 		ValueAddedTaxDto dto = null;
 		if (daoBean != null) {
 			ValueAddedTax bean = (ValueAddedTax) daoBean;
 			dto = new ValueAddedTaxDto();
 			dto.setId(bean.getId());
 			MdoTableAsEnum code = bean.getCode();
-			MdoTableAsEnumDto codeDto = (MdoTableAsEnumDto) mdoTableAsEnumsAssembler.marshal(code, userContext);
+			MdoTableAsEnumDto codeDto = (MdoTableAsEnumDto) mdoTableAsEnumsAssembler.marshal(code);
 			dto.setCode(codeDto);
 			dto.setRate(bean.getRate());
 		}

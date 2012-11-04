@@ -29,10 +29,11 @@ public enum IocBeanName
     BEAN_PRODUCT_SPECIAL_CODES_MANAGER_NAME("ProductSpecialCodesManager"),
     BEAN_TABLE_TYPES_MANAGER_NAME("TableTypesManager"),
     BEAN_PRINTING_INFORMATIONS_MANAGER_NAME("PrintingInformationsManager"),
+    BEAN_TABLE_ORDERS_MANAGER_NAME("DinnerTablesManager"),
     
     // Restaurant Application Part
-    BEAN_TABLE_ORDERS_MANAGER_NAME("DinnerTablesManager")
-    
+    BEAN_ORDERS_MANAGER_NAME("OrdersManager")
+
     ;
 
     private final String value;

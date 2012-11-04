@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu>
+	<menu-entry>
+		<label key="menu.manage.user"/>
+		<link>/orders/User.action</link>
+	</menu-entry>
+	<menu-entry>
+		<label key="menu.manage.orders"/>
+		<link>/orders/TablesOrders!list.action</link>
+	</menu-entry>
+	<menu-entry>
+		<label key="menu.manage.daily.returns"/>
+		<link>/orders/DailyReturns.action</link>
+	</menu-entry>
+	<menu-entry>
+		<label key="menu.manage.monthly.returns"/>
+		<link>/orders/MonthlyReturns.action</link>
+	</menu-entry>
+	<menu-entry>
+		<label key="menu.manage.menu"/>
+		<link>/orders/Menu.action</link>
+	</menu-entry>
+</menu>

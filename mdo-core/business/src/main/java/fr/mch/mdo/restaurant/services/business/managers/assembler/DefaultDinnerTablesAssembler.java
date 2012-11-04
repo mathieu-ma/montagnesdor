@@ -19,7 +19,6 @@ import fr.mch.mdo.restaurant.dao.beans.TableType;
 import fr.mch.mdo.restaurant.dao.beans.TableVat;
 import fr.mch.mdo.restaurant.dao.beans.UserAuthentication;
 import fr.mch.mdo.restaurant.dto.beans.DinnerTableDto;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.OrderLineDto;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
 import fr.mch.mdo.restaurant.dto.beans.TableBillDto;
@@ -192,7 +191,7 @@ public class DefaultDinnerTablesAssembler extends AbstractAssembler implements I
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public IMdoDtoBean marshal(IMdoDaoBean daoBean, MdoUserContext userContext) {
+	public IMdoDtoBean marshal(IMdoDaoBean daoBean) {
 		DinnerTableDto dto = null;
 		if (daoBean != null) {
 			DinnerTable bean = (DinnerTable) daoBean;
@@ -209,24 +208,24 @@ public class DefaultDinnerTablesAssembler extends AbstractAssembler implements I
 			}
 			Set<TableBillDto> bills = null;
 			if (bean.getBills() != null) {
-				bills = (Set) tableBillsAssembler.marshal(bean.getBills(), userContext);
+				bills = (Set) tableBillsAssembler.marshal(bean.getBills());
 			}
 			dto.setBills(bills);
 			TableCashingDto cashing = null;
 			if (bean.getCashing() != null) {
-				cashing = (TableCashingDto) tableCashingsAssembler.marshal(bean.getCashing(), userContext);
+				cashing = (TableCashingDto) tableCashingsAssembler.marshal(bean.getCashing());
 			}
 			dto.setCashing(cashing);
 			Set<TableCreditDto> credits = null;
 			if (bean.getCredits() != null) {
-				credits = (Set) tableCreditsAssembler.marshal(bean.getCredits(), userContext);
+				credits = (Set) tableCreditsAssembler.marshal(bean.getCredits());
 			}
 			dto.setCredits(credits);
 			dto.setCustomersNumber(bean.getCustomersNumber());
 			dto.setNumber(bean.getNumber());
 			Set<OrderLineDto> orders = null;
 			if (bean.getOrders() != null) {
-				orders = (Set) orderLinesAssembler.marshal(bean.getOrders(), userContext);
+				orders = (Set) orderLinesAssembler.marshal(bean.getOrders());
 			}
 			dto.setOrders(orders);
 			dto.setPrintingDate(bean.getPrintingDate());
@@ -237,16 +236,16 @@ public class DefaultDinnerTablesAssembler extends AbstractAssembler implements I
 			dto.setReductionRatio(bean.getReductionRatio());
 			dto.setReductionRatioChanged(bean.getReductionRatioChanged());
 			dto.setRegistrationDate(bean.getRegistrationDate());
-			RestaurantDto restaurant = (RestaurantDto) restaurantsAssembler.marshal(bean.getRestaurant(), userContext); 
+			RestaurantDto restaurant = (RestaurantDto) restaurantsAssembler.marshal(bean.getRestaurant()); 
 			dto.setRestaurant(restaurant);
 			dto.setRoo_id(null);
-			TableTypeDto type = (TableTypeDto) tableTypesAssembler.marshal(bean.getType(), userContext); 
+			TableTypeDto type = (TableTypeDto) tableTypesAssembler.marshal(bean.getType()); 
 			dto.setType(type);
-			UserAuthenticationDto user = (UserAuthenticationDto) userAuthenticationsAssembler.marshal(bean.getUser(), userContext); 
+			UserAuthenticationDto user = (UserAuthenticationDto) userAuthenticationsAssembler.marshal(bean.getUser()); 
 			dto.setUser(user);
 			Set<TableVatDto> vats = null;
 			if (bean.getVats() != null) {
-				vats = (Set) tableVatsAssembler.marshal(bean.getVats(), userContext);
+				vats = (Set) tableVatsAssembler.marshal(bean.getVats());
 			}
 			dto.setVats(vats);
 		}
@@ -309,8 +308,8 @@ public class DefaultDinnerTablesAssembler extends AbstractAssembler implements I
 	}
 
 	@Override
-	public IMdoDtoBean marshalTableType(IMdoDaoBean daoBean, MdoUserContext userContext) {
-		return tableTypesAssembler.marshal(daoBean, userContext);
+	public IMdoDtoBean marshalTableType(IMdoDaoBean daoBean) {
+		return tableTypesAssembler.marshal(daoBean);
 	}
 	
 	@Override
@@ -323,7 +322,7 @@ public class DefaultDinnerTablesAssembler extends AbstractAssembler implements I
 		this.logger = logger;
 	}
 
-	private IMdoDtoBean marshalFreeTable(IMdoDaoBean daoBean, MdoUserContext userContext) {
+	private IMdoDtoBean marshalFreeTable(IMdoDaoBean daoBean) {
 		DinnerTableDto dto = null;
 		if (daoBean != null) {
 			DinnerTable bean = (DinnerTable) daoBean;
@@ -354,11 +353,11 @@ public class DefaultDinnerTablesAssembler extends AbstractAssembler implements I
 	}
 
 	@Override
-	public List<IMdoDtoBean> marshalFreeTables(List<? extends IMdoBean> list, MdoUserContext userContext) {
+	public List<IMdoDtoBean> marshalFreeTables(List<? extends IMdoBean> list) {
 		List<IMdoDtoBean> result = new ArrayList<IMdoDtoBean>();
 		if (list != null) {
 			for (IMdoBean iMdoBean : list) {
-				result.add(marshalFreeTable((IMdoDaoBean) iMdoBean, userContext));
+				result.add(marshalFreeTable((IMdoDaoBean) iMdoBean));
 			}
 		}
 		return result;
@@ -366,13 +365,13 @@ public class DefaultDinnerTablesAssembler extends AbstractAssembler implements I
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public IMdoDtoBean marshalFreeTableByNumber(IMdoDaoBean daoBean, MdoUserContext userContext) {
-		DinnerTableDto dto = (DinnerTableDto) marshalFreeTable(daoBean, userContext);
+	public IMdoDtoBean marshalFreeTableByNumber(IMdoDaoBean daoBean) {
+		DinnerTableDto dto = (DinnerTableDto) marshalFreeTable(daoBean);
 		if (dto != null) {
 			DinnerTable bean = (DinnerTable) daoBean;
 			Set<OrderLineDto> orders = null;
 			if (bean.getOrders() != null) {
-				orders = (Set) orderLinesAssembler.marshal(bean.getOrders(), userContext);
+				orders = (Set) orderLinesAssembler.marshal(bean.getOrders());
 			}
 			dto.setOrders(orders);
 		}

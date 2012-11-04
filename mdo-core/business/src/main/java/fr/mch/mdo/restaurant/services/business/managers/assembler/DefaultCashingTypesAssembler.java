@@ -9,7 +9,6 @@ import fr.mch.mdo.restaurant.dao.beans.MdoTableAsEnum;
 import fr.mch.mdo.restaurant.dao.beans.TableCashing;
 import fr.mch.mdo.restaurant.dto.beans.CashingTypeDto;
 import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.TableCashingDto;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 import fr.mch.mdo.utils.IManagerAssembler;
@@ -37,14 +36,14 @@ public class DefaultCashingTypesAssembler extends AbstractAssembler implements I
 	}
 
 	@Override
-	public IMdoDtoBean marshal(IMdoDaoBean daoBean, MdoUserContext userContext) {
+	public IMdoDtoBean marshal(IMdoDaoBean daoBean) {
 		CashingTypeDto dto = null;
 		if (daoBean != null) {
 			CashingType bean = (CashingType) daoBean;
 			dto = new CashingTypeDto();
 			dto.setId(bean.getId());
 			dto.setAmount(bean.getAmount());
-			MdoTableAsEnumDto type = (MdoTableAsEnumDto) mdoTableAsEnumsAssembler.marshal(bean.getType(), userContext);
+			MdoTableAsEnumDto type = (MdoTableAsEnumDto) mdoTableAsEnumsAssembler.marshal(bean.getType());
 			dto.setType(type);
 			if (bean.getTableCashing() != null) {
 				TableCashingDto tableCashing = new TableCashingDto();

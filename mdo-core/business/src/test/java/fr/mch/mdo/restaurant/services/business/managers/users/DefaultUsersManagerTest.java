@@ -59,7 +59,7 @@ public class DefaultUsersManagerTest extends DefaultAdministrationManagerTest
 		// Use the existing data in database
 		MdoTableAsEnumDto title = new MdoTableAsEnumDto();
 		try {
-			title = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(1L, userContext);
+			title = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(1L);
 		} catch (MdoException e) {
 			fail("Could not found the user title code.");
 		}
@@ -82,7 +82,7 @@ public class DefaultUsersManagerTest extends DefaultAdministrationManagerTest
 		boolean sex = false;
 		MdoTableAsEnumDto title = new MdoTableAsEnumDto();
 		try {
-			title = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(1L, userContext);
+			title = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(1L);
 		} catch (MdoException e) {
 			fail("Could not found the user title code.");
 		}
@@ -93,7 +93,7 @@ public class DefaultUsersManagerTest extends DefaultAdministrationManagerTest
 		UserRestaurantDto userRestaurant = new UserRestaurantDto();
 		RestaurantDto restaurant = null;
 		try {
-			restaurant = (RestaurantDto) DefaultRestaurantsManager.getInstance().findByPrimaryKey(2L, userContext);
+			restaurant = (RestaurantDto) DefaultRestaurantsManager.getInstance().findByPrimaryKey(2L);
 		} catch (MdoException e) {
 			fail("Could not found the restaurant.");
 		}
@@ -129,7 +129,7 @@ public class DefaultUsersManagerTest extends DefaultAdministrationManagerTest
 		boolean sex = true;
 		MdoTableAsEnumDto title = new MdoTableAsEnumDto();
 		try {
-			title = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(1L, userContext);
+			title = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(1L);
 		} catch (MdoException e) {
 			fail("Could not found the user title code.");
 		}
@@ -140,7 +140,7 @@ public class DefaultUsersManagerTest extends DefaultAdministrationManagerTest
 		UserRestaurantDto userRestaurant = new UserRestaurantDto();
 		RestaurantDto restaurant = null;
 		try {
-			restaurant = (RestaurantDto) DefaultRestaurantsManager.getInstance().findByPrimaryKey(2L, userContext);
+			restaurant = (RestaurantDto) DefaultRestaurantsManager.getInstance().findByPrimaryKey(2L);
 		} catch (MdoException e) {
 			fail("Could not found the restaurant.");
 		}
@@ -148,7 +148,7 @@ public class DefaultUsersManagerTest extends DefaultAdministrationManagerTest
 		restaurants.add(userRestaurant);
 		try {
 			// Create new bean to be updated
-			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean, userContext);
+			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean);
 			assertTrue("IMdoBean must be instance of " + UserDto.class, beanToBeUpdated instanceof UserDto);
 			UserDto castedBean = (UserDto) beanToBeUpdated;
 			assertNotNull("User ID must not be null", castedBean.getId());
@@ -169,15 +169,15 @@ public class DefaultUsersManagerTest extends DefaultAdministrationManagerTest
 			userRestaurant.setRestaurant(restaurant);
 			restaurants.add(userRestaurant);
 			castedBean.setRestaurants(restaurants);
-			this.getInstance().update(castedBean, userContext);
+			this.getInstance().update(castedBean);
 			// Reload the modified bean
 			UserDto updatedBean = new UserDto();
 			updatedBean.setId(castedBean.getId());
-			updatedBean = (UserDto) this.getInstance().load(updatedBean, userContext);
+			updatedBean = (UserDto) this.getInstance().load(updatedBean);
 			assertNotNull("User restaurants must not be null", updatedBean.getRestaurants());
 			assertEquals("User restaurants size must be 2", restaurants.size(), updatedBean.getRestaurants().size());
 			
-			this.getInstance().delete(updatedBean, userContext);
+			this.getInstance().delete(updatedBean);
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
@@ -187,7 +187,7 @@ public class DefaultUsersManagerTest extends DefaultAdministrationManagerTest
 	public void doProcessList() {
 		UsersManagerViewBean viewBean = new UsersManagerViewBean();
 		try {
-			this.getInstance().processList(viewBean, DefaultAdministrationManagerTest.userContext);
+			this.getInstance().processList(viewBean);
 			assertNotNull("Main list not be null", viewBean.getList());
 			assertFalse("Main list not be empty", viewBean.getList().isEmpty());
 			assertNotNull("Restaurants list not be null", viewBean.getRestaurants());

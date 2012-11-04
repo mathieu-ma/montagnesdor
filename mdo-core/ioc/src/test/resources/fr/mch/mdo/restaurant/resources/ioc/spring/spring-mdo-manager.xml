@@ -44,6 +44,15 @@
 		<property name="mdoTableAsEnumsAssembler" ref="MdoTableAsEnumsAssembler" />
 		<property name="tableTypesAssembler" ref="TableTypesAssembler" />
 	</bean>
+	<bean id="RestaurantReductionTablesAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultRestaurantReductionTablesAssembler">
+		<property name="logger">
+			<bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultRestaurantReductionTablesAssembler</value></constructor-arg>
+   		   	</bean>
+		</property>
+		<property name="tableTypesAssembler" ref="TableTypesAssembler" />
+	</bean>
+	
 	<bean id="RestaurantVatsAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultRestaurantValueAddedTaxesAssembler">
 		<property name="logger">
 			<bean factory-bean="Logger" factory-method="getLogger">
@@ -52,12 +61,22 @@
 		</property>
 		<property name="vatsAssembler" ref="VatsAssembler" />
 	</bean>
+		<bean id="RestaurantVatTableTypesAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultRestaurantVatTableTypesAssembler">
+		<property name="logger">
+			<bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultRestaurantVatTableTypesAssembler</value></constructor-arg>
+   		   	</bean>
+		</property>
+		<property name="vatsAssembler" ref="VatsAssembler" />
+		<property name="tableTypesAssembler" ref="TableTypesAssembler" />
+	</bean>
 	<bean id="ProductSpecialCodesAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultProductSpecialCodesAssembler">
 		<property name="logger">
 			<bean factory-bean="Logger" factory-method="getLogger">
 			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultProductSpecialCodesAssembler</value></constructor-arg>
    		   	</bean>
 		</property>
+		<property name="vatsAssembler" ref="VatsAssembler" />
 		<property name="mdoTableAsEnumsAssembler" ref="MdoTableAsEnumsAssembler" />
 		<property name="restaurantsAssembler" ref="RestaurantsAssembler" />
 	</bean>
@@ -71,7 +90,8 @@
 		<property name="tableTypesAssembler" ref="TableTypesAssembler" />
 		<property name="restaurantVatsAssembler" ref="RestaurantVatsAssembler" />
 		<property name="restaurantPrefixTablesAssembler" ref="RestaurantPrefixTablesAssembler" />
-		<property name="productSpecialCodesAssembler" ref="ProductSpecialCodesAssembler" />
+		<property name="restaurantReductionTablesAssembler" ref="RestaurantReductionTablesAssembler" />
+		<property name="restaurantVatTableTypesAssembler" ref="RestaurantVatTableTypesAssembler" />
 		<property name="vatsAssembler" ref="VatsAssembler" />		
 	</bean>
 	<bean id="UserRestaurantsAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultUserRestaurantsAssembler">
@@ -149,9 +169,9 @@
 			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultProductsAssembler</value></constructor-arg>
    		   	</bean>
 		</property>
+		<property name="vatsAssembler" ref="VatsAssembler" />
 		<property name="productCategoriesAssembler" ref="ProductCategoriesAssembler" />
 		<property name="restaurantsAssembler" ref="RestaurantsAssembler" />
-		<property name="vatsAssembler" ref="VatsAssembler" />
 	</bean>
 	<bean id="PrintingInformationsAssembler" class="fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultPrintingInformationsAssembler">
 		<property name="logger">
@@ -351,7 +371,6 @@
 
 	<bean id="ProductsManager" class="fr.mch.mdo.restaurant.services.business.managers.products.DefaultProductsManager">
 		<property name="restaurantsManager" ref="RestaurantsManager" />
-		<property name="valueAddedTaxesManager" ref="ValueAddedTaxesManager" />
 		<property name="categoriesManager" ref="CategoriesManager" />
 		<property name="localesManager" ref="LocalesManager" />
 		<property name="logger">
@@ -401,4 +420,5 @@
 		<property name="productSpecialCodeDao" ref="ProductSpecialCodesDao" />
 		<property name="orderLinesDao" ref="OrderLinesDao" />
 	</bean>
+	
 </beans>       

@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import fr.mch.mdo.logs.ILogger;
-import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.authentication.AuthenticationPasswordLevel;
@@ -13,7 +12,7 @@ import fr.mch.mdo.restaurant.dao.beans.UserLocale;
 import fr.mch.mdo.restaurant.dao.users.IUserAuthenticationsDao;
 import fr.mch.mdo.restaurant.dao.users.hibernate.DefaultUserAuthenticationsDao;
 import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
+import fr.mch.mdo.restaurant.dto.beans.LocaleDto;
 import fr.mch.mdo.restaurant.dto.beans.UserAuthenticationDto;
 import fr.mch.mdo.restaurant.dto.beans.UserAuthenticationsManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.UserDto;
@@ -118,12 +117,12 @@ public class DefaultUserAuthenticationsManager extends AbstractAdministrationMan
 	}
 
 	@Override
-	public IMdoDtoBean findByLogin(String login, MdoUserContext userContext) throws MdoBusinessException {
+	public IMdoDtoBean findByLogin(String login) throws MdoBusinessException {
 		IMdoDtoBean result = null;
 		
 		try {
 			UserAuthentication user = (UserAuthentication) ((IUserAuthenticationsDao) dao).findByUniqueKey(login);
-			result = assembler.marshal(user, userContext);
+			result = assembler.marshal(user);
 		} catch (MdoException e) {
 			logger.error("message.error.administration.business.user.authentication.not.found", new Object[] {login}, e);
 			throw new MdoBusinessException("message.error.administration.business.user.authentication.not.found", new Object[] {login}, e);
@@ -132,13 +131,13 @@ public class DefaultUserAuthenticationsManager extends AbstractAdministrationMan
 	}
 
 	@Override
-	public void processList(IAdministrationManagerViewBean viewBean, MdoUserContext userContext, boolean... lazy) throws MdoBusinessException {
-		super.processList(viewBean, userContext, lazy);
+	public void processList(IAdministrationManagerViewBean viewBean, LocaleDto locale, boolean... lazy) throws MdoBusinessException {
+		super.processList(viewBean, lazy);
 		UserAuthenticationsManagerViewBean userAuthenticationsManagerViewBean = (UserAuthenticationsManagerViewBean) viewBean;
 		try {
-			userAuthenticationsManagerViewBean.setLanguages(localesManager.getLanguageLocales(userContext));
-			userAuthenticationsManagerViewBean.setUsers(usersManager.findAll(userContext));
-			userAuthenticationsManagerViewBean.setUserRoles(userRolesManager.findAll(userContext));
+			userAuthenticationsManagerViewBean.setLanguages(localesManager.getLanguageLocales(locale.getLanguageCode()));
+			userAuthenticationsManagerViewBean.setUsers(usersManager.findAll());
+			userAuthenticationsManagerViewBean.setUserRoles(userRolesManager.findAll());
 			
 			UserAuthenticationDto dtoBean = (UserAuthenticationDto) userAuthenticationsManagerViewBean.getDtoBean();
 			Long userIdForRestaurant = null;
@@ -147,7 +146,7 @@ public class DefaultUserAuthenticationsManager extends AbstractAdministrationMan
 			} else if (userAuthenticationsManagerViewBean.getUsers() != null && !userAuthenticationsManagerViewBean.getUsers().isEmpty()) {
 				userIdForRestaurant = ((UserDto) userAuthenticationsManagerViewBean.getUsers().get(0)).getId();
 			}
-			userAuthenticationsManagerViewBean.setUserRestaurants(restaurantsManager.findRestaurantsByUser(userIdForRestaurant, userContext));
+			userAuthenticationsManagerViewBean.setUserRestaurants(restaurantsManager.findRestaurantsByUser(userIdForRestaurant));
 
 		} catch (Exception e) {
 			logger.error("message.error.administration.business.find.all", e);
@@ -156,7 +155,7 @@ public class DefaultUserAuthenticationsManager extends AbstractAdministrationMan
 	}
 	
 	@Override
-	public IMdoDtoBean update(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
+	public IMdoDtoBean update(IMdoDtoBean dtoBean) throws MdoBusinessException {
 		UserAuthenticationDto result = null;  
 		UserAuthentication daoBean = (UserAuthentication) assembler.unmarshal(dtoBean);
 		try {
@@ -168,7 +167,7 @@ public class DefaultUserAuthenticationsManager extends AbstractAdministrationMan
 			// Restoring
 			daoBean.getLocales().addAll(backup);
 
-			result = (UserAuthenticationDto) assembler.marshal((IMdoDaoBean) dao.update(daoBean), userContext);
+			result = (UserAuthenticationDto) assembler.marshal((IMdoDaoBean) dao.update(daoBean));
 		} catch (MdoException e) {
 			logger.error("message.error.administration.business.save", e);
 			throw new MdoBusinessException("message.error.administration.business.save", e);
@@ -177,14 +176,14 @@ public class DefaultUserAuthenticationsManager extends AbstractAdministrationMan
 	}
 	
 	@Override
-	public IMdoDtoBean delete(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
+	public IMdoDtoBean delete(IMdoDtoBean dtoBean) throws MdoBusinessException {
 		// No need to Delete Locales before Deleting user because of hibernate mapping all-delete-orphan in collection
 		// Delete dto
-		return super.delete(dtoBean, userContext);
+		return super.delete(dtoBean);
 	}
 
 	@Override
-	public void changePassword(Long id, String levelPassword, String newPassword, IMdoBean userContext) throws MdoException {
+	public void changePassword(Long id, String levelPassword, String newPassword) throws MdoException {
 		IUserAuthenticationsDao castedDao = (IUserAuthenticationsDao) dao;
 		castedDao.changePassword(id, AuthenticationPasswordLevel.valueOf(levelPassword), newPassword);
 	}

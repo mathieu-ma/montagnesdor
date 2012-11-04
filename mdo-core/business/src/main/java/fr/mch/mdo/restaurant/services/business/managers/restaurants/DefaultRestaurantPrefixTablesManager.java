@@ -26,7 +26,6 @@ public class DefaultRestaurantPrefixTablesManager extends AbstractAdministration
 {
 	private IMdoTableAsEnumsManager mdoTableAsEnumsManager;
 	private ITableTypesManager tableTypesManager;
-	private IRestaurantsManager restaurantsManager;
 
 	private static class LazyHolder {
 		private static IRestaurantPrefixTablesManager instance = new DefaultRestaurantPrefixTablesManager(
@@ -40,7 +39,6 @@ public class DefaultRestaurantPrefixTablesManager extends AbstractAdministration
 		super.assembler = assembler;
 		this.mdoTableAsEnumsManager = DefaultMdoTableAsEnumsManager.getInstance();
 		this.tableTypesManager = DefaultTableTypesManager.getInstance();
-		this.restaurantsManager = DefaultRestaurantsManager.getInstance();
 	}
 
 	/**
@@ -81,30 +79,15 @@ public class DefaultRestaurantPrefixTablesManager extends AbstractAdministration
 		this.tableTypesManager = tableTypesManager;
 	}
 
-	/**
-	 * @return the restaurantsManager
-	 */
-	public IRestaurantsManager getRestaurantsManager() {
-		return restaurantsManager;
-	}
-
-	/**
-	 * @param restaurantsManager the restaurantsManager to set
-	 */
-	public void setRestaurantsManager(IRestaurantsManager restaurantsManager) {
-		this.restaurantsManager = restaurantsManager;
-	}
-
 	@Override
-	public void processList(IAdministrationManagerViewBean viewBean, MdoUserContext userContext, boolean... lazy) throws MdoBusinessException {
-		super.processList(viewBean, userContext, lazy);
+	public void processList(IAdministrationManagerViewBean viewBean, boolean... lazy) throws MdoBusinessException {
+		super.processList(viewBean, lazy);
 
 		RestaurantPrefixTablesManagerViewBean restaurantPrefixTablesManagerViewBean = (RestaurantPrefixTablesManagerViewBean) viewBean;
 		
 		try {
-			restaurantPrefixTablesManagerViewBean.setPrefixes(mdoTableAsEnumsManager.getPrefixTableNames(userContext));
-			restaurantPrefixTablesManagerViewBean.setTypes(tableTypesManager.findAll(userContext, lazy));
-			restaurantPrefixTablesManagerViewBean.setRestaurants(restaurantsManager.findAll(userContext, lazy));
+			restaurantPrefixTablesManagerViewBean.setPrefixes(mdoTableAsEnumsManager.getPrefixTableNames());
+			restaurantPrefixTablesManagerViewBean.setTypes(tableTypesManager.findAll(lazy));
 		} catch (MdoException e) {
 			logger.error("message.error.administration.business.find.all", e);
 			throw new MdoBusinessException("message.error.administration.business.find.all", e);
@@ -117,7 +100,7 @@ public class DefaultRestaurantPrefixTablesManager extends AbstractAdministration
 		try {
 			List<? extends IMdoBean> list = ((IRestaurantPrefixTablesDao) dao).findAll(restaurantId);
 			if (list != null) {
-				result = assembler.marshal(list, userContext);
+				result = assembler.marshal(list);
 			}
 		} catch (MdoException e) {
 			logger.error("message.error.administration.business.find.all", e);
@@ -132,7 +115,7 @@ public class DefaultRestaurantPrefixTablesManager extends AbstractAdministration
 		try {
 			List<? extends IMdoBean> list = ((IRestaurantPrefixTablesDao) dao).findAll(restaurantId, typeName);
 			if (list != null) {
-				result = assembler.marshal(list, userContext);
+				result = assembler.marshal(list);
 			}
 		} catch (MdoException e) {
 			logger.error("message.error.administration.business.find.all", e);

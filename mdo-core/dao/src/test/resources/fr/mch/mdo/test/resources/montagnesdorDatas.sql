@@ -83,10 +83,10 @@ INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_langua
 INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('USER_TITLE', 'MISTER', 0, 'Mister', 'USER_TITLE.MISTER.0', false);
 INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('USER_TITLE', 'MISS', 1, 'Miss', 'USER_TITLE.MISS.1', false);
 INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('USER_TITLE', 'DOCTOR', 2, 'Doctor', 'USER_TITLE.DOCTOR.2', false);
-INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('VALUE_ADDED_TAX', 'ALCOHOL', 0, '19.60', 'VALUE_ADDED_TAX.ALCOHOL.0', false);
-INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('VALUE_ADDED_TAX', 'DEFAULT', 1, '5.50', 'VALUE_ADDED_TAX.DEFAULT.1', false);
-INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('TABLE_TYPE', 'TAKE_AWAY', 0, 'Take away', 'TABLE_TYPE.TAKE_AWAY.0', false);
-INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('TABLE_TYPE', 'EAT_IN', 1, 'Eat in', 'TABLE_TYPE.EAT_IN.1', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('VALUE_ADDED_TAX', 'DEFAULT', 0, '5.50', 'VALUE_ADDED_TAX.DEFAULT.0', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('VALUE_ADDED_TAX', 'ALCOHOL', 1, '19.60', 'VALUE_ADDED_TAX.ALCOHOL.1', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('TABLE_TYPE', 'EAT_IN', 0, 'Eat in', 'TABLE_TYPE.EAT_IN.0', false);
+INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('TABLE_TYPE', 'TAKE_AWAY', 1, 'Take away', 'TABLE_TYPE.TAKE_AWAY.1', false);
 INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('CASHING_TYPE', 'GENERIC_CASH', 0, 'Generic Cash', 'CASHING_TYPE.GENERIC_CASH.0', false);
 INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('CASHING_TYPE', 'EURO_CASH', 1, 'Euro Cash', 'CASHING_TYPE.EURO_CASH.1', false);
 INSERT INTO t_enum (enm_type, enm_name, enm_order, enm_default_label, enm_language_key_label, enm_deleted) VALUES('CASHING_TYPE', 'DOLLAR_CASH', 2, 'Dollar Cash', 'CASHING_TYPE.DOLLAR_CASH.2', false);
@@ -128,20 +128,18 @@ INSERT INTO t_value_added_tax VALUES(2, 33, 5.50, false);
 --COMMENT ON COLUMN t_restaurant.res_visa_ref IS 'This is the restaurant visa reference.';
 --COMMENT ON COLUMN t_restaurant.res_triple_DES_key IS 'This is the restaurant triple DES key.';
 --COMMENT ON COLUMN t_restaurant.res_vat_by_takeaway IS 'This is used to know if we have to apply the V.A.T(Value Added Taxes) when it is a takeaway table. The default value is true.';
---COMMENT ON COLUMN t_restaurant.res_takeaway_basic_reduction IS 'This is the restaurant reduction for takeaway table we have to apply. This field depends on the field res_takeaway_min_amount_reduction.';
---COMMENT ON COLUMN t_restaurant.res_takeaway_min_amount_reduction IS 'This is the minimum amount value to apply a reduction for takeaway table.';
 --COMMENT ON COLUMN t_restaurant.res_specific_round IS 'This is the specific round to apply on all amounts calculations. It is a foreign that refers to the t_enum table for type SPECIFIC_ROUND_CALCULATION.';
 --COMMENT ON COLUMN t_restaurant.tbt_id IS 'This is the default table type. It is a foreign that refers to the t_table_type table. It is used to specify the dinner table type which can be EAT_IN, TAKEAWAY, ....';
---COMMENT ON COLUMN t_restaurant.vat_id IS 'This is a foreign key that refers to t_value_added_tax. It is used to specify the default VAT order line when the former order line is not define a product in restaurant catalog.';
+--COMMENT ON COLUMN t_restaurant.vat_id IS 'This is a foreign key that refers to t_value_added_tax. It is used to specify the default VAT custom order line when the former order line is not defined by a product in restaurant catalog.';
 --COMMENT ON COLUMN t_restaurant.res_deleted IS 'This is used for logical deletion.';
 INSERT INTO t_restaurant VALUES(1, '1970-08-15 15:08:19', '10203040506070', 
 'Kim-San', '11 allée Clémencet', '93340', 'Le Raincy', '01 43 02 50 90', 
 '1234567890', '0987654321', 'F5E4D3C2B1A0',
-true, 10, 15, 2, 1, 1, false);
+true, 2, 1, 1, false);
 INSERT INTO t_restaurant VALUES(2, '1970-08-15 15:08:19', '10203040506070B0', 
 'Kim-San', '11 allée Clémencet', '93340', 'Le Raincy', '01 43 02 50 90', 
 '1234567890', '0987654321', 'F5E4D3C2B1A0',
-true, 10, 15, 2, 2, 2, false);
+true, 2, 2, 2, false);
 
 --COMMENT ON TABLE t_restaurant_prefix_table IS 'This table is a association table. This table is used to store the list of restaurant table prefix names. These prefix names is used to know that a table is considered as a takeaway table.';
 --COMMENT ON COLUMN t_restaurant_prefix_table.rpt_id IS 'This is primary key of this table.';
@@ -149,7 +147,16 @@ true, 10, 15, 2, 2, 2, false);
 --COMMENT ON COLUMN t_restaurant_prefix_table.tbt_id IS 'This is a foreign key that refers to t_table_type. This field and the other res_id and rpt_prefix_enm_id fields consist of a unique field.';
 --COMMENT ON COLUMN t_restaurant_prefix_table.rpt_prefix_enm_id IS 'This is a foreign key that refers to t_enum table for type PREFIX_TAKEAWAY_TABLE_NAME. This field and the other res_id and tbt_id fields consist of a unique field.';
 --COMMENT ON COLUMN t_restaurant_prefix_table.rpt_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_restaurant_prefix_table VALUES(1, 1, 1, 1, false);
+INSERT INTO t_restaurant_prefix_table VALUES(1, 1, 2, 1, false);
+
+--COMMENT ON TABLE t_restaurant_reduction_table IS 'This table is a association table. This table is used to store the list of reductions depending on table type associated to a restaurant. Each row is table type with a specific reduction. For example, a take-away table may have a reduction ratio/value if the minimum amount is reached.';
+--COMMENT ON COLUMN t_restaurant_reduction_table.rrt_id IS 'This is primary key of this table.';
+--COMMENT ON COLUMN t_restaurant_reduction_table.res_id IS 'This is a foreign key that refers to t_restaurant. This field and the other tbt_id field consist of a unique field.';
+--COMMENT ON COLUMN t_restaurant_reduction_table.tbt_id IS 'This is a foreign key that refers to t_table_type. This field and the other res_id field consist of a unique field. It could be TAKE_AWAY type or EAT_IN type.';
+--COMMENT ON COLUMN t_restaurant_reduction_table.rrt_min_amount IS 'This is the minimum amount in which we can apply the reduction.';
+--COMMENT ON COLUMN t_restaurant_reduction_table.rrt_value IS 'This is the reduction value to apply when the minimum amount is reached. The value could be a ratio or an amount.';
+--COMMENT ON COLUMN t_restaurant_reduction_table.rrt_deleted IS 'This is used for logical deletion.';
+INSERT INTO t_restaurant_reduction_table VALUES(1, 1, 2, 15, 10, false);
 
 --COMMENT ON TABLE t_restaurant_vat IS 'This table is used for restaurant value added tax. Each restaurant has a list of value added tax.';
 --COMMENT ON COLUMN t_restaurant_vat.rvt_id IS 'This is primary key of this table.';
@@ -157,6 +164,14 @@ INSERT INTO t_restaurant_prefix_table VALUES(1, 1, 1, 1, false);
 --COMMENT ON COLUMN t_restaurant_vat.vat_id IS 'This is a foreign key that refers to t_value_added_tax. It is used to specify the value added tax. This field and the other res_id field consist of a unique field.';
 --COMMENT ON COLUMN t_restaurant_vat.rvt_deleted IS 'This is used for logical deletion.';
 INSERT INTO t_restaurant_vat VALUES(1, 1, 1, false);
+
+--COMMENT ON TABLE t_restaurant_vat_table_type IS 'This table is used for applying VAT to the whole table type, i.e, not by order lines.';
+--COMMENT ON COLUMN t_restaurant_vat_table_type.vtt_id IS 'This is primary key of this table.';
+--COMMENT ON COLUMN t_restaurant_vat_table_type.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant. This field and the others vat_id and tbt_id fields consist of a unique field.';
+--COMMENT ON COLUMN t_restaurant_vat_table_type.vat_id IS 'This is a foreign key that refers to t_value_added_tax. It is used to specify the value added tax. This field and the others res_id and tbt_id fields consist of a unique field.';
+--COMMENT ON COLUMN t_restaurant_vat_table_type.tbt_id IS 'This is a foreign key that refers to t_table_type. This field and the others res_id and vat_id fields consist of a unique field. It could be TAKE_AWAY type or EAT_IN type.';
+--COMMENT ON COLUMN t_restaurant_vat_table_type.vtt_deleted IS 'This is used for logical deletion.';
+INSERT INTO t_restaurant_vat_table_type VALUES(1, 1, 2, 2, false);
 
 --COMMENT ON TABLE t_user_role IS 'This table is used for user role.';
 --COMMENT ON COLUMN t_user_role.uro_id IS 'This is primary key of this table.';
@@ -211,7 +226,7 @@ INSERT INTO t_category VALUES(2, 27, false);
 --COMMENT ON COLUMN t_product_special_code.psc_short_code IS 'This is used to specify the short code enter by user.';
 --COMMENT ON COLUMN t_product_special_code.psc_code_enm_id IS 'This is a foreign key that refers to t_enum. It is used to specify the product special code.';
 --COMMENT ON COLUMN t_product_special_code.psc_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_product_special_code VALUES(1, 1, '#', 20, false);
+INSERT INTO t_product_special_code VALUES(1, 1, '#', 20, 1, false);
 
 --COMMENT ON TABLE t_product_part IS 'This table is used for product part.';
 --COMMENT ON COLUMN t_product_part.prp_id IS 'This is primary key of this table.';
@@ -285,14 +300,24 @@ INSERT INTO t_credit VALUES(1, 1, '123456789', 1.9, '1970-08-15 15:08:19', null,
 --COMMENT ON COLUMN t_dinner_table.dtb_reduction_ratio_changed IS 'This is used to specify if user has changed the reduction ratio.';
 --COMMENT ON COLUMN t_dinner_table.tbt_id IS 'This is used to specify the type of dinner table. Could be TAKE-AWAY, EAT-IN ... This is a foreign key that refers to t_table_type.';
 --COMMENT ON COLUMN t_dinner_table.dtb_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_dinner_table VALUES(1, 1, '12', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:19', null, false, 1, false);
-INSERT INTO t_dinner_table VALUES(2, 1, '12', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:20', null, false, 1, false);
-INSERT INTO t_dinner_table VALUES(3, 1, '123', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:21', null, false, 1, false);
-INSERT INTO t_dinner_table VALUES(4, 2, '123', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:22', null, false, 1, false);
-INSERT INTO t_dinner_table VALUES(5, 2, '124', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:23', null, false, 1, false);
-INSERT INTO t_dinner_table VALUES(6, 1, '23', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:21', null, false, 1, false);
-INSERT INTO t_dinner_table VALUES(7, 2, '24', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:22', null, false, 1, false);
-INSERT INTO t_dinner_table VALUES(8, 2, '25', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:23', null, false, 1, false);
+INSERT INTO t_dinner_table (dtb_id, res_id, dtb_code, aut_id, roo_id, dtb_customers_number, dtb_quantities_sum, dtb_amounts_sum, dtb_reduction_ratio, dtb_amount_pay, dtb_registration_date, dtb_printing_date, dtb_reduction_ratio_changed, tbt_id, dtb_deleted) 
+VALUES (1, 1, '12', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:19', null, false, 1, false);
+INSERT INTO t_dinner_table (dtb_id, res_id, dtb_code, aut_id, roo_id, dtb_customers_number, dtb_quantities_sum, dtb_amounts_sum, dtb_reduction_ratio, dtb_amount_pay, dtb_registration_date, dtb_printing_date, dtb_reduction_ratio_changed, tbt_id, dtb_deleted) 
+VALUES (2, 1, '12', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:20', null, false, 1, false);
+INSERT INTO t_dinner_table (dtb_id, res_id, dtb_code, aut_id, roo_id, dtb_customers_number, dtb_quantities_sum, dtb_amounts_sum, dtb_reduction_ratio, dtb_amount_pay, dtb_registration_date, dtb_printing_date, dtb_reduction_ratio_changed, tbt_id, dtb_deleted) 
+VALUES (3, 1, '123', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:21', null, false, 1, false);
+INSERT INTO t_dinner_table (dtb_id, res_id, dtb_code, aut_id, roo_id, dtb_customers_number, dtb_quantities_sum, dtb_amounts_sum, dtb_reduction_ratio, dtb_amount_pay, dtb_registration_date, dtb_printing_date, dtb_reduction_ratio_changed, tbt_id, dtb_deleted) 
+VALUES (4, 2, '123', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:22', null, false, 1, false);
+INSERT INTO t_dinner_table (dtb_id, res_id, dtb_code, aut_id, roo_id, dtb_customers_number, dtb_quantities_sum, dtb_amounts_sum, dtb_reduction_ratio, dtb_amount_pay, dtb_registration_date, dtb_printing_date, dtb_reduction_ratio_changed, tbt_id, dtb_deleted) 
+VALUES (5, 2, '124', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:23', null, false, 1, false);
+INSERT INTO t_dinner_table (dtb_id, res_id, dtb_code, aut_id, roo_id, dtb_customers_number, dtb_quantities_sum, dtb_amounts_sum, dtb_reduction_ratio, dtb_amount_pay, dtb_registration_date, dtb_printing_date, dtb_reduction_ratio_changed, tbt_id, dtb_deleted) 
+VALUES (6, 1, '23', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:21', null, false, 1, false);
+INSERT INTO t_dinner_table (dtb_id, res_id, dtb_code, aut_id, roo_id, dtb_customers_number, dtb_quantities_sum, dtb_amounts_sum, dtb_reduction_ratio, dtb_amount_pay, dtb_registration_date, dtb_printing_date, dtb_reduction_ratio_changed, tbt_id, dtb_deleted) 
+VALUES (7, 2, '24', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:22', null, false, 1, false);
+INSERT INTO t_dinner_table (dtb_id, res_id, dtb_code, aut_id, roo_id, dtb_customers_number, dtb_quantities_sum, dtb_amounts_sum, dtb_reduction_ratio, dtb_amount_pay, dtb_registration_date, dtb_printing_date, dtb_reduction_ratio_changed, tbt_id, dtb_deleted) 
+VALUES (8, 2, '25', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:23', null, false, 1, false);
+INSERT INTO t_dinner_table (dtb_id, res_id, dtb_code, aut_id, roo_id, dtb_customers_number, dtb_quantities_sum, dtb_amounts_sum, dtb_reduction_ratio, dtb_amount_pay, dtb_registration_date, dtb_printing_date, dtb_reduction_ratio_changed, tbt_id, dtb_deleted) 
+VALUES (9, 1, '101', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:19', '1970-08-15 16:08:19', false, 1, false);
 
 --COMMENT ON TABLE t_order_line IS 'This table is used for order lines depending on the specific dinner table.';
 --COMMENT ON COLUMN t_order_line.orl_id IS 'This is primary key of this table.';
@@ -367,8 +392,8 @@ INSERT INTO t_cashing_type VALUES(1, 1, 35, 115.12, false);
 --COMMENT ON COLUMN t_revenue.rev_closing_date IS 'This is the closing date of the day revenue depending on the type of table.';
 --COMMENT ON COLUMN t_revenue.rev_amount IS 'This is the amount of the day revenue depending on the type of table.';
 --COMMENT ON COLUMN t_revenue.rev_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_revenue VALUES(1, 1, '1970-08-15', 1, null, null, 345.6789, false);
-INSERT INTO t_revenue VALUES(2, 1, '1970-08-16', 1, null, null, 987.6543, false);
+INSERT INTO t_revenue VALUES(1, 1, '1970-08-15', 2, null, null, 345.6789, false);
+INSERT INTO t_revenue VALUES(2, 1, '1970-08-16', 2, null, null, 987.6543, false);
 
 -- COMMENT Statement is used for PostGresql but this is also compatible with HSQLDB 2.0.
 --COMMENT ON TABLE t_revenue_cashing IS 'This table is used for cashing revenue depending on type of cashing.';

@@ -16,6 +16,7 @@ import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.services.business.managers.DefaultAdministrationManagerTest;
 import fr.mch.mdo.restaurant.services.business.managers.DefaultMdoTableAsEnumsManager;
 import fr.mch.mdo.restaurant.services.business.managers.IAdministrationManager;
+import fr.mch.mdo.restaurant.services.business.managers.IManagerLabelable;
 import fr.mch.mdo.test.MdoTestCase;
 
 public class DefaultProductPartsManagerTest extends DefaultAdministrationManagerTest {
@@ -47,7 +48,7 @@ public class DefaultProductPartsManagerTest extends DefaultAdministrationManager
 		// Use the existing data in database
 		code.setId(1L);
 		try {
-			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId(), userContext);
+			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -62,7 +63,7 @@ public class DefaultProductPartsManagerTest extends DefaultAdministrationManager
 		// Use the existing data in database
 		code.setId(2L);
 		try {
-			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId(), userContext);
+			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -76,7 +77,7 @@ public class DefaultProductPartsManagerTest extends DefaultAdministrationManager
 		code = new MdoTableAsEnumDto();
 		code.setId(3L);
 		try {
-			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId(), userContext);
+			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -94,7 +95,7 @@ public class DefaultProductPartsManagerTest extends DefaultAdministrationManager
 		// Use the existing data in database
 		code.setId(4L);
 		try {
-			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId(), userContext);
+			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -104,7 +105,7 @@ public class DefaultProductPartsManagerTest extends DefaultAdministrationManager
 		labels.put(localeId, label);
 		try {
 			// Create new bean to be updated
-			IMdoBean beanToBeUpdated = this.getInstance().insert(createNewBean(code, labels), DefaultAdministrationManagerTest.userContext);
+			IMdoBean beanToBeUpdated = this.getInstance().insert(createNewBean(code, labels));
 			assertTrue("IMdoBean must be instance of " + ProductPartDto.class, beanToBeUpdated instanceof ProductPartDto);
 			ProductPartDto castedBean = (ProductPartDto) beanToBeUpdated;
 			assertNotNull("ProductPartDto code must not be null", castedBean.getCode());
@@ -114,10 +115,10 @@ public class DefaultProductPartsManagerTest extends DefaultAdministrationManager
 			assertEquals("Check ProductPartDto labels size", labels.size(), castedBean.getLabels().size());
 			// Use the existing data in database
 			code.setId(5L);
-			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId(), userContext);
+			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId());
 			// Update the created bean
 			castedBean.setCode(code);
-			castedBean = (ProductPartDto) this.getInstance().update(castedBean, DefaultAdministrationManagerTest.userContext);
+			castedBean = (ProductPartDto) this.getInstance().update(castedBean);
 			// Reload the modified bean
 			ProductPartDto updatedBean = new ProductPartDto();
 			updatedBean.setId(castedBean.getId());
@@ -125,7 +126,7 @@ public class DefaultProductPartsManagerTest extends DefaultAdministrationManager
 			label = "Poisson 2";
 			labels.put(localeId, label);
 			updatedBean.setLabels(labels);
-			IMdoBean loadedBean = this.getInstance().load(updatedBean, DefaultAdministrationManagerTest.userContext);
+			IMdoBean loadedBean = this.getInstance().load(updatedBean);
 			assertTrue("IMdoBean must be instance of " + ProductPartDto.class, loadedBean instanceof ProductPartDto);
 			updatedBean = (ProductPartDto) loadedBean;
 			assertNotNull("ProductPartDto code must not be null", updatedBean.getCode());
@@ -142,7 +143,7 @@ public class DefaultProductPartsManagerTest extends DefaultAdministrationManager
 	public void doProcessList() {
 		ProductPartsManagerViewBean viewBean = new ProductPartsManagerViewBean();
 		try {
-			this.getInstance().processList(viewBean, DefaultAdministrationManagerTest.userContext);
+			((IManagerLabelable) this.getInstance()).processList(viewBean, DefaultAdministrationManagerTest.userContext.getCurrentLocale());
 			assertNotNull("Main list not be null", viewBean.getList());
 			assertFalse("Main list not be empty", viewBean.getList().isEmpty());
 			assertNotNull("Codes map not be null", viewBean.getCodes());

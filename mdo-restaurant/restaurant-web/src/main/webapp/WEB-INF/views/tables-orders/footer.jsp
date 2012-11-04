@@ -1,0 +1,1 @@
+<label id="quantities-sum">${form.dtoBean.quantitiesSum}</label> / <label id="amounts-sum">${form.dtoBean.amountsSum}</label>

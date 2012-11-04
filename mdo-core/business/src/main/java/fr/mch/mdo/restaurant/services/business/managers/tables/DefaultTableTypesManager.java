@@ -9,7 +9,6 @@ import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.tables.ITableTypesDao;
 import fr.mch.mdo.restaurant.dao.tables.hibernate.DefaultTableTypesDao;
 import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.TableTypeDto;
 import fr.mch.mdo.restaurant.dto.beans.TableTypesManagerViewBean;
 import fr.mch.mdo.restaurant.exception.MdoBusinessException;
@@ -63,13 +62,13 @@ public class DefaultTableTypesManager extends AbstractAdministrationManager impl
 	}
 
 	@Override
-	public void processList(IAdministrationManagerViewBean viewBean, MdoUserContext userContext, boolean... lazy) throws MdoBusinessException {
-		super.processList(viewBean, userContext, lazy);
+	public void processList(IAdministrationManagerViewBean viewBean, boolean... lazy) throws MdoBusinessException {
+		super.processList(viewBean, lazy);
 
 		TableTypesManagerViewBean tableTypesManagerViewBean = (TableTypesManagerViewBean) viewBean;
 		
 		try {
-			tableTypesManagerViewBean.setCodes(this.getAvailableTypeTables(mdoTableAsEnumsManager.getTableTypes(userContext), userContext));
+			tableTypesManagerViewBean.setCodes(this.getAvailableTypeTables(mdoTableAsEnumsManager.getTableTypes()));
 		} catch (MdoException e) {
 			logger.error("message.error.administration.business.find.all", e);
 			throw new MdoBusinessException("message.error.administration.business.find.all", e);
@@ -82,11 +81,11 @@ public class DefaultTableTypesManager extends AbstractAdministrationManager impl
 	 * @param userContext user context.
 	 * @return a restricted list.
 	 */
-	private List<IMdoDtoBean> getAvailableTypeTables(List<IMdoDtoBean> listAll, MdoUserContext userContext) {
+	private List<IMdoDtoBean> getAvailableTypeTables(List<IMdoDtoBean> listAll) {
 		List<IMdoDtoBean> result = new ArrayList<IMdoDtoBean>(listAll);
 		List<IMdoDtoBean> excludedList = new ArrayList<IMdoDtoBean>();
 		try {
-			excludedList = super.findAll(userContext);
+			excludedList = super.findAll();
 		} catch (MdoBusinessException e) {
 			logger.warn("message.error.administration.business.find.all", e);
 		}
@@ -103,10 +102,10 @@ public class DefaultTableTypesManager extends AbstractAdministrationManager impl
 	}
 
 	@Override
-	public TableTypeDto findByCodeName(String codeName, MdoUserContext userContext) throws MdoBusinessException {
+	public TableTypeDto findByCodeName(String codeName) throws MdoBusinessException {
 		TableTypeDto result = null;
 		try {
-			result = (TableTypeDto) assembler.marshal((IMdoDaoBean) super.dao.findByUniqueKey(codeName), userContext);
+			result = (TableTypeDto) assembler.marshal((IMdoDaoBean) super.dao.findByUniqueKey(codeName));
 		} catch (MdoException e) {
 			logger.error("message.error.business.DefaultTableTypesManager.findByCodeName", new Object[]{codeName}, e);
 			throw new MdoBusinessException("message.error.business.DefaultTableTypesManager.findByCodeName", new Object[]{codeName}, e);

@@ -38,7 +38,7 @@ public final class LogonWebAction extends MdoAbstractWebAction implements ILogon
 				IMdoAuthenticationService iMdoAuthenticationService = MdoBeanFactory.getInstance().getMdoAuthenticationService();
 				MdoUserContext userContext = (MdoUserContext) iMdoAuthenticationService.authenticate(dto.getLogin(), dto.getPassword());
 				// Fill User Context bean
-				UserAuthenticationDto userAuthentication = (UserAuthenticationDto) MdoBeanFactory.getInstance().getUserAuthenticationsManager().findByLogin(dto.getLogin(), userContext);
+				UserAuthenticationDto userAuthentication = (UserAuthenticationDto) MdoBeanFactory.getInstance().getUserAuthenticationsManager().findByLogin(dto.getLogin());
 				userContext.setUserAuthentication(userAuthentication);
 				session.setAttribute(Constants.USER_SESSION_PREFIX_KEY, userContext);
 				forwardPage = Action.SUCCESS;

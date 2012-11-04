@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="/struts-tags" prefix="s" %>
 
-<div class="mdo-upsidedown">
+<div class="mdo-upsidedown-restaurant-tab">
 	<s:hidden name="form.dtoBean.id"/>
 
 	<br/>
@@ -27,21 +27,6 @@
 		<s:textfield label="%{getText('restaurants.manager.visa.reference')}" name="form.dtoBean.visaRef"/>
 	</div>
 	<div style="clear: both;"></div>
-	<div class="hspacer-left-100p">
-	 	<%-- 
-	 		Change Locale for Number Format in input text because of javascript
-	 		Use the change of locale instead of BigDecimal Converter because we want that user type "." instead of "," in case of french locale 
-	 	--%>
-		<mdo:setLocale value="en"/>
-		<div class="hspacer-left-50p">
-			<s:textfield cssClass="number-float-percent" label="%{getText('restaurants.manager.takeaway.basic.reduction')}" name="form.dtoBean.takeawayBasicReduction" value="%{getText('format.number.decimal.3.2',{form.dtoBean.takeawayBasicReduction})}" />
-		</div>	
-		<div class="hspacer-left-50p">
-			<s:textfield cssClass="number-float" label="%{getText('restaurants.manager.takeaway.min.amount.reduction')}"  name="form.dtoBean.takeawayMinAmountReduction" value="%{getText('format.number.decimal.3.2',{form.dtoBean.takeawayMinAmountReduction})}" />
-		</div>
-	 	<%-- Change back Locale --%>
-		<mdo:setLocale value="${userSession.currentLocale.languageCode}"/>
-	</div>
 	<div class="hspacer-left-100p" id="wwgrp_RestaurantsManager_form_dtoBean_daoBean_amount">
 		<div class="hspacer-left-50p">
 		<s:set name="mdoTrue" value="%{getText('mdo.true')}"/>

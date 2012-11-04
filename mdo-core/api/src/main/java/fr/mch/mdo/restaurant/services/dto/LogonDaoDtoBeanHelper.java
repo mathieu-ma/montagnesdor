@@ -8,7 +8,6 @@ import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.beans.UserAuthentication;
 import fr.mch.mdo.restaurant.dto.beans.LogonDto;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.utils.IManagerAssembler;
 
 public class LogonDaoDtoBeanHelper implements IManagerAssembler 
@@ -31,19 +30,19 @@ public class LogonDaoDtoBeanHelper implements IManagerAssembler
 	}
 
 	@Override
-	public IMdoDtoBean marshal(IMdoDaoBean daoBean, MdoUserContext userContext) {
+	public IMdoDtoBean marshal(IMdoDaoBean daoBean) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<IMdoDtoBean> marshal(List<? extends IMdoBean> list, MdoUserContext userContext) {
+	public List<IMdoDtoBean> marshal(List<? extends IMdoBean> list) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Set<IMdoDtoBean> marshal(Set<? extends IMdoBean> set, MdoUserContext userContext) {
+	public Set<IMdoDtoBean> marshal(Set<? extends IMdoBean> set) {
 		// TODO Auto-generated method stub
 		return null;
 	}

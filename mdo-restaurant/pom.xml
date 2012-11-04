@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>fr.mch.mdo</groupId>
+	<artifactId>mdo-restaurant</artifactId>
+	<packaging>pom</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<name>mdo-restaurant</name>
+	<url>http://maven.apache.org</url>
+
+	<prerequisites>
+		<maven>2.1.0</maven>
+	</prerequisites>
+
+	<licenses>
+		<license>
+			<name>Apache 2</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+			<comments>A business-friendly OSS license</comments>
+		</license>
+	</licenses>
+
+	<organization>
+		<name>mch</name>
+		<url>http://www.mch.org</url>
+	</organization>
+
+	<developers>
+		<developer>
+			<id>mma</id>
+			<name>Mathieu MA</name>
+			<email>mathieu.ma@free.fr</email>
+			<url>http://www.mch.mdo.org</url>
+			<organization>mch</organization>
+			<organizationUrl>http://www.mch.org</organizationUrl>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<timezone>-6</timezone>
+		</developer>
+	</developers>
+
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+        <buildDate>${maven.build.timestamp}</buildDate>
+
+		<!-- API Versions -->
+        <!-- ===================== compile ===================== -->
+<!--         
+        <slf4j.version>1.5.8</slf4j.version>
+        <slf4j.version>1.6.1</slf4j.version>
+		<slf4j.version>1.6.4</slf4j.version> 
+-->
+        <slf4j.version>1.6.1</slf4j.version>
+		<log4j.version>1.2.16</log4j.version>
+
+		<commons.beanutils.version>1.8.0</commons.beanutils.version>
+		
+        <inject.version>1</inject.version>
+
+		<jstl.version>1.1.2</jstl.version>
+		<taglibs.version>1.1.2</taglibs.version>
+        <tiles.version>3.0.1</tiles.version>
+
+        <aspectj.version>1.6.12</aspectj.version>
+
+		<!-- DAO -->        
+        <hibernate.version>4.1.6.Final</hibernate.version>
+		<cglib.version>2.2.2</cglib.version>
+		<javassist.version>3.12.1.GA</javassist.version>
+		<xstream.version>1.3.1</xstream.version>
+		<postgresql.version>8.2-507.jdbc4</postgresql.version>
+		
+		<!-- IOC -->
+        
+        <!-- WEB -->
+        <jackson.version>1.9.2</jackson.version>
+        <spring.version>3.1.2.RELEASE</spring.version>
+		<struts2.version>2.1.8.1</struts2.version>
+
+<!--        
+ 			<jetty.version>7.4.5.v20110725</jetty.version>
+			<jetty.version>7.6.2.v20120308</jetty.version>
+ 			<jetty.version>8.1.0.RC5</jetty.version>
+ 			<jetty.version>8.1.2.v20120308</jetty.version>
+ 			<jetty.version>8.1.4.v20120524</jetty.version>
+			<jetty.version>8.1.5.v20120716</jetty.version>
+ 			
+--> 			
+ 			<jetty.version>8.1.0.RC5</jetty.version>
+
+        <!-- ===================== provided ===================== -->
+		<xerces.version>2.6.2</xerces.version>
+		<xalan.version>2.6.0</xalan.version>
+		<xml.apis.version>1.3.02</xml.apis.version>
+		<saxon.version>8.7</saxon.version>
+		<jsp.api.version>2.1</jsp.api.version>
+<!-- 		
+		<servlet.api.version>2.5</servlet.api.version> 
+-->
+		<servlet.api.version>3.0-alpha-1</servlet.api.version>
+        <!-- ===================== runtime ===================== -->
+        <!-- ===================== test ===================== -->
+        <mockito.version>1.9.0</mockito.version>
+        <hsqldb.version>2.0.0</hsqldb.version>
+        <junit.version>4.10</junit.version>
+        <httpclient.version>4.1.2</httpclient.version>
+
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.8</version>
+				<configuration>
+					<!-- This is used in order to have more memory when level test log is low like DEBUG -->
+					<forkMode>pertest</forkMode>	
+					<argLine>-Xms10m -Xmx10m</argLine>
+				</configuration>
+			</plugin>					
+		</plugins>
+	</build>
+	<modules>
+		<module>restaurant-domain</module>
+		<module>restaurant-service</module>
+		<module>restaurant-web</module>
+	</modules>
+	<dependencyManagement>
+		<dependencies>
+	        <!-- ===================== compile ===================== -->
+			<dependency>
+				<!-- This dependency is used because of the used of Hibernate for logging and override the version from Hibernate-->
+			  	<groupId>org.slf4j</groupId>
+			  	<artifactId>slf4j-api</artifactId>
+			  	<version>${slf4j.version}</version>
+			</dependency>		
+			<dependency>
+				<!-- This dependency is used because of the used of Hibernate for logging -->
+			  	<groupId>org.slf4j</groupId>
+			  	<artifactId>slf4j-log4j12</artifactId>
+			  	<version>${slf4j.version}</version>
+			</dependency>		
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>${log4j.version}</version>
+			</dependency>
+
+            <dependency>
+                <groupId>javax.inject</groupId>
+                <artifactId>javax.inject</artifactId>
+                <version>${inject.version}</version>
+            </dependency>
+
+			<dependency>
+				<groupId>commons-beanutils</groupId>
+				<artifactId>commons-beanutils</artifactId>
+				<version>${commons.beanutils.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.aspectj</groupId>
+				<artifactId>aspectjrt</artifactId>
+			  	<version>${aspectj.version}</version>
+			</dependency>
+	
+			<!-- WEB -->
+			<dependency>
+				<groupId>org.apache.tiles</groupId>
+				<artifactId>tiles-core</artifactId>
+				<version>${tiles.version}</version>
+				<exclusions>
+		            <exclusion>
+		                <groupId>org.slf4j</groupId>
+		                <artifactId>slf4j-nop</artifactId>
+		            </exclusion>
+		            <exclusion>
+		                <groupId>org.slf4j</groupId>
+		                <artifactId>slf4j-api</artifactId>
+		             </exclusion>
+		             <exclusion>
+		                 <groupId>org.slf4j</groupId>
+		                 <artifactId>jcl-over-slf4j</artifactId>
+		             </exclusion>
+		        </exclusions>
+   			</dependency>
+			<dependency>
+				<groupId>org.apache.tiles</groupId>
+				<artifactId>tiles-api</artifactId>
+				<version>${tiles.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tiles</groupId>
+				<artifactId>tiles-jsp</artifactId>
+				<version>${tiles.version}</version>
+			</dependency>
+			<dependency>
+	            <groupId>org.codehaus.jackson</groupId>
+	            <artifactId>jackson-mapper-asl</artifactId>
+				<version>${jackson.version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.springframework</groupId>
+	            <artifactId>spring-webmvc</artifactId>
+	            <version>${spring.version}</version>
+	        </dependency>
+
+			<dependency>
+				<groupId>taglibs</groupId>
+				<artifactId>standard</artifactId>
+				<version>${taglibs.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>jstl</artifactId>
+				<version>${jstl.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.struts</groupId>
+				<artifactId>struts2-core</artifactId>
+				<version>${struts2.version}</version>
+			</dependency>
+	        
+	        <!-- DAO -->
+			<dependency>
+				<groupId>com.thoughtworks.xstream</groupId>
+				<artifactId>xstream</artifactId>
+				<version>${xstream.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>postgresql</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>${postgresql.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hsqldb</groupId>
+				<artifactId>sqltool</artifactId>
+				<version>${hsqldb.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-core</artifactId>
+				<version>${hibernate.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-c3p0</artifactId>
+				<version>${hibernate.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-ehcache</artifactId>
+				<version>${hibernate.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javassist</groupId>
+				<artifactId>javassist</artifactId>
+				<version>${javassist.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>cglib</groupId>
+				<artifactId>cglib</artifactId>
+				<version>${cglib.version}</version>
+			</dependency>
+
+	        <!-- IOC -->
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-core</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-beans</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-aop</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+	      		<groupId>org.springframework</groupId>
+	      		<artifactId>spring-orm</artifactId>
+				<version>${spring.version}</version>
+	    	</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+			    <artifactId>spring-jdbc</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.aspectj</groupId>
+				<artifactId>aspectjweaver</artifactId>
+				<version>${aspectj.version}</version>
+			</dependency>
+	        
+	        <!-- ===================== provided ===================== -->
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>servlet-api</artifactId>
+				<version>${servlet.api.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>javax.servlet.jsp</groupId>
+				<artifactId>jsp-api</artifactId>
+				<version>${jsp.api.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>net.sf.saxon</groupId>
+				<artifactId>saxon</artifactId>
+				<version>${saxon.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+			  	<groupId>xml-apis</groupId>
+			  	<artifactId>xml-apis</artifactId>
+				<version>${xml.apis.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>xalan</groupId>
+				<artifactId>xalan</artifactId>
+				<version>${xalan.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>xerces</groupId>
+				<artifactId>xercesImpl</artifactId>
+				<version>${xerces.version}</version>
+				<scope>provided</scope>
+			</dependency>
+	        <!-- ===================== runtime ===================== -->
+	        <!-- ===================== test ===================== -->
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+	        <dependency>
+	            <groupId>org.apache.httpcomponents</groupId>
+	            <artifactId>httpclient</artifactId>
+                <version>${httpclient.version}</version>
+                <scope>test</scope>
+	        </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-servlet</artifactId>
+                <version>${jetty.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-server</artifactId>
+                <version>${jetty.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>${spring.version}</version>
+                <scope>test</scope>
+            </dependency>
+			<dependency>
+				<groupId>org.hsqldb</groupId>
+				<artifactId>hsqldb</artifactId>
+				<version>${hsqldb.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+</project>

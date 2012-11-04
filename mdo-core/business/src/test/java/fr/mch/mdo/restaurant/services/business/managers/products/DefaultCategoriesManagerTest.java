@@ -18,6 +18,7 @@ import fr.mch.mdo.restaurant.services.business.managers.DefaultAdministrationMan
 import fr.mch.mdo.restaurant.services.business.managers.DefaultMdoTableAsEnumsManager;
 import fr.mch.mdo.restaurant.services.business.managers.IAdministrationManager;
 import fr.mch.mdo.restaurant.services.business.managers.ICategoriesManager;
+import fr.mch.mdo.restaurant.services.business.managers.IManagerLabelable;
 import fr.mch.mdo.test.MdoTestCase;
 
 public class DefaultCategoriesManagerTest extends DefaultAdministrationManagerTest
@@ -51,7 +52,7 @@ public class DefaultCategoriesManagerTest extends DefaultAdministrationManagerTe
 		// Use the existing data in database
 		code.setId(1L);
 		try {
-			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId(), userContext);
+			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -66,7 +67,7 @@ public class DefaultCategoriesManagerTest extends DefaultAdministrationManagerTe
 		// Use the existing data in database
 		code.setId(2L);
 		try {
-			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId(), userContext);
+			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -80,7 +81,7 @@ public class DefaultCategoriesManagerTest extends DefaultAdministrationManagerTe
 		code = new MdoTableAsEnumDto();
 		code.setId(3L);
 		try {
-			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId(), userContext);
+			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -98,7 +99,7 @@ public class DefaultCategoriesManagerTest extends DefaultAdministrationManagerTe
 		// Use the existing data in database
 		code.setId(4L);
 		try {
-			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId(), userContext);
+			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -108,7 +109,7 @@ public class DefaultCategoriesManagerTest extends DefaultAdministrationManagerTe
 		labels.put(localeId, label);
 		try {
 			// Create new bean to be updated
-			IMdoBean beanToBeUpdated = this.getInstance().insert(createNewBean(code, labels), DefaultAdministrationManagerTest.userContext);
+			IMdoBean beanToBeUpdated = this.getInstance().insert(createNewBean(code, labels));
 			assertTrue("IMdoBean must be instance of " + CategoryDto.class, beanToBeUpdated instanceof CategoryDto);
 			CategoryDto castedBean = (CategoryDto) beanToBeUpdated;
 			assertNotNull("CategoryDto code must not be null", castedBean.getCode());
@@ -118,18 +119,18 @@ public class DefaultCategoriesManagerTest extends DefaultAdministrationManagerTe
 			assertEquals("Check CategoryDto labels size", labels.size(), castedBean.getLabels().size());
 			// Use the existing data in database
 			code.setId(5L);
-			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId(), userContext);
+			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(code.getId());
 			// Update the created bean
 			castedBean.setCode(code);
 			localeId = 2L;
 			label = "Poisson 2";
 			labels.put(localeId, label);
 			castedBean.setLabels(labels);
-			castedBean = (CategoryDto) this.getInstance().update(castedBean, DefaultAdministrationManagerTest.userContext);
+			castedBean = (CategoryDto) this.getInstance().update(castedBean);
 			// Reload the modified bean
 			CategoryDto updatedBean = new CategoryDto();
 			updatedBean.setId(castedBean.getId());
-			IMdoBean loadedBean = this.getInstance().load(updatedBean, DefaultAdministrationManagerTest.userContext);
+			IMdoBean loadedBean = this.getInstance().load(updatedBean);
 			assertTrue("IMdoBean must be instance of " + CategoryDto.class, loadedBean instanceof CategoryDto);
 			updatedBean = (CategoryDto) loadedBean;
 			assertNotNull("CategoryDto code must not be null", updatedBean.getCode());
@@ -146,7 +147,7 @@ public class DefaultCategoriesManagerTest extends DefaultAdministrationManagerTe
 	public void doProcessList() {
 		CategoriesManagerViewBean viewBean = new CategoriesManagerViewBean();
 		try {
-			this.getInstance().processList(viewBean, DefaultAdministrationManagerTest.userContext);
+			((IManagerLabelable) this.getInstance()).processList(viewBean, DefaultAdministrationManagerTest.userContext.getCurrentLocale());
 			assertNotNull("Main list not be null", viewBean.getList());
 			assertFalse("Main list not be empty", viewBean.getList().isEmpty());
 			assertNotNull("Codes list not be null", viewBean.getCodes());

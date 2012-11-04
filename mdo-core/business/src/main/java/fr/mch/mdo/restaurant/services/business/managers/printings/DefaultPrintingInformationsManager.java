@@ -10,7 +10,7 @@ import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.printings.IPrintingInformationsDao;
 import fr.mch.mdo.restaurant.dao.printings.hibernate.DefaultPrintingInformationsDao;
 import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
+import fr.mch.mdo.restaurant.dto.beans.LocaleDto;
 import fr.mch.mdo.restaurant.dto.beans.PrintingInformationsManagerViewBean;
 import fr.mch.mdo.restaurant.exception.MdoBusinessException;
 import fr.mch.mdo.restaurant.exception.MdoException;
@@ -104,13 +104,13 @@ public class DefaultPrintingInformationsManager extends AbstractAdministrationMa
 	}
 
 	@Override
-	public List<IMdoDtoBean> getList(Long restaurantId, MdoUserContext userContext) throws MdoException {
+	public List<IMdoDtoBean> getList(Long restaurantId) throws MdoException {
 		List<IMdoDtoBean> result = new ArrayList<IMdoDtoBean>();
 		
 		try {
 			List<IMdoBean> list = ((IPrintingInformationsDao) dao).findByRestaurant(restaurantId);
 			if (list != null) {
-				result = assembler.marshal(list, userContext);
+				result = assembler.marshal(list);
 			}
 		} catch (MdoException e) {
 			logger.error("message.error.administration.business.printing.informations.by.restaurant", new Object[] {restaurantId}, e);
@@ -121,16 +121,16 @@ public class DefaultPrintingInformationsManager extends AbstractAdministrationMa
 	}
 
 	@Override
-	public void processList(IAdministrationManagerViewBean viewBean, MdoUserContext userContext, boolean... lazy) throws MdoBusinessException {
-		super.processList(viewBean, userContext, lazy);
+	public void processList(IAdministrationManagerViewBean viewBean, LocaleDto locale, boolean... lazy) throws MdoBusinessException {
+		super.processList(viewBean, lazy);
 		PrintingInformationsManagerViewBean managerViewBean = (PrintingInformationsManagerViewBean) viewBean;
 		try {
-			managerViewBean.setLabels(super.getLabels(userContext.getCurrentLocale()));
-			managerViewBean.setLanguages(this.localesManager.getLanguages(userContext.getCurrentLocale().getLanguageCode()));
-			managerViewBean.setAlignments(mdoTableAsEnumsManager.getPrintingInformationAlignments(userContext));
-			managerViewBean.setParts(mdoTableAsEnumsManager.getPrintingInformationParts(userContext));
-			managerViewBean.setSizes(mdoTableAsEnumsManager.getPrintingInformationSizes(userContext));
-			managerViewBean.setRestaurants(restaurantsManager.findAll(userContext));
+			managerViewBean.setLabels(super.getLabels(locale));
+			managerViewBean.setLanguages(this.localesManager.getLanguages(locale.getLanguageCode()));
+			managerViewBean.setAlignments(mdoTableAsEnumsManager.getPrintingInformationAlignments());
+			managerViewBean.setParts(mdoTableAsEnumsManager.getPrintingInformationParts());
+			managerViewBean.setSizes(mdoTableAsEnumsManager.getPrintingInformationSizes());
+			managerViewBean.setRestaurants(restaurantsManager.findAll());
 		} catch (Exception e) {
 			logger.error("message.error.administration.business.find.all", e);
 			throw new MdoBusinessException("message.error.administration.business.find.all", e);

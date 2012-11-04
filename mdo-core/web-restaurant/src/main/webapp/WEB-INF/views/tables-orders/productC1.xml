@@ -1,0 +1,7 @@
+<order-line>
+	<quantity>2</quantity>
+	<code>C1</code>
+	<label>Label C1</label>
+	<price>12.25</price>
+	<amount>24.50</amount>
+</order-line>

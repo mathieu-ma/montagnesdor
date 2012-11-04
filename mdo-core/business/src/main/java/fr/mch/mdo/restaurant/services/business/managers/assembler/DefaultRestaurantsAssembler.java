@@ -1,9 +1,6 @@
 package fr.mch.mdo.restaurant.services.business.managers.assembler;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import fr.mch.mdo.logs.ILogger;
@@ -13,15 +10,17 @@ import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.beans.MdoTableAsEnum;
 import fr.mch.mdo.restaurant.dao.beans.Restaurant;
 import fr.mch.mdo.restaurant.dao.beans.RestaurantPrefixTable;
+import fr.mch.mdo.restaurant.dao.beans.RestaurantReductionTable;
 import fr.mch.mdo.restaurant.dao.beans.RestaurantValueAddedTax;
+import fr.mch.mdo.restaurant.dao.beans.RestaurantVatTableType;
 import fr.mch.mdo.restaurant.dao.beans.TableType;
 import fr.mch.mdo.restaurant.dao.beans.ValueAddedTax;
 import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
-import fr.mch.mdo.restaurant.dto.beans.ProductSpecialCodeDto;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantPrefixTableDto;
+import fr.mch.mdo.restaurant.dto.beans.RestaurantReductionTableDto;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantValueAddedTaxDto;
+import fr.mch.mdo.restaurant.dto.beans.RestaurantVatTableTypeDto;
 import fr.mch.mdo.restaurant.dto.beans.TableTypeDto;
 import fr.mch.mdo.restaurant.dto.beans.ValueAddedTaxDto;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
@@ -35,7 +34,9 @@ public class DefaultRestaurantsAssembler extends AbstractAssembler implements IM
 	private IManagerAssembler tableTypesAssembler;
 	private IManagerAssembler restaurantVatsAssembler;
 	private IManagerAssembler restaurantPrefixTablesAssembler;
-	private IManagerAssembler productSpecialCodesAssembler;
+	private IManagerAssembler restaurantReductionTablesAssembler;
+	private IManagerAssembler restaurantVatTableTypesAssembler;
+//	private IManagerAssembler productSpecialCodesAssembler;
 	private IManagerAssembler vatsAssembler;
 
 	private static class LazyHolder {
@@ -48,7 +49,9 @@ public class DefaultRestaurantsAssembler extends AbstractAssembler implements IM
 		this.tableTypesAssembler = DefaultTableTypesAssembler.getInstance();
 		this.restaurantVatsAssembler = DefaultRestaurantValueAddedTaxesAssembler.getInstance();
 		this.restaurantPrefixTablesAssembler = DefaultRestaurantPrefixTablesAssembler.getInstance();
-		this.productSpecialCodesAssembler = DefaultProductSpecialCodesAssembler.getInstance();
+		this.restaurantReductionTablesAssembler = DefaultRestaurantReductionTablesAssembler.getInstance();
+		this.restaurantVatTableTypesAssembler = DefaultRestaurantVatTableTypesAssembler.getInstance();
+//		this.productSpecialCodesAssembler = DefaultProductSpecialCodesAssembler.getInstance();
 		this.vatsAssembler = DefaultValueAddedTaxesAssembler.getInstance();
 	}
 
@@ -104,17 +107,47 @@ public class DefaultRestaurantsAssembler extends AbstractAssembler implements IM
 	}
 
 	/**
-	 * @return the productSpecialCodesAssembler
+	 * @return the restaurantReductionTablesAssembler
 	 */
-	public IManagerAssembler getProductSpecialCodesAssembler() {
-		return productSpecialCodesAssembler;
+	public IManagerAssembler getRestaurantReductionTablesAssembler() {
+		return restaurantReductionTablesAssembler;
 	}
 
 	/**
-	 * @param productSpecialCodesAssembler the productSpecialCodesAssembler to set
+	 * @param restaurantReductionTablesAssembler the restaurantReductionTablesAssembler to set
 	 */
-	public void setProductSpecialCodesAssembler(IManagerAssembler productSpecialCodesAssembler) {
-		this.productSpecialCodesAssembler = productSpecialCodesAssembler;
+	public void setRestaurantReductionTablesAssembler(
+			IManagerAssembler restaurantReductionTablesAssembler) {
+		this.restaurantReductionTablesAssembler = restaurantReductionTablesAssembler;
+	}
+
+//	/**
+//	 * @return the productSpecialCodesAssembler
+//	 */
+//	public IManagerAssembler getProductSpecialCodesAssembler() {
+//		return productSpecialCodesAssembler;
+//	}
+//
+//	/**
+//	 * @param productSpecialCodesAssembler the productSpecialCodesAssembler to set
+//	 */
+//	public void setProductSpecialCodesAssembler(IManagerAssembler productSpecialCodesAssembler) {
+//		this.productSpecialCodesAssembler = productSpecialCodesAssembler;
+//	}
+
+	/**
+	 * @return the restaurantVatTableTypesAssembler
+	 */
+	public IManagerAssembler getRestaurantVatTableTypesAssembler() {
+		return restaurantVatTableTypesAssembler;
+	}
+
+	/**
+	 * @param restaurantVatTableTypesAssembler the restaurantVatTableTypesAssembler to set
+	 */
+	public void setRestaurantVatTableTypesAssembler(
+			IManagerAssembler restaurantVatTableTypesAssembler) {
+		this.restaurantVatTableTypesAssembler = restaurantVatTableTypesAssembler;
 	}
 
 	/**
@@ -133,7 +166,7 @@ public class DefaultRestaurantsAssembler extends AbstractAssembler implements IM
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public IMdoDtoBean marshal(IMdoDaoBean daoBean, MdoUserContext userContext) {
+	public IMdoDtoBean marshal(IMdoDaoBean daoBean) {
 		RestaurantDto dto = null;
 		if (daoBean != null) {
 			Restaurant bean = (Restaurant) daoBean;
@@ -148,49 +181,60 @@ public class DefaultRestaurantsAssembler extends AbstractAssembler implements IM
 			dto.setRegistrationDate(bean.getRegistrationDate());
 			MdoTableAsEnumDto specificRound = null;
 			if (bean.getSpecificRound() != null) {
-				specificRound = (MdoTableAsEnumDto) mdoTableAsEnumsAssembler.marshal(bean.getSpecificRound(), userContext);
+				specificRound = (MdoTableAsEnumDto) mdoTableAsEnumsAssembler.marshal(bean.getSpecificRound());
 			}
 			dto.setSpecificRound(specificRound);
 			TableTypeDto defaultTableType = null;
 			if (bean.getDefaultTableType() != null) {
-				defaultTableType = (TableTypeDto) tableTypesAssembler.marshal(bean.getDefaultTableType(), userContext);
+				defaultTableType = (TableTypeDto) tableTypesAssembler.marshal(bean.getDefaultTableType());
 			}
 			dto.setDefaultTableType(defaultTableType);
 			ValueAddedTaxDto orderLineDefaultVat = null;
 			if (bean.getVat() != null) {
-				orderLineDefaultVat = (ValueAddedTaxDto) vatsAssembler.marshal(bean.getVat(), userContext);
+				orderLineDefaultVat = (ValueAddedTaxDto) vatsAssembler.marshal(bean.getVat());
 			}
 			dto.setVat(orderLineDefaultVat);
-			dto.setTakeawayBasicReduction(bean.getTakeawayBasicReduction());
-			dto.setTakeawayMinAmountReduction(bean.getTakeawayMinAmountReduction());
 			dto.setTripleDESKey(bean.getTripleDESKey());
 			dto.setVatByTakeaway(bean.isVatByTakeaway());
 			dto.setVatRef(bean.getVatRef());
 			dto.setVisaRef(bean.getVisaRef());
 			Set<RestaurantValueAddedTaxDto> vats = null;
 			if (bean.getVats() != null) {
-				vats = (Set) restaurantVatsAssembler.marshal(bean.getVats(), userContext);
+				vats = (Set) restaurantVatsAssembler.marshal(bean.getVats());
 			}
 			dto.setVats(vats);
 			Set<RestaurantPrefixTableDto> prefixTableNames = null;
 			if (bean.getPrefixTableNames() != null) {
-				prefixTableNames = (Set) restaurantPrefixTablesAssembler.marshal(bean.getPrefixTableNames(), userContext);
+				prefixTableNames = (Set) restaurantPrefixTablesAssembler.marshal(bean.getPrefixTableNames());
 				// Set the user restaurant
-				List<String> prefixTakeawayName = new ArrayList<String>();
-				for (Iterator iterator = prefixTableNames.iterator(); iterator.hasNext();) {
-					RestaurantPrefixTableDto restaurantPrefixTableDto = (RestaurantPrefixTableDto) iterator.next();
-					if (ManagedTableType.TAKE_AWAY.name().equals(restaurantPrefixTableDto.getType().getCode().getName())) {
-						prefixTakeawayName.add(restaurantPrefixTableDto.getPrefix().getName());
-					}
-				}
-				dto.setPrefixTakeawayNames(prefixTakeawayName.toArray(new String[0]));
+//				List<String> prefixTakeawayName = new ArrayList<String>();
+//				for (Iterator iterator = prefixTableNames.iterator(); iterator.hasNext();) {
+//					RestaurantPrefixTableDto restaurantPrefixTableDto = (RestaurantPrefixTableDto) iterator.next();
+//					if (ManagedTableType.TAKE_AWAY.name().equals(restaurantPrefixTableDto.getType().getCode().getName())) {
+//						prefixTakeawayName.add(restaurantPrefixTableDto.getPrefix().getName());
+//					}
+//				}
+//				dto.setPrefixTakeawayNames(prefixTakeawayName.toArray(new String[0]));
 			}
 			dto.setPrefixTableNames(prefixTableNames);
-			Set<ProductSpecialCodeDto> productSpecialCodes = null;
-			if (bean.getProductSpecialCodes() != null) {
-				productSpecialCodes = (Set) productSpecialCodesAssembler.marshal(bean.getProductSpecialCodes(), userContext);
+
+			Set<RestaurantReductionTableDto> reductionTables = null;
+			if (bean.getReductionTables() != null) {
+				reductionTables = (Set) restaurantReductionTablesAssembler.marshal(bean.getReductionTables());
 			}
-			dto.setProductSpecialCodes(productSpecialCodes);
+			dto.setReductionTables(reductionTables);
+
+			Set<RestaurantVatTableTypeDto> vatTableTypes = null;
+			if (bean.getVatTableTypes() != null) {
+				vatTableTypes = (Set) restaurantVatTableTypesAssembler.marshal(bean.getVatTableTypes());
+			}
+			dto.setVatTableTypes(vatTableTypes);
+
+//			Set<ProductSpecialCodeDto> productSpecialCodes = null;
+//			if (bean.getProductSpecialCodes() != null) {
+//				productSpecialCodes = (Set) productSpecialCodesAssembler.marshal(bean.getProductSpecialCodes());
+//			}
+//			dto.setProductSpecialCodes(productSpecialCodes);
 		}
 		return dto;
 	}
@@ -226,8 +270,6 @@ public class DefaultRestaurantsAssembler extends AbstractAssembler implements IM
 			orderLineDefaultVat = (ValueAddedTax) vatsAssembler.unmarshal(dto.getVat());
 		}
 		bean.setVat(orderLineDefaultVat);
-		bean.setTakeawayBasicReduction(dto.getTakeawayBasicReduction());
-		bean.setTakeawayMinAmountReduction(dto.getTakeawayMinAmountReduction());
 		bean.setTripleDESKey(dto.getTripleDESKey());
 		bean.setVatByTakeaway(dto.isVatByTakeaway());
 		bean.setVatRef(dto.getVatRef());
@@ -242,6 +284,16 @@ public class DefaultRestaurantsAssembler extends AbstractAssembler implements IM
 			prefixTableNames = (Set) restaurantPrefixTablesAssembler.unmarshal(dto.getPrefixTableNames(), bean);
 		}
 		bean.setPrefixTableNames(prefixTableNames);
+		Set<RestaurantReductionTable> reductionTables = new HashSet<RestaurantReductionTable>();
+		if (dto.getReductionTables() != null) {
+			reductionTables = (Set) restaurantReductionTablesAssembler.unmarshal(dto.getReductionTables(), bean);
+		}
+		bean.setReductionTables(reductionTables);
+		Set<RestaurantVatTableType> vatTableTypes = new HashSet<RestaurantVatTableType>();
+		if (dto.getVatTableTypes() != null) {
+			vatTableTypes = (Set) restaurantVatTableTypesAssembler.unmarshal(dto.getVatTableTypes(), bean);
+		}
+		bean.setVatTableTypes(vatTableTypes);
 		return bean;
 	}
 

@@ -7,7 +7,7 @@ import fr.mch.mdo.restaurant.dto.beans.DinnerTableDto;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.OrderLineDto;
 import fr.mch.mdo.restaurant.dto.beans.TablesOrdersDto;
-import fr.mch.mdo.restaurant.ioc.spring.WebRestaurantBeanFactory;
+import fr.mch.mdo.restaurant.services.WebRestaurantBeanFactory;
 import fr.mch.mdo.restaurant.services.business.managers.tables.IDinnerTablesManager;
 import fr.mch.mdo.restaurant.ui.forms.TablesOrdersForm;
 
@@ -206,14 +206,10 @@ deltaTime = System.currentTimeMillis();
 		DinnerTableDto dinnerTable = new DinnerTableDto();
 		dinnerTable.setId(dinnerTableId);
 		orderLine.setDinnerTable(dinnerTable);
-		MdoUserContext userContext = (MdoUserContext) form.getUserContext();
 		super.getLogger().debug("Product code : " + orderLine.getLabel());
 		try {
-			manager.removeOrderLine(userContext, orderLine);
-			if (orderLine.getDinnerTable() == null) {
-				// The table is removed
-				ajaxOrderLine.setDinnerTableId(null);
-			}
+			// Do not remove the Dinner Table even the order lines are empty. 
+//			manager.removeOrderLine(ajaxOrderLine.getDeletedId());
 		} catch (Exception e) {
 			addActionError(getText("message.error.ui.action.deleteOrderLine"));
 		}
@@ -229,7 +225,7 @@ deltaTime = System.currentTimeMillis();
 		MdoUserContext userContext = (MdoUserContext) form.getUserContext();
 		super.getLogger().debug("Delete the table with id : " + form.getDtoBean().getId());
 		try {
-			manager.delete(form.getDtoBean(), userContext);
+			manager.delete(form.getDtoBean());
 		} catch (Exception e) {
 			addActionError(getText("message.error.ui.action.deleteTable"));
 		}

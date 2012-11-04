@@ -159,6 +159,14 @@ public class DefaultRestaurantPrefixTablesDaoTest extends DefaultDaoServicesTest
 			List<RestaurantPrefixTable> list  = dao.findAll(restaurantId);
 			assertNotNull("List by Restaurant Id must not be null", list);
 			assertFalse("List by Restaurant Id must not be empty", list.isEmpty());
+
+			RestaurantPrefixTable prefixTable = list.get(0);
+			try {
+				// Non lazy exception
+				assertNotNull("Non lazy exception", prefixTable.getType().getCode().getDefaultLabel());
+			} catch (Exception e) {
+				fail(MdoTestCase.DEFAULT_FAILED_MESSAGE);
+			}
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -172,7 +180,37 @@ public class DefaultRestaurantPrefixTablesDaoTest extends DefaultDaoServicesTest
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
-	
+
+	public void testFindOnlyPrefixTables() {
+		IRestaurantPrefixTablesDao dao = (IRestaurantPrefixTablesDao) this.getInstance();
+		// By Restaurant Id
+		Long restaurantId = 1L;
+		try {
+			List<RestaurantPrefixTable> list  = dao.findOnlyPrefixTables(restaurantId);
+			assertNotNull("List by Restaurant Id must not be null", list);
+			assertFalse("List by Restaurant Id must not be empty", list.isEmpty());
+
+			RestaurantPrefixTable prefixTable = list.get(0);
+			try {
+				// Non lazy exception
+				assertNotNull("Non lazy exception", prefixTable.getType().getCode());
+				assertNotNull("Non lazy exception", prefixTable.getType().getCode().getDefaultLabel());
+			} catch (Exception e) {
+				fail(MdoTestCase.DEFAULT_FAILED_MESSAGE);
+			}
+			try {
+				assertNotNull("First element must not be null", prefixTable.getRestaurant());
+				// Lazy exception
+				prefixTable.getRestaurant().getReductionTables();
+				fail(MdoTestCase.DEFAULT_FAILED_MESSAGE);
+			} catch (Exception e) {
+				assertTrue("Lazy exception", true);
+			}
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+
 	private IMdoBean createNewBean(MdoTableAsEnum prefix, Restaurant restaurant, TableType type) {
 		RestaurantPrefixTable newBean = new RestaurantPrefixTable();
 		newBean.setPrefix(prefix);

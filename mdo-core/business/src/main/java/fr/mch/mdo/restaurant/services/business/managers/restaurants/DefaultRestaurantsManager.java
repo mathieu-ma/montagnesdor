@@ -11,11 +11,12 @@ import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.beans.Restaurant;
 import fr.mch.mdo.restaurant.dao.beans.RestaurantPrefixTable;
+import fr.mch.mdo.restaurant.dao.beans.RestaurantReductionTable;
 import fr.mch.mdo.restaurant.dao.beans.RestaurantValueAddedTax;
+import fr.mch.mdo.restaurant.dao.beans.RestaurantVatTableType;
 import fr.mch.mdo.restaurant.dao.restaurants.IRestaurantsDao;
 import fr.mch.mdo.restaurant.dao.restaurants.hibernate.DefaultRestaurantsDao;
 import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantsManagerViewBean;
 import fr.mch.mdo.restaurant.exception.MdoBusinessException;
@@ -53,7 +54,7 @@ public class DefaultRestaurantsManager extends AbstractAdministrationManager imp
 		super.assembler = assembler;
 		this.mdoTableAsEnumsManager = DefaultMdoTableAsEnumsManager.getInstance();
 		this.valueAddedTaxesManager = DefaultValueAddedTaxesManager.getInstance();
-		this.setTableTypesManager(DefaultTableTypesManager.getInstance());
+		this.tableTypesManager = DefaultTableTypesManager.getInstance();
 	}
 
 	/**
@@ -109,11 +110,11 @@ public class DefaultRestaurantsManager extends AbstractAdministrationManager imp
 	}
 
 	@Override
-	public List<IMdoDtoBean> findRestaurantsByUser(Long userId, MdoUserContext userContext) throws MdoBusinessException {
+	public List<IMdoDtoBean> findRestaurantsByUser(Long userId) throws MdoBusinessException {
 		List<IMdoDtoBean> result = new ArrayList<IMdoDtoBean>();
 		try {
 			List<IMdoBean> restaurants = ((IRestaurantsDao) super.getDao()).findRestaurants(userId);
-			result = assembler.marshal(restaurants, userContext);
+			result = assembler.marshal(restaurants);
 		} catch (Exception e) {
 			logger.error("message.error.administration.business.users.restaurants.not.found", new Object[] {userId}, e);
 			throw new MdoBusinessException("message.error.administration.business.users.restaurants.not.found", new Object[] {userId}, e);
@@ -122,24 +123,26 @@ public class DefaultRestaurantsManager extends AbstractAdministrationManager imp
 	}
 	
 	@Override
-	public void processList(IAdministrationManagerViewBean viewBean, MdoUserContext userContext, boolean... lazy) throws MdoBusinessException {
-		super.processList(viewBean, userContext, lazy);
+	public void processList(IAdministrationManagerViewBean viewBean, boolean... lazy) throws MdoBusinessException {
+		super.processList(viewBean, lazy);
 
 		RestaurantsManagerViewBean restaurantsManagerViewBean = (RestaurantsManagerViewBean) viewBean;
 		
 		try {
-			restaurantsManagerViewBean.setPrefixTableNames(mdoTableAsEnumsManager.getPrefixTableNames(userContext));
-			restaurantsManagerViewBean.setSpecificRounds(mdoTableAsEnumsManager.getSpecificRounds(userContext));
-			restaurantsManagerViewBean.setValueAddedTaxes(valueAddedTaxesManager.findAll(userContext, lazy));
-			restaurantsManagerViewBean.setTableTypes(tableTypesManager.findAll(userContext, lazy));
-			
+			restaurantsManagerViewBean.setPrefixTableNames(mdoTableAsEnumsManager.getPrefixTableNames());
+			restaurantsManagerViewBean.setSpecificRounds(mdoTableAsEnumsManager.getSpecificRounds());
+			restaurantsManagerViewBean.setValueAddedTaxes(valueAddedTaxesManager.findAll(lazy));
+			// DO NOT refactor tableTypesManager.findAll(lazy) to ONE list because we must have 3 instances of this collection.
+			restaurantsManagerViewBean.setTableTypes(tableTypesManager.findAll(lazy));
+			restaurantsManagerViewBean.setReductionTableTypes(tableTypesManager.findAll(lazy));
+			restaurantsManagerViewBean.setVatTableTypes(tableTypesManager.findAll(lazy));
 		} catch (MdoException e) {
 			logger.error("message.error.administration.business.find.all", e);
 			throw new MdoBusinessException("message.error.administration.business.find.all", e);
 		}
 	}
 
-	private String generateReference(RestaurantDto restaurant, MdoUserContext userContext) throws MdoBusinessException {
+	private String generateReference(RestaurantDto restaurant) throws MdoBusinessException {
 		String key = restaurant.getTripleDESKey();
 		String value = new Long(restaurant.getRegistrationDate().getTime()).toString();
 		String result = null;
@@ -151,7 +154,7 @@ public class DefaultRestaurantsManager extends AbstractAdministrationManager imp
 		return result;
 	}
 
-	private String generateKey(RestaurantDto restaurant, MdoUserContext userContext) throws MdoBusinessException {
+	private String generateKey(RestaurantDto restaurant) throws MdoBusinessException {
 		String key = new StringBuilder(new Long(restaurant.getRegistrationDate().getTime()).toString()).append(restaurant.getName())
 		.append(restaurant.getVatRef()).append(restaurant.getVisaRef()).toString();
 		String value = "";
@@ -165,40 +168,46 @@ public class DefaultRestaurantsManager extends AbstractAdministrationManager imp
 	}
 
 	@Override
-	public IMdoDtoBean save(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
+	public IMdoDtoBean save(IMdoDtoBean dtoBean) throws MdoBusinessException {
 		RestaurantDto restaurant = (RestaurantDto) dtoBean;
 		// 1) Generate key
 		String key = restaurant.getTripleDESKey();
 		if (key == null || key.isEmpty()) {
-			key = this.generateKey(restaurant, userContext);
+			key = this.generateKey(restaurant);
 		}
 		restaurant.setTripleDESKey(key);
 		// 1) Generate reference using generated key
 		String reference = restaurant.getReference();
 		if (reference == null || reference.isEmpty()) {
-			reference = this.generateReference(restaurant, userContext);
+			reference = this.generateReference(restaurant);
 		}
 		restaurant.setReference(reference);
 
-		return super.save(dtoBean, userContext);
+		return super.save(dtoBean);
 	}
 
 	@Override
-	public IMdoDtoBean update(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
+	public IMdoDtoBean update(IMdoDtoBean dtoBean) throws MdoBusinessException {
 		Restaurant daoBean = (Restaurant) assembler.unmarshal(dtoBean);
 		try {
 			// Deleting daoBean.getVats() and daoBean.getPrefixTableNames() before inserting new ones
 			Set<RestaurantValueAddedTax> backupVats = new HashSet<RestaurantValueAddedTax>(daoBean.getVats());
 			Set<RestaurantPrefixTable> backupPrefixTableNames = new HashSet<RestaurantPrefixTable>(daoBean.getPrefixTableNames());
+			Set<RestaurantReductionTable> backupReductionTables = new HashSet<RestaurantReductionTable>(daoBean.getReductionTables());
+			Set<RestaurantVatTableType> backupVatTableTypes = new HashSet<RestaurantVatTableType>(daoBean.getVatTableTypes());
 			// Removing
 			daoBean.getVats().clear();
 			daoBean.getPrefixTableNames().clear();
+			daoBean.getReductionTables().clear();
+			daoBean.getVatTableTypes().clear();
 			dao.update(daoBean);
 			// Restoring
 			daoBean.getVats().addAll(backupVats);
 			daoBean.getPrefixTableNames().addAll(backupPrefixTableNames);
+			daoBean.getReductionTables().addAll(backupReductionTables);
+			daoBean.getVatTableTypes().addAll(backupVatTableTypes);
 			
-			return assembler.marshal((IMdoDaoBean) dao.update(daoBean), userContext);
+			return assembler.marshal((IMdoDaoBean) dao.update(daoBean));
 		} catch (MdoException e) {
 			logger.error("message.error.administration.business.save", e);
 			throw new MdoBusinessException("message.error.administration.business.save", e);
@@ -206,16 +215,16 @@ public class DefaultRestaurantsManager extends AbstractAdministrationManager imp
 	}
 	
 	@Override
-	public IMdoDtoBean delete(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
+	public IMdoDtoBean delete(IMdoDtoBean dtoBean) throws MdoBusinessException {
 		// No need to Delete Vats/Prefix before Deleting user because of hibernate mapping all-delete-orphan in collection
 		// Delete dto
-		return super.delete(dtoBean, userContext);
+		return super.delete(dtoBean);
 	}
 
 	@Override
-	public IMdoDtoBean findByReference(String reference, MdoUserContext userContext) throws MdoBusinessException {
+	public IMdoDtoBean findByReference(String reference) throws MdoBusinessException {
 		try {
-			return assembler.marshal((IMdoDaoBean) dao.findByUniqueKey(reference), userContext);
+			return assembler.marshal((IMdoDaoBean) dao.findByUniqueKey(reference));
 		} catch (MdoException e) {
 			logger.error("message.error.administration.business.restaurant.find.by.reference", new Object[] {reference},  e);
 			throw new MdoBusinessException("message.error.administration.business.restaurant.find.by.reference", new Object[] {reference},  e);

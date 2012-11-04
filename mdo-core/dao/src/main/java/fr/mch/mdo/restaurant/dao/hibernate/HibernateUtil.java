@@ -17,7 +17,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.util.DTDEntityResolver;
+import org.hibernate.internal.util.xml.DTDEntityResolver;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 

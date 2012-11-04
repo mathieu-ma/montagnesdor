@@ -9,7 +9,6 @@ import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.products.IValueAddedTaxesDao;
 import fr.mch.mdo.restaurant.dao.products.hibernate.DefaultValueAddedTaxesDao;
 import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.ValueAddedTaxDto;
 import fr.mch.mdo.restaurant.dto.beans.ValueAddedTaxesManagerViewBean;
 import fr.mch.mdo.restaurant.exception.MdoBusinessException;
@@ -62,13 +61,13 @@ public class DefaultValueAddedTaxesManager extends AbstractAdministrationManager
 	}
 
 	@Override
-	public void processList(IAdministrationManagerViewBean viewBean, MdoUserContext userContext, boolean... lazy) throws MdoBusinessException {
-		super.processList(viewBean, userContext, lazy);
+	public void processList(IAdministrationManagerViewBean viewBean, boolean... lazy) throws MdoBusinessException {
+		super.processList(viewBean, lazy);
 
 		ValueAddedTaxesManagerViewBean valueAddedTaxesManagerViewBean = (ValueAddedTaxesManagerViewBean) viewBean;
 		
 		try {
-			valueAddedTaxesManagerViewBean.setCodes(this.getAvailableValueAddedTaxes(mdoTableAsEnumsManager.getValueAddedTaxes(userContext), userContext));
+			valueAddedTaxesManagerViewBean.setCodes(this.getAvailableValueAddedTaxes(mdoTableAsEnumsManager.getValueAddedTaxes()));
 		} catch (MdoException e) {
 			logger.error("message.error.administration.business.find.all", e);
 			throw new MdoBusinessException("message.error.administration.business.find.all", e);
@@ -81,11 +80,11 @@ public class DefaultValueAddedTaxesManager extends AbstractAdministrationManager
 	 * @param userContext user context.
 	 * @return a restricted list.
 	 */
-	private List<IMdoDtoBean> getAvailableValueAddedTaxes(List<IMdoDtoBean> listAll, MdoUserContext userContext) {
+	private List<IMdoDtoBean> getAvailableValueAddedTaxes(List<IMdoDtoBean> listAll) {
 		List<IMdoDtoBean> result = new ArrayList<IMdoDtoBean>(listAll);
 		List<IMdoDtoBean> excludedList = new ArrayList<IMdoDtoBean>();
 		try {
-			excludedList = super.findAll(userContext);
+			excludedList = super.findAll();
 		} catch (MdoBusinessException e) {
 			logger.warn("message.error.administration.business.find.all", e);
 		}
@@ -102,10 +101,10 @@ public class DefaultValueAddedTaxesManager extends AbstractAdministrationManager
 	}
 	
 	@Override
-	public ValueAddedTaxDto findByCodeName(String codeName, MdoUserContext userContext) throws MdoBusinessException {
+	public ValueAddedTaxDto findByCodeName(String codeName) throws MdoBusinessException {
 		ValueAddedTaxDto result = null;
 		try {
-			result = (ValueAddedTaxDto) assembler.marshal((IMdoDaoBean) super.dao.findByUniqueKey(codeName), userContext);
+			result = (ValueAddedTaxDto) assembler.marshal((IMdoDaoBean) super.dao.findByUniqueKey(codeName));
 		} catch (MdoException e) {
 			logger.error("message.error.business.DefaultValueAddedTaxesManager.findByCodeName", new Object[]{codeName}, e);
 			throw new MdoBusinessException("message.error.business.DefaultValueAddedTaxesManager.findByCodeName", new Object[]{codeName}, e);

@@ -10,9 +10,9 @@ import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 
 public interface IDinnerTablesManagerAssembler extends IManagerAssembler, ILoggerBean
 {
-    IMdoDtoBean marshalTableType(IMdoDaoBean daoBean, MdoUserContext userContext);
+    IMdoDtoBean marshalTableType(IMdoDaoBean daoBean);
 
-    IMdoDtoBean marshalFreeTableByNumber(IMdoDaoBean daoBean, MdoUserContext userContext);
+    IMdoDtoBean marshalFreeTableByNumber(IMdoDaoBean daoBean);
     
-    List<IMdoDtoBean> marshalFreeTables(List<? extends IMdoBean> list, MdoUserContext userContext);
+    List<IMdoDtoBean> marshalFreeTables(List<? extends IMdoBean> list);
 }

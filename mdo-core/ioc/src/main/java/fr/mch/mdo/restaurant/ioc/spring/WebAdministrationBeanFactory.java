@@ -70,7 +70,7 @@ public class WebAdministrationBeanFactory extends MdoBeanFactory implements IWeb
 		 */
 		IMdoBean userAuthentication = null;
 		try {
-			userAuthentication = this.getUserAuthenticationsManager().findByLogin(userGlobalAdmin.getLogin(), userContext);
+			userAuthentication = this.getUserAuthenticationsManager().findByLogin(userGlobalAdmin.getLogin());
 		} catch (MdoException e) {
 			logger.fatal("Could not retreive user " + userGlobalAdmin.getLogin(), e);
 			throw new MdoFunctionalException("Could not retreive user " + userGlobalAdmin.getLogin(), e);
@@ -81,30 +81,30 @@ public class WebAdministrationBeanFactory extends MdoBeanFactory implements IWeb
 				LocaleDto locale = userGlobalAdmin.getLocales().iterator().next().getLocale();
 				// Check and save the existence of locale in database
 				try {
-					locale = (LocaleDto) this.getLocalesManager().findByLanguage(locale.getLanguageCode(), userContext);
+					locale = (LocaleDto) this.getLocalesManager().findByLanguage(locale.getLanguageCode());
 				} catch (MdoException e) {
 					logger.fatal("Could not retrieve locale " + locale.getLanguageCode(), e);
 					throw new MdoFunctionalException("Could not retrieve locale " + locale.getLanguageCode(), e);
 				}
 				if (locale == null || locale.getId() == null) {
 					locale = userGlobalAdmin.getLocales().iterator().next().getLocale();
-					locale = (LocaleDto) this.getLocalesManager().insert(locale, userContext);
+					locale = (LocaleDto) this.getLocalesManager().insert(locale);
 				}
 
 				RestaurantDto restaurant = userGlobalAdmin.getRestaurant();
 				MdoTableAsEnumDto specificRound = restaurant.getSpecificRound();
 				// Check the existence of Specific Round in database
-				specificRound = processMdoTableAsEnum(specificRound, userContext);
+				specificRound = processMdoTableAsEnum(specificRound);
 				restaurant.setSpecificRound(specificRound);
 				
 				TableTypeDto defaultTableType = restaurant.getDefaultTableType();
 				// Check the existence of Table Type in database
-				defaultTableType = processTableType(defaultTableType, userContext);
+				defaultTableType = processTableType(defaultTableType);
 				restaurant.setDefaultTableType(defaultTableType);
 
 				ValueAddedTaxDto vat = restaurant.getVat();
 				// Check the existence of VAT in database
-				vat = processVat(vat, userContext);
+				vat = processVat(vat);
 				restaurant.setVat(vat);
 				
 				Set<RestaurantValueAddedTaxDto> vats = new HashSet<RestaurantValueAddedTaxDto>();
@@ -116,11 +116,11 @@ public class WebAdministrationBeanFactory extends MdoBeanFactory implements IWeb
 				
 				// Check and save the existence of restaurant in database
 				try {
-					restaurant = (RestaurantDto) this.getRestaurantsManager().findByReference(restaurant.getReference(), userContext);
+					restaurant = (RestaurantDto) this.getRestaurantsManager().findByReference(restaurant.getReference());
 					if (restaurant == null || restaurant.getId() == null) {
 						// Save the restaurant
 						restaurant = userGlobalAdmin.getRestaurant();
-						restaurant = (RestaurantDto) this.getRestaurantsManager().insert(userGlobalAdmin.getRestaurant(), userContext);
+						restaurant = (RestaurantDto) this.getRestaurantsManager().insert(userGlobalAdmin.getRestaurant());
 					}
 				} catch (MdoException e) {
 					logger.fatal("Could not retrieve/save restaurant with reference " + restaurant.getReference(), e);
@@ -130,7 +130,7 @@ public class WebAdministrationBeanFactory extends MdoBeanFactory implements IWeb
 				UserDto user = userGlobalAdmin.getUser();
 				MdoTableAsEnumDto title = user.getTitle();
 				// Check and save the existence of title in database
-				title = processMdoTableAsEnum(title, userContext);
+				title = processMdoTableAsEnum(title);
 				user.setTitle(title);
 				
 				Set<UserRestaurantDto> restaurants = user.getRestaurants();
@@ -140,21 +140,21 @@ public class WebAdministrationBeanFactory extends MdoBeanFactory implements IWeb
 				restaurants.add(userRestaurant);
 				// Save the user
 				// TODO : maybe add a functional unique reference ID
-				user = (UserDto) this.getUsersManager().insert(user, userContext);
+				user = (UserDto) this.getUsersManager().insert(user);
 
 				UserRoleDto userRole = userGlobalAdmin.getUserRole();
 				MdoTableAsEnumDto code = userRole.getCode();
 				// Check and save the existence of code in database
-				code = processMdoTableAsEnum(code, userContext);
+				code = processMdoTableAsEnum(code);
 				userRole.setCode(code);
 				
 				// Check and save the existence of user role in database
 				try {
-					userRole = (UserRoleDto) this.getUserRolesManager().findByCode(userRole.getCode().getName(), userContext);
+					userRole = (UserRoleDto) this.getUserRolesManager().findByCode(userRole.getCode().getName());
 					if (userRole == null || userRole.getId() == null) {
 						// Save the User Role
 						userRole = userGlobalAdmin.getUserRole();
-						userRole = (UserRoleDto) this.getUserRolesManager().insert(userRole, userContext);
+						userRole = (UserRoleDto) this.getUserRolesManager().insert(userRole);
 					}
 				} catch (MdoException e) {
 					logger.fatal("Could not retrieve/save user role with code " + userRole.getCode(), e);
@@ -170,7 +170,7 @@ public class WebAdministrationBeanFactory extends MdoBeanFactory implements IWeb
 				userLocale.setLocale(locale);
 				locales.add(userLocale);
 				// Save the user authentication
-				this.getUserAuthenticationsManager().insert(userGlobalAdmin, userContext);
+				this.getUserAuthenticationsManager().insert(userGlobalAdmin);
 			} catch (MdoException e) {
 				logger.fatal("Could not save user " + userGlobalAdmin.getLogin(), e);
 				throw new MdoFunctionalException("Could not save user " + userGlobalAdmin.getLogin(), e);
@@ -185,14 +185,14 @@ public class WebAdministrationBeanFactory extends MdoBeanFactory implements IWeb
 	 * @return
 	 * @throws MdoFunctionalException
 	 */
-	private MdoTableAsEnumDto processMdoTableAsEnum(MdoTableAsEnumDto dtoBean, MdoUserContext userContext) throws MdoFunctionalException {
+	private MdoTableAsEnumDto processMdoTableAsEnum(MdoTableAsEnumDto dtoBean) throws MdoFunctionalException {
 		MdoTableAsEnumDto result = dtoBean;
 		// Check the existence of Specific Round in database
 		try {
-			result = (MdoTableAsEnumDto) this.getMdoTableAsEnumsManager().findByTypeAndName(result.getType(), result.getName(), userContext);
+			result = (MdoTableAsEnumDto) this.getMdoTableAsEnumsManager().findByTypeAndName(result.getType(), result.getName());
 			if (result == null || result.getId() == null) {
 				// Save the bean
-				result = (MdoTableAsEnumDto) this.getMdoTableAsEnumsManager().insert(dtoBean, userContext);
+				result = (MdoTableAsEnumDto) this.getMdoTableAsEnumsManager().insert(dtoBean);
 			}
 		} catch (MdoException e) {
 			logger.fatal("Could not retrieve/save MdoTableAsEnumDto with type(" + result.getType() + ") and name(" + result.getType() + ")", e);
@@ -208,14 +208,14 @@ public class WebAdministrationBeanFactory extends MdoBeanFactory implements IWeb
 	 * @return
 	 * @throws MdoFunctionalException
 	 */
-	private TableTypeDto processTableType(TableTypeDto dtoBean, MdoUserContext userContext) throws MdoFunctionalException {
+	private TableTypeDto processTableType(TableTypeDto dtoBean) throws MdoFunctionalException {
 		TableTypeDto result = dtoBean;
 		// Check the existence of Specific Round in database
 		try {
-			result = (TableTypeDto) this.getTableTypesManager().findByCodeName(result.getCode().getName(), userContext);
+			result = (TableTypeDto) this.getTableTypesManager().findByCodeName(result.getCode().getName());
 			if (result == null || result.getId() == null) {
 				// Save the bean
-				result = (TableTypeDto) this.getTableTypesManager().insert(dtoBean, userContext);
+				result = (TableTypeDto) this.getTableTypesManager().insert(dtoBean);
 			}
 		} catch (MdoException e) {
 			logger.fatal("Could not retrieve/save MdoTableAsEnumDto with type(" + result.getCode().getType() + ") and name(" + result.getCode().getType() + ")", e);
@@ -231,14 +231,14 @@ public class WebAdministrationBeanFactory extends MdoBeanFactory implements IWeb
 	 * @return
 	 * @throws MdoFunctionalException
 	 */
-	private ValueAddedTaxDto processVat(ValueAddedTaxDto dtoBean, MdoUserContext userContext) throws MdoFunctionalException {
+	private ValueAddedTaxDto processVat(ValueAddedTaxDto dtoBean) throws MdoFunctionalException {
 		ValueAddedTaxDto result = dtoBean;
 		// Check the existence of Specific Round in database
 		try {
-			result = (ValueAddedTaxDto) this.getValueAddedTaxesManager().findByCodeName(result.getCode().getName(), userContext);
+			result = (ValueAddedTaxDto) this.getValueAddedTaxesManager().findByCodeName(result.getCode().getName());
 			if (result == null || result.getId() == null) {
 				// Save the bean
-				result = (ValueAddedTaxDto) this.getValueAddedTaxesManager().insert(dtoBean, userContext);
+				result = (ValueAddedTaxDto) this.getValueAddedTaxesManager().insert(dtoBean);
 			}
 		} catch (MdoException e) {
 			logger.fatal("Could not retrieve/save MdoTableAsEnumDto with type(" + result.getCode().getType() + ") and name(" + result.getCode().getType() + ")", e);

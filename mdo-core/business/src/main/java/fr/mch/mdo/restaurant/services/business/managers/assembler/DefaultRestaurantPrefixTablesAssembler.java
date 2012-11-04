@@ -9,7 +9,6 @@ import fr.mch.mdo.restaurant.dao.beans.Restaurant;
 import fr.mch.mdo.restaurant.dao.beans.RestaurantPrefixTable;
 import fr.mch.mdo.restaurant.dao.beans.TableType;
 import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantPrefixTableDto;
 import fr.mch.mdo.restaurant.dto.beans.TableTypeDto;
@@ -74,20 +73,20 @@ public class DefaultRestaurantPrefixTablesAssembler extends AbstractAssembler im
 //	}
 
 	@Override
-	public IMdoDtoBean marshal(IMdoDaoBean daoBean, MdoUserContext userContext) {
+	public IMdoDtoBean marshal(IMdoDaoBean daoBean) {
 		RestaurantPrefixTableDto dto = null;
 		if (daoBean != null) {
 			RestaurantPrefixTable bean = (RestaurantPrefixTable) daoBean;
 			dto = new RestaurantPrefixTableDto();
 			dto.setId(bean.getId());
-			MdoTableAsEnumDto prefix = (MdoTableAsEnumDto) mdoTableAsEnumsAssembler.marshal(bean.getPrefix(), userContext);
+			MdoTableAsEnumDto prefix = (MdoTableAsEnumDto) mdoTableAsEnumsAssembler.marshal(bean.getPrefix());
 			dto.setPrefix(prefix);
 			if(bean.getRestaurant() != null) {
 				RestaurantDto restaurant = new RestaurantDto();
 				restaurant.setId(bean.getRestaurant().getId());
 				dto.setRestaurant(restaurant);
 			}
-			TableTypeDto type = (TableTypeDto) tableTypesAssembler.marshal(bean.getType(), userContext);
+			TableTypeDto type = (TableTypeDto) tableTypesAssembler.marshal(bean.getType());
 			dto.setType(type);
 		}
 		return dto;

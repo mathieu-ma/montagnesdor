@@ -19,6 +19,8 @@
 				<s:hidden key="form.dtoBean.code.id" />
 			</s:else>
 			<s:textfield label="%{getText('product.special.codes.manager.short.code')}" name="form.dtoBean.shortCode" />
+			<s:select label="%{getText('product.special.codes.manager.vat')}" name="form.dtoBean.vat.id" value="form.dtoBean.vat.id" emptyOption="true" 
+				list="form.dtoBean.restaurant.vats" listKey="vat.id" listValue="%{getText('format.number.decimal.3.2',{vat.rate})}" required="false" />
 			<div style="height: 2em;">
 				<div class="error">
 					<s:actionerror cssClass="ui-helper-reset" />

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<artifactId>mdo-restaurant</artifactId>
+		<groupId>fr.mch.mdo</groupId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>restaurant-domain</artifactId>
+	<packaging>jar</packaging>
+	<name>restaurant-domain</name>
+	<url>http://maven.apache.org</url>
+
+	<dependencies>
+        <!-- ===================== Local Projects ===================== -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>api</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+
+        <!-- ===================== compile ===================== -->
+
+        <!-- ===================== provided ===================== -->
+
+        <!-- ===================== runtime ===================== -->
+        <!-- ===================== test ===================== -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>test</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+	</dependencies>
+</project>

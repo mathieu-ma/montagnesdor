@@ -13,9 +13,11 @@ import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductSpecialCodeDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductSpecialCodesManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
+import fr.mch.mdo.restaurant.dto.beans.ValueAddedTaxDto;
 import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.services.business.managers.DefaultAdministrationManagerTest;
 import fr.mch.mdo.restaurant.services.business.managers.IAdministrationManager;
+import fr.mch.mdo.restaurant.services.business.managers.IManagerLabelable;
 import fr.mch.mdo.test.MdoTestCase;
 
 public class DefaultProductSpecialCodesManagerTest extends DefaultAdministrationManagerTest
@@ -49,9 +51,12 @@ public class DefaultProductSpecialCodesManagerTest extends DefaultAdministration
 		restaurant.setId(1L);
 		MdoTableAsEnumDto code = new MdoTableAsEnumDto();
 		code.setId(21L);
+		ValueAddedTaxDto vat = new ValueAddedTaxDto();
+		vat.setId(1L);
+
 		Map<Long, String> labels = new HashMap<Long, String>();
 		labels.put(1L, "Réduction");
-		return createNewBean(shortCode, restaurant, code, labels);
+		return createNewBean(shortCode, restaurant, code, vat, labels);
 	}
 
 	@Override
@@ -62,9 +67,12 @@ public class DefaultProductSpecialCodesManagerTest extends DefaultAdministration
 		restaurant.setId(1L);
 		MdoTableAsEnumDto code = new MdoTableAsEnumDto();
 		code.setId(22L);
+		ValueAddedTaxDto vat = new ValueAddedTaxDto();
+		vat.setId(1L);
+
 		Map<Long, String> labels = new HashMap<Long, String>();
 		labels.put(1L, "Commande personnalisée");
-		list.add(createNewBean(shortCode, restaurant, code, labels));
+		list.add(createNewBean(shortCode, restaurant, code, vat, labels));
 		
 		shortCode = "<";
 		restaurant = new RestaurantDto();
@@ -73,7 +81,7 @@ public class DefaultProductSpecialCodesManagerTest extends DefaultAdministration
 		code.setId(23L);
 		labels = new HashMap<Long, String>();
 		labels.put(1L, "Test 1");
-		list.add(createNewBean(shortCode, restaurant, code, labels));
+		list.add(createNewBean(shortCode, restaurant, code, vat, labels));
 		return list;
 	}
 
@@ -84,11 +92,14 @@ public class DefaultProductSpecialCodesManagerTest extends DefaultAdministration
 		restaurant.setId(1L);
 		MdoTableAsEnumDto code = new MdoTableAsEnumDto();
 		code.setId(24L);
+		ValueAddedTaxDto vat = new ValueAddedTaxDto();
+		vat.setId(1L);
+
 		Map<Long, String> labels = new HashMap<Long, String>();
 		labels.put(1L, "Test 2");
 		try {
 			// Create new bean to be updated
-			IMdoBean beanToBeUpdated = this.getInstance().insert(createNewBean(shortCode, restaurant, code, labels), userContext);
+			IMdoBean beanToBeUpdated = this.getInstance().insert(createNewBean(shortCode, restaurant, code, vat, labels));
 			assertTrue("IMdoBean must be instance of " + ProductSpecialCodeDto.class, beanToBeUpdated instanceof ProductSpecialCodeDto);
 			ProductSpecialCodeDto castedBean = (ProductSpecialCodeDto) beanToBeUpdated;
 			assertEquals("ProductSpecialCode short code must be equals to unique key", shortCode, castedBean.getShortCode());
@@ -99,11 +110,11 @@ public class DefaultProductSpecialCodesManagerTest extends DefaultAdministration
 			castedBean.setShortCode(shortCode);
 			labels.put(2L, "Test 2 ES");
 			castedBean.setLabels(labels);
-			castedBean = (ProductSpecialCodeDto) this.getInstance().update(castedBean, userContext);
+			castedBean = (ProductSpecialCodeDto) this.getInstance().update(castedBean);
 			// Reload the modified bean
 			ProductSpecialCodeDto updatedBean = new ProductSpecialCodeDto();
 			updatedBean.setId(castedBean.getId());
-			updatedBean = (ProductSpecialCodeDto) this.getInstance().load(updatedBean, userContext);
+			updatedBean = (ProductSpecialCodeDto) this.getInstance().load(updatedBean);
 			assertEquals("ProductSpecialCode short code must be equals to unique key", shortCode, castedBean.getShortCode());
 			assertNotNull("ProductSpecialCode labels must not be null", castedBean.getLabels());
 			assertEquals("Check ProductSpecialCode labels size", labels.size(), castedBean.getLabels().size());
@@ -117,7 +128,7 @@ public class DefaultProductSpecialCodesManagerTest extends DefaultAdministration
 		ProductSpecialCodesManagerViewBean viewBean = new ProductSpecialCodesManagerViewBean();
 		viewBean.setDtoBean(createNewBean());
 		try {
-			this.getInstance().processList(viewBean, DefaultAdministrationManagerTest.userContext);
+			((IManagerLabelable) this.getInstance()).processList(viewBean, DefaultAdministrationManagerTest.userContext.getCurrentLocale());
 			assertNotNull("Main list not be null", viewBean.getList());
 			assertFalse("Main list not be empty", viewBean.getList().isEmpty());
 			assertNotNull("Labels list not be null", viewBean.getLabels());
@@ -138,11 +149,12 @@ public class DefaultProductSpecialCodesManagerTest extends DefaultAdministration
 		assertTrue(this.getInstance() instanceof DefaultProductSpecialCodesManager);
 	}
 
-	private IMdoDtoBean createNewBean(String shortCode, RestaurantDto restaurant, MdoTableAsEnumDto code, Map<Long, String> labels) {
+	private IMdoDtoBean createNewBean(String shortCode, RestaurantDto restaurant, MdoTableAsEnumDto code, ValueAddedTaxDto vat, Map<Long, String> labels) {
 		ProductSpecialCodeDto newBean = new ProductSpecialCodeDto();
 		newBean.setShortCode(shortCode);
 		newBean.setRestaurant(restaurant);
 		newBean.setCode(code);
+		newBean.setVat(vat);
 		newBean.setLabels(labels);
 		return newBean;
 	}

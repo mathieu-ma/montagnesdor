@@ -316,7 +316,7 @@ public class DinnerTable extends MdoDaoBean
 	}
 
 	/**
-	 * @param takeaway
+	 * @param type
 	 *            the type to set
 	 */
 	public void setType(TableType type) {

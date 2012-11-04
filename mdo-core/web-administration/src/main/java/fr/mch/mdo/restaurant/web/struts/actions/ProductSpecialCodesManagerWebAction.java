@@ -3,13 +3,12 @@ package fr.mch.mdo.restaurant.web.struts.actions;
 import fr.mch.mdo.restaurant.Constants;
 import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
-import fr.mch.mdo.restaurant.dto.beans.ProductDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductSpecialCodeDto;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
+import fr.mch.mdo.restaurant.exception.MdoBusinessException;
 import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.ioc.spring.WebAdministrationBeanFactory;
 import fr.mch.mdo.restaurant.services.business.managers.products.IProductSpecialCodesManager;
-import fr.mch.mdo.restaurant.services.business.managers.products.IProductsManager;
 import fr.mch.mdo.restaurant.services.business.managers.restaurants.IRestaurantsManager;
 import fr.mch.mdo.restaurant.ui.forms.IMdoAdministrationForm;
 import fr.mch.mdo.restaurant.ui.forms.ProductSpecialCodesManagerForm;
@@ -47,14 +46,14 @@ public class ProductSpecialCodesManagerWebAction extends AdministrationManagerLa
 	}
 
 	@Override
-	public String save() {
+	public String save() throws MdoBusinessException {
 		super.save();
 		
 		// Reload the restaurant bean
 		ProductSpecialCodeDto dtoBean = ((ProductSpecialCodeDto) super.getForm().getDtoBean());
 		RestaurantDto restaurant = dtoBean.getRestaurant();
 		try {
-			restaurant = (RestaurantDto) restaurantsManager.findByPrimaryKey(dtoBean.getRestaurant().getId(), (MdoUserContext) super.getForm().getUserContext(), false);
+			restaurant = (RestaurantDto) restaurantsManager.findByPrimaryKey(dtoBean.getRestaurant().getId(), false);
 		} catch (MdoException e) {
 			super.addActionError(super.getText("error.action.technical", new String[] {this.getClass().getName(), "save"}));
 		}

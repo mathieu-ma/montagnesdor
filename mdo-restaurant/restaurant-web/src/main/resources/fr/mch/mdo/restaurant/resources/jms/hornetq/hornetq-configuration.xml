@@ -1,0 +1,46 @@
+<configuration xmlns="urn:hornetq"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:hornetq /schema/hornetq-configuration.xsd">
+
+   <management-address>jms.queue.hornetq.management</management-address>
+
+	<security-enabled>true</security-enabled>
+	<persistence-enabled>false</persistence-enabled>
+	<cluster-user>montagnesdor</cluster-user>
+	<cluster-password>powermdo</cluster-password>
+	<journal-directory>./target/data/journal</journal-directory>
+	
+	<!-- Connectors -->
+
+	<connectors>
+		<connector name="netty">
+			<factory-class>
+				org.hornetq.core.remoting.impl.netty.NettyConnectorFactory
+			</factory-class>
+			<param key="port" value="5445" />
+		</connector>
+	</connectors>
+
+	<acceptors>
+		<acceptor name="netty">
+			<factory-class>
+				org.hornetq.core.remoting.impl.netty.NettyAcceptorFactory
+			</factory-class>
+			<param key="port" value="5445" />
+		</acceptor>
+	</acceptors>
+
+	<!-- Other config -->
+
+	<security-settings>
+		<security-setting match="jms.queue.printerQueue">
+			<permission type="createDurableQueue" roles="printer" />
+			<permission type="deleteDurableQueue" roles="printer" />
+			<permission type="createNonDurableQueue" roles="printer" />
+			<permission type="deleteNonDurableQueue" roles="printer" />
+			<permission type="consume" roles="printer" />
+			<permission type="send" roles="printer" />
+			<permission type="manage" roles="printer" />
+		</security-setting>
+	</security-settings>
+</configuration>

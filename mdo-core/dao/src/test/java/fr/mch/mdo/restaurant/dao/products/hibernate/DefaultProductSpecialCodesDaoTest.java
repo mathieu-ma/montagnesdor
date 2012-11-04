@@ -13,6 +13,7 @@ import fr.mch.mdo.restaurant.dao.beans.MdoTableAsEnum;
 import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode;
 import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCodeLanguage;
 import fr.mch.mdo.restaurant.dao.beans.Restaurant;
+import fr.mch.mdo.restaurant.dao.beans.ValueAddedTax;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServicesTestCase;
 import fr.mch.mdo.restaurant.dao.products.IProductSpecialCodesDao;
 import fr.mch.mdo.test.MdoTestCase;
@@ -47,9 +48,12 @@ public class DefaultProductSpecialCodesDaoTest extends DefaultDaoServicesTestCas
 		restaurant.setId(1L);
 		MdoTableAsEnum code = new MdoTableAsEnum();
 		code.setId(21L);
+		ValueAddedTax vat = new ValueAddedTax();
+		vat.setId(1L);
+
 		Map<Long, String> labels = new HashMap<Long, String>();
 		labels.put(1L, "Réduction");
-		return createNewBean(shortCode, restaurant, code, labels);
+		return createNewBean(shortCode, restaurant, code, vat, labels);
 	}
 
 	protected List<IMdoBean> createListBeans() {
@@ -59,9 +63,12 @@ public class DefaultProductSpecialCodesDaoTest extends DefaultDaoServicesTestCas
 		restaurant.setId(1L);
 		MdoTableAsEnum code = new MdoTableAsEnum();
 		code.setId(22L);
+		ValueAddedTax vat = new ValueAddedTax();
+		vat.setId(1L);
+
 		Map<Long, String> labels = new HashMap<Long, String>();
 		labels.put(1L, "Commande personnalisée");
-		list.add(createNewBean(shortCode, restaurant, code, labels));
+		list.add(createNewBean(shortCode, restaurant, code, vat, labels));
 		shortCode = "<";
 		restaurant = new Restaurant();
 		restaurant.setId(1L);
@@ -69,7 +76,7 @@ public class DefaultProductSpecialCodesDaoTest extends DefaultDaoServicesTestCas
 		code.setId(23L);
 		labels = new HashMap<Long, String>();
 		labels.put(1L, "Test 1");
-		list.add(createNewBean(shortCode, restaurant, code, labels));
+		list.add(createNewBean(shortCode, restaurant, code, vat, labels));
 		return list;
 	}
 
@@ -104,11 +111,14 @@ public class DefaultProductSpecialCodesDaoTest extends DefaultDaoServicesTestCas
 		restaurant.setId(1L);
 		MdoTableAsEnum code = new MdoTableAsEnum();
 		code.setId(24L);
+		ValueAddedTax vat = new ValueAddedTax();
+		vat.setId(1L);
+
 		Map<Long, String> labels = new HashMap<Long, String>();
 		labels.put(1L, "Test 2");
 		try {
 			// Create new bean to be updated
-			IMdoBean beanToBeUpdated = this.getInstance().insert(createNewBean(shortCode, restaurant, code, labels));
+			IMdoBean beanToBeUpdated = this.getInstance().insert(createNewBean(shortCode, restaurant, code, vat, labels));
 			assertTrue("IMdoBean must be instance of " + ProductSpecialCode.class, beanToBeUpdated instanceof ProductSpecialCode);
 			ProductSpecialCode castedBean = (ProductSpecialCode) beanToBeUpdated;
 			assertEquals("ProductSpecialCode short code must be equals to unique key", shortCode, castedBean.getShortCode());
@@ -142,11 +152,14 @@ public class DefaultProductSpecialCodesDaoTest extends DefaultDaoServicesTestCas
 		restaurant.setId(1L);
 		MdoTableAsEnum code = new MdoTableAsEnum();
 		code.setId(25L);
+		ValueAddedTax vat = new ValueAddedTax();
+		vat.setId(1L);
+
 		Map<Long, String> labels = new HashMap<Long, String>();
 		labels.put(1L, "Test 2");
 		try {
 			// Create new bean to be updated
-			IMdoBean beanToBeUpdated = this.getInstance().insert(createNewBean(shortCode, restaurant, code, labels));
+			IMdoBean beanToBeUpdated = this.getInstance().insert(createNewBean(shortCode, restaurant, code, vat, labels));
 			assertTrue("IMdoBean must be instance of " + ProductSpecialCode.class, beanToBeUpdated instanceof ProductSpecialCode);
 			ProductSpecialCode castedBean = (ProductSpecialCode) beanToBeUpdated;
 			assertEquals("ProductSpecialCode short code must be equals to unique key", shortCode, castedBean.getShortCode());
@@ -196,11 +209,12 @@ public class DefaultProductSpecialCodesDaoTest extends DefaultDaoServicesTestCas
 		}
 	}
 	
-	private IMdoBean createNewBean(String shortCode, Restaurant restaurant, MdoTableAsEnum code, Map<Long, String> labels) {
+	private IMdoBean createNewBean(String shortCode, Restaurant restaurant, MdoTableAsEnum code, ValueAddedTax vat, Map<Long, String> labels) {
 		ProductSpecialCode newBean = new ProductSpecialCode();
 		newBean.setShortCode(shortCode);
 		newBean.setRestaurant(restaurant);
 		newBean.setCode(code);
+		newBean.setVat(vat);
 		newBean.setLabels(labels);
 		return newBean;
 	}

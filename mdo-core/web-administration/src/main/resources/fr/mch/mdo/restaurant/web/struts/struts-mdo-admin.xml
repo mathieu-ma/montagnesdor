@@ -155,11 +155,25 @@
 		<action name="RestaurantsManagerCUD" class="fr.mch.mdo.restaurant.web.struts.actions.RestaurantsManagerWebAction" method="save">
 		   	<interceptor-ref name="mdoBasicInterceptorValStore" />
 			<result name="input">/jsp/restaurants/restaurants.jsp</result>
+			<!-- After CUD Vat Table type -->
+			<result name="acudvattabletype" type="redirectActionTab">
+				<param name="actionName">RestaurantsManager</param>
+				<param name="method">form</param>
+				<param name="tab">#tabs-3</param>
+				<param name="form.dtoBean.id">${form.dtoBean.id}</param>
+			</result>
 			<!-- After CUD Prefix Table -->
 			<result name="acudprefixtable" type="redirectActionTab">
 				<param name="actionName">RestaurantsManager</param>
 				<param name="method">form</param>
-				<param name="tab">#tabs-3</param>
+				<param name="tab">#tabs-4</param>
+				<param name="form.dtoBean.id">${form.dtoBean.id}</param>
+			</result>
+			<!-- After CUD Reduction Table -->
+			<result name="acudreductiontable" type="redirectActionTab">
+				<param name="actionName">RestaurantsManager</param>
+				<param name="method">form</param>
+				<param name="tab">#tabs-5</param>
 				<param name="form.dtoBean.id">${form.dtoBean.id}</param>
 			</result>
 			<!-- After CUD -->

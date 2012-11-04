@@ -10,5 +10,7 @@ public interface IRestaurantPrefixTablesDao extends IDaoServices
 {
 	List<RestaurantPrefixTable> findAll(Long restaurantId) throws MdoException; 
 
-	List<RestaurantPrefixTable> findAll(Long restaurantId, String typeName) throws MdoException; 
+	List<RestaurantPrefixTable> findAll(Long restaurantId, String typeName) throws MdoException;
+
+	List<RestaurantPrefixTable> findOnlyPrefixTables(Long restaurantId) throws MdoException;
 }

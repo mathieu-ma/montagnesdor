@@ -1,5 +1,6 @@
 package fr.mch.mdo.restaurant.dao.restaurants.hibernate;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ import fr.mch.mdo.logs.ILogger;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.dao.beans.Restaurant;
+import fr.mch.mdo.restaurant.dao.beans.TableType;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServices;
 import fr.mch.mdo.restaurant.dao.restaurants.IRestaurantsDao;
 import fr.mch.mdo.restaurant.exception.MdoDataBeanException;
@@ -60,8 +62,18 @@ public class DefaultRestaurantsDao extends DefaultDaoServices implements IRestau
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<IMdoBean> findRestaurants(Long userId, boolean... isLazy) throws MdoDataBeanException {
-		Map<String, Object> parameters = new HashMap<String, Object>();
-		parameters.put("id", userId);
-		return super.findAllByQuery("User.SelectRestaurantsById", parameters, isLazy);
+		Map<String, Object> parameters = Collections.singletonMap("id", (Object) userId);
+		return super.findAllByQuery("UserRestaurant.SelectRestaurantsById", parameters, isLazy);
+	}
+
+	@SuppressWarnings({ "rawtypes" })
+	@Override
+	public TableType getDefaultTableType(Long restaurantId) throws MdoDataBeanException {
+		TableType result = null;
+
+		Map<String, Object> parameters = Collections.singletonMap("restaurantId", (Object) restaurantId);
+		List list = super.findAllByQuery("Restaurant.SelectDefaultTableTypeById", parameters);
+		result = (TableType) super.uniqueResult(list);
+		return result;
 	}
 }

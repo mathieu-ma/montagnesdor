@@ -13,7 +13,6 @@ import fr.mch.mdo.restaurant.dao.hibernate.DefaultMdoTableAsEnumsDao;
 import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto;
 import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumsManagerViewBean;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.exception.MdoBusinessException;
 import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultMdoTableAsEnumsAssembler;
@@ -46,7 +45,7 @@ public class DefaultMdoTableAsEnumsManager extends AbstractAdministrationManager
 	}
 
 	@Override
-	public List<IMdoDtoBean> getList(String type, MdoUserContext userContext) throws MdoException {
+	public List<IMdoDtoBean> getList(String type) throws MdoException {
 		MdoTableAsEnumType convertedType = MdoTableAsEnumType.DEFAULT;
 		try {
 			convertedType = MdoTableAsEnumType.valueOf(type);
@@ -55,23 +54,23 @@ public class DefaultMdoTableAsEnumsManager extends AbstractAdministrationManager
 		}
 		
 		if (convertedType == MdoTableAsEnumType.DEFAULT) {
-			return this.getList(convertedType, type, userContext);
+			return this.getList(convertedType, type);
 		} else {
-			return this.getList(convertedType, userContext);
+			return this.getList(convertedType);
 		}
 	}
 
 	@Override
-	public List<IMdoDtoBean> getList(MdoTableAsEnumType type, MdoUserContext userContext) throws MdoException {
-		return this.getList(type, null, userContext);
+	public List<IMdoDtoBean> getList(MdoTableAsEnumType type) throws MdoException {
+		return this.getList(type, null);
 	}
 
-	private List<IMdoDtoBean> getList(MdoTableAsEnumType enumtype, String type, MdoUserContext userContext) throws MdoException {
+	private List<IMdoDtoBean> getList(MdoTableAsEnumType enumtype, String type) throws MdoException {
 		List<IMdoDtoBean> result = new ArrayList<IMdoDtoBean>();
 		try {
 			List<MdoTableAsEnum> list = enumtype.getList((IMdoTableAsEnumsDao) dao, type);
 			if (list != null) {
-				result = assembler.marshal(list, userContext);
+				result = assembler.marshal(list);
 			}
 		} catch (MdoException e) {
 			logger.error("message.error.administration.business.find.all", e);
@@ -82,72 +81,72 @@ public class DefaultMdoTableAsEnumsManager extends AbstractAdministrationManager
 
 	
 	@Override
-	public List<IMdoDtoBean> getSpecificRounds(MdoUserContext userContext) throws MdoException {
-		return this.getList(MdoTableAsEnumType.SPECIFIC_ROUND, userContext);
+	public List<IMdoDtoBean> getSpecificRounds() throws MdoException {
+		return this.getList(MdoTableAsEnumType.SPECIFIC_ROUND);
 	}
 
 	@Override
-	public List<IMdoDtoBean> getTableTypes(MdoUserContext userContext) throws MdoException {
-		return this.getList(MdoTableAsEnumType.TABLE_TYPE, userContext);
+	public List<IMdoDtoBean> getTableTypes() throws MdoException {
+		return this.getList(MdoTableAsEnumType.TABLE_TYPE);
 	}
 
 	@Override
-	public List<IMdoDtoBean> getPrefixTableNames(MdoUserContext userContext) throws MdoException {
-		return this.getList(MdoTableAsEnumType.PREFIX_TABLE_NAME, userContext);
+	public List<IMdoDtoBean> getPrefixTableNames() throws MdoException {
+		return this.getList(MdoTableAsEnumType.PREFIX_TABLE_NAME);
 	}
 
 	@Override
-	public List<IMdoDtoBean> getPrintingInformationAlignments(MdoUserContext userContext) throws MdoException {
-		return this.getList(MdoTableAsEnumType.PRINTING_INFORMATION_ALIGNMENT, userContext);
+	public List<IMdoDtoBean> getPrintingInformationAlignments() throws MdoException {
+		return this.getList(MdoTableAsEnumType.PRINTING_INFORMATION_ALIGNMENT);
 	}
 
 	@Override
-	public List<IMdoDtoBean> getPrintingInformationSizes(MdoUserContext userContext) throws MdoException {
-		return this.getList(MdoTableAsEnumType.PRINTING_INFORMATION_SIZE, userContext);
+	public List<IMdoDtoBean> getPrintingInformationSizes() throws MdoException {
+		return this.getList(MdoTableAsEnumType.PRINTING_INFORMATION_SIZE);
 	}
 
 	@Override
-	public List<IMdoDtoBean> getPrintingInformationParts(MdoUserContext userContext) throws MdoException {
-		return this.getList(MdoTableAsEnumType.PRINTING_INFORMATION_PART, userContext);
+	public List<IMdoDtoBean> getPrintingInformationParts() throws MdoException {
+		return this.getList(MdoTableAsEnumType.PRINTING_INFORMATION_PART);
 	}
 
 	@Override
-	public List<IMdoDtoBean> getUserRoles(MdoUserContext userContext) throws MdoException {
-		return this.getList(MdoTableAsEnumType.USER_ROLE, userContext);
+	public List<IMdoDtoBean> getUserRoles() throws MdoException {
+		return this.getList(MdoTableAsEnumType.USER_ROLE);
 	}
 
 	@Override
-	public List<IMdoDtoBean> getUserTitles(MdoUserContext userContext) throws MdoException {
-		return this.getList(MdoTableAsEnumType.USER_TITLE, userContext);
+	public List<IMdoDtoBean> getUserTitles() throws MdoException {
+		return this.getList(MdoTableAsEnumType.USER_TITLE);
 	}
 
 	@Override
-	public List<IMdoDtoBean> getCategories(MdoUserContext userContext) throws MdoException {
-		return this.getList(MdoTableAsEnumType.CATEGORY, userContext);
+	public List<IMdoDtoBean> getCategories() throws MdoException {
+		return this.getList(MdoTableAsEnumType.CATEGORY);
 	}
 
 	@Override
-	public List<IMdoDtoBean> getProductSpecialCodes(MdoUserContext userContext) throws MdoException {
-		return this.getList(MdoTableAsEnumType.PRODUCT_SPECIAL_CODE, userContext);
+	public List<IMdoDtoBean> getProductSpecialCodes() throws MdoException {
+		return this.getList(MdoTableAsEnumType.PRODUCT_SPECIAL_CODE);
 	}
 
 	@Override
-	public List<IMdoDtoBean> getProductParts(MdoUserContext userContext) throws MdoException {
-		return this.getList(MdoTableAsEnumType.PRODUCT_PART, userContext);
+	public List<IMdoDtoBean> getProductParts() throws MdoException {
+		return this.getList(MdoTableAsEnumType.PRODUCT_PART);
 	}
 
 	@Override
-	public List<IMdoDtoBean> getValueAddedTaxes(MdoUserContext userContext) throws MdoException {
-		return this.getList(MdoTableAsEnumType.VALUE_ADDED_TAX, userContext);
+	public List<IMdoDtoBean> getValueAddedTaxes() throws MdoException {
+		return this.getList(MdoTableAsEnumType.VALUE_ADDED_TAX);
 	}
 
 	@Override
-	public List<IMdoDtoBean> getCashings(MdoUserContext userContext) throws MdoException {
-		return this.getList(MdoTableAsEnumType.CASHING_TYPE, userContext);
+	public List<IMdoDtoBean> getCashings() throws MdoException {
+		return this.getList(MdoTableAsEnumType.CASHING_TYPE);
 	}
 
 	@Override
-	public void processList(IAdministrationManagerViewBean viewBean, MdoUserContext userContext, boolean... lazy) throws MdoBusinessException {
+	public void processList(IAdministrationManagerViewBean viewBean, boolean... lazy) throws MdoBusinessException {
 		IMdoTableAsEnumsDao dao = (IMdoTableAsEnumsDao) super.getDao();
 		List<IMdoDtoBean> list = new ArrayList<IMdoDtoBean>();
 		List<String> existingTypes = new ArrayList<String>();
@@ -173,7 +172,7 @@ public class DefaultMdoTableAsEnumsManager extends AbstractAdministrationManager
 	}
 
 	@Override
-	public IMdoDtoBean save(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
+	public IMdoDtoBean save(IMdoDtoBean dtoBean) throws MdoBusinessException {
 
 		// Generate the key label by concatenating Type, Name, and Order.
 		MdoTableAsEnumDto castedDtoBean = (MdoTableAsEnumDto) dtoBean;
@@ -182,16 +181,16 @@ public class DefaultMdoTableAsEnumsManager extends AbstractAdministrationManager
 		.append(IMdoTableAsEnumsManager.LANGUAGE_KEY_LABEL_SEPARATOR).append(castedDtoBean.getOrder());
 		castedDtoBean.setLanguageKeyLabel(languageKeyLabel.toString());
 		
-		return super.save(dtoBean, userContext);
+		return super.save(dtoBean);
 	}
 
 	@Override
-	public IMdoDtoBean findByTypeAndName(String type, String name, MdoUserContext userContext) throws MdoBusinessException {
+	public IMdoDtoBean findByTypeAndName(String type, String name) throws MdoBusinessException {
 		IMdoDtoBean result = null;
 		try {
 			IMdoDaoBean bean = (IMdoDaoBean) ((IMdoTableAsEnumsDao) dao).findByUniqueKey(new String[] {type, name}, true);
 			if (bean != null) {
-				result = assembler.marshal(bean, userContext);
+				result = assembler.marshal(bean);
 			}
 		} catch (MdoException e) {
 			logger.error("message.error.administration.business.enum.find.by.type.name", new Object[] {type, name}, e);

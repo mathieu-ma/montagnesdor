@@ -21,9 +21,9 @@
 						<s:hidden name="form.dtoBean.vats(%{#statusVat.index}).vat.id" value="%{#vat.id}" />
 						<s:hidden name="form.dtoBean.vats(%{#statusVat.index}).restaurant.id" value="%{form.dtoBean.id}" />
 			    		<s:set var="checked" value="" />
-			    		<s:if test="%{form.vats.containsKey(#vat.id) && form.vats[#vat.id]!='false'}">
+			    		<c:if test="${not empty form.vats[vat.id]}">
 				    		<s:set var="checked" value="checked='checked'" />
-			    		</s:if>
+			    		</c:if>
 			    		<input type="checkbox" name="form.vats[<s:property value="%{#vat.id}"/>]" value="<s:property value="%{form.vats[#vat.id]}"/>" <s:property value="%{checked}"/> />
 					</td>
 				</tr>

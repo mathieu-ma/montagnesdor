@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jopendocument.dom.OOUtils;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import fr.mch.mdo.i18n.IMessageQuery;
@@ -30,6 +28,7 @@ import fr.mch.mdo.restaurant.dto.beans.ValueAddedTaxDto;
 import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.services.business.managers.DefaultAdministrationManagerTest;
 import fr.mch.mdo.restaurant.services.business.managers.IAdministrationManager;
+import fr.mch.mdo.restaurant.services.business.managers.IManagerLabelable;
 import fr.mch.mdo.restaurant.services.business.managers.restaurants.DefaultRestaurantsManager;
 import fr.mch.mdo.restaurant.services.business.managers.users.DefaultUserAuthenticationsManager;
 import fr.mch.mdo.test.MdoTestCase;
@@ -107,14 +106,14 @@ public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 		// Use the existing data in database
 		RestaurantDto restaurant = null;
 		try {
-			restaurant = (RestaurantDto) DefaultRestaurantsManager.getInstance().findByPrimaryKey(1L, userContext);
+			restaurant = (RestaurantDto) DefaultRestaurantsManager.getInstance().findByPrimaryKey(1L);
 		} catch (MdoException e) {
 			fail("Could not found the restaurant.");
 		}
 		assertNotNull("Restaurant must not be null", restaurant);
 		ValueAddedTaxDto vat = new ValueAddedTaxDto();
 		try {
-			vat = (ValueAddedTaxDto) DefaultValueAddedTaxesManager.getInstance().findByPrimaryKey(1L, userContext);
+			vat = (ValueAddedTaxDto) DefaultValueAddedTaxesManager.getInstance().findByPrimaryKey(1L);
 		} catch (MdoException e) {
 			fail("Could not found the vat.");
 		}
@@ -142,7 +141,7 @@ public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 
 		try {
 			// Create new bean to be updated
-			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean, userContext);
+			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean);
 			assertTrue("IMdoBean must be instance of " + ProductDto.class, beanToBeUpdated instanceof ProductDto);
 			ProductDto castedBean = (ProductDto) beanToBeUpdated;
 			assertNotNull("Product code must not be null", castedBean.getCode());
@@ -172,11 +171,11 @@ public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 			label = "O2";
 			labels.put(localeId, label);
 			castedBean.setLabels(labels);
-			castedBean = (ProductDto) this.getInstance().update(castedBean, userContext);
+			castedBean = (ProductDto) this.getInstance().update(castedBean);
 			// Reload the modified bean
 			ProductDto updatedBean = new ProductDto();
 			updatedBean.setId(castedBean.getId());
-			updatedBean = (ProductDto) this.getInstance().load(updatedBean, userContext);
+			updatedBean = (ProductDto) this.getInstance().load(updatedBean);
 			assertNotNull("Product code must not be null", updatedBean.getCode());
 			assertEquals("Product name must be equals to the updated value", code.toString(), updatedBean.getCode().toString());
 			assertNotNull("Product labels must not be null", updatedBean.getLabels());
@@ -194,7 +193,7 @@ public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 	public void doProcessList() {
 		ProductsManagerViewBean viewBean = new ProductsManagerViewBean();
 		try {
-			this.getInstance().processList(viewBean, DefaultAdministrationManagerTest.userContext);
+			((IManagerLabelable) this.getInstance()).processList(viewBean, DefaultAdministrationManagerTest.userContext.getCurrentLocale());
 			// Do not have to call find all products because we want list of products by restaurants
 			assertNull("Main list not null", viewBean.getList());
 			assertNotNull("Languages list not be null", viewBean.getLanguages());
@@ -203,8 +202,6 @@ public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 			assertFalse("Restaurants list not be empty", viewBean.getRestaurants().isEmpty());
 			assertNotNull("Categories list not be null", viewBean.getCategories());
 			assertFalse("Categories list not be empty", viewBean.getCategories().isEmpty());
-			assertNotNull("Vats list not be null", viewBean.getVats());
-			assertFalse("Vats list not be empty", viewBean.getVats().isEmpty());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -233,7 +230,7 @@ public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 	public void testGetList() {
 		Long restaurantId = 1L;
 		try {
-			List<IMdoDtoBean> list= ((IProductsManager) DefaultProductsManager.getInstance()).getList(restaurantId, userContext);
+			List<IMdoDtoBean> list= ((IProductsManager) DefaultProductsManager.getInstance()).getList(restaurantId);
 			assertNotNull("List must not be null", list);
 			assertFalse("List must not be empty", list.isEmpty());
 		} catch (MdoException e) {
@@ -251,7 +248,7 @@ public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 		 try {
-			((IProductsManager) DefaultProductsManager.getInstance()).importData(file.getName(), file, DefaultProductsManagerTest.userContext);
+			((IProductsManager) DefaultProductsManager.getInstance()).importData(file.getName(), file);
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -273,7 +270,7 @@ public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 					messages.getMessage("products.manager.vat"),  messages.getMessage("products.manager.color") };
 
 			((IProductsManager) DefaultProductsManager.getInstance())
-					.exportData(fos, restaurantReference, headers, DefaultProductsManagerTest.userContext);
+					.exportData(fos, restaurantReference, headers, DefaultProductsManagerTest.userContext.getCurrentLocale());
 			
 			fos.flush();
 
@@ -302,7 +299,7 @@ public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 		}
 		String prefixProductCode = "1";
 		try {
-			Map<Long, String> codes = ((IProductsManager) DefaultProductsManager.getInstance()).lookupProductsCodesByPrefixCode(userContext, prefixProductCode);
+			Map<Long, String> codes = ((IProductsManager) DefaultProductsManager.getInstance()).lookupProductsCodesByPrefixCode(DefaultProductsManagerTest.userContext.getUserAuthentication().getRestaurant().getId(), prefixProductCode);
 			assertNotNull("Map of codes must not be null", codes);
 			assertFalse("Map of codes must not be empty", codes.isEmpty());
 		} catch (Exception e) {

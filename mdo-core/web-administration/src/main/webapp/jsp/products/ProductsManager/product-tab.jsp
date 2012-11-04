@@ -11,14 +11,14 @@
  		Change Locale for Number Format in input text because of javascript
  		Use the change of locale instead of BigDecimal Converter because we want that user type "." instead of "," in case of french locale 
  	--%>
+	<s:text name="products.manager.price" var="priceLabel" />
 	<mdo:setLocale value="en"/>
-	<s:textfield cssClass="number-signed-float" label="%{getText('products.manager.price')}" name="form.dtoBean.price" value="%{form.dtoBean.price!=null?getText('format.number.decimal.3.2',{form.dtoBean.price}):''}"/>
+	<s:textfield cssClass="number-signed-float" label="%{priceLabel}" name="form.dtoBean.price" value="%{form.dtoBean.price!=null?getText('format.number.decimal.3.2',{form.dtoBean.price}):''}"/>
  	<%-- Change back Locale --%>
 	<mdo:setLocale value="${userSession.currentLocale.languageCode}"/>
 	
-
-	
-	<s:select label="%{getText('products.manager.vat')}" name="form.dtoBean.vat.id" list="form.viewBean.vats" listKey="id" listValue="%{getText('format.number.percent',{rate})}" value="form.dtoBean.vat.id" required="true"/>
+	<s:select label="%{getText('products.manager.vat')}" name="form.dtoBean.vat.id" 
+		list="form.dtoBean.restaurant.vats" listKey="vat.id" listValue="%{getText('format.number.decimal.3.2',{vat.rate})}" required="true"/>
 	<div class="hspacer-left-100p">
 		<label class="label"><fmt:message key="products.manager.color"/>:</label>
 		<div class="hspacer-left-25p">&nbsp;</div>

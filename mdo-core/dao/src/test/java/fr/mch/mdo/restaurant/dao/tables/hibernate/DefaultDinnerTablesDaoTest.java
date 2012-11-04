@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,7 +23,6 @@ import fr.mch.mdo.restaurant.dao.beans.Credit;
 import fr.mch.mdo.restaurant.dao.beans.DinnerTable;
 import fr.mch.mdo.restaurant.dao.beans.MdoTableAsEnum;
 import fr.mch.mdo.restaurant.dao.beans.OrderLine;
-import fr.mch.mdo.restaurant.dao.beans.Product;
 import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode;
 import fr.mch.mdo.restaurant.dao.beans.Restaurant;
 import fr.mch.mdo.restaurant.dao.beans.TableBill;
@@ -52,7 +52,9 @@ public class DefaultDinnerTablesDaoTest extends DefaultDaoServicesTestCase
 //				ITestResources.class.getResource("DataMigrationRevenueWork.sql"),
 //				ITestResources.class.getResource("DataMigrationProductSoldWork.sql"), // Will take a very long time
 //		};
-		super.loadFiles(connection, sqlDialectName, fileURLs);
+		List<URL> fileURLsList = new ArrayList<URL>(Arrays.asList(fileURLs));
+//		fileURLsList.add(ITestResources.class.getResource("montagnesdorDatas-dao.sql"));
+		super.loadFiles(connection, sqlDialectName, fileURLsList.toArray(fileURLs));
 //		assertTrue(false);
 	}
 
@@ -179,31 +181,33 @@ public class DefaultDinnerTablesDaoTest extends DefaultDaoServicesTestCase
 	public void doFindByUniqueKey() {
 		// 12 number was created at HSQLDB startup
 		Long restaurantId = 1L;
-		String number = "12";
+		Long id = 1L;
 		try {
 			for (int i = 0; i < 2; i++) {
 				IMdoBean bean = null;
 				if (i == 0) {
-					bean = ((IDinnerTablesDao) this.getInstance()).findByNumber(restaurantId, number);
+					bean = ((IDinnerTablesDao) this.getInstance()).findTable(id);
 				} else {
-					List<IMdoBean> list = ((IDinnerTablesDao) this.getInstance()).findAllByPrefixNumber(restaurantId, "1");
+					List<DinnerTable> list = ((IDinnerTablesDao) this.getInstance()).findAllByPrefixNumber(restaurantId, "1");
 					assertNotNull("Check List of IMdoBean", list);
-					assertEquals("Check List of IMdoBean size", 1, list.size());
+					assertEquals("Check List of IMdoBean size", 2, list.size());
 					bean = list.get(0);
 				}
 				assertTrue("IMdoBean must be instance of " + DinnerTable.class, bean instanceof DinnerTable);
 				DinnerTable castedBean = (DinnerTable) bean;
 				assertNotNull("DinnerTable number must not be null", castedBean.getNumber());
-				assertEquals("DinnerTable number must be equals to the lookup one", number, castedBean.getNumber());
-				assertNotNull("DinnerTable orders not null", castedBean.getOrders());
-				assertEquals("DinnerTable orders size equals", 3, castedBean.getOrders().size());
-				assertNotNull("DinnerTable TableBills not null", castedBean.getBills());
-				assertEquals("DinnerTable TableBills size equals", 1, castedBean.getBills().size());
-				assertNotNull("DinnerTable Credits not null", castedBean.getCredits());
-				assertEquals("DinnerTable Credits size equals", 1, castedBean.getCredits().size());
-				assertNotNull("DinnerTable Vats not null", castedBean.getVats());
-				assertEquals("DinnerTable Vats size equals", 1, castedBean.getVats().size());
-				assertNull("DinnerTable Cashing null", castedBean.getCashing());
+				
+				if (i > 0) {
+					assertNotNull("DinnerTable orders not null", castedBean.getOrders());
+					assertEquals("DinnerTable orders size equals", 3, castedBean.getOrders().size());
+					assertNotNull("DinnerTable TableBills not null", castedBean.getBills());
+					assertEquals("DinnerTable TableBills size equals", 1, castedBean.getBills().size());
+					assertNotNull("DinnerTable Credits not null", castedBean.getCredits());
+					assertEquals("DinnerTable Credits size equals", 1, castedBean.getCredits().size());
+					assertNotNull("DinnerTable Vats not null", castedBean.getVats());
+					assertEquals("DinnerTable Vats size equals", 1, castedBean.getVats().size());
+					assertNull("DinnerTable Cashing null", castedBean.getCashing());
+				}
 
 				assertFalse("DinnerTable must not be deleted", castedBean.isDeleted());
 			}
@@ -211,7 +215,7 @@ public class DefaultDinnerTablesDaoTest extends DefaultDaoServicesTestCase
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
-
+	
 	@Override
 	public void doUpdate() {
 		DinnerTable newBean = null;
@@ -465,17 +469,22 @@ public class DefaultDinnerTablesDaoTest extends DefaultDaoServicesTestCase
 		try {
 			Long dinnerTableId = Long.valueOf(1);
 			DinnerTable dinnerTable = (DinnerTable) iDinnerTablesDao.findByPrimaryKey(dinnerTableId);
-			assertEquals("Check Dinner Table's reduction ratio initial value", super.decimalFormat.format(BigDecimal.ZERO), super.decimalFormat.format(dinnerTable.getReductionRatio()));
-			assertEquals("Check Dinner Table's amount pay initial value", super.decimalFormat.format(BigDecimal.valueOf(23)), super.decimalFormat.format(dinnerTable.getAmountPay()));
-			assertFalse("Check Dinner Table's reduction ratio changed initial value", dinnerTable.getReductionRatioChanged());
-			BigDecimal reductionRatio = new BigDecimal(25.123);
-			Boolean reductionRatioChanged = Boolean.TRUE;
-			BigDecimal amountPay = new BigDecimal(25.012);
+			BigDecimal reductionRatio = BigDecimal.ZERO, reductionRatioBackup = dinnerTable.getReductionRatio();
+			BigDecimal amountPay = new BigDecimal(23), amountPayBackup = dinnerTable.getAmountPay();
+			Boolean reductionRatioChanged = Boolean.FALSE, reductionRatioChangedBackup = dinnerTable.getReductionRatioChanged();
+			assertEquals("Check Dinner Table's reduction ratio initial value", super.decimalFormat.format(reductionRatio), super.decimalFormat.format(dinnerTable.getReductionRatio()));
+			assertEquals("Check Dinner Table's amount pay initial value", super.decimalFormat.format(amountPay), super.decimalFormat.format(dinnerTable.getAmountPay()));
+			assertEquals("Check Dinner Table's reduction ratio changed initial value", reductionRatioChanged, dinnerTable.getReductionRatioChanged());
+			reductionRatio = new BigDecimal(25.123);
+			amountPay = new BigDecimal(25.012);
+			reductionRatioChanged = Boolean.TRUE;
 			iDinnerTablesDao.updateReductionRatio(dinnerTableId, reductionRatio, reductionRatioChanged, amountPay);
 			DinnerTable updatedDinnerTable = (DinnerTable) iDinnerTablesDao.findByPrimaryKey(dinnerTableId);
 			assertEquals("Check Dinner Table's reduction ratio updated value", super.decimalFormat.format(reductionRatio), super.decimalFormat.format(updatedDinnerTable.getReductionRatio()));
 			assertEquals("Check Dinner Table's amount pay updated value", super.decimalFormat.format(amountPay), super.decimalFormat.format(updatedDinnerTable.getAmountPay()));
 			assertTrue("Check Dinner Table's reduction ratio changed updated value", updatedDinnerTable.getReductionRatioChanged());
+			// Restore old values
+			iDinnerTablesDao.updateReductionRatio(dinnerTableId, reductionRatioBackup, reductionRatioChangedBackup, amountPayBackup);
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -514,17 +523,20 @@ public class DefaultDinnerTablesDaoTest extends DefaultDaoServicesTestCase
 		return newBean;
 	}
 
-	public void testFindCustomersNumberByNumber() {
+	public void testFindIdAndCustomersNumber() {
 		IDinnerTablesDao iDinnerTablesDao = (IDinnerTablesDao) this.getInstance();
 		Long restaurantId = Long.valueOf(1);
+		Long userAuthenticationId = Long.valueOf(1);
 		String number = "12";
-		Integer customersNumber = null;
+		DinnerTable table = null;
 		try {
-			customersNumber = iDinnerTablesDao.findCustomersNumberByNumber(restaurantId, number);
+			table = iDinnerTablesDao.findIdAndCustomersNumber(restaurantId, number);
+			assertNotNull("Table Number found", table);
+			table = iDinnerTablesDao.findIdAndCustomersNumber(restaurantId, userAuthenticationId, number);
+			assertNotNull("Table Number found", table);
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
-		assertNotNull("Customer Number found", customersNumber);
 	}
 
 	public void testIsDinnerTableFree() {
@@ -540,121 +552,152 @@ public class DefaultDinnerTablesDaoTest extends DefaultDaoServicesTestCase
 		assertFalse("DinnerTable is not Free", isDinnerTableFree);
 	}
 
-	public void testAddUpdateFindRemoveOrderLine() {
-		IDinnerTablesDao iDinnerTablesDao = (IDinnerTablesDao) this.getInstance();
-		OrderLine orderLine = new OrderLine();
-		DinnerTable dinnerTable = new DinnerTable();
-		dinnerTable.setId(Long.valueOf(1));
-		orderLine.setDinnerTable(dinnerTable);
-		ProductSpecialCode psc = new ProductSpecialCode();
-		psc.setId(Long.valueOf(1));
-		orderLine.setProductSpecialCode(psc);
-		Product product = new Product();
-		product.setId(Long.valueOf(1));
-		orderLine.setProduct(product);
-		orderLine.setQuantity(new BigDecimal(2));
-		orderLine.setLabel("Test");
-		orderLine.setUnitPrice(new BigDecimal(2.1));
-		orderLine.setAmount(orderLine.getQuantity().multiply(orderLine.getUnitPrice()));
-		ValueAddedTax vat = new ValueAddedTax();
-		vat.setId(1L);
-		orderLine.setVat(vat);
-
-		try {
-			assertNull("Order Line id must be null", orderLine.getId());
-			iDinnerTablesDao.addOrderLine(orderLine);
-			assertNotNull("Order Line id must not be null", orderLine.getId());
-			orderLine.setLabel("Test Update");
-			iDinnerTablesDao.updateOrderLine(orderLine);
-			OrderLine foundOrderLine = iDinnerTablesDao.findOrderLine(orderLine.getId());
-			assertNotNull("Order Line must not be null", foundOrderLine);
-			assertEquals("Order Line label updated", orderLine.getLabel(), foundOrderLine.getLabel());
-			iDinnerTablesDao.removeOrderLine(orderLine);
-		} catch (MdoException e) {
-			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
-		}
-		try {
-			iDinnerTablesDao.findOrderLine(orderLine.getId());
-		} catch (MdoException e) {
-			assertTrue("Exception because bean not found after deletion", true);
-		}
-	}
 	
-	public void testLookupTablesNamesByPrefixNumber() {
+	public void testFindAllNumberByPrefixNumber() {
 		IDinnerTablesDao iDinnerTablesDao = (IDinnerTablesDao) this.getInstance();
 		Long restaurantId = Long.valueOf(1);
+		Long userAuthenticationId = Long.valueOf(1);
 		String prefixTableNumber = "1";
 		try {
-			Map<Long, String> result = iDinnerTablesDao.findAllTableNamesByPrefix(restaurantId, prefixTableNumber);
+			Map<Long, String> result = iDinnerTablesDao.findAllNumberByPrefixNumber(restaurantId, prefixTableNumber);
+			assertNotNull("Check that there are tables found", result);
+			result = iDinnerTablesDao.findAllNumberByPrefixNumber(restaurantId, userAuthenticationId, prefixTableNumber);
 			assertNotNull("Check that there are tables found", result);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
 	
-	public void testFindAllFreeTables() {
+	public void testFindAllCashed() {
 		IDinnerTablesDao iDinnerTablesDao = (IDinnerTablesDao) this.getInstance();
 		Long restaurantId = Long.valueOf(1);
+		Long userAuthenticationId = Long.valueOf(1);
 		try {
-			List<IMdoBean> result = iDinnerTablesDao.findAllFreeTables(restaurantId);
+			List<DinnerTable> result = iDinnerTablesDao.findAllCashed(restaurantId);
+			assertNotNull("Check that there are tables found", result);
+			assertFalse("Check that there are tables found", result.isEmpty());
+			result = iDinnerTablesDao.findAllCashed(restaurantId, userAuthenticationId);
 			assertNotNull("Check that there are tables found", result);
 			assertFalse("Check that there are tables found", result.isEmpty());
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
-	
+
+	public void testFindAllPrinted() {
+		IDinnerTablesDao iDinnerTablesDao = (IDinnerTablesDao) this.getInstance();
+		Long restaurantId = Long.valueOf(1);
+		Long userAuthenticationId = Long.valueOf(1);
+		try {
+			List<DinnerTable> result = iDinnerTablesDao.findAllPrinted(restaurantId);
+			assertNotNull("Check that there are tables found", result);
+			assertFalse("Check that there are tables found", result.isEmpty());
+			result = iDinnerTablesDao.findAllPrinted(restaurantId, userAuthenticationId);
+			assertNotNull("Check that there are tables found", result);
+			assertFalse("Check that there are tables found", result.isEmpty());
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+
+	public void testFindAllNotPrinted() {
+		IDinnerTablesDao iDinnerTablesDao = (IDinnerTablesDao) this.getInstance();
+		Long restaurantId = Long.valueOf(1);
+		Long userAuthenticationId = Long.valueOf(1);
+		try {
+			List<DinnerTable> result = iDinnerTablesDao.findAllNotPrinted(restaurantId);
+			assertNotNull("Check that there are tables found", result);
+			assertFalse("Check that there are tables found", result.isEmpty());
+			result = iDinnerTablesDao.findAllNotPrinted(restaurantId, userAuthenticationId);
+			assertNotNull("Check that there are tables found", result);
+			assertFalse("Check that there are tables found", result.isEmpty());
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+
+	public void testFindAllAlterable() {
+		IDinnerTablesDao iDinnerTablesDao = (IDinnerTablesDao) this.getInstance();
+		Long restaurantId = Long.valueOf(1);
+		Long userAuthenticationId = Long.valueOf(1);
+		try {
+			List<DinnerTable> result = iDinnerTablesDao.findAllAlterable(restaurantId);
+			assertNotNull("Check that there are tables found", result);
+			assertFalse("Check that there are tables found", result.isEmpty());
+			result = iDinnerTablesDao.findAllAlterable(restaurantId, userAuthenticationId);
+			assertNotNull("Check that there are tables found", result);
+			assertFalse("Check that there are tables found", result.isEmpty());
+		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+
 	public void testUpdateCustomersNumber() {
 		IDinnerTablesDao iDinnerTablesDao = (IDinnerTablesDao) this.getInstance();
 		try {
 			Long dinnerTableId = Long.valueOf(1);
 			// The value 2 is in the file montagnesdorDatas.sql
-			Integer customersNumber = new Integer(2);
+			Integer customersNumber = new Integer(2), customersNumberBackup = customersNumber;
 			DinnerTable dinnerTable = (DinnerTable) iDinnerTablesDao.findByPrimaryKey(dinnerTableId);
 			assertEquals("Check Dinner Table's Customers Number initial value", customersNumber, dinnerTable.getCustomersNumber());
 			customersNumber = new Integer(6);
 			iDinnerTablesDao.updateCustomersNumber(dinnerTableId, customersNumber);
 			DinnerTable updatedDinnerTable = (DinnerTable) iDinnerTablesDao.findByPrimaryKey(dinnerTableId);
 			assertEquals("Check Dinner Table's Customers Number updated value", customersNumber, updatedDinnerTable.getCustomersNumber());
+			// Restore updated values
+			iDinnerTablesDao.updateCustomersNumber(dinnerTableId, customersNumberBackup);
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
 	
-	public void testGetOrderLinesSize() {
+	public void testFindTable() {
+		IDinnerTablesDao iDinnerTablesDao = (IDinnerTablesDao) this.getInstance();
+		try {
+			Long id = Long.valueOf(1);
+			DinnerTable dinnerTable = iDinnerTablesDao.findTable(id);
+			assertNotNull("Check Dinner Table", dinnerTable);
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+
+	public void testUpdateDerivedFieldsFromOrderLine() {
 		IDinnerTablesDao iDinnerTablesDao = (IDinnerTablesDao) this.getInstance();
 		try {
 			Long dinnerTableId = Long.valueOf(1);
-			int size = iDinnerTablesDao.getOrderLinesSize(dinnerTableId);
-			assertTrue("Check Dinner Table's Order Lines Size initial value", size>0);
+			DinnerTable dinnerTable = (DinnerTable) iDinnerTablesDao.findByPrimaryKey(dinnerTableId);
+			// The following values are in the file montagnesdorDatas.sql
+			BigDecimal quantitiesSum = new BigDecimal(3), quantitiesSumBackup = dinnerTable.getQuantitiesSum();
+			BigDecimal amountsSum = new BigDecimal(23), amountsSumBackup = dinnerTable.getAmountsSum();
+			BigDecimal amountPay = new BigDecimal(23), amountPayBackup = dinnerTable.getAmountPay();
+			assertEquals("Check Dinner Table's quantitiesSum initial value", super.decimalFormat.format(quantitiesSum), super.decimalFormat.format(dinnerTable.getQuantitiesSum()));
+			assertEquals("Check Dinner Table's amountsSum initial value", super.decimalFormat.format(amountsSum), super.decimalFormat.format(dinnerTable.getAmountsSum()));
+			assertEquals("Check Dinner Table's amountPay initial value", super.decimalFormat.format(amountPay), super.decimalFormat.format(dinnerTable.getAmountPay()));
+			quantitiesSum = quantitiesSum.add(new BigDecimal(3));
+			amountsSum = amountsSum.add(new BigDecimal(23));
+			amountPay = amountPay.add(new BigDecimal(23));
+			iDinnerTablesDao.updateDerivedFieldsFromOrderLine(dinnerTableId, quantitiesSum, amountsSum, amountPay);
+			DinnerTable updatedDinnerTable = (DinnerTable) iDinnerTablesDao.findByPrimaryKey(dinnerTableId);
+			assertEquals("Check Dinner Table's quantitiesSum updated value", super.decimalFormat.format(quantitiesSum), super.decimalFormat.format(updatedDinnerTable.getQuantitiesSum()));
+			assertEquals("Check Dinner Table's amountsSum updated value", super.decimalFormat.format(amountsSum), super.decimalFormat.format(updatedDinnerTable.getAmountsSum()));
+			assertEquals("Check Dinner Table's amountPay updated value", super.decimalFormat.format(amountPay), super.decimalFormat.format(updatedDinnerTable.getAmountPay()));
+			// Restore updated values
+			iDinnerTablesDao.updateDerivedFieldsFromOrderLine(dinnerTableId, quantitiesSumBackup, amountsSumBackup, amountPayBackup);
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
 
-
-	public void testFindByNumber() {
+	public void testGetReductionRatio() {
 		IDinnerTablesDao iDinnerTablesDao = (IDinnerTablesDao) this.getInstance();
 		try {
-			Long restaurantId = Long.valueOf(1);
-			String tableNumber = "12";
-			DinnerTable dinnerTable = iDinnerTablesDao.findByNumber(restaurantId, tableNumber);
-			assertNotNull("Check Dinner Table", dinnerTable);
+			Long dinnerTableId = Long.valueOf(1);
+			BigDecimal expectedReductionRatio = new BigDecimal(0);
+			BigDecimal reductionRatio = iDinnerTablesDao.getReductionRatio(dinnerTableId);
+			assertEquals("Check Dinner Table's reductionRatio initial value", super.decimalFormat.format(expectedReductionRatio), super.decimalFormat.format(reductionRatio));
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
-	public void testDisplayTableByNumber() {
-		IDinnerTablesDao iDinnerTablesDao = (IDinnerTablesDao) this.getInstance();
-		assertTrue(true);
-		try {
-			Long restaurantId = Long.valueOf(1);
-			String tableNumber = "12";
-			DinnerTable dinnerTable = iDinnerTablesDao.displayTableByNumber(restaurantId, tableNumber);
-			assertNotNull("Check Dinner Table", dinnerTable);
-		} catch (MdoException e) {
-			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
-		}
-	}
-
 }

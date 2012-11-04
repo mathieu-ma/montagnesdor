@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:jsp="http://java.sun.com/xml/ns/javaee/jsp"
+	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+
+ 	<listener>
+		<listener-class>fr.mch.mdo.restaurant.web.orders.MdoEmbeddedJmsServerListener</listener-class>
+	</listener>
+
+	<context-param>
+		<param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
+		<param-value>fr.mch.mdo.restaurant.resources.i18n.ApplicationMessages</param-value>
+	</context-param>
+	<context-param>
+		<param-name>schemeHTTP</param-name>
+		<param-value>http</param-value>
+	</context-param>
+	<context-param>
+		<param-name>portHTTP</param-name>
+		<param-value>9080</param-value>
+	</context-param>
+	<context-param>
+		<param-name>schemeHTTPS</param-name>
+		<param-value>https</param-value>
+	</context-param>
+	<context-param>
+		<param-name>portHTTPS</param-name>
+		<param-value>9443</param-value>
+	</context-param>
+	<context-param>
+		<param-name>defaultEntryURI</param-name>
+		<param-value>/orders/Logon.action</param-value>
+	</context-param>
+
+    <filter>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+	<filter>
+		<filter-name>ForbiddenDirectAccessJspFilter</filter-name>
+		<filter-class>fr.mch.mdo.restaurant.web.ForbiddenDirectAccessJspFilter</filter-class>
+	</filter>
+	<filter>
+		<description>Set HTTP headers for a mapping.</description>
+		<filter-name>HeaderFilter</filter-name>
+		<filter-class>fr.mch.mdo.restaurant.web.HeaderFilter</filter-class>
+		<init-param>
+			<description>Add an Expires Header</description>
+			<param-name>header</param-name>
+			<param-value>Expires: Sat, 15 Aug 2020 00:00:00 GMT</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>HeaderFilter</filter-name>
+		<url-pattern>*.js</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>HeaderFilter</filter-name>
+		<url-pattern>*.css</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>HeaderFilter</filter-name>
+		<url-pattern>*.png</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>HeaderFilter</filter-name>
+		<url-pattern>*.cur</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>HeaderFilter</filter-name>
+		<url-pattern>*.gif</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>HeaderFilter</filter-name>
+		<url-pattern>*.jpg</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>HeaderFilter</filter-name>
+		<url-pattern>*.ico</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>ForbiddenDirectAccessJspFilter</filter-name>
+		<servlet-name>jsp</servlet-name>
+	</filter-mapping>
+
+	<servlet>
+		<servlet-name>tiles</servlet-name>
+		<servlet-class>org.apache.tiles.web.startup.TilesServlet</servlet-class>
+		<init-param>
+			<param-name>org.apache.tiles.impl.BasicTilesContainer.DEFINITIONS_CONFIG</param-name>
+			<param-value>/WEB-INF/classes/fr/mch/mdo/restaurant/web/tiles/tiles-defs.xml</param-value>
+		</init-param>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+    <servlet>
+        <servlet-name>webmvc</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>/WEB-INF/spring/webmvc-config.xml</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>webmvc</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+
+    <persistence-unit-ref>
+        <persistence-unit-ref-name>persistence/montagnesdor</persistence-unit-ref-name>
+        <persistence-unit-name>montagnesdor</persistence-unit-name>
+    </persistence-unit-ref>
+
+	<session-config>
+		<session-timeout>-1</session-timeout>
+	</session-config>
+
+	<mime-mapping>
+		<extension>jnlp</extension>
+		<mime-type>application/x-java-jnlp-file</mime-type>
+	</mime-mapping>
+	
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+
+	<jsp-config>
+		<taglib>
+			<taglib-uri>/WEB-INF/mdo.tld</taglib-uri>
+			<taglib-location>/WEB-INF/tld/mdo.tld</taglib-location>
+		</taglib>
+	</jsp-config>
+
+	<error-page>
+		<exception-type>java.lang.Throwable</exception-type>
+		<location>/jsp/errors/error.jsp</location>
+	</error-page>
+
+</web-app>

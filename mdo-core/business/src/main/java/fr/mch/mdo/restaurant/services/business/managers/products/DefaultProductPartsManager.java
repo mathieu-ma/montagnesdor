@@ -10,7 +10,7 @@ import fr.mch.mdo.restaurant.dao.beans.ProductPart;
 import fr.mch.mdo.restaurant.dao.products.IProductPartsDao;
 import fr.mch.mdo.restaurant.dao.products.hibernate.DefaultProductPartsDao;
 import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
+import fr.mch.mdo.restaurant.dto.beans.LocaleDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductPartDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductPartsManagerViewBean;
 import fr.mch.mdo.restaurant.exception.MdoBusinessException;
@@ -90,13 +90,13 @@ public class DefaultProductPartsManager extends AbstractAdministrationManagerLab
 	}
 
 	@Override
-	public void processList(IAdministrationManagerViewBean viewBean, MdoUserContext userContext, boolean... lazy) throws MdoBusinessException {
-		super.processList(viewBean, userContext, lazy);
+	public void processList(IAdministrationManagerViewBean viewBean, LocaleDto locale, boolean... lazy) throws MdoBusinessException {
+		super.processList(viewBean, lazy);
 		ProductPartsManagerViewBean productPartsManagerViewBean = (ProductPartsManagerViewBean) viewBean;
 		try {
-			productPartsManagerViewBean.setLabels(super.getLabels(userContext.getCurrentLocale()));
-			productPartsManagerViewBean.setLanguages(this.localesManager.getLanguages(userContext.getCurrentLocale().getLanguageCode()));
-			productPartsManagerViewBean.setCodes(this.getRemainingList(mdoTableAsEnumsManager.getProductParts(userContext), userContext));
+			productPartsManagerViewBean.setLabels(super.getLabels(locale));
+			productPartsManagerViewBean.setLanguages(this.localesManager.getLanguages(locale.getLanguageCode()));
+			productPartsManagerViewBean.setCodes(this.getRemainingList(mdoTableAsEnumsManager.getProductParts()));
 			
 		} catch (Exception e) {
 			logger.error("message.error.administration.business.find.all", e);
@@ -110,11 +110,11 @@ public class DefaultProductPartsManager extends AbstractAdministrationManagerLab
 	 * @param userContext user context.
 	 * @return a restricted list.
 	 */
-	private List<IMdoDtoBean> getRemainingList(List<IMdoDtoBean> listAll, MdoUserContext userContext) {
+	private List<IMdoDtoBean> getRemainingList(List<IMdoDtoBean> listAll) {
 		List<IMdoDtoBean> result = new ArrayList<IMdoDtoBean>(listAll);
 		List<IMdoDtoBean> excludedList = new ArrayList<IMdoDtoBean>();
 		try {
-			excludedList = super.findAll(userContext);
+			excludedList = super.findAll();
 		} catch (MdoBusinessException e) {
 			logger.warn("message.error.administration.business.find.all", e);
 		}

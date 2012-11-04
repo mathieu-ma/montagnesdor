@@ -8,7 +8,7 @@ import fr.mch.mdo.restaurant.dao.authentication.AuthenticationPasswordLevel;
 import fr.mch.mdo.restaurant.dto.beans.ChangeEntryDateDto;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.ioc.spring.MdoBeanFactory;
-import fr.mch.mdo.restaurant.ioc.spring.WebRestaurantBeanFactory;
+import fr.mch.mdo.restaurant.services.WebRestaurantBeanFactory;
 import fr.mch.mdo.restaurant.ui.forms.ChangeEntryDateForm;
 
 public final class ChangeEntryDateWebAction extends RestaurantWebAction

@@ -11,6 +11,7 @@ import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.ProductCategoryDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductDto;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
+import fr.mch.mdo.restaurant.exception.MdoBusinessException;
 import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.ioc.spring.WebAdministrationBeanFactory;
 import fr.mch.mdo.restaurant.services.business.managers.products.IProductsManager;
@@ -59,7 +60,7 @@ public class ProductsManagerWebAction extends AdministrationManagerLabelsAction
 				IAdministrationManagerViewBean viewBean = ((IMdoAdministrationForm) super.getForm()).getViewBean();
 				if (viewBean != null && dtoBean.getRestaurant() != null) {
 					IProductsManager manager = (IProductsManager) administrationManager;
-					viewBean.setList(manager.getList(dtoBean.getRestaurant().getId(), userContext));
+					viewBean.setList(manager.getList(dtoBean.getRestaurant().getId()));
 				}
 			}
 		}
@@ -80,14 +81,14 @@ public class ProductsManagerWebAction extends AdministrationManagerLabelsAction
 	}
 	
 	@Override
-	public String save() {
+	public String save() throws MdoBusinessException {
 		this.processSave(new String[] {null});
 		
 		// Reload the restaurant bean
 		ProductDto dtoBean = ((ProductDto) super.getForm().getDtoBean());
 		RestaurantDto restaurant = dtoBean.getRestaurant();
 		try {
-			restaurant = (RestaurantDto) restaurantsManager.findByPrimaryKey(dtoBean.getRestaurant().getId(), (MdoUserContext) super.getForm().getUserContext(), false);
+			restaurant = (RestaurantDto) restaurantsManager.findByPrimaryKey(dtoBean.getRestaurant().getId(), false);
 		} catch (MdoException e) {
 			super.addActionError(super.getText("error.action.technical", new String[] {this.getClass().getName(), "save"}));
 		}
@@ -104,7 +105,7 @@ public class ProductsManagerWebAction extends AdministrationManagerLabelsAction
 		return Constants.ACTION_RESULT_AFTER_CUD_LIST_PRODUCTS;
 	}
 	
-	private void processSave(String... categoryIdToRemove) {
+	private void processSave(String... categoryIdToRemove) throws MdoBusinessException {
 		
 		if (categoryIdToRemove != null && categoryIdToRemove.length == 1) {
 			removeCategoryBeforeSaving(categoryIdToRemove[0]);
@@ -132,7 +133,7 @@ public class ProductsManagerWebAction extends AdministrationManagerLabelsAction
 			ProductDto product = (ProductDto) form.getDtoBean();
 			if (product != null && product.getRestaurant() != null && form.getImportedFileFileName().contains(product.getRestaurant().getReference())) {
 				try {
-					((IProductsManager) administrationManager).importData(form.getImportedFileFileName(), form.getImportedFile(), (MdoUserContext) super.getForm().getUserContext());
+					((IProductsManager) administrationManager).importData(form.getImportedFileFileName(), form.getImportedFile());
 					super.addActionMessage(super.getText("products.manager.success.import.products"));
 				} catch (Exception e) {
 					super.addActionError(super.getText("error.action.technical", new String[] {this.getClass().getName(), "importData"}));
@@ -162,7 +163,7 @@ public class ProductsManagerWebAction extends AdministrationManagerLabelsAction
 		String[] headers = {super.getText("products.manager.code"), super.getText("products.manager.label"), super.getText("products.manager.price"), 
 				super.getText("products.manager.vat"), super.getText("products.manager.color")};
 		try {
-			exportFileName = ((IProductsManager) administrationManager).exportData(out, reference, headers, (MdoUserContext) thisForm.getUserContext());
+			exportFileName = ((IProductsManager) administrationManager).exportData(out, reference, headers, ((MdoUserContext) thisForm.getUserContext()).getCurrentLocale());
 		} catch (Exception e) {
 			super.addActionError(super.getText("error.action.technical", new String[] {this.getClass().getName(), "exportData"}));
 		}

@@ -16,8 +16,6 @@ $(document).ready(function() {
 		
 		$("#form-dtoBean-registrationDate").hide().mdoDatePicker();
 
-		new UpsideDown();
-		
 		$("#tabs").tabs();
 
 		// Manage the Default Vat Custom Order Line
@@ -61,6 +59,10 @@ $(document).ready(function() {
 				}
 			});
 		});
+
+		// These UpsideDown lines must be there not at starting script.
+		new UpsideDown(".mdo-upsidedown-restaurant-tab");
+		new UpsideDown(".mdo-upsidedown-reduction-table-tab");
 		
 	  	//Override the Struts validate function
 //	  	jQuery.mdoSubmit();

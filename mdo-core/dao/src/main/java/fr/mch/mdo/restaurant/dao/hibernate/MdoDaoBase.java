@@ -97,7 +97,7 @@ public abstract class MdoDaoBase implements IDaoBase
 		// Default value is false
 		// In case of AOP used then we change the value to true by recalling this method with true
 		boolean lazy = false;
-		if (isLazy.length == 1) {
+		if (isLazy != null && isLazy.length == 1) {
 			lazy = isLazy[0];
 		}
 		if (!lazy) {

@@ -47,8 +47,6 @@
 		<property name="visaRef" value="NA" />
 		<property name="tripleDESKey" value="12345678ABCDDCBA12345678" />
 		<property name="vatByTakeaway" value="FALSE" />
-		<property name="takeawayBasicReduction" value="10" />
-		<property name="takeawayMinAmountReduction" value="15" />
 
 		<property name="specificRound" ref="SpecificRound" />
 		<property name="defaultTableType" ref="TableType" />

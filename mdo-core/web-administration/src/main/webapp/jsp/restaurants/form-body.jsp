@@ -10,8 +10,10 @@
 		<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
 			<li class="ui-state-default ui-corner-top"><a class="a-tabs" href="#tabs-1"><span><fmt:message key="restaurants.manager.tab.restaurant"/></span></a></li>
 			<li class="ui-state-default ui-corner-top"><a class="a-tabs" href="#tabs-2"><span><fmt:message key="restaurants.manager.tab.vat"/></span></a></li>
-			<li class="ui-state-default ui-corner-top"><a class="a-tabs" href="#tabs-3"><span><fmt:message key="restaurants.manager.tab.prefix.table.name"/></span></a></li>
-	    </ul>
+			<li class="ui-state-default ui-corner-top"><a class="a-tabs" href="#tabs-3"><span><fmt:message key="restaurants.manager.tab.vat.table.type"/></span></a></li>
+			<li class="ui-state-default ui-corner-top"><a class="a-tabs" href="#tabs-4"><span><fmt:message key="restaurants.manager.tab.prefix.table.name"/></span></a></li>
+			<li class="ui-state-default ui-corner-top"><a class="a-tabs" href="#tabs-5"><span><fmt:message key="restaurants.manager.tab.reduction.table"/></span></a></li>
+ 		</ul>
 	    <div class="tab-contents" style="height: 25em;">
 			<div id="tabs-1" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
 				<jsp:include page="restaurant-tab.jsp" />
@@ -21,7 +23,13 @@
 				<jsp:include page="vat-tab.jsp" />
 		    </div>
 			<div id="tabs-3" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+				<jsp:include page="vat-table-type-tab.jsp" />
+		    </div>
+			<div id="tabs-4" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
 				<jsp:include page="prefix-table-name-tab.jsp" />
+		    </div>
+			<div id="tabs-5" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+				<jsp:include page="reduction-table-tab.jsp" />
 		    </div>
 		</div>
 	</div>

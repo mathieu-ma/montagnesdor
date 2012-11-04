@@ -14,29 +14,28 @@ import fr.mch.mdo.logs.ILoggerBean;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.utils.IManagerAssembler;
 
 public abstract class AbstractAssembler implements IManagerAssembler, ILoggerBean 
 {
 	@Override
-	public Set<IMdoDtoBean> marshal(Set<? extends IMdoBean> set, MdoUserContext userContext) {
+	public Set<IMdoDtoBean> marshal(Set<? extends IMdoBean> set) {
 		Set<IMdoDtoBean> result = new LinkedHashSet<IMdoDtoBean>();
-		this.marshal(result, set, userContext);
+		this.marshal(result, set);
 		return result;
 	}
 
 	@Override
-	public List<IMdoDtoBean> marshal(List<? extends IMdoBean> list, MdoUserContext userContext) {
+	public List<IMdoDtoBean> marshal(List<? extends IMdoBean> list) {
 		List<IMdoDtoBean> result = new ArrayList<IMdoDtoBean>();
-		this.marshal(result, list, userContext);
+		this.marshal(result, list);
 		return result;
 	}
 
-	private void marshal(Collection<IMdoDtoBean> collections, Collection<? extends IMdoBean> collection, MdoUserContext userContext) {
+	private void marshal(Collection<IMdoDtoBean> collections, Collection<? extends IMdoBean> collection) {
 		if (collection != null) {
 			for (IMdoBean iMdoBean : collection) {
-				collections.add(marshal((IMdoDaoBean) iMdoBean, userContext));
+				collections.add(marshal((IMdoDaoBean) iMdoBean));
 			}
 		}
 	}

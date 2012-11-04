@@ -3,9 +3,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
-		<artifactId>mdo-core</artifactId>
 		<groupId>fr.mch.mdo</groupId>
+		<artifactId>mdo-core</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 	
@@ -117,6 +118,7 @@
  		</plugins>
  	</build>
 	<dependencies>
+        <!-- ===================== compile ===================== -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>dao</artifactId>
@@ -131,9 +133,10 @@
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
-			<version>1.6.7</version>
 		</dependency>
-
+        <!-- ===================== provided ===================== -->
+        <!-- ===================== runtime ===================== -->
+        <!-- ===================== test ===================== -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>business</artifactId>
@@ -150,17 +153,10 @@
 		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
-			<version>2.0.0</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
 </project>

@@ -10,7 +10,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,10 +33,10 @@ import fr.mch.mdo.restaurant.dao.products.IProductsDao;
 import fr.mch.mdo.restaurant.dao.products.hibernate.DefaultProductsDao;
 import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.LocaleDto;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.ProductDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductsManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
+import fr.mch.mdo.restaurant.dto.beans.RestaurantValueAddedTaxDto;
 import fr.mch.mdo.restaurant.dto.beans.ValueAddedTaxDto;
 import fr.mch.mdo.restaurant.exception.MdoBusinessException;
 import fr.mch.mdo.restaurant.exception.MdoException;
@@ -61,7 +60,6 @@ public class DefaultProductsManager extends AbstractAdministrationManagerLabelab
 		vatRateFormat = new DecimalFormat("#.00", dfs);
 	}
 	private IRestaurantsManager restaurantsManager;
-	private IValueAddedTaxesManager valueAddedTaxesManager;
 	private ICategoriesManager categoriesManager;
 	private ILocalesManager localesManager;
 	
@@ -76,7 +74,6 @@ public class DefaultProductsManager extends AbstractAdministrationManagerLabelab
 		super.dao = dao;
 		super.assembler = assembler;
 		this.restaurantsManager = DefaultRestaurantsManager.getInstance();
-		this.valueAddedTaxesManager = DefaultValueAddedTaxesManager.getInstance();
 		this.categoriesManager = DefaultCategoriesManager.getInstance();
 		this.localesManager = DefaultLocalesManager.getInstance();
 	}
@@ -103,21 +100,6 @@ public class DefaultProductsManager extends AbstractAdministrationManagerLabelab
 	 */
 	public void setRestaurantsManager(IRestaurantsManager restaurantsManager) {
 		this.restaurantsManager = restaurantsManager;
-	}
-
-	/**
-	 * @return the valueAddedTaxesManager
-	 */
-	public IValueAddedTaxesManager getValueAddedTaxesManager() {
-		return valueAddedTaxesManager;
-	}
-
-	/**
-	 * @param valueAddedTaxesManager the valueAddedTaxesManager to set
-	 */
-	public void setValueAddedTaxesManager(
-			IValueAddedTaxesManager valueAddedTaxesManager) {
-		this.valueAddedTaxesManager = valueAddedTaxesManager;
 	}
 
 	/**
@@ -149,16 +131,15 @@ public class DefaultProductsManager extends AbstractAdministrationManagerLabelab
 	}
 
 	@Override
-	public void processList(IAdministrationManagerViewBean viewBean, MdoUserContext userContext, boolean... lazy) throws MdoBusinessException {
+	public void processList(IAdministrationManagerViewBean viewBean, LocaleDto locale, boolean... lazy) throws MdoBusinessException {
 		// Do not have to call find all products because we want list of products by restaurants
 		//super.processList(viewBean, userContext, lazy);
 		ProductsManagerViewBean productsManagerViewBean = (ProductsManagerViewBean) viewBean;
 		try {
-			productsManagerViewBean.setLabels(super.getLabels(userContext.getCurrentLocale()));
-			productsManagerViewBean.setLanguages(localesManager.getLanguages(userContext.getCurrentLocale().getLanguageCode()));
-			productsManagerViewBean.setRestaurants(restaurantsManager.findAll(userContext, lazy));
-			productsManagerViewBean.setVats(valueAddedTaxesManager.findAll(userContext, lazy));
-			productsManagerViewBean.setCategories(categoriesManager.findAll(userContext, lazy));
+			productsManagerViewBean.setLabels(super.getLabels(locale));
+			productsManagerViewBean.setLanguages(localesManager.getLanguages(locale.getLanguageCode()));
+			productsManagerViewBean.setRestaurants(restaurantsManager.findAll(lazy));
+			productsManagerViewBean.setCategories(categoriesManager.findAll(lazy));
 		} catch (Exception e) {
 			logger.error("message.error.administration.business.find.all", e);
 			throw new MdoBusinessException("message.error.administration.business.find.all", e);
@@ -176,13 +157,13 @@ public class DefaultProductsManager extends AbstractAdministrationManagerLabelab
 	}
 
 	@Override
-	public List<IMdoDtoBean> getList(Long restaurantId, MdoUserContext userContext) throws MdoBusinessException {
+	public List<IMdoDtoBean> getList(Long restaurantId) throws MdoBusinessException {
 		List<IMdoDtoBean> result = new ArrayList<IMdoDtoBean>();
 		
 		try {
 			List<IMdoBean> list = ((IProductsDao) dao).findAllByRestaurant(restaurantId);
 			if (list != null) {
-				result = assembler.marshal(list, userContext);
+				result = assembler.marshal(list);
 			}
 		} catch (MdoException e) {
 			logger.error("message.error.administration.business.products.by.restaurant", new Object[] {restaurantId}, e);
@@ -193,7 +174,7 @@ public class DefaultProductsManager extends AbstractAdministrationManagerLabelab
 	}
 	
 	@Override
-	public IMdoDtoBean update(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
+	public IMdoDtoBean update(IMdoDtoBean dtoBean) throws MdoBusinessException {
 		Product daoBean = (Product) assembler.unmarshal(dtoBean);
 		try {
 			// Deleting daoBean.getCategories() before inserting new ones
@@ -203,7 +184,7 @@ public class DefaultProductsManager extends AbstractAdministrationManagerLabelab
 			dao.update(daoBean);
 			// Restoring
 			daoBean.getCategories().addAll(backup);
-			return assembler.marshal((IMdoDaoBean) dao.update(daoBean), userContext);
+			return assembler.marshal((IMdoDaoBean) dao.update(daoBean));
 		} catch (MdoException e) {
 			logger.error("message.error.administration.business.save", e);
 			throw new MdoBusinessException("message.error.administration.business.save", e);
@@ -211,22 +192,22 @@ public class DefaultProductsManager extends AbstractAdministrationManagerLabelab
 	}
 	
 	@Override
-	public IMdoDtoBean delete(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
+	public IMdoDtoBean delete(IMdoDtoBean dtoBean) throws MdoBusinessException {
 		// No need to Delete categories before Deleting user because of hibernate mapping all-delete-orphan in collection
 		// Delete dto
-		return super.delete(dtoBean, userContext);
+		return super.delete(dtoBean);
 	}
 
 	@Override
-	public ProductDto findByCode(String restaurantReference, String code, MdoUserContext userContext) throws MdoException {
+	public ProductDto findByCode(String restaurantReference, String code) throws MdoException {
 		ProductDto result = null;
-		IMdoDaoBean product = (IMdoDaoBean) ((IProductsDao) dao).findByCode(restaurantReference, code);
-		result = (ProductDto) assembler.marshal(product, userContext);
+		IMdoDaoBean product = (IMdoDaoBean) ((IProductsDao) dao).find(restaurantReference, code);
+		result = (ProductDto) assembler.marshal(product);
 		return result;
 	}
 
 	@Override
-	public void importData(String importedFileName, File file, MdoUserContext userContext) throws MdoBusinessException {
+	public void importData(String importedFileName, File file) throws MdoBusinessException {
 		try {
 			Pattern pattern = Pattern.compile(IProductsManager.IMPORT_DATA_FILE_NAME_PATTERN);
 			Matcher matcher = pattern.matcher(importedFileName);
@@ -241,20 +222,21 @@ public class DefaultProductsManager extends AbstractAdministrationManagerLabelab
 			}
 
 			RestaurantDto restaurant = null;
-			restaurant = (RestaurantDto) restaurantsManager.findByReference(restaurantReference, userContext);
+			restaurant = (RestaurantDto) restaurantsManager.findByReference(restaurantReference);
 			
 			if (restaurant != null) {
 				LocaleDto locale = null;
-				locale = (LocaleDto) localesManager.findByLanguage(language, userContext);
+				locale = (LocaleDto) localesManager.findByLanguage(language);
 				
 				if (locale != null) {
-					List<IMdoDtoBean> vats = valueAddedTaxesManager.findAll(userContext);
+					Set<RestaurantValueAddedTaxDto> vats = restaurant.getVats();
 					Map<String, ValueAddedTaxDto> vatsRateId = new HashMap<String, ValueAddedTaxDto>();
-					for (Iterator<IMdoDtoBean> iterator = vats.iterator(); iterator.hasNext();) {
-						ValueAddedTaxDto vat = (ValueAddedTaxDto) iterator.next();
+					for (RestaurantValueAddedTaxDto restaurantValueAddedTaxDto : vats) {
+						ValueAddedTaxDto vat = restaurantValueAddedTaxDto.getVat();
 						// The vat rate from database is never null
 						// If the vat rate is not unique then keep the last one
 						vatsRateId.put(vatRateFormat.format(vat.getRate().doubleValue()), vat);
+						
 					}
 
 					// Load the file.
@@ -282,7 +264,7 @@ public class DefaultProductsManager extends AbstractAdministrationManagerLabelab
 							labels.put(locale.getId(), label);
 	
 							// Product from Database
-							ProductDto productFromDatabase = this.findByCode(restaurant.getReference(), product.getCode(), userContext);
+							ProductDto productFromDatabase = this.findByCode(restaurant.getReference(), product.getCode());
 							if (productFromDatabase != null) {
 								// Here, set Values that are not in imported file
 								product.setId(productFromDatabase.getId());
@@ -311,7 +293,7 @@ public class DefaultProductsManager extends AbstractAdministrationManagerLabelab
 							}
 							
 							// Save into database
-							super.save(product, userContext);
+							super.save(product);
 						} else {
 							// Considerer that is no more row to import in the imported file
 							break;
@@ -339,11 +321,11 @@ public class DefaultProductsManager extends AbstractAdministrationManagerLabelab
 	}
 
 	@Override
-	public String exportData(OutputStream out, String restaurantReference, String[] headers, MdoUserContext userContext) throws MdoBusinessException {
-		String exportFileName = this.buildExportFileName(restaurantReference, userContext.getCurrentLocale());
+	public String exportData(OutputStream out, String restaurantReference, String[] headers, LocaleDto locale) throws MdoBusinessException {
+		String exportFileName = this.buildExportFileName(restaurantReference, locale);
 		RestaurantDto restaurant;
 		try {
-			restaurant = (RestaurantDto) this.getRestaurantsManager().findByReference(restaurantReference, userContext);
+			restaurant = (RestaurantDto) this.getRestaurantsManager().findByReference(restaurantReference);
 		} catch (MdoException e) {
 			throw new MdoBusinessException(e);
 		}
@@ -352,8 +334,8 @@ public class DefaultProductsManager extends AbstractAdministrationManagerLabelab
 			throw new MdoBusinessException("message.error.administration.business.products.restaurant.not.found", new Object[]{restaurantReference});
 		}
 		
-		Long localeId = userContext.getCurrentLocale().getId();
-		List<IMdoDtoBean> list = this.getList(restaurant.getId(), userContext);
+		Long localeId = locale.getId();
+		List<IMdoDtoBean> list = this.getList(restaurant.getId());
 		int indexRow = 0;
 		// Create the data to export: 0 row, 5 columns by default
 		Object[][] data = new Object[0][5];
@@ -400,12 +382,10 @@ public class DefaultProductsManager extends AbstractAdministrationManagerLabelab
 	}
 	
 	@Override
-	public Map<Long, String> lookupProductsCodesByPrefixCode(IMdoBean userContext, String prefixProductCode) throws Exception {
+	public Map<Long, String> lookupProductsCodesByPrefixCode(Long restaurantId, String prefixProductCode) throws Exception {
 		Map<Long, String> result = new HashMap<Long, String>();
-		MdoUserContext userContextX = (MdoUserContext) userContext;
 		IProductsDao daoX = (IProductsDao) dao;
 
-		Long restaurantId = userContextX.getUserAuthentication().getRestaurant().getId();
 		if (prefixProductCode != null) {
 			result = daoX.findCodesByPrefixCode(restaurantId, prefixProductCode);
 		}

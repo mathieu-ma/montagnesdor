@@ -9,9 +9,10 @@ package fr.mch.mdo.restaurant.dao.beans;
 import fr.mch.mdo.restaurant.beans.MdoDaoBean;
 
 /**
- * This class is a t_restaurant mapping. This table is a association table. This
- * table is used to store the list of restaurant table prefix names. These
- * prefix names is used to know that a table is considered as a take-away table.
+ * This class is a t_restaurant_prefix_table mapping. 
+ * This table is a association table. 
+ * This table is used to store the list of restaurant table prefix names.
+ * These prefix names is used to know that a table is considered as a take-away table.
  * 
  * @author Mathieu
  */
@@ -89,6 +90,7 @@ public class RestaurantPrefixTable extends MdoDaoBean {
 		final int prime = 31;
 		int result = 1; // DO NOT call super.hashCode(); because ID could be
 						// null.
+		result = prime * result + ((restaurant == null || restaurant.getId() == null) ? 0 : restaurant.getId().hashCode());
 		result = prime * result + ((prefix == null || prefix.getId() == null) ? 0 : prefix.getId().hashCode());
 		result = prime * result + ((type == null || type.getId() == null) ? 0 : type.getId().hashCode());
 		return result;
@@ -107,6 +109,17 @@ public class RestaurantPrefixTable extends MdoDaoBean {
 			return false;
 		}
 		RestaurantPrefixTable other = (RestaurantPrefixTable) obj;
+		if (restaurant == null) {
+			if (other.restaurant != null) {
+				return false;
+			}
+		} else if (restaurant.getId() == null) {
+			if (other.restaurant.getId() != null) {
+				return false;
+			}
+		} else if (other.restaurant == null || !restaurant.getId().equals(other.restaurant.getId())) {
+			return false;
+		}
 		if (prefix == null) {
 			if (other.prefix != null) {
 				return false;

@@ -13,7 +13,6 @@ import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode;
 import fr.mch.mdo.restaurant.dao.beans.ValueAddedTax;
 import fr.mch.mdo.restaurant.dto.beans.CreditDto;
 import fr.mch.mdo.restaurant.dto.beans.DinnerTableDto;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.OrderLineDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductPartDto;
@@ -124,7 +123,7 @@ public class DefaultOrderLinesAssembler extends AbstractAssembler implements IMa
 	}
 
 	@Override
-	public IMdoDtoBean marshal(IMdoDaoBean daoBean, MdoUserContext userContext) {
+	public IMdoDtoBean marshal(IMdoDaoBean daoBean) {
 		OrderLineDto dto = null;
 		if (daoBean != null) {
 			OrderLine bean = (OrderLine) daoBean;
@@ -146,11 +145,11 @@ public class DefaultOrderLinesAssembler extends AbstractAssembler implements IMa
 			}
 			dto.setCode(code);
 			dto.setDataCode(dataCode);
-			CreditDto credit = (CreditDto) creditsAssembler.marshal(bean.getCredit(), userContext);
+			CreditDto credit = (CreditDto) creditsAssembler.marshal(bean.getCredit());
 			dto.setCredit(credit);
 			ValueAddedTaxDto vat = null;
 			if (bean.getVat() != null) {
-				vat = (ValueAddedTaxDto) vatsAssembler.marshal(bean.getVat(), userContext);
+				vat = (ValueAddedTaxDto) vatsAssembler.marshal(bean.getVat());
 			}
 			dto.setVat(vat);
 			if (bean.getDinnerTable() != null) {
@@ -159,11 +158,11 @@ public class DefaultOrderLinesAssembler extends AbstractAssembler implements IMa
 				dto.setDinnerTable(dinnerTable);
 			}
 			dto.setLabel(bean.getLabel());
-			ProductDto product = (ProductDto) productsAssembler.marshal(bean.getProduct(), userContext);
+			ProductDto product = (ProductDto) productsAssembler.marshal(bean.getProduct());
 			dto.setProduct(product);
-			ProductPartDto productPart = (ProductPartDto) productPartsAssembler.marshal(bean.getProductPart(), userContext);
+			ProductPartDto productPart = (ProductPartDto) productPartsAssembler.marshal(bean.getProductPart());
 			dto.setProductPart(productPart);
-			ProductSpecialCodeDto productSpecialCode = (ProductSpecialCodeDto) productSpecialCodesAssembler.marshal(bean.getProductSpecialCode(), userContext); 
+			ProductSpecialCodeDto productSpecialCode = (ProductSpecialCodeDto) productSpecialCodesAssembler.marshal(bean.getProductSpecialCode()); 
 			dto.setProductSpecialCode(productSpecialCode);
 			dto.setQuantity(bean.getQuantity());
 			dto.setUnitPrice(bean.getUnitPrice());

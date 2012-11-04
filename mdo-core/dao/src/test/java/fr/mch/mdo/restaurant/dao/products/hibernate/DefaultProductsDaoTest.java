@@ -110,7 +110,7 @@ public class DefaultProductsDaoTest extends DefaultDaoServicesTestCase
 			assertFalse("Product must not be deleted", castedBean.isDeleted());
 
 			IProductsDao productsDao = (IProductsDao) this.getInstance();
-			bean = productsDao.findByCode(DefaultDaoServicesTestCase.RESTAURANT_FIRST_REFERENCE, code);
+			bean = productsDao.find(DefaultDaoServicesTestCase.RESTAURANT_FIRST_REFERENCE, code);
 			assertTrue("IMdoBean must be instance of " + Product.class, bean instanceof Product);
 			castedBean = (Product) bean;
 			assertEquals("Product code must be equals to unique key", code, castedBean.getCode());
@@ -348,7 +348,7 @@ public class DefaultProductsDaoTest extends DefaultDaoServicesTestCase
 		try {
 			IProductsDao productsDao = (IProductsDao) this.getInstance();
 
-			IMdoBean bean = productsDao.findByCode(DefaultDaoServicesTestCase.RESTAURANT_FIRST_REFERENCE, code);
+			IMdoBean bean = productsDao.find(DefaultDaoServicesTestCase.RESTAURANT_FIRST_REFERENCE, code);
 			assertTrue("IMdoBean must be instance of " + Product.class, bean instanceof Product);
 			Product castedBean = (Product) bean;
 			assertEquals("Product code must be equals to unique key", code, castedBean.getCode());
@@ -358,7 +358,7 @@ public class DefaultProductsDaoTest extends DefaultDaoServicesTestCase
 					.getReference());
 			assertFalse("Product must not be deleted", castedBean.isDeleted());
 
-			bean = productsDao.findByCode(restaurantId, code);
+			bean = productsDao.find(restaurantId, code);
 			assertTrue("IMdoBean must be instance of " + Product.class, bean instanceof Product);
 			castedBean = (Product) bean;
 			assertEquals("Product code must be equals to unique key", code, castedBean.getCode());
@@ -404,13 +404,13 @@ public class DefaultProductsDaoTest extends DefaultDaoServicesTestCase
 		}
 	}
 	
-	public void testGetProductByCode() {
+	public void testFindProductByCode() {
 		Long restaurantId = 1L;
 		String prefixProductCode = "11";
 		try {
 			IProductsDao productsDao = (IProductsDao) this.getInstance();
 
-			Product product = (Product) productsDao.getProductByCode(restaurantId, prefixProductCode);
+			Product product = (Product) productsDao.find(restaurantId, prefixProductCode);
 			assertNotNull("Product must not be null", product);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());

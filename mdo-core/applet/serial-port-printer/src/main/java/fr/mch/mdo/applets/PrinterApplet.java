@@ -255,7 +255,7 @@ public class PrinterApplet extends JApplet
 								flagNoPortComFound = false;
 								if (debug) {
 									//System.out.println("Identifiant du port de communication trouvé sur " + portCom);
-									System.out.println("Identifier port communication found " + portCom + " after " + attempt + " tries");
+									System.out.println("Identifier port communication found " + portId.getName() + " after " + attempt + " tries");
 								}
 								break;
 							}

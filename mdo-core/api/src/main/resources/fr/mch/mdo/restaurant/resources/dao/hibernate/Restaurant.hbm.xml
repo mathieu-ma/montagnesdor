@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
 
@@ -23,11 +23,9 @@
 		<property name="visaRef" column="res_visa_ref" type="string" />
 		<property name="tripleDESKey" column="res_triple_DES_key" type="string" />
 		<property name="vatByTakeaway" column="res_vat_by_takeaway"	type="boolean" />
-		<property name="takeawayBasicReduction" column="res_takeaway_basic_reduction" type="big_decimal" />
-		<property name="takeawayMinAmountReduction" column="res_takeaway_min_amount_reduction" type="big_decimal" />
 
 		<many-to-one name="specificRound" column="res_specific_round" />
-		<many-to-one name="defaultTableType" column="tbt_id" />
+		<many-to-one name="defaultTableType" column="tbt_id" fetch="join" />
 		<many-to-one name="vat" column="vat_id" />
 
 		<set name="prefixTableNames" cascade="all-delete-orphan" inverse="true" table="t_restaurant_prefix_table">
@@ -35,11 +33,21 @@
 			<one-to-many class="fr.mch.mdo.restaurant.dao.beans.RestaurantPrefixTable" />
 		</set>
 
+		<set name="reductionTables" cascade="all-delete-orphan" inverse="true" table="t_restaurant_reduction_table">
+			<key column="res_id" />
+			<one-to-many class="fr.mch.mdo.restaurant.dao.beans.RestaurantReductionTable" />
+		</set>
+		
 		<set name="vats" cascade="all-delete-orphan" inverse="true" table="t_restaurant_vat">
 			<key column="res_id" />
 			<one-to-many class="fr.mch.mdo.restaurant.dao.beans.RestaurantValueAddedTax" />
 		</set>
 
+		<set name="vatTableTypes" cascade="all-delete-orphan" inverse="true" table="t_restaurant_vat_table_type">
+			<key column="res_id" />
+			<one-to-many class="fr.mch.mdo.restaurant.dao.beans.RestaurantVatTableType" />
+		</set>
+		
 		<set name="productSpecialCodes" inverse="true" table="t_product_special_code">
 			<key column="res_id" />
 			<one-to-many class="fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode" />

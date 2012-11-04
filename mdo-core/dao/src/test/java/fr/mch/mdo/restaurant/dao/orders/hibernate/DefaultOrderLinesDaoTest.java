@@ -19,6 +19,7 @@ import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode;
 import fr.mch.mdo.restaurant.dao.beans.ValueAddedTax;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServicesTestCase;
 import fr.mch.mdo.restaurant.dao.orders.IOrderLinesDao;
+import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.test.MdoTestCase;
 
 public class DefaultOrderLinesDaoTest extends DefaultDaoServicesTestCase
@@ -225,6 +226,74 @@ public class DefaultOrderLinesDaoTest extends DefaultDaoServicesTestCase
 			OrderLine orderLine = (OrderLine) orderLinesDao.getOrderLine(id);
 			assertNotNull("Product must not be null", orderLine);
 		} catch (Exception e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+	
+	public void testGetOrderLinesSize() {
+		IOrderLinesDao orderLinesDao = (IOrderLinesDao) this.getInstance();
+		try {
+			Long dinnerTableId = Long.valueOf(1);
+			int size = orderLinesDao.getOrderLinesSize(dinnerTableId);
+			assertTrue("Check Dinner Table's Order Lines Size initial value", size>0);
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+
+
+	public void testAddUpdateFindRemoveOrderLine() {
+		IOrderLinesDao orderLinesDao = (IOrderLinesDao) this.getInstance();
+		OrderLine orderLine = new OrderLine();
+		DinnerTable dinnerTable = new DinnerTable();
+		dinnerTable.setId(Long.valueOf(1));
+		orderLine.setDinnerTable(dinnerTable);
+		ProductSpecialCode psc = new ProductSpecialCode();
+		psc.setId(Long.valueOf(1));
+		orderLine.setProductSpecialCode(psc);
+		Product product = new Product();
+		product.setId(Long.valueOf(1));
+		orderLine.setProduct(product);
+		orderLine.setQuantity(new BigDecimal(2));
+		orderLine.setLabel("Test");
+		orderLine.setUnitPrice(new BigDecimal(2.1));
+		orderLine.setAmount(orderLine.getQuantity().multiply(orderLine.getUnitPrice()));
+		ValueAddedTax vat = new ValueAddedTax();
+		vat.setId(1L);
+		orderLine.setVat(vat);
+
+		try {
+			assertNull("Order Line id must be null", orderLine.getId());
+			orderLinesDao.insert(orderLine);
+			assertNotNull("Order Line id must not be null", orderLine.getId());
+			orderLine.setLabel("Test Update");
+			orderLinesDao.update(orderLine);
+			OrderLine foundOrderLine = (OrderLine) orderLinesDao.findByPrimaryKey(orderLine.getId());
+			assertNotNull("Order Line must not be null", foundOrderLine);
+			assertEquals("Order Line label updated", orderLine.getLabel(), foundOrderLine.getLabel());
+			orderLinesDao.delete(orderLine.getId());
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+		try {
+			orderLinesDao.findByPrimaryKey(orderLine.getId());
+		} catch (MdoException e) {
+			assertTrue("Exception because bean not found after deletion", true);
+		}
+	}
+	
+	public void testFindAllScalarFieldsByDinnerTableId() {
+		IOrderLinesDao orderLinesDao = (IOrderLinesDao) this.getInstance();
+		try {
+			List<OrderLine> result = orderLinesDao.findAllScalarFieldsByDinnerTableId(1L, 2L);
+//			for (IMdoBean iMdoBean : result) {
+//				OrderLine castedBean = (OrderLine) iMdoBean;
+//System.out.println(castedBean.getId());
+//System.out.println(castedBean.getLabel());
+//			}
+			assertNotNull("List of OrderLines", result);
+			assertFalse("List of OrderLines not empty", result.isEmpty());
+		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}

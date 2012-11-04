@@ -9,10 +9,6 @@ import fr.mch.mdo.restaurant.exception.MdoException;
 
 public interface IProductsDao  extends IDaoServices
 {
-    IMdoBean findByCode(Long restaurantId, String code) throws MdoException;
-
-    IMdoBean findByCode(String restaurantReference, String code) throws MdoException;
-    
     List<IMdoBean> findAllByPrefixCode(Long restaurantId, String prefixProductCode) throws MdoException;
 
     /**
@@ -34,11 +30,21 @@ public interface IProductsDao  extends IDaoServices
     List<IMdoBean> findAllByRestaurant(Long restaurantId) throws MdoException;
 
     /**
-     * This method tries to get the Product by code with minimum informations.
+     * This method tries to get the Product by code.
      * @param restaurantId the restaurant id.
      * @param code the unique code.
-     * @return Product with minimum informations.
+     * @return the Product.
      * @throws MdoException when any exception occur.
      */
-	IMdoBean getProductByCode(Long restaurantId, String code) throws MdoException;
+	IMdoBean find(Long restaurantId, String code) throws MdoException;
+
+	/**
+     * This method tries to get the Product by code.
+	 * @param restaurantReference the restaurant reference.
+     * @param code the unique code.
+     * @return the Product.
+     * @throws MdoException when any exception occur.
+	 */
+    IMdoBean find(String restaurantReference, String code) throws MdoException;
+
 }

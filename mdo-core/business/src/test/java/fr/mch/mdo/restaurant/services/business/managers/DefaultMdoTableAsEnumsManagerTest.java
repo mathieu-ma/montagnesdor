@@ -81,21 +81,21 @@ public class DefaultMdoTableAsEnumsManagerTest extends DefaultAdministrationMana
 		newBean = createNewBean(type, name, order, defaultLabel, languageKeyLabel);
 		try {
 			// Create new bean to be updated
-			IMdoDtoBean beanToBeUpdated = this.getInstance().insert(newBean, DefaultAdministrationManagerTest.userContext);
+			IMdoDtoBean beanToBeUpdated = this.getInstance().insert(newBean);
 			assertTrue("IMdoBean must be instance of " + MdoTableAsEnumDto.class, beanToBeUpdated instanceof MdoTableAsEnumDto);
 			MdoTableAsEnumDto castedBean = (MdoTableAsEnumDto) beanToBeUpdated;
 			assertNotNull("MdoTableAsEnumDto name must not be null", castedBean.getName());
 			assertEquals("MdoTableAsEnumDto name must be equals to the inserted value", name, castedBean.getName());
 			// Update the created bean
 			castedBean.setName("E");
-			this.getInstance().update(castedBean, DefaultAdministrationManagerTest.userContext);
+			this.getInstance().update(castedBean);
 			// Reload the modified bean
 			MdoTableAsEnumDto updatedBean = (MdoTableAsEnumDto) createNewBean();
 			updatedBean.setId(castedBean.getId());
-			updatedBean = (MdoTableAsEnumDto) this.getInstance().load(updatedBean, DefaultAdministrationManagerTest.userContext);
+			updatedBean = (MdoTableAsEnumDto) this.getInstance().load(updatedBean);
 			assertNotNull("MdoTableAsEnumDto name must not be null", castedBean.getName());
 			assertEquals("MdoTableAsEnumDto name must be equals to updated value", castedBean.getName(), updatedBean.getName());
-			this.getInstance().delete(updatedBean, DefaultAdministrationManagerTest.userContext);
+			this.getInstance().delete(updatedBean);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -105,7 +105,7 @@ public class DefaultMdoTableAsEnumsManagerTest extends DefaultAdministrationMana
 	public void doProcessList() {
 		MdoTableAsEnumsManagerViewBean viewBean = new MdoTableAsEnumsManagerViewBean();
 		try {
-			this.getInstance().processList(viewBean, DefaultAdministrationManagerTest.userContext);
+			this.getInstance().processList(viewBean);
 			assertNotNull("Main list could not be null", viewBean.getList());
 			assertFalse("Main list could not be empty", viewBean.getList().isEmpty());
 			assertNotNull("Existing Types could not be null", viewBean.getExistingTypes());
@@ -120,7 +120,7 @@ public class DefaultMdoTableAsEnumsManagerTest extends DefaultAdministrationMana
 		// INSERT INTO t_enum VALUES(1, 'PREFIX_TABLE_NAME', 'A', 0, 'A',
 		// 'PREFIX_TABLE_NAME.A.0', false);
 		MdoTableAsEnumTypeDao type = MdoTableAsEnumTypeDao.PREFIX_TABLE_NAME;
-		List<IMdoDtoBean> list = ((DefaultMdoTableAsEnumsManager) this.getInstance()).getPrefixTableNames(DefaultAdministrationManagerTest.userContext);
+		List<IMdoDtoBean> list = ((DefaultMdoTableAsEnumsManager) this.getInstance()).getPrefixTableNames();
 		// Only 1 elements
 		int expectedSize = 2;
 		Map<String, String> expectedData = new LinkedHashMap<String, String>();
@@ -137,7 +137,7 @@ public class DefaultMdoTableAsEnumsManagerTest extends DefaultAdministrationMana
 		// INSERT INTO t_enum VALUES(3, 'SPECIFIC_ROUND', 'TENTH_ROUND', 1,
 		// 'TENTH_ROUND', 'SPECIFIC_ROUND.TENTH_ROUND.1', false);
 		MdoTableAsEnumTypeDao type = MdoTableAsEnumTypeDao.SPECIFIC_ROUND;
-		List<IMdoDtoBean> list = ((DefaultMdoTableAsEnumsManager) this.getInstance()).getSpecificRounds(DefaultAdministrationManagerTest.userContext);
+		List<IMdoDtoBean> list = ((DefaultMdoTableAsEnumsManager) this.getInstance()).getSpecificRounds();
 		// Only 2 elements
 		int expectedSize = 2;
 		Map<String, String> expectedData = new LinkedHashMap<String, String>();
@@ -159,7 +159,7 @@ public class DefaultMdoTableAsEnumsManagerTest extends DefaultAdministrationMana
 		// 'LEFT', 2, 'Left', 'PRINTING_INFORMATION_ALIGNMENT.LEFT.2', false);
 
 		MdoTableAsEnumTypeDao type = MdoTableAsEnumTypeDao.PRINTING_INFORMATION_ALIGNMENT;
-		List<IMdoDtoBean> list = ((DefaultMdoTableAsEnumsManager) this.getInstance()).getPrintingInformationAlignments(DefaultAdministrationManagerTest.userContext);
+		List<IMdoDtoBean> list = ((DefaultMdoTableAsEnumsManager) this.getInstance()).getPrintingInformationAlignments();
 		// Only 3 elements
 		int expectedSize = 3;
 		Map<String, String> expectedData = new LinkedHashMap<String, String>();
@@ -180,7 +180,7 @@ public class DefaultMdoTableAsEnumsManagerTest extends DefaultAdministrationMana
 		// 'Large', 'PRINTING_INFORMATION_SIZE.LARGE.2', false);
 
 		MdoTableAsEnumTypeDao type = MdoTableAsEnumTypeDao.PRINTING_INFORMATION_SIZE;
-		List<IMdoDtoBean> list = ((DefaultMdoTableAsEnumsManager) this.getInstance()).getPrintingInformationSizes(DefaultAdministrationManagerTest.userContext);
+		List<IMdoDtoBean> list = ((DefaultMdoTableAsEnumsManager) this.getInstance()).getPrintingInformationSizes();
 		// Only 3 elements
 		int expectedSize = 3;
 		Map<String, String> expectedData = new LinkedHashMap<String, String>();
@@ -199,7 +199,7 @@ public class DefaultMdoTableAsEnumsManagerTest extends DefaultAdministrationMana
 		// 1, 'Footer', 'PRINTING_INFORMATION_PART.FOOTER.1', false);
 
 		MdoTableAsEnumTypeDao type = MdoTableAsEnumTypeDao.PRINTING_INFORMATION_PART;
-		List<IMdoDtoBean> list = ((DefaultMdoTableAsEnumsManager) this.getInstance()).getPrintingInformationParts(DefaultAdministrationManagerTest.userContext);
+		List<IMdoDtoBean> list = ((DefaultMdoTableAsEnumsManager) this.getInstance()).getPrintingInformationParts();
 		// Only 2 elements
 		int expectedSize = 2;
 		Map<String, String> expectedData = new LinkedHashMap<String, String>();
@@ -221,7 +221,7 @@ public class DefaultMdoTableAsEnumsManagerTest extends DefaultAdministrationMana
 		// 'USER_ROLE.CUSTOMER.3', false);
 
 		MdoTableAsEnumTypeDao type = MdoTableAsEnumTypeDao.USER_ROLE;
-		List<IMdoDtoBean> list = ((DefaultMdoTableAsEnumsManager) this.getInstance()).getUserRoles(DefaultAdministrationManagerTest.userContext);
+		List<IMdoDtoBean> list = ((DefaultMdoTableAsEnumsManager) this.getInstance()).getUserRoles();
 		// Only 2 elements
 		int expectedSize = 4;
 		Map<String, String> expectedData = new LinkedHashMap<String, String>();
@@ -237,7 +237,7 @@ public class DefaultMdoTableAsEnumsManagerTest extends DefaultAdministrationMana
 		List<IMdoDtoBean> list = null;
 		String type = "";
 		try {
-			list = ((DefaultMdoTableAsEnumsManager) this.getInstance()).getList(type, DefaultAdministrationManagerTest.userContext);
+			list = ((DefaultMdoTableAsEnumsManager) this.getInstance()).getList(type);
 			assertNotNull("List must not be null", list);
 			assertTrue("List must be empty", list.isEmpty());
 		} catch (Exception e) {
@@ -245,7 +245,7 @@ public class DefaultMdoTableAsEnumsManagerTest extends DefaultAdministrationMana
 		}
 		type = MdoTableAsEnumType.USER_ROLE.name();
 		try {
-			list = ((DefaultMdoTableAsEnumsManager) this.getInstance()).getList(type, DefaultAdministrationManagerTest.userContext);
+			list = ((DefaultMdoTableAsEnumsManager) this.getInstance()).getList(type);
 			assertNotNull("List must not be null", list);
 			assertTrue("List must not be empty", !list.isEmpty());
 		} catch (MdoException e) {
@@ -293,17 +293,17 @@ public class DefaultMdoTableAsEnumsManagerTest extends DefaultAdministrationMana
 		newBean = createNewBean(type, name, order, defaultLabel, languageKeyLabel);
 		try {
 			// Create new bean
-			IMdoDtoBean returnedBean = this.getInstance().insert(newBean, DefaultAdministrationManagerTest.userContext);
+			IMdoDtoBean returnedBean = this.getInstance().insert(newBean);
 			assertTrue("IMdoBean must be instance of " + MdoTableAsEnumDto.class, returnedBean instanceof MdoTableAsEnumDto);
 			MdoTableAsEnumDto castedBean = (MdoTableAsEnumDto) returnedBean;
 			assertNotNull("MdoTableAsEnumDto name must not be null", castedBean.getName());
 			assertEquals("MdoTableAsEnumDto name must be equals to the inserted value", name, castedBean.getName());
 			
-			IMdoDtoBean foundBean = ((DefaultMdoTableAsEnumsManager) this.getInstance()).findByTypeAndName(type.name(), name, DefaultAdministrationManagerTest.userContext);
+			IMdoDtoBean foundBean = ((DefaultMdoTableAsEnumsManager) this.getInstance()).findByTypeAndName(type.name(), name);
 			assertNotNull("IMdoBean must not be null", foundBean);
 			assertTrue("IMdoBean must be instance of " + MdoTableAsEnumDto.class, foundBean instanceof MdoTableAsEnumDto);
 			
-			this.getInstance().delete(castedBean, DefaultAdministrationManagerTest.userContext);
+			this.getInstance().delete(castedBean);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}

@@ -2,19 +2,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
+                      
+    <modelVersion>4.0.0</modelVersion>
+                      
 	<parent>
-		<artifactId>mdo-core</artifactId>
 		<groupId>fr.mch.mdo</groupId>
+		<artifactId>mdo-core</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>fr.mch.mdo</groupId>
 	<artifactId>web-restaurant</artifactId>
 	<packaging>war</packaging>
 	<name>web-restaurant</name>
-	<version>1.0-SNAPSHOT</version>
 	<url>http://maven.apache.org</url>
+
 
 	<build>
 		<finalName>mdo-web-restaurant</finalName>
@@ -145,444 +146,252 @@
 	</build>
 
 	<dependencies>
+        <!-- ===================== Local Projects ===================== -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>api</artifactId>
 			<version>1.0-SNAPSHOT</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>exception</artifactId>
 			<version>1.0-SNAPSHOT</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>service</artifactId>
 			<version>1.0-SNAPSHOT</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>dao</artifactId>
 			<version>1.0-SNAPSHOT</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>business</artifactId>
 			<version>1.0-SNAPSHOT</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>authentication</artifactId>
 			<version>1.0-SNAPSHOT</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>ioc</artifactId>
 			<version>1.0-SNAPSHOT</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>date-time</artifactId>
 			<version>1.0-SNAPSHOT</version>
-			<scope>compile</scope>
 		</dependency>
 <!-- 		
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>jopendocument</artifactId>
 			<version>1.0-SNAPSHOT</version>
-			<scope>compile</scope>
 		</dependency>
  -->
  		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>web</artifactId>
 			<version>1.0-SNAPSHOT</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>embedded-server</artifactId>
 			<version>1.0-SNAPSHOT</version>
-			<scope>compile</scope>
 		</dependency>
+        <!-- ===================== compile ===================== -->
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+        </dependency>
 
 		<dependency>
 			<!-- This dependency is used because of the used of Hibernate for logging -->
 		  	<groupId>org.slf4j</groupId>
 		  	<artifactId>slf4j-log4j12</artifactId>
-		  	<version>1.5.8</version>
 		</dependency>		
 
 		<dependency>
 			<groupId>org.apache.tiles</groupId>
 			<artifactId>tiles-core</artifactId>
-			<version>2.2.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tiles</groupId>
 			<artifactId>tiles-api</artifactId>
-			<version>2.2.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tiles</groupId>
 			<artifactId>tiles-jsp</artifactId>
-			<version>2.2.2</version>
 		</dependency>
-
+		<dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+        </dependency>
+        <!-- ===================== provided ===================== -->
+<!-- 		
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet.jsp</groupId>
 			<artifactId>jsp-api</artifactId>
-			<version>2.1</version>
-			<scope>provided</scope>
 		</dependency>
-		<dependency>
+ -->	
+ 		<dependency>
 			<groupId>net.sf.saxon</groupId>
 			<artifactId>saxon</artifactId>
-			<version>8.7</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 		  <groupId>xml-apis</groupId>
 		  <artifactId>xml-apis</artifactId>
-		  <version>1.3.02</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>xalan</groupId>
 			<artifactId>xalan</artifactId>
-			<version>2.6.0</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>xerces</groupId>
 			<artifactId>xercesImpl</artifactId>
-			<version>2.6.2</version>
-			<scope>provided</scope>
+		</dependency>
+        <!-- ===================== runtime ===================== -->
+        <!-- ===================== test ===================== -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>test</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
 		</dependency>
 
+<dependency>
+    <groupId>org.mortbay.jetty</groupId>
+    <artifactId>jetty-maven-plugin</artifactId>
+    <version>8.1.0.RC5</version>
+</dependency>
+
+<dependency>
+    <groupId>org.glassfish.web</groupId>
+    <artifactId>jsp-impl</artifactId>
+    <version>2.2.2-b06</version>
+</dependency>
+<dependency>
+    <groupId>org.mortbay.jetty</groupId>
+    <artifactId>servlet-api</artifactId>
+    <version>3.0.20100224</version>
+</dependency>
+     
+     
+		<dependency>
+			<!-- This dependency is used because of the used of Hibernate for logging and override the version from Hibernate-->
+		  	<groupId>org.slf4j</groupId>
+		  	<artifactId>slf4j-api</artifactId>
+		</dependency>		
+        
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+        </dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
-	<profiles>
-		<!-- Use "mvn -P eclipse-webapp process-resources" or "mvn -Declipse-webapp=true process-resources" command line for generating the 
-			eclipse wtp configuration.
-			We have to use phase process-resources and not eclipse:eclipse goal because the goal eclipse:eclipse will end at phase generate-resources.
-			And we want the process ends at phase process-resources.
-		-->
-		<profile>
-			<id>eclipse-webapp</id>
-			<activation>
-				<property><name>eclipse-webapp</name><value>true</value></property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.groovy.maven</groupId>
-						<artifactId>gmaven-plugin</artifactId>
-						<version>1.0</version>
-						<executions>
-							<execution>
-								<id>set-mvn-local-properties-with-groovy</id>
-								<phase>validate</phase>
-								<goals>
-									<goal>execute</goal>
-								</goals>
-								<configuration>
-									<source>
-										<!-- We need Groovy to replace maven property value by another 
-											value -->
-										<!-- project.basedir.parentFile.canonicalPath returns the parent 
-											folder name with backslash like D:\montagnesdor\mdo-maven2-svn-workspace\mdo-core -->
-										<!-- But in maven-eclipse-plugin we need folder name with slash: 
-											so we replace backslash with slash -->
-										<![CDATA[
-											if (!session.goals.contains("process-resources")) {
-												throw new IllegalArgumentException("Could not execute the profile eclipse-webapp without process-resources goal")
-											}
-											project.properties["parentBasedir"] = project.basedir.parentFile.canonicalPath.replace("\\", "/");
-										]]>
-									</source>
-								</configuration>
-							</execution>
-						</executions>
+<properties>
+<!--     <glassfish.javax.version>2.2.3</glassfish.javax.version> -->
+    <glassfish.javax.version>2.2.3</glassfish.javax.version>
+    <glassfish.javax-jstl.version>1.2.1</glassfish.javax-jstl.version>
+</properties>
+
+
+    <profiles>
+        <profile>
+            <id>jetty</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.mortbay.jetty</groupId>
+                        <artifactId>jetty-maven-plugin</artifactId>
+ 		                <version>${jetty.version}</version>
+		                <configuration>
+		                    <stopKey>stopJetty</stopKey>
+		                    <stopPort>9999</stopPort>
+		                    <connectors>
+		                        <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+		                            <port>9090</port>
+		                            <maxIdleTime>60000</maxIdleTime>
+		                        </connector>
+		                    </connectors>
+		                    <!-- This is not mandatory because standard web.xml is look for into src/main/webapp/WEB-INF/ -->
+<!-- 							<webXml>${basedir}/src/main/webapp/WEB-INF/web.xml</webXml>
+ -->						<webAppConfig>
+								<jettyEnvXml>${basedir}/src/test/resources/WEB-INF/jetty-env.xml</jettyEnvXml>
+								<defaultsDescriptor>${basedir}/src/test/resources/WEB-INF/jetty-webdefault.xml</defaultsDescriptor>
+							</webAppConfig>	                    
+
+							<systemProperties>
+								<systemProperty>
+									<!-- The url of the icons -->
+									<name>com.inetpsa.nautilus.repo.path</name>
+									<value>http://casa.nautilusng.com/repo/widget/</value>
+								</systemProperty>
+								
+								<!-- The proxy properties maybe useless for jetty -->
+								<systemProperty>
+									<name>http.proxySet</name>
+									<value>true</value>
+								</systemProperty>
+								<systemProperty>
+									<name>http.proxyHost</name>
+									<value>ngrpsin-proxy</value>
+								</systemProperty>
+								<systemProperty>
+									<name>http.proxyPort</name>
+									<value>3128</value>
+								</systemProperty>
+								<systemProperty>
+									<name>http.nonProxyHosts</name>
+									<value>localhost</value>
+								</systemProperty>
+							</systemProperties>
+		                </configuration>
+						<dependencies>
+							<dependency>
+								<groupId>commons-dbcp</groupId>
+								<artifactId>commons-dbcp</artifactId>
+								<version>1.4</version>
+							</dependency>
+		                 </dependencies>
 					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-eclipse-plugin</artifactId>
-						<version>2.8</version>
-						<executions>
-							<execution>
-								<id>tomcat-eclipse-configuration</id>
-								<!-- goal eclipse is calling after generate-resources -->
-								<goals>
-									<goal>eclipse</goal>
-								</goals>
-								<phase>generate-resources</phase>
-								<configuration>
-									<!-- This part is used for TOMCAT/ECLIPSE configuration -->
-									<!-- The buildOutputDirectory folder will be clean after the call 
-										of phase>process-resources -->
-									<buildOutputDirectory>target/classes</buildOutputDirectory>
-									<downloadSources>true</downloadSources>
-									<wtpContextName>/web-restaurant</wtpContextName>
-									<wtpversion>2.0</wtpversion>
-									<wtpdefaultserver>Apache Tomcat v6.0</wtpdefaultserver>
-									<linkedResources>
-										<linkedResource>
-											<name>target/api-java</name>
-											<type>2</type>
-											<location>${parentBasedir}/api/src/main/java</location>
-										</linkedResource>
-										<linkedResource>
-											<name>target/api-resources</name>
-											<type>2</type>
-											<location>${parentBasedir}/api/src/main/resources</location>
-										</linkedResource>
-										<linkedResource>
-											<name>target/i18n-java</name>
-											<type>2</type>
-											<location>${parentBasedir}/i18n/src/main/java</location>
-										</linkedResource>
-										<linkedResource>
-											<name>target/i18n-resources</name>
-											<type>2</type>
-											<location>${parentBasedir}/i18n/src/main/resources</location>
-										</linkedResource>
-										<linkedResource>
-											<name>target/exception-java</name>
-											<type>2</type>
-											<location>${parentBasedir}/exception/src/main/java</location>
-										</linkedResource>
-										<linkedResource>
-											<name>target/exception-resources</name>
-											<type>2</type>
-											<location>${parentBasedir}/exception/src/main/resources</location>
-										</linkedResource>
-										<linkedResource>
-											<name>target/log-java</name>
-											<type>2</type>
-											<location>${parentBasedir}/log/src/main/java</location>
-										</linkedResource>
-										<linkedResource>
-											<name>target/log-resources</name>
-											<type>2</type>
-											<location>${parentBasedir}/log/src/main/resources</location>
-										</linkedResource>
-										<linkedResource>
-											<name>target/authentication-java</name>
-											<type>2</type>
-											<location>${parentBasedir}/authentication/src/main/java</location>
-										</linkedResource>
-										<linkedResource>
-											<name>target/authentication-resources</name>
-											<type>2</type>
-											<location>${parentBasedir}/authentication/src/main/resources</location>
-										</linkedResource>
-										<linkedResource>
-											<name>target/business-java</name>
-											<type>2</type>
-											<location>${parentBasedir}/business/src/main/java</location>
-										</linkedResource>
-										<linkedResource>
-											<name>target/business-resources</name>
-											<type>2</type>
-											<location>${parentBasedir}/business/src/main/resources</location>
-										</linkedResource>
-										<linkedResource>
-											<name>target/dao-java</name>
-											<type>2</type>
-											<location>${parentBasedir}/dao/src/main/java</location>
-										</linkedResource>
-										<linkedResource>
-											<name>target/dao-resources</name>
-											<type>2</type>
-											<location>${parentBasedir}/dao/src/main/resources</location>
-										</linkedResource>
-										<linkedResource>
-											<name>target/ioc-java</name>
-											<type>2</type>
-											<location>${parentBasedir}/ioc/src/main/java</location>
-										</linkedResource>
-										<linkedResource>
-											<name>target/ioc-resources</name>
-											<type>2</type>
-											<location>${parentBasedir}/ioc/src/main/resources</location>
-										</linkedResource>
-										<linkedResource>
-											<name>target/security-java</name>
-											<type>2</type>
-											<location>${parentBasedir}/security/src/main/java</location>
-										</linkedResource>
-										<linkedResource>
-											<name>target/security-resources</name>
-											<type>2</type>
-											<location>${parentBasedir}/security/src/main/resources</location>
-										</linkedResource>
-										<linkedResource>
-											<name>target/service-java</name>
-											<type>2</type>
-											<location>${parentBasedir}/service/src/main/java</location>
-										</linkedResource>
-										<linkedResource>
-											<name>target/service-resources</name>
-											<type>2</type>
-											<location>${parentBasedir}/service/src/main/resources</location>
-										</linkedResource>
-										<linkedResource>
-											<name>target/web-java</name>
-											<type>2</type>
-											<location>${parentBasedir}/web/src/main/java</location>
-										</linkedResource>
-										<linkedResource>
-											<name>target/web-resources</name>
-											<type>2</type>
-											<location>${parentBasedir}/web/src/main/resources</location>
-										</linkedResource>
-									</linkedResources>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>create-temp-directories</id>
-								<!-- process-resources is after generate-resources -->
-								<phase>generate-resources</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<target>
-										<echo>
-											Create temporary directories in target folder for
-											tomcat/eclipse integration				
-										</echo>
-										<mkdir dir="target/api-java" />
-										<mkdir dir="target/api-resources" />
-										<mkdir dir="target/i18n-java" />
-										<mkdir dir="target/i18n-resources" />
-										<mkdir dir="target/exception-java" />
-										<mkdir dir="target/exception-resources" />
-										<mkdir dir="target/log-java" />
-										<mkdir dir="target/log-resources" />
-										<mkdir dir="target/authentication-java" />
-										<mkdir dir="target/authentication-resources" />
-										<mkdir dir="target/business-java" />
-										<mkdir dir="target/business-resources" />
-										<mkdir dir="target/dao-java" />
-										<mkdir dir="target/dao-resources" />
-										<mkdir dir="target/ioc-java" />
-										<mkdir dir="target/ioc-resources" />
-										<mkdir dir="target/security-java" />
-										<mkdir dir="target/security-resources" />
-										<mkdir dir="target/service-java" />
-										<mkdir dir="target/service-resources" />
-										<mkdir dir="target/web-java" />
-										<mkdir dir="target/web-resources" />
-										<echo>TESTING ${file.separator} == ${parentBasedir} ==
-											${project.basedir.parentFile}</echo>
-									</target>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>build-helper-maven-plugin</artifactId>
-						<version>1.5</version>
-						<executions>
-							<execution>
-								<id>add-source</id>
-								<phase>generate-resources</phase>
-								<goals>
-									<goal>add-source</goal>
-								</goals>
-								<configuration>
-									<sources>
-										<source>target/api-java</source>
-										<source>target/i18n-java</source>
-										<source>target/exception-java</source>
-										<source>target/log-java</source>
-										<source>target/authentication-java</source>
-										<source>target/business-java</source>
-										<source>target/dao-java</source>
-										<source>target/ioc-java</source>
-										<source>target/security-java</source>
-										<source>target/service-java</source>
-										<source>target/web-java</source>
-									</sources>
-								</configuration>
-							</execution>
-							<execution>
-								<id>add-resource</id>
-								<phase>generate-resources</phase>
-								<goals>
-									<goal>add-resource</goal>
-								</goals>
-								<configuration>
-									<resources>
-										<resource>
-											<directory>target/api-resources</directory>
-										</resource>
-										<resource>
-											<directory>target/i18n-resources</directory>
-										</resource>
-										<resource>
-											<directory>target/exception-resources</directory>
-										</resource>
-										<resource>
-											<directory>target/log-resources</directory>
-										</resource>
-										<resource>
-											<directory>target/authentication-resources</directory>
-										</resource>
-										<resource>
-											<directory>target/business-resources</directory>
-										</resource>
-										<resource>
-											<directory>target/dao-resources</directory>
-										</resource>
-										<resource>
-											<directory>target/ioc-resources</directory>
-										</resource>
-										<resource>
-											<directory>target/security-resources</directory>
-										</resource>
-										<resource>
-											<directory>target/service-resources</directory>
-										</resource>
-										<resource>
-											<directory>target/web-resources</directory>
-										</resource>
-									</resources>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
+                </plugins>
+            </build>
+        </profile>
 	</profiles>
 
 </project>

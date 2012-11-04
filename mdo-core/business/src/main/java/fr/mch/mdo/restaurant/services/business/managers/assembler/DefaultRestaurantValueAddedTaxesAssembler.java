@@ -7,7 +7,6 @@ import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.beans.Restaurant;
 import fr.mch.mdo.restaurant.dao.beans.RestaurantValueAddedTax;
 import fr.mch.mdo.restaurant.dao.beans.ValueAddedTax;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantValueAddedTaxDto;
 import fr.mch.mdo.restaurant.dto.beans.ValueAddedTaxDto;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
@@ -37,13 +36,13 @@ public class DefaultRestaurantValueAddedTaxesAssembler extends AbstractAssembler
 	}
 
 	@Override
-	public IMdoDtoBean marshal(IMdoDaoBean daoBean, MdoUserContext userContext) {
+	public IMdoDtoBean marshal(IMdoDaoBean daoBean) {
 		RestaurantValueAddedTaxDto dto = null;
 		if (daoBean != null) {
 			RestaurantValueAddedTax bean = (RestaurantValueAddedTax) daoBean;
 			dto = new RestaurantValueAddedTaxDto();
 			dto.setId(bean.getId());
-			ValueAddedTaxDto vat = (ValueAddedTaxDto) vatsAssembler.marshal(bean.getVat(), userContext);
+			ValueAddedTaxDto vat = (ValueAddedTaxDto) vatsAssembler.marshal(bean.getVat());
 			dto.setVat(vat);
 		}
 		return dto;

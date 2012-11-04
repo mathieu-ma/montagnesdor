@@ -223,7 +223,7 @@ public class DefaultDinnerTablesManagerTest extends DefaultAdministrationManager
 
 		try {
 			// Create new bean to be updated
-			IMdoBean beanToBeUpdated = this.getInstance().insert(dinnerTable, DefaultAdministrationManagerTest.userContext);
+			IMdoBean beanToBeUpdated = this.getInstance().insert(dinnerTable);
 			assertTrue("IMdoBean must be instance of " + DinnerTableDto.class, beanToBeUpdated instanceof DinnerTableDto);
 			DinnerTableDto castedBean = (DinnerTableDto) beanToBeUpdated;
 			assertNotNull("DinnerTableDto number must not be null", castedBean.getNumber());
@@ -231,11 +231,11 @@ public class DefaultDinnerTablesManagerTest extends DefaultAdministrationManager
 			// Update the created bean
 			number = "111A";
 			castedBean.setNumber(number);
-			this.getInstance().update(castedBean, DefaultAdministrationManagerTest.userContext);
+			this.getInstance().update(castedBean);
 			// Reload the modified bean
 			DinnerTableDto updatedBean = new DinnerTableDto();
 			updatedBean.setId(castedBean.getId());
-			IMdoBean loadedBean = this.getInstance().load(updatedBean, DefaultAdministrationManagerTest.userContext);
+			IMdoBean loadedBean = this.getInstance().load(updatedBean);
 			assertTrue("IMdoBean must be instance of " + DinnerTableDto.class, loadedBean instanceof DinnerTableDto);
 			updatedBean = (DinnerTableDto) loadedBean;
 			assertNotNull("DinnerTableDto number must not be null", updatedBean.getNumber());
@@ -248,14 +248,23 @@ public class DefaultDinnerTablesManagerTest extends DefaultAdministrationManager
 	public void testCreateFromUserContext() {
 		try {
 			// Could create a new table with this table number
-			DinnerTableDto dinnerTable = new DinnerTableDto();
-			// Set required fields
-			String number = "1234";
+//			DinnerTableDto dinnerTable = new DinnerTableDto();
+//			// Set required fields
+//			String number = "1234";
+//			Integer customersNumber = 2;
+//			dinnerTable.setNumber(number);
+//			dinnerTable.setCustomersNumber(customersNumber);
+//			DefaultAdministrationManagerTest.userContext.setMyDinnerTable(dinnerTable);
+			Long userAuthenticationId = DefaultAdministrationManagerTest.userContext.getUserAuthentication().getId();
+			Long restaurantId = DefaultAdministrationManagerTest.userContext.getUserAuthentication().getRestaurant().getId();
+			String[] prefixTakeawayNames = DefaultAdministrationManagerTest.userContext.getUserAuthentication().getRestaurant().getPrefixTakeawayNames();
+			Long tableTypeId = DefaultAdministrationManagerTest.userContext.getUserAuthentication().getRestaurant().getDefaultTableType().getId();
+			String dinnerTableNumber = "1234";
 			Integer customersNumber = 2;
-			dinnerTable.setNumber(number);
-			dinnerTable.setCustomersNumber(customersNumber);
-			DefaultAdministrationManagerTest.userContext.setMyDinnerTable(dinnerTable);
-			Long dinnerTableId = ((IDinnerTablesManager) this.getInstance()).createFromUserContext(DefaultAdministrationManagerTest.userContext, number);
+			BigDecimal reductionRatio = BigDecimal.ZERO;
+			Long dinnerTableId = ((IDinnerTablesManager) this.getInstance()).createFromUserContext(
+					userAuthenticationId, restaurantId, prefixTakeawayNames, tableTypeId, dinnerTableNumber, 
+					customersNumber, reductionRatio);
 			assertNotNull("Dinner Table Id not null", dinnerTableId);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
@@ -267,15 +276,6 @@ public class DefaultDinnerTablesManagerTest extends DefaultAdministrationManager
 	protected void doProcessList() {
 	}
 
-	public void testFindAllFreeTable() {
-		try {
-			List<IMdoDtoBean> list = ((IDinnerTablesManager) this.getInstance()).findAllFreeTables(DefaultAdministrationManagerTest.userContext);
-			assertNotNull("List of Dinner Tables", list);
-		} catch (MdoException e) {
-			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
-		}
-	}
-	
 	public void testGetInstance() {
 		assertTrue(this.getInstance() instanceof IDinnerTablesManager);
 		assertTrue(this.getInstance() instanceof DefaultDinnerTablesManager);
@@ -317,11 +317,11 @@ public class DefaultDinnerTablesManagerTest extends DefaultAdministrationManager
 			Long dinnerTableId = Long.valueOf(1);
 			// The value 2 is in the file montagnesdorDatas.sql
 			Integer customersNumber = new Integer(2);
-			DinnerTableDto dinnerTable = (DinnerTableDto) ((IDinnerTablesManager) this.getInstance()).findByPrimaryKey(dinnerTableId, DefaultAdministrationManagerTest.userContext);
+			DinnerTableDto dinnerTable = (DinnerTableDto) ((IDinnerTablesManager) this.getInstance()).findByPrimaryKey(dinnerTableId);
 			assertEquals("Check Dinner Table's Customers Number initial value", customersNumber, dinnerTable.getCustomersNumber());
 			customersNumber = new Integer(6);
 			((IDinnerTablesManager) this.getInstance()).updateCustomersNumber(dinnerTableId, customersNumber);
-			DinnerTableDto updatedDinnerTable = (DinnerTableDto) ((IDinnerTablesManager) this.getInstance()).findByPrimaryKey(dinnerTableId, DefaultAdministrationManagerTest.userContext);
+			DinnerTableDto updatedDinnerTable = (DinnerTableDto) ((IDinnerTablesManager) this.getInstance()).findByPrimaryKey(dinnerTableId);
 			assertEquals("Check Dinner Table's Customers Number updated value", customersNumber, updatedDinnerTable.getCustomersNumber());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
@@ -342,10 +342,11 @@ public class DefaultDinnerTablesManagerTest extends DefaultAdministrationManager
 			orderLine.setDinnerTable(new DinnerTableDto());
 			orderLine.getDinnerTable().setId(dinnerTableId);
 			long deltaTime = System.currentTimeMillis();
-			((IDinnerTablesManager) this.getInstance()).processOrderLineByCode(DefaultAdministrationManagerTest.userContext, orderLine, null);
+			//TODO
+//			((IDinnerTablesManager) this.getInstance()).processOrderLineByCode(DefaultAdministrationManagerTest.userContext, orderLine, null);
 			deltaTime = System.currentTimeMillis() - deltaTime;
 			System.out.println("testProcessOrderLineByCode Delta Time = " + deltaTime);
-		} catch (MdoException e) {
+		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
@@ -353,7 +354,7 @@ public class DefaultDinnerTablesManagerTest extends DefaultAdministrationManager
 	public void testFindTableByNumber() {
 		try {
 			String number = "12D";
-			DinnerTableDto dinnerTable = (DinnerTableDto) ((IDinnerTablesManager) this.getInstance()).findTableByNumber(userContext, number);
+			DinnerTableDto dinnerTable = (DinnerTableDto) ((IDinnerTablesManager) this.getInstance()).findTableByNumber(userContext.getUserAuthentication().getRestaurant().getId(), number);
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}

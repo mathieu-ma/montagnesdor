@@ -15,7 +15,9 @@ import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantPrefixTableDto;
+import fr.mch.mdo.restaurant.dto.beans.RestaurantReductionTableDto;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantValueAddedTaxDto;
+import fr.mch.mdo.restaurant.dto.beans.RestaurantVatTableTypeDto;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantsManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.TableTypeDto;
 import fr.mch.mdo.restaurant.dto.beans.ValueAddedTaxDto;
@@ -65,24 +67,24 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 		String visaRef = "A1Z2E3R4T5Y6";
 		String tripleDESKey = "1A2B3C4D5E6F";
 		boolean vatByTakeaway = true;
-		BigDecimal takeawayBasicReduction = new BigDecimal(15);
-		BigDecimal takeawayMinAmountReduction = new BigDecimal(10);
 		MdoTableAsEnumDto specificRound = new MdoTableAsEnumDto();
 		specificRound.setId(2L);
 		TableTypeDto defaultTableType = new TableTypeDto();
 		defaultTableType.setId(1L);
 		Set<RestaurantValueAddedTaxDto> vats = null;
 		Set<RestaurantPrefixTableDto> prefixTableNames = new HashSet<RestaurantPrefixTableDto>();
+		Set<RestaurantReductionTableDto> reductionTables = new HashSet<RestaurantReductionTableDto>();
+		Set<RestaurantVatTableTypeDto> vatTableTypes = new HashSet<RestaurantVatTableTypeDto>();
 		ValueAddedTaxDto orderLineDefaultVat = new ValueAddedTaxDto();
 		orderLineDefaultVat.setId(1L);
 		RestaurantDto restaurant = (RestaurantDto) createNewBean(registrationDate, reference, name, addressRoad, addressZip, addressCity, phone, vatRef, visaRef, tripleDESKey,
-				vatByTakeaway, takeawayBasicReduction, takeawayMinAmountReduction, specificRound, defaultTableType, vats, prefixTableNames, orderLineDefaultVat);
+				vatByTakeaway, specificRound, defaultTableType, vats, vatTableTypes, prefixTableNames, reductionTables, orderLineDefaultVat);
 
 		RestaurantPrefixTableDto restaurantPrefixTable = new RestaurantPrefixTableDto();
 		MdoTableAsEnumDto prefix = new MdoTableAsEnumDto();
 		// Use the existing data in database
 		try {
-			prefix = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(1L, userContext);
+			prefix = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(1L);
 		} catch (MdoException e) {
 			fail("Could not found the prefix.");
 		}
@@ -90,13 +92,26 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 		TableTypeDto type = new TableTypeDto();
 		// Use the existing data in database
 		try {
-			type = (TableTypeDto) DefaultTableTypesManager.getInstance().findByPrimaryKey(1L, userContext);
+			type = (TableTypeDto) DefaultTableTypesManager.getInstance().findByPrimaryKey(1L);
 		} catch (MdoException e) {
 			fail("Could not found the type.");
 		}
 		restaurantPrefixTable.setType(type);
 		prefixTableNames.add(restaurantPrefixTable);
 		
+		RestaurantReductionTableDto restaurantReductionTable = new RestaurantReductionTableDto();
+		restaurantReductionTable.setType(type);
+		restaurantReductionTable.setMinAmount(BigDecimal.TEN);
+		restaurantReductionTable.setValue(BigDecimal.TEN);
+		restaurant.getReductionTables().add(restaurantReductionTable);
+
+		RestaurantVatTableTypeDto restaurantVatTableType = new RestaurantVatTableTypeDto();
+		restaurantVatTableType.setType(type);
+		ValueAddedTaxDto vat = new ValueAddedTaxDto();
+		vat.setId(1L);
+		restaurantVatTableType.setVat(vat);
+		restaurant.getVatTableTypes().add(restaurantVatTableType);
+
 		return restaurant;
 	}
 
@@ -116,24 +131,24 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 		String visaRef = "A1Z2E3R4T5Y6";
 		String tripleDESKey = "1A2B3C4D5E6F";
 		boolean vatByTakeaway = true;
-		BigDecimal takeawayBasicReduction = new BigDecimal(15);
-		BigDecimal takeawayMinAmountReduction = new BigDecimal(10);
 		MdoTableAsEnumDto specificRound = new MdoTableAsEnumDto();
 		specificRound.setId(3L);
 		TableTypeDto defaultTableType = new TableTypeDto();
 		defaultTableType.setId(2L);
 		Set<RestaurantValueAddedTaxDto> vats = new HashSet<RestaurantValueAddedTaxDto>();
 		Set<RestaurantPrefixTableDto> prefixTableNames = new HashSet<RestaurantPrefixTableDto>();
+		Set<RestaurantReductionTableDto> reductionTables = new HashSet<RestaurantReductionTableDto>();
+		Set<RestaurantVatTableTypeDto> vatTableTypes = new HashSet<RestaurantVatTableTypeDto>();
 		ValueAddedTaxDto orderLineDefaultVat = new ValueAddedTaxDto();
 		orderLineDefaultVat.setId(1L);
 		newBean = createNewBean(registrationDate, reference, name, addressRoad, addressZip, addressCity, phone, vatRef, visaRef, tripleDESKey, vatByTakeaway,
-				takeawayBasicReduction, takeawayMinAmountReduction, specificRound, defaultTableType, vats, prefixTableNames, orderLineDefaultVat);
+				specificRound, defaultTableType, vats, vatTableTypes, prefixTableNames, reductionTables, orderLineDefaultVat);
 
-		RestaurantValueAddedTaxDto vat = new RestaurantValueAddedTaxDto();
+		RestaurantValueAddedTaxDto restaurantVat = new RestaurantValueAddedTaxDto();
 		ValueAddedTaxDto valueAddedTax = new ValueAddedTaxDto();
 		valueAddedTax.setId(1L);
-		vat.setVat(valueAddedTax);
-		vats.add(vat);
+		restaurantVat.setVat(valueAddedTax);
+		vats.add(restaurantVat);
 		list.add(newBean);
 
 		// Second bean in list
@@ -148,28 +163,43 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 		visaRef = "A1Z2E3R4T5Y6";
 		tripleDESKey = "1A2B3C4D5E6F";
 		vatByTakeaway = true;
-		takeawayBasicReduction = new BigDecimal(15);
-		takeawayMinAmountReduction = new BigDecimal(10);
 		// Use the existing data in database
 		try {
-			specificRound = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(new Long(2), userContext);
+			specificRound = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(new Long(2));
 		} catch (MdoException e) {
 			fail("Could not found the Specific Round.");
 		}
 		defaultTableType = new TableTypeDto();
 		defaultTableType.setId(1L);
 		vats = new HashSet<RestaurantValueAddedTaxDto>();
+		reductionTables = new HashSet<RestaurantReductionTableDto>();
+		vatTableTypes = new HashSet<RestaurantVatTableTypeDto>();
 		prefixTableNames = null;
 		orderLineDefaultVat = new ValueAddedTaxDto();
 		orderLineDefaultVat.setId(1L);
 		newBean = createNewBean(registrationDate, reference, name, addressRoad, addressZip, addressCity, phone, vatRef, visaRef, tripleDESKey, vatByTakeaway,
-				takeawayBasicReduction, takeawayMinAmountReduction, specificRound, defaultTableType, vats, prefixTableNames, orderLineDefaultVat);
+				specificRound, defaultTableType, vats, vatTableTypes, prefixTableNames, reductionTables, orderLineDefaultVat);
 
-		vat = new RestaurantValueAddedTaxDto();
+		restaurantVat = new RestaurantValueAddedTaxDto();
 		valueAddedTax = new ValueAddedTaxDto();
 		valueAddedTax.setId(2L);
-		vat.setVat(valueAddedTax);
-		vats.add(vat);
+		restaurantVat.setVat(valueAddedTax);
+		vats.add(restaurantVat);
+
+		RestaurantReductionTableDto restaurantReductionTable = new RestaurantReductionTableDto();
+		TableTypeDto type = new TableTypeDto();
+		type.setId(1L);
+		restaurantReductionTable.setType(type);
+		restaurantReductionTable.setMinAmount(BigDecimal.TEN);
+		restaurantReductionTable.setValue(BigDecimal.TEN);
+		((RestaurantDto) newBean).getReductionTables().add(restaurantReductionTable);
+
+		RestaurantVatTableTypeDto restaurantVatTableType = new RestaurantVatTableTypeDto();
+		restaurantVatTableType.setType(type);
+		ValueAddedTaxDto vat = new ValueAddedTaxDto();
+		vat.setId(1L);
+		restaurantVatTableType.setVat(vat);
+		((RestaurantDto) newBean).getVatTableTypes().add(restaurantVatTableType);
 
 		list.add(newBean);
 
@@ -190,12 +220,10 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 		String visaRef = "A1Z2E3R4T5Y6";
 		String tripleDESKey = "1A2B3C4D5E6F";
 		boolean vatByTakeaway = true;
-		BigDecimal takeawayBasicReduction = new BigDecimal(15);
-		BigDecimal takeawayMinAmountReduction = new BigDecimal(10);
 		// Use the existing data in database
 		MdoTableAsEnumDto specificRound = new MdoTableAsEnumDto();
 		try {
-			specificRound = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(new Long(2), userContext);
+			specificRound = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(new Long(2));
 		} catch (MdoException e) {
 			fail("Could not found the Specific Round.");
 		}
@@ -203,38 +231,55 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 		defaultTableType.setId(2L);
 		Set<RestaurantValueAddedTaxDto> vats = new HashSet<RestaurantValueAddedTaxDto>();
 		Set<RestaurantPrefixTableDto> prefixTableNames = new HashSet<RestaurantPrefixTableDto>();
+		Set<RestaurantReductionTableDto> reductionTables = new HashSet<RestaurantReductionTableDto>();
+		Set<RestaurantVatTableTypeDto> vatTableTypes = new HashSet<RestaurantVatTableTypeDto>();
 		ValueAddedTaxDto orderLineDefaultVat = new ValueAddedTaxDto();
 		orderLineDefaultVat.setId(1L);
 		newBean = createNewBean(registrationDate, reference, name, addressRoad, addressZip, addressCity, phone, vatRef, visaRef, tripleDESKey, vatByTakeaway,
-				takeawayBasicReduction, takeawayMinAmountReduction, specificRound, defaultTableType, vats, prefixTableNames, orderLineDefaultVat);
+				specificRound, defaultTableType, vats, vatTableTypes, prefixTableNames, reductionTables, orderLineDefaultVat);
 
 		// VATs part
-		RestaurantValueAddedTaxDto vat = new RestaurantValueAddedTaxDto();
+		RestaurantValueAddedTaxDto restaurantVat = new RestaurantValueAddedTaxDto();
 		ValueAddedTaxDto valueAddedTax = new ValueAddedTaxDto();
 		valueAddedTax.setId(1L);
-		vat.setVat(valueAddedTax);
-		vats.add(vat);
-		vat = new RestaurantValueAddedTaxDto();
+		restaurantVat.setVat(valueAddedTax);
+		vats.add(restaurantVat);
+		restaurantVat = new RestaurantValueAddedTaxDto();
 		valueAddedTax = new ValueAddedTaxDto();
 		valueAddedTax.setId(2L);
-		vat.setVat(valueAddedTax);
-		vats.add(vat);
-		
+		restaurantVat.setVat(valueAddedTax);
+		vats.add(restaurantVat);
+
+		RestaurantReductionTableDto restaurantReductionTable = new RestaurantReductionTableDto();
+		TableTypeDto type = new TableTypeDto();
+		type.setId(1L);
+		restaurantReductionTable.setType(type);
+		restaurantReductionTable.setMinAmount(BigDecimal.TEN);
+		restaurantReductionTable.setValue(BigDecimal.TEN);
+		((RestaurantDto) newBean).getReductionTables().add(restaurantReductionTable);
+
+		RestaurantVatTableTypeDto restaurantVatTableType = new RestaurantVatTableTypeDto();
+		restaurantVatTableType.setType(type);
+		ValueAddedTaxDto vat = new ValueAddedTaxDto();
+		vat.setId(1L);
+		restaurantVatTableType.setVat(vat);
+		((RestaurantDto) newBean).getVatTableTypes().add(restaurantVatTableType);
+
 		// Prefix Table Names part
 		// First
 		RestaurantPrefixTableDto restaurantPrefixTable = new RestaurantPrefixTableDto();
 		MdoTableAsEnumDto prefix = new MdoTableAsEnumDto();
 		// Use the existing data in database
 		try {
-			prefix = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(1L, userContext);
+			prefix = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(1L);
 		} catch (MdoException e) {
 			fail("Could not found the prefix.");
 		}
 		restaurantPrefixTable.setPrefix(prefix);
-		TableTypeDto type = new TableTypeDto();
+		type = new TableTypeDto();
 		// Use the existing data in database
 		try {
-			type = (TableTypeDto) DefaultTableTypesManager.getInstance().findByPrimaryKey(1L, userContext);
+			type = (TableTypeDto) DefaultTableTypesManager.getInstance().findByPrimaryKey(1L);
 		} catch (MdoException e) {
 			fail("Could not found the type.");
 		}
@@ -249,7 +294,7 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 		type = new TableTypeDto();
 		// Use the existing data in database
 		try {
-			type = (TableTypeDto) DefaultTableTypesManager.getInstance().findByPrimaryKey(2L, userContext);
+			type = (TableTypeDto) DefaultTableTypesManager.getInstance().findByPrimaryKey(2L);
 		} catch (MdoException e) {
 			fail("Could not found the type.");
 		}
@@ -257,30 +302,34 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 		prefixTableNames.add(restaurantPrefixTable);
 		try {
 			// Create new bean to be updated
-			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean, userContext);
+			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean);
 			assertTrue("IMdoBean must be instance of " + RestaurantDto.class, beanToBeUpdated instanceof RestaurantDto);
 			RestaurantDto castedBean = (RestaurantDto) beanToBeUpdated;
 			assertNotNull("Restaurant name must not be null", castedBean.getName());
 			assertEquals("Restaurant name must be equals to the inserted value", name, castedBean.getName());
 			assertNotNull("Restaurant vats must not be null", castedBean.getVats());
 			assertEquals("Check Restaurant vats size", vats.size(), castedBean.getVats().size());
+			assertNotNull("Restaurant ReductionTables must not be null", castedBean.getReductionTables());
+			assertEquals("Check Restaurant ReductionTables size", reductionTables.size(), castedBean.getReductionTables().size());
+			assertNotNull("Restaurant VatTableTypes must not be null", castedBean.getVatTableTypes());
+			assertEquals("Check Restaurant VatTableTypes size", vatTableTypes.size(), castedBean.getVatTableTypes().size());
 			// Update the created bean
 			castedBean.setName("E");
-			vat = castedBean.getVats().iterator().next();
+			restaurantVat = castedBean.getVats().iterator().next();
 			// Id null then insert not update
-			vat.setId(null);
+			restaurantVat.setId(null);
 			castedBean.getVats().clear();
-			castedBean.getVats().add(vat);
+			castedBean.getVats().add(restaurantVat);
 			restaurantPrefixTable = castedBean.getPrefixTableNames().iterator().next();
 			// Id null then insert not update
 			restaurantPrefixTable.setId(null);
 			castedBean.getPrefixTableNames().clear();
 			castedBean.getPrefixTableNames().add(restaurantPrefixTable);
-			this.getInstance().update(castedBean, userContext);
+			this.getInstance().update(castedBean);
 			// Reload the modified bean
 			RestaurantDto updatedBean = (RestaurantDto) createNewBean();
 			updatedBean.setId(castedBean.getId());
-			updatedBean = (RestaurantDto) this.getInstance().load(updatedBean, userContext);
+			updatedBean = (RestaurantDto) this.getInstance().load(updatedBean);
 			assertNotNull("Restaurant name must not be null", updatedBean.getName());
 			assertEquals("Restaurant name must be equals to updated value", castedBean.getName(), updatedBean.getName());
 			assertNotNull("Restaurant vats must not be null", updatedBean.getVats());
@@ -288,10 +337,18 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 			// Then vats collection is never removed(but still updated) and the size must be the same as before updating the RestaurantDto
 			assertEquals("Check Restaurant vats size", castedBean.getVats().size(), updatedBean.getVats().size());
 			assertNotNull("Restaurant prefix table names must not be null", updatedBean.getPrefixTableNames());
-			// Because of RestaurantDto is a bean that is not attach to Hibernate session so the collection vats is not too.
+			// Because of RestaurantDto is a bean that is not attach to Hibernate session so the collection PrefixTableNames is not too.
 			// Then prefixTableNames collection is never removed(but still updated) and the size must be the same as before updating the RestaurantDto
 			assertEquals("Check Restaurant prefix table names size", castedBean.getPrefixTableNames().size(), updatedBean.getPrefixTableNames().size());
-			this.getInstance().delete(updatedBean, userContext);
+			assertNotNull("Restaurant Reduction Tables must not be null", updatedBean.getReductionTables());
+			// Because of RestaurantDto is a bean that is not attach to Hibernate session so the collection ReductionTables is not too.
+			// Then ReductionTables collection is never removed(but still updated) and the size must be the same as before updating the RestaurantDto
+			assertEquals("Check Restaurant Reduction Tables size", castedBean.getReductionTables().size(), updatedBean.getReductionTables().size());
+			assertNotNull("Restaurant VatTableTypes must not be null", updatedBean.getVatTableTypes());
+			// Because of RestaurantDto is a bean that is not attach to Hibernate session so the collection VatTableTypes is not too.
+			// Then VatTableTypes collection is never removed(but still updated) and the size must be the same as before updating the RestaurantDto
+			assertEquals("Check Restaurant VatTableTypes size", castedBean.getVatTableTypes().size(), updatedBean.getVatTableTypes().size());
+			this.getInstance().delete(updatedBean);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getLocalizedMessage());
 		}
@@ -301,7 +358,7 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 	public void doProcessList() {
 		RestaurantsManagerViewBean viewBean = new RestaurantsManagerViewBean();
 		try {
-			this.getInstance().processList(viewBean, DefaultAdministrationManagerTest.userContext);
+			this.getInstance().processList(viewBean);
 			assertNotNull("Main list not be null", viewBean.getList());
 			assertFalse("Main list not be empty", viewBean.getList().isEmpty());
 			assertNotNull("Specific rounds list not be null", viewBean.getSpecificRounds());
@@ -312,6 +369,10 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 			assertFalse("Value Added Taxes list not be empty", viewBean.getValueAddedTaxes().isEmpty());
 			assertNotNull("Table Types list not be null", viewBean.getTableTypes());
 			assertFalse("Table Types list not be empty", viewBean.getTableTypes().isEmpty());
+			assertNotNull("ReductionTables list not be null", viewBean.getReductionTableTypes());
+			assertFalse("ReductionTables list not be empty", viewBean.getReductionTableTypes().isEmpty());
+			assertNotNull("VAT Table Types list not be null", viewBean.getVatTableTypes());
+			assertFalse("VAT Table Types list not be empty", viewBean.getVatTableTypes().isEmpty());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getLocalizedMessage());
 		}
@@ -325,7 +386,7 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 	public void testFindRestaurantsByUser() {
 		Long userId = 1L;
 		try {
-			List<IMdoDtoBean> list = ((IRestaurantsManager) this.getInstance()).findRestaurantsByUser(userId, DefaultAdministrationManagerTest.userContext);
+			List<IMdoDtoBean> list = ((IRestaurantsManager) this.getInstance()).findRestaurantsByUser(userId);
 			assertNotNull("UserRestaurants list not be null", list);
 			assertFalse("UserRestaurants list must not be empty", list.isEmpty());
 		} catch (MdoException e) {
@@ -336,7 +397,7 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 	public void testFindByReference() {
 		Long userId = 1L;
 		try {
-			List<IMdoDtoBean> list = ((IRestaurantsManager) this.getInstance()).findRestaurantsByUser(userId, DefaultAdministrationManagerTest.userContext);
+			List<IMdoDtoBean> list = ((IRestaurantsManager) this.getInstance()).findRestaurantsByUser(userId);
 			assertNotNull("UserRestaurants list not be null", list);
 			assertFalse("UserRestaurants list must not be empty", list.isEmpty());
 			// Get the first bean
@@ -345,7 +406,7 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 			RestaurantDto castedBean = (RestaurantDto) returnedBean;
 			assertNotNull("RestaurantDto name must not be null", castedBean.getReference());
 			
-			IMdoDtoBean foundBean = ((IRestaurantsManager) this.getInstance()).findByReference(castedBean.getReference(), DefaultAdministrationManagerTest.userContext);
+			IMdoDtoBean foundBean = ((IRestaurantsManager) this.getInstance()).findByReference(castedBean.getReference());
 			assertNotNull("IMdoBean must not be null", foundBean);
 			assertTrue("IMdoBean must be instance of " + RestaurantDto.class, foundBean instanceof RestaurantDto);
 			
@@ -355,30 +416,10 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 		
 	}
 
-	public void testUpdateNotModifiedProductSpecialCodesList() {
-		try {
-			RestaurantDto restaurant = (RestaurantDto) this.getInstance().findByPrimaryKey(super.primaryKey, DefaultAdministrationManagerTest.userContext);
-			assertNotNull("Restaurant not null", restaurant);
-			assertNotNull("List of Product Special Code not null", restaurant.getProductSpecialCodes());
-			assertFalse("List of Product Special Code not empty", restaurant.getProductSpecialCodes().isEmpty());
-			String backupedName = restaurant.getName();
-			String newName = "restaurant.getName()";
-			restaurant.setName(newName);
-			this.getInstance().update(restaurant, DefaultAdministrationManagerTest.userContext);
-			restaurant = (RestaurantDto) this.getInstance().findByPrimaryKey(super.primaryKey, DefaultAdministrationManagerTest.userContext);
-			assertNotNull("Restaurant not null", restaurant);
-			assertNotNull("List of Product Special Code not null", restaurant.getProductSpecialCodes());
-			assertFalse("List of Product Special Code not empty", restaurant.getProductSpecialCodes().isEmpty());
-			assertEquals("Check restaurant name", newName, restaurant.getName());
-			assertFalse("Restaurant name is changed", backupedName.equals(restaurant.getName()));
-		} catch (MdoException e) {
-			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
-		}
-	}
-
 	private IMdoDtoBean createNewBean(Date registrationDate, String reference, String name, String addressRoad, String addressZip, String addressCity, String phone, String vatRef,
-			String visaRef, String tripleDESKey, boolean vatByTakeaway, BigDecimal takeawayBasicReduction, BigDecimal takeawayMinAmountReduction, MdoTableAsEnumDto specificRound,
-			TableTypeDto defaultTableType, Set<RestaurantValueAddedTaxDto> vats, Set<RestaurantPrefixTableDto> prefixTableNames, ValueAddedTaxDto vat) {
+			String visaRef, String tripleDESKey, boolean vatByTakeaway, MdoTableAsEnumDto specificRound,
+			TableTypeDto defaultTableType, Set<RestaurantValueAddedTaxDto> vats, Set<RestaurantVatTableTypeDto> vatTableTypes, 
+			Set<RestaurantPrefixTableDto> prefixTableNames, Set<RestaurantReductionTableDto> reductionTables, ValueAddedTaxDto vat) {
 
 		RestaurantDto newBean = new RestaurantDto();
 		newBean.setRegistrationDate(registrationDate);
@@ -392,12 +433,12 @@ public class DefaultRestaurantsManagerTest extends DefaultAdministrationManagerT
 		newBean.setVisaRef(visaRef);
 		newBean.setTripleDESKey(tripleDESKey);
 		newBean.setVatByTakeaway(vatByTakeaway);
-		newBean.setTakeawayBasicReduction(takeawayBasicReduction);
-		newBean.setTakeawayMinAmountReduction(takeawayMinAmountReduction);
 		newBean.setSpecificRound(specificRound);
 		newBean.setDefaultTableType(defaultTableType);
 		newBean.setVats(vats);
+		newBean.setVatTableTypes(vatTableTypes);
 		newBean.setPrefixTableNames(prefixTableNames);
+		newBean.setReductionTables(reductionTables);
 		newBean.setVat(vat);
 		return newBean;
 	}

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
+
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+	
+	<Set name="contextPath">/montagnesdor/restaurant</Set>
+	
+	<New id="MdoRestaurantJndiResources" class="org.eclipse.jetty.plus.jndi.Resource">
+	    <Arg>persistence/montagnesdor-restaurant</Arg>
+	    <Arg>
+	       <New class="org.apache.commons.dbcp.BasicDataSource">
+				<Set name="driverClassName">org.postgresql.Driver</Set>
+				<Set name="url">jdbc:postgresql://localhost/montagnesdor?autoReconnect=true</Set>
+				<Set name="username">montagnesdor</Set>
+				<Set name="password">powermdo</Set>
+			</New>
+	    </Arg>
+	</New>
+</Configure>

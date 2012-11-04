@@ -1,7 +1,7 @@
 package fr.mch.mdo.restaurant.web.struts.actions;
 
 import fr.mch.mdo.restaurant.Constants;
-import fr.mch.mdo.restaurant.ioc.spring.WebRestaurantBeanFactory;
+import fr.mch.mdo.restaurant.services.WebRestaurantBeanFactory;
 import fr.mch.mdo.restaurant.ui.forms.UserForm;
 
 public final class UserWebAction extends RestaurantWebAction

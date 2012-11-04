@@ -99,7 +99,7 @@ public class MdoProcessLanguageInterceptor extends I18nInterceptor
 		}
 
 		try {
-			userContextX.setCurrentLocale(MdoBeanFactory.getInstance().getLocalesManager().findLocale(xLocale, userContextX));
+			userContextX.setCurrentLocale(MdoBeanFactory.getInstance().getLocalesManager().findLocale(xLocale, userContextX.getUserAuthentication().getLocales()));
 			// This is used for displaying language flag
 			userContextX.setSystemAvailableLanguages(MdoBeanFactory.getInstance().getLocalesManager().getSystemAvailableLanguages(xLocale));
 		} catch (Exception e) {

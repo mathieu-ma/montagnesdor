@@ -7,7 +7,6 @@ import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.beans.Credit;
 import fr.mch.mdo.restaurant.dao.beans.Restaurant;
 import fr.mch.mdo.restaurant.dto.beans.CreditDto;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 import fr.mch.mdo.utils.IManagerAssembler;
@@ -50,7 +49,7 @@ public class DefaultCreditsAssembler extends AbstractAssembler implements IManag
 	}
 
 	@Override
-	public IMdoDtoBean marshal(IMdoDaoBean daoBean, MdoUserContext userContext) {
+	public IMdoDtoBean marshal(IMdoDaoBean daoBean) {
 		CreditDto dto = null;
 		if (daoBean != null) {
 			Credit bean = (Credit) daoBean;
@@ -61,7 +60,7 @@ public class DefaultCreditsAssembler extends AbstractAssembler implements IManag
 			dto.setCreatedDate(bean.getCreatedDate());
 			dto.setPrinted(bean.getPrinted());
 			dto.setReference(bean.getReference());
-			RestaurantDto restaurant = (RestaurantDto) restaurantsAssembler.marshal(bean.getRestaurant(), userContext);
+			RestaurantDto restaurant = (RestaurantDto) restaurantsAssembler.marshal(bean.getRestaurant());
 			dto.setRestaurant(restaurant);
 		}
 		return dto;

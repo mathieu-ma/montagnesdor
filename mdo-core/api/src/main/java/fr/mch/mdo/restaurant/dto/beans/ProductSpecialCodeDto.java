@@ -39,6 +39,12 @@ public class ProductSpecialCodeDto extends MdoDtoBean implements IBeanLabelable
 	 */
 	private MdoTableAsEnumDto code;
 	/**
+	 * This is a foreign key that refers to t_value_added_tax. It is used to
+	 * specify the product special code value added tax.
+	 */
+	private ValueAddedTaxDto vat;
+
+	/**
 	 * This is used for i18n label.
 	 */
 	private Map<Long, String> labels;
@@ -89,6 +95,20 @@ public class ProductSpecialCodeDto extends MdoDtoBean implements IBeanLabelable
 	}
 
 	/**
+	 * @return the vat
+	 */
+	public ValueAddedTaxDto getVat() {
+		return vat;
+	}
+
+	/**
+	 * @param vat the vat to set
+	 */
+	public void setVat(ValueAddedTaxDto vat) {
+		this.vat = vat;
+	}
+
+	/**
 	 * @return the labels
 	 */
 	public Map<Long, String> getLabels() {
@@ -130,6 +150,9 @@ public class ProductSpecialCodeDto extends MdoDtoBean implements IBeanLabelable
 
 	@Override
 	public String toString() {
-		return "ProductSpecialCode [code=" + code + ", labels=" + labels + ", restaurant=" + restaurant + ", shortCode=" + shortCode + ", id=" + id + "]";
+		return "ProductSpecialCode [code=" + code + ", labels=" + labels + ", restaurant=" + restaurant 
+				+ ", shortCode=" + shortCode 
+				+ ", vat=" + vat 
+				+ ", id=" + id + "]";
 	}
 }

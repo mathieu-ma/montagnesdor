@@ -11,7 +11,6 @@ import fr.mch.mdo.restaurant.dao.beans.UserRestaurant;
 import fr.mch.mdo.restaurant.dao.users.IUsersDao;
 import fr.mch.mdo.restaurant.dao.users.hibernate.DefaultUsersDao;
 import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.UsersManagerViewBean;
 import fr.mch.mdo.restaurant.exception.MdoBusinessException;
 import fr.mch.mdo.restaurant.exception.MdoException;
@@ -81,13 +80,13 @@ public class DefaultUsersManager extends AbstractAdministrationManager implement
 	}
 
 	@Override
-	public void processList(IAdministrationManagerViewBean viewBean, MdoUserContext userContext, boolean... lazy) throws MdoBusinessException {
-		super.processList(viewBean, userContext, lazy);
+	public void processList(IAdministrationManagerViewBean viewBean, boolean... lazy) throws MdoBusinessException {
+		super.processList(viewBean, lazy);
 		UsersManagerViewBean usersManagerViewBean = (UsersManagerViewBean) viewBean;
 		try {
 			//MdoUserContext userContext = viewBean.getUserContext(); 
-			usersManagerViewBean.setRestaurants(restaurantsManager.findAll(userContext));
-			usersManagerViewBean.setTitles(mdoTableAsEnumsManager.getUserTitles(userContext));
+			usersManagerViewBean.setRestaurants(restaurantsManager.findAll());
+			usersManagerViewBean.setTitles(mdoTableAsEnumsManager.getUserTitles());
 		} catch (Exception e) {
 			logger.error("message.error.administration.business.find.all", e);
 			throw new MdoBusinessException("message.error.administration.business.find.all", e);
@@ -95,7 +94,7 @@ public class DefaultUsersManager extends AbstractAdministrationManager implement
 	}
 	
 	@Override
-	public IMdoDtoBean update(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
+	public IMdoDtoBean update(IMdoDtoBean dtoBean) throws MdoBusinessException {
 		User daoBean = (User) assembler.unmarshal(dtoBean);
 		try {
 			// Deleting daoBean.getRestaurants() before inserting new ones
@@ -106,7 +105,7 @@ public class DefaultUsersManager extends AbstractAdministrationManager implement
 			// Restoring
 			daoBean.getRestaurants().addAll(backup);
 
-			return assembler.marshal((IMdoDaoBean) dao.update(daoBean), userContext);
+			return assembler.marshal((IMdoDaoBean) dao.update(daoBean));
 		} catch (MdoException e) {
 			logger.error("message.error.administration.business.save", e);
 			throw new MdoBusinessException("message.error.administration.business.save", e);
@@ -114,9 +113,9 @@ public class DefaultUsersManager extends AbstractAdministrationManager implement
 	}
 	
 	@Override
-	public IMdoDtoBean delete(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
+	public IMdoDtoBean delete(IMdoDtoBean dtoBean) throws MdoBusinessException {
 		// No need to Delete Restaurants before Deleting user because of hibernate mapping all-delete-orphan in collection
-		return super.delete(dtoBean, userContext);
+		return super.delete(dtoBean);
 	}
 
 }

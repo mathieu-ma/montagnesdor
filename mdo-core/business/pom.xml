@@ -2,17 +2,19 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
+	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
-		<artifactId>mdo-core</artifactId>
 		<groupId>fr.mch.mdo</groupId>
+		<artifactId>mdo-core</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 
-	<modelVersion>4.0.0</modelVersion>
 	<artifactId>business</artifactId>
 	<packaging>jar</packaging>
 	<name>business</name>
 	<url>http://maven.apache.org</url>
+
 	<build>
 		<filters>
 			<filter>src/main/filters/log4j-filters.properties</filter>
@@ -86,6 +88,7 @@
 	</build>
 
 	<dependencies>
+        <!-- ===================== compile ===================== -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>authentication</artifactId>
@@ -116,10 +119,12 @@
 			<!-- This dependency is used because of the used of Hibernate for logging -->
 		  	<groupId>org.slf4j</groupId>
 		  	<artifactId>slf4j-log4j12</artifactId>
-		  	<version>1.6.1</version>
 		</dependency>		
 
 
+        <!-- ===================== provided ===================== -->
+        <!-- ===================== runtime ===================== -->
+        <!-- ===================== test ===================== -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>test</artifactId>
@@ -129,14 +134,10 @@
 		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
-			<version>2.0.0</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

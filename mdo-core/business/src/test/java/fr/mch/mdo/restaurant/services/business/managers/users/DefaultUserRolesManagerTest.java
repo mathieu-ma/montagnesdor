@@ -16,6 +16,7 @@ import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.services.business.managers.DefaultAdministrationManagerTest;
 import fr.mch.mdo.restaurant.services.business.managers.DefaultMdoTableAsEnumsManager;
 import fr.mch.mdo.restaurant.services.business.managers.IAdministrationManager;
+import fr.mch.mdo.restaurant.services.business.managers.IManagerLabelable;
 import fr.mch.mdo.test.MdoTestCase;
 
 public class DefaultUserRolesManagerTest extends DefaultAdministrationManagerTest 
@@ -47,7 +48,7 @@ public class DefaultUserRolesManagerTest extends DefaultAdministrationManagerTes
 		// Use the existing data in database
 		MdoTableAsEnumDto code = new MdoTableAsEnumDto();
 		try {
-			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(13L, userContext);
+			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(13L);
 		} catch (MdoException e) {
 			fail("Could not found the user role code.");
 		}
@@ -61,7 +62,7 @@ public class DefaultUserRolesManagerTest extends DefaultAdministrationManagerTes
 		// Use the existing data in database
 		MdoTableAsEnumDto code = new MdoTableAsEnumDto();
 		try {
-			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(14L, userContext);
+			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(14L);
 		} catch (MdoException e) {
 			fail("Could not found the user role code.");
 		}
@@ -79,7 +80,7 @@ public class DefaultUserRolesManagerTest extends DefaultAdministrationManagerTes
 		// Use the existing data in database
 		MdoTableAsEnumDto code = new MdoTableAsEnumDto();
 		try {
-			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(15L, userContext);
+			code = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(15L);
 		} catch (MdoException e) {
 			fail("Could not found the user role code.");
 		}
@@ -93,7 +94,7 @@ public class DefaultUserRolesManagerTest extends DefaultAdministrationManagerTes
 		newBean = createNewBean(code, labels);
 		try {
 			// Create new bean to be updated
-			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean, userContext);
+			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean);
 			assertTrue("IMdoBean must be instance of " + UserRoleDto.class, beanToBeUpdated instanceof UserRoleDto);
 			UserRoleDto castedBean = (UserRoleDto) beanToBeUpdated;
 			assertNotNull("UserRole code must not be null", castedBean.getCode());
@@ -106,16 +107,16 @@ public class DefaultUserRolesManagerTest extends DefaultAdministrationManagerTes
 			label = "Boy Administrator";
 			labels.put(localeId, label);
 			castedBean.setLabels(labels);
-			this.getInstance().update(castedBean, userContext);
+			this.getInstance().update(castedBean);
 			// Reload the modified bean
 			UserRoleDto updatedBean = new UserRoleDto();
 			updatedBean.setId(castedBean.getId());
-			updatedBean = (UserRoleDto) this.getInstance().load(updatedBean, userContext);
+			updatedBean = (UserRoleDto) this.getInstance().load(updatedBean);
 			assertNotNull("UserRole code must not be null", updatedBean.getCode());
 			assertEquals("UserRole name must be equals to the updated value", code.toString(), updatedBean.getCode().toString());
 			assertNotNull("UserRole labels must not be null", updatedBean.getLabels());
 			assertEquals("Check UserRole labels size", labels.size(), updatedBean.getLabels().size());
-			this.getInstance().delete(updatedBean, userContext);
+			this.getInstance().delete(updatedBean);
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
@@ -125,7 +126,7 @@ public class DefaultUserRolesManagerTest extends DefaultAdministrationManagerTes
 	public void doProcessList() {
 		UserRolesManagerViewBean viewBean = new UserRolesManagerViewBean();
 		try {
-			this.getInstance().processList(viewBean, DefaultAdministrationManagerTest.userContext);
+			((IManagerLabelable) this.getInstance()).processList(viewBean, DefaultAdministrationManagerTest.userContext.getCurrentLocale());
 			assertNotNull("Main list must not be null", viewBean.getList());
 			assertFalse("Main list must not be empty", viewBean.getList().isEmpty());
 			assertNotNull("Restaurants list must not be null", viewBean.getLabels());
@@ -142,11 +143,11 @@ public class DefaultUserRolesManagerTest extends DefaultAdministrationManagerTes
 	public void testFindByCode() {
 		IMdoBean dtoBean;
 		try {
-			dtoBean = this.getInstance().findByPrimaryKey(1L, DefaultAdministrationManagerTest.userContext);
+			dtoBean = this.getInstance().findByPrimaryKey(1L);
 			assertTrue("IMdoBean must be instance of " + UserRoleDto.class, dtoBean instanceof UserRoleDto);
 			UserRoleDto castedBean = (UserRoleDto) dtoBean;
 			assertNotNull("Code is not null", castedBean.getCode());
-			dtoBean = ((IUserRolesManager) this.getInstance()).findByCode(castedBean.getCode().getName(), DefaultAdministrationManagerTest.userContext);
+			dtoBean = ((IUserRolesManager) this.getInstance()).findByCode(castedBean.getCode().getName());
 			assertTrue("IMdoBean must be instance of " + UserRoleDto.class, dtoBean instanceof UserRoleDto);
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getLocalizedMessage());

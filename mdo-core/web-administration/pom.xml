@@ -2,18 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
-		<artifactId>mdo-core</artifactId>
 		<groupId>fr.mch.mdo</groupId>
+		<artifactId>mdo-core</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>fr.mch.mdo</groupId>
 	<artifactId>web-administration</artifactId>
 	<packaging>war</packaging>
 	<name>web-administration</name>
-	<version>1.0-SNAPSHOT</version>
 	<url>http://maven.apache.org</url>
 
 	<build>
@@ -145,6 +145,7 @@
 	</build>
 
 	<dependencies>
+        <!-- ===================== compile ===================== -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>api</artifactId>
@@ -212,7 +213,6 @@
 			<!-- This dependency is used because of the used of Hibernate for logging -->
 		  	<groupId>org.slf4j</groupId>
 		  	<artifactId>slf4j-log4j12</artifactId>
-		  	<version>1.5.8</version>
 		</dependency>		
 
 		<dependency>
@@ -231,48 +231,36 @@
 			<version>2.2.2</version>
 		</dependency>
 
+        <!-- ===================== provided ===================== -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet.jsp</groupId>
 			<artifactId>jsp-api</artifactId>
-			<version>2.1</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.saxon</groupId>
 			<artifactId>saxon</artifactId>
-			<version>8.7</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
-		  <groupId>xml-apis</groupId>
-		  <artifactId>xml-apis</artifactId>
-		  <version>1.3.02</version>
-			<scope>provided</scope>
+		  	<groupId>xml-apis</groupId>
+		 	<artifactId>xml-apis</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>xalan</groupId>
 			<artifactId>xalan</artifactId>
-			<version>2.6.0</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>xerces</groupId>
 			<artifactId>xercesImpl</artifactId>
-			<version>2.6.2</version>
-			<scope>provided</scope>
 		</dependency>
-
+        <!-- ===================== runtime ===================== -->
+        <!-- ===================== test ===================== -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

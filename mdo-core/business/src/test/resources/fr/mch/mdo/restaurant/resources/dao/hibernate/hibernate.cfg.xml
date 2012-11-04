@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!DOCTYPE hibernate-configuration PUBLIC
 	"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
-	"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+	"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 	
 <hibernate-configuration>
 
@@ -13,7 +13,7 @@
 		<!-- org.hsqldb.jdbcDriver ==> HSQLDB 1.8.X driver  -->
         <property name="hibernate.connection.driver_class">org.hsqldb.jdbc.JDBCDriver</property>
 
-       	<property name="hibernate.connection.url">jdbc:hsqldb:mem:montagnesdorbusiness</property> 
+       	<property name="hibernate.connection.url">jdbc:hsqldb:mem:montagnesdordao</property> 
         <!-- 
 	        <property name="hibernate.connection.url">jdbc:postgresql://sql.free.fr:5432/montagnesdor?autoReconnect=true</property>
         -->
@@ -55,9 +55,12 @@
         <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/TableType.hbm.xml"/>
         <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/Restaurant.hbm.xml"/>        
         <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/RestaurantValueAddedTax.hbm.xml"/>
+        <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/RestaurantVatTableType.hbm.xml"/>
         <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/RestaurantPrefixTable.hbm.xml"/>
+        <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/RestaurantReductionTable.hbm.xml"/>
         <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/Locale.hbm.xml"/>
         <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/PrintingInformation.hbm.xml"/>
+        <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/PrintingInformationLanguage.hbm.xml"/>
         
         <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/UserRole.hbm.xml"/>        
         <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/UserRoleLanguage.hbm.xml"/>        
@@ -71,9 +74,10 @@
         <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/ProductPart.hbm.xml"/>
         <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/ProductPartLanguage.hbm.xml"/>
         <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/Product.hbm.xml"/>
+        <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/ProductLanguage.hbm.xml"/>
         <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/ProductCategory.hbm.xml"/>
         <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/ProductSpecialCode.hbm.xml"/>
-        <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/ProductLanguage.hbm.xml"/>
+        <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/ProductSpecialCodeLanguage.hbm.xml"/>
         <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/Category.hbm.xml"/>
         <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/CategoryLanguage.hbm.xml"/>
         <mapping resource="fr/mch/mdo/restaurant/resources/dao/hibernate/ProductSold.hbm.xml"/>

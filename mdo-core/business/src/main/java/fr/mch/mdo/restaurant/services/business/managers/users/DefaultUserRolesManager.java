@@ -11,7 +11,7 @@ import fr.mch.mdo.restaurant.dao.beans.UserRole;
 import fr.mch.mdo.restaurant.dao.users.IUserRolesDao;
 import fr.mch.mdo.restaurant.dao.users.hibernate.DefaultUserRolesDao;
 import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
+import fr.mch.mdo.restaurant.dto.beans.LocaleDto;
 import fr.mch.mdo.restaurant.dto.beans.UserRoleDto;
 import fr.mch.mdo.restaurant.dto.beans.UserRolesManagerViewBean;
 import fr.mch.mdo.restaurant.exception.MdoBusinessException;
@@ -93,15 +93,17 @@ public class DefaultUserRolesManager extends AbstractAdministrationManagerLabela
 	}
 	
 	@Override
-	public IMdoDtoBean save(IMdoDtoBean dtoBean, MdoUserContext userContext) throws MdoBusinessException {
-		UserRoleDto result = (UserRoleDto) super.save(dtoBean, userContext);
+	public IMdoDtoBean save(IMdoDtoBean dtoBean) throws MdoBusinessException {
+		UserRoleDto result = (UserRoleDto) super.save(dtoBean);
+		/*
+		 The following code will be moved to caller method:
 		if (result != null) {
 			if (userContext != null && userContext.getUserRole() != null) {
 				Long savedId = result.getId();
 				Long sessionId = (Long) userContext.getUserRole().getId();
 				if (savedId != null && savedId.equals(sessionId) && userContext.getUserAuthentication() != null) {
 					try {
-						userContext.getUserAuthentication().setUserRole((UserRoleDto) super.findByPrimaryKey(savedId, userContext));
+						userContext.getUserAuthentication().setUserRole((UserRoleDto) super.findByPrimaryKey(savedId));
 					} catch (MdoBusinessException e) {
 						logger.error("message.error.administration.business.user.roles.not.found", new Object[] {dtoBean}, e);
 						throw new MdoBusinessException("message.error.administration.business.user.roles.not.found", new Object[] {dtoBean}, e);
@@ -109,17 +111,18 @@ public class DefaultUserRolesManager extends AbstractAdministrationManagerLabela
 				}
 			}
 		}
+		*/
 		return result;
 	}
 	
 	@Override
-	public void processList(IAdministrationManagerViewBean viewBean, MdoUserContext userContext, boolean... lazy) throws MdoBusinessException {
-		super.processList(viewBean, userContext, lazy);
+	public void processList(IAdministrationManagerViewBean viewBean, LocaleDto locale, boolean... lazy) throws MdoBusinessException {
+		super.processList(viewBean, lazy);
 		UserRolesManagerViewBean userRolesManagerViewBean = (UserRolesManagerViewBean) viewBean;
 		try {
-			userRolesManagerViewBean.setLabels(this.getLabels(userContext.getCurrentLocale()));
-			userRolesManagerViewBean.setLanguages(this.localesManager.getLanguages(userContext.getCurrentLocale().getLanguageCode()));
-			userRolesManagerViewBean.setCodes(this.getRemainingList(mdoTableAsEnumsManager.getUserRoles(userContext), userContext));
+			userRolesManagerViewBean.setLabels(this.getLabels(locale));
+			userRolesManagerViewBean.setLanguages(this.localesManager.getLanguages(locale.getLanguageCode()));
+			userRolesManagerViewBean.setCodes(this.getRemainingList(mdoTableAsEnumsManager.getUserRoles()));
 		} catch (Exception e) {
 			logger.error("message.error.administration.business.find.all", e);
 			throw new MdoBusinessException("message.error.administration.business.find.all", e);
@@ -129,14 +132,13 @@ public class DefaultUserRolesManager extends AbstractAdministrationManagerLabela
 	/**
 	 * Remove already existing bean from listAll.
 	 * @param listAll list of bean to be removed.
-	 * @param userContext user context.
 	 * @return a restricted list.
 	 */
-	private List<IMdoDtoBean> getRemainingList(List<IMdoDtoBean> listAll, MdoUserContext userContext) {
+	private List<IMdoDtoBean> getRemainingList(List<IMdoDtoBean> listAll) {
 		List<IMdoDtoBean> result = new ArrayList<IMdoDtoBean>(listAll);
 		List<IMdoDtoBean> excludedList = new ArrayList<IMdoDtoBean>();
 		try {
-			excludedList = super.findAll(userContext);
+			excludedList = super.findAll();
 		} catch (MdoBusinessException e) {
 			logger.warn("message.error.administration.business.find.all", e);
 		}
@@ -153,9 +155,9 @@ public class DefaultUserRolesManager extends AbstractAdministrationManagerLabela
 	}
 
 	@Override
-	public IMdoDtoBean findByCode(String code, MdoUserContext userContext) throws MdoException {
+	public IMdoDtoBean findByCode(String code) throws MdoException {
 		try {
-			return assembler.marshal((IMdoDaoBean) dao.findByUniqueKey(code), userContext);
+			return assembler.marshal((IMdoDaoBean) dao.findByUniqueKey(code));
 		} catch (MdoException e) {
 			logger.error("message.error.administration.business.user.role.find.by.code", new Object[] {code},  e);
 			throw new MdoBusinessException("message.error.administration.business.user.role.find.by.code", new Object[] {code},  e);

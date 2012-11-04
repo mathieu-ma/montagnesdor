@@ -7,7 +7,6 @@ import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.beans.Restaurant;
 import fr.mch.mdo.restaurant.dao.beans.User;
 import fr.mch.mdo.restaurant.dao.beans.UserRestaurant;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
 import fr.mch.mdo.restaurant.dto.beans.UserDto;
 import fr.mch.mdo.restaurant.dto.beans.UserRestaurantDto;
@@ -44,13 +43,13 @@ public class DefaultUserRestaurantsAssembler extends AbstractAssembler implement
 	}
 
 	@Override
-	public IMdoDtoBean marshal(IMdoDaoBean daoBean, MdoUserContext userContext) {
+	public IMdoDtoBean marshal(IMdoDaoBean daoBean) {
 		UserRestaurantDto dto = null;
 		if (daoBean != null) {
 			UserRestaurant bean = (UserRestaurant) daoBean;
 			dto = new UserRestaurantDto();
 			dto.setId(bean.getId());
-			RestaurantDto restaurant = (RestaurantDto) restaurantsAssembler.marshal(bean.getRestaurant(), userContext);
+			RestaurantDto restaurant = (RestaurantDto) restaurantsAssembler.marshal(bean.getRestaurant());
 			dto.setRestaurant(restaurant);
 			UserDto user = null;
 			dto.setUser(user);

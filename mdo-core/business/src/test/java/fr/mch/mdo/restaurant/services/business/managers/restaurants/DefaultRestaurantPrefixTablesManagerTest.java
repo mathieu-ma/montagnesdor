@@ -81,7 +81,7 @@ public class DefaultRestaurantPrefixTablesManagerTest extends DefaultAdministrat
 
 		try {
 			// Create new bean to be updated
-			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean, userContext);
+			IMdoBean beanToBeUpdated = this.getInstance().insert(newBean);
 			assertTrue("IMdoBean must be instance of " + RestaurantPrefixTableDto.class, beanToBeUpdated instanceof RestaurantPrefixTableDto);
 			RestaurantPrefixTableDto castedBean = (RestaurantPrefixTableDto) beanToBeUpdated;
 			assertNotNull("RestaurantPrefixTable prefix must not be null", castedBean.getPrefix());
@@ -96,18 +96,18 @@ public class DefaultRestaurantPrefixTablesManagerTest extends DefaultAdministrat
 			prefix = new MdoTableAsEnumDto();
 			prefix.setId(5L);
 			castedBean.setPrefix(prefix);
-			this.getInstance().update(castedBean, userContext);
+			this.getInstance().update(castedBean);
 			// Reload the modified bean
 			RestaurantPrefixTableDto updatedBean = (RestaurantPrefixTableDto) createNewBean();
 			updatedBean.setId(castedBean.getId());
-			updatedBean = (RestaurantPrefixTableDto) this.getInstance().load(updatedBean, userContext);
+			updatedBean = (RestaurantPrefixTableDto) this.getInstance().load(updatedBean);
 			assertNotNull("RestaurantPrefixTable prefix must not be null", updatedBean.getPrefix());
 			assertEquals("RestaurantPrefixTable prefix must be equals to the inserted value", prefix.getId(), updatedBean.getPrefix().getId());
 			assertNotNull("RestaurantPrefixTable restaurant must not be null", updatedBean.getRestaurant());
 			assertEquals("RestaurantPrefixTable restaurant must be equals to the inserted value", restaurant.getId(), updatedBean.getRestaurant().getId());
 			assertNotNull("RestaurantPrefixTable type must not be null", updatedBean.getType());
 			assertEquals("RestaurantPrefixTable type must be equals to the inserted value", type.getId(), updatedBean.getType().getId());
-			this.getInstance().delete(updatedBean, userContext);
+			this.getInstance().delete(updatedBean);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getLocalizedMessage());
 		}
@@ -117,13 +117,11 @@ public class DefaultRestaurantPrefixTablesManagerTest extends DefaultAdministrat
 	public void doProcessList() {
 		RestaurantPrefixTablesManagerViewBean viewBean = new RestaurantPrefixTablesManagerViewBean();
 		try {
-			this.getInstance().processList(viewBean, DefaultAdministrationManagerTest.userContext);
+			this.getInstance().processList(viewBean);
 			assertNotNull("Main list not be null", viewBean.getList());
 			assertFalse("Main list not be empty", viewBean.getList().isEmpty());
 			assertNotNull("Prefix list not be null", viewBean.getPrefixes());
 			assertFalse("Prefix list not be empty", viewBean.getPrefixes().isEmpty());
-			assertNotNull("Restaurants list not be null", viewBean.getRestaurants());
-			assertFalse("Restaurants list not be empty", viewBean.getRestaurants().isEmpty());
 			assertNotNull("Types list not be null", viewBean.getTypes());
 			assertFalse("Types list not be empty", viewBean.getTypes().isEmpty());
 		} catch (MdoException e) {

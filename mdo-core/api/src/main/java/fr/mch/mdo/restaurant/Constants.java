@@ -48,6 +48,8 @@ public interface Constants
     
     public static final String ACTION_RESULT_AFTER_CUD_CATEGORY = "acudcategory";
     public static final String ACTION_RESULT_AFTER_CUD_PREFIX_TABLE = "acudprefixtable";
+    public static final String ACTION_RESULT_AFTER_CUD_REDUCTION_TABLE = "acudreductiontable";
+    public static final String ACTION_RESULT_AFTER_CUD_VAT_TABLE_TYPE = "acudvattabletype";
     public static final String ACTION_RESULT_AFTER_CUD_LIST_TYPE = "acudlisttype";
     public static final String ACTION_RESULT_AFTER_CUD_RESTAURANT = "acudrestaurant";
     public static final String ACTION_RESULT_AFTER_CUD_LABELS = "acudlabels";
@@ -94,6 +96,7 @@ public interface Constants
      */
     String HQL_USER_AUTHENTICATION_SELECT_BY_LOGIN = "UserAuthentication.SelectByLogin";
     String HQL_MDO_TABLE_AS_ENUM_SELECT_ALL_TYPES = "MdoTableAsEnum.SelectAllTypes";
+    String HQL_ORDER_LINE_FIND_BY_DINNER_TABLE_ID = "OrderLine.FindByDinnerTableId";
     /**
      * END HIBERNATE
      */

@@ -18,6 +18,7 @@ import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.services.business.managers.DefaultAdministrationManagerTest;
 import fr.mch.mdo.restaurant.services.business.managers.DefaultMdoTableAsEnumsManager;
 import fr.mch.mdo.restaurant.services.business.managers.IAdministrationManager;
+import fr.mch.mdo.restaurant.services.business.managers.IManagerLabelable;
 import fr.mch.mdo.restaurant.services.business.managers.restaurants.DefaultRestaurantsManager;
 import fr.mch.mdo.test.MdoTestCase;
 
@@ -56,7 +57,7 @@ public class DefaultPrintingInformationsManagerTest extends DefaultAdministratio
 		// Use the existing data in database
 		alignment.setId(4L);
 		try {
-			alignment = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(alignment.getId(), userContext);
+			alignment = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(alignment.getId());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -64,7 +65,7 @@ public class DefaultPrintingInformationsManagerTest extends DefaultAdministratio
 		// Use the existing data in database
 		size.setId(7L);
 		try {
-			size = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(size.getId(), userContext);
+			size = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(size.getId());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -72,7 +73,7 @@ public class DefaultPrintingInformationsManagerTest extends DefaultAdministratio
 		// Use the existing data in database
 		part.setId(10L);
 		try {
-			part = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(part.getId(), userContext);
+			part = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(part.getId());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -89,7 +90,7 @@ public class DefaultPrintingInformationsManagerTest extends DefaultAdministratio
 		// Use the existing data in database
 		restaurant.setId(1L);
 		try {
-			restaurant = (RestaurantDto) DefaultRestaurantsManager.getInstance().findByPrimaryKey(restaurant.getId(), userContext);
+			restaurant = (RestaurantDto) DefaultRestaurantsManager.getInstance().findByPrimaryKey(restaurant.getId());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -97,7 +98,7 @@ public class DefaultPrintingInformationsManagerTest extends DefaultAdministratio
 		// Use the existing data in database
 		alignment.setId(5L);
 		try {
-			alignment = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(alignment.getId(), userContext);
+			alignment = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(alignment.getId());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -105,7 +106,7 @@ public class DefaultPrintingInformationsManagerTest extends DefaultAdministratio
 		// Use the existing data in database
 		size.setId(8L);
 		try {
-			size = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(size.getId(), userContext);
+			size = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(size.getId());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -113,7 +114,7 @@ public class DefaultPrintingInformationsManagerTest extends DefaultAdministratio
 		// Use the existing data in database
 		part.setId(11L);
 		try {
-			part = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(part.getId(), userContext);
+			part = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(part.getId());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -128,7 +129,7 @@ public class DefaultPrintingInformationsManagerTest extends DefaultAdministratio
 		// Use the existing data in database
 		restaurant.setId(1L);
 		try {
-			restaurant = (RestaurantDto) DefaultRestaurantsManager.getInstance().findByPrimaryKey(restaurant.getId(), userContext);
+			restaurant = (RestaurantDto) DefaultRestaurantsManager.getInstance().findByPrimaryKey(restaurant.getId());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -136,7 +137,7 @@ public class DefaultPrintingInformationsManagerTest extends DefaultAdministratio
 		// Use the existing data in database
 		alignment.setId(6L);
 		try {
-			alignment = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(alignment.getId(), userContext);
+			alignment = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(alignment.getId());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -144,7 +145,7 @@ public class DefaultPrintingInformationsManagerTest extends DefaultAdministratio
 		// Use the existing data in database
 		size.setId(9L);
 		try {
-			size = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(size.getId(), userContext);
+			size = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(size.getId());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -152,7 +153,7 @@ public class DefaultPrintingInformationsManagerTest extends DefaultAdministratio
 		// Use the existing data in database
 		part.setId(11L);
 		try {
-			part = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(part.getId(), userContext);
+			part = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(part.getId());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -175,7 +176,7 @@ public class DefaultPrintingInformationsManagerTest extends DefaultAdministratio
 		// Use the existing data in database
 		alignment.setId(5L);
 		try {
-			alignment = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(alignment.getId(), userContext);
+			alignment = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(alignment.getId());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -183,7 +184,7 @@ public class DefaultPrintingInformationsManagerTest extends DefaultAdministratio
 		// Use the existing data in database
 		size.setId(8L);
 		try {
-			size = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(size.getId(), userContext);
+			size = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(size.getId());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -191,7 +192,7 @@ public class DefaultPrintingInformationsManagerTest extends DefaultAdministratio
 		// Use the existing data in database
 		part.setId(11L);
 		try {
-			part = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(part.getId(), userContext);
+			part = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(part.getId());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -201,7 +202,7 @@ public class DefaultPrintingInformationsManagerTest extends DefaultAdministratio
 		labels.put(localeId, label);
 		try {
 			// Create new bean to be updated
-			IMdoBean beanToBeUpdated = this.getInstance().insert(createNewBean(alignment, order, part, restaurant, size, labels), DefaultAdministrationManagerTest.userContext);
+			IMdoBean beanToBeUpdated = this.getInstance().insert(createNewBean(alignment, order, part, restaurant, size, labels));
 			assertTrue("IMdoBean must be instance of " + PrintingInformationDto.class, beanToBeUpdated instanceof PrintingInformationDto);
 			PrintingInformationDto castedBean = (PrintingInformationDto) beanToBeUpdated;
 			assertNotNull("PrintingInformationDto Alignment must not be null", castedBean.getAlignment());
@@ -211,18 +212,18 @@ public class DefaultPrintingInformationsManagerTest extends DefaultAdministratio
 			assertEquals("Check PrintingInformationDto labels size", labels.size(), castedBean.getLabels().size());
 			// Use the existing data in database
 			alignment.setId(5L);
-			alignment = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(alignment.getId(), userContext);
+			alignment = (MdoTableAsEnumDto) DefaultMdoTableAsEnumsManager.getInstance().findByPrimaryKey(alignment.getId());
 			// Update the created bean
 			castedBean.setAlignment(alignment);
 			localeId = 2L;
 			label = "Haut Droite Taille 5";
 			labels.put(localeId, label);
 			castedBean.setLabels(labels);
-			castedBean = (PrintingInformationDto) this.getInstance().update(castedBean, DefaultAdministrationManagerTest.userContext);
+			castedBean = (PrintingInformationDto) this.getInstance().update(castedBean);
 			// Reload the modified bean
 			PrintingInformationDto updatedBean = new PrintingInformationDto();
 			updatedBean.setId(castedBean.getId());
-			IMdoBean loadedBean = this.getInstance().load(updatedBean, DefaultAdministrationManagerTest.userContext);
+			IMdoBean loadedBean = this.getInstance().load(updatedBean);
 			assertTrue("IMdoBean must be instance of " + PrintingInformationDto.class, loadedBean instanceof PrintingInformationDto);
 			updatedBean = (PrintingInformationDto) loadedBean;
 			assertNotNull("PrintingInformationDto code must not be null", updatedBean.getAlignment());
@@ -239,7 +240,7 @@ public class DefaultPrintingInformationsManagerTest extends DefaultAdministratio
 	public void doProcessList() {
 		PrintingInformationsManagerViewBean viewBean = new PrintingInformationsManagerViewBean();
 		try {
-			this.getInstance().processList(viewBean, DefaultAdministrationManagerTest.userContext);
+			((IManagerLabelable) this.getInstance()).processList(viewBean, DefaultAdministrationManagerTest.userContext.getCurrentLocale());
 			assertNotNull("Main list not be null", viewBean.getList());
 			assertFalse("Main list not be empty", viewBean.getList().isEmpty());
 			assertNotNull("Labels map not be null", viewBean.getLabels());
@@ -295,7 +296,7 @@ public class DefaultPrintingInformationsManagerTest extends DefaultAdministratio
 	public void testGetList() {
 		Long restaurantId = 1L;
 		try {
-			List<IMdoDtoBean> list= ((IPrintingInformationsManager) DefaultPrintingInformationsManager.getInstance()).getList(restaurantId, userContext);
+			List<IMdoDtoBean> list= ((IPrintingInformationsManager) DefaultPrintingInformationsManager.getInstance()).getList(restaurantId);
 			assertNotNull("List must not be null", list);
 			assertFalse("List must not be empty", list.isEmpty());
 		} catch (MdoException e) {

@@ -18,7 +18,8 @@ public enum ManagedProductSpecialCode {
 		public void fillOrderLine(MdoUserContext userContext, Product product, OrderLineDto orderLine) {
 			super.fillOrderLine(userContext, product, orderLine);
 			String label = orderLine.getLabel();
-			label = this.getProductSpecialCode().getLabels().get(userContext.getCurrentLocale().getId()) + " : " + label;
+			//TODO
+//			label = this.getProductSpecialCode().getLabels().get(userContext.getCurrentLocale().getId()) + " : " + label;
 			orderLine.setLabel(label);
 			orderLine.setUnitPrice(BigDecimal.ZERO);
 		}
@@ -41,7 +42,6 @@ public enum ManagedProductSpecialCode {
 		}
 	}, CREDIT("@");
 	private String code = "";
-	private ProductSpecialCodeDto productSpecialCode;
 	
 	ManagedProductSpecialCode(String code) {
 		this.code = code;
@@ -49,20 +49,6 @@ public enum ManagedProductSpecialCode {
 
 	public String getCode() {
 		return this.code;
-	}
-
-	/**
-	 * @return the productSpecialCode
-	 */
-	public ProductSpecialCodeDto getProductSpecialCode() {
-		return productSpecialCode;
-	}
-
-	/**
-	 * @param productSpecialCode the productSpecialCode to set
-	 */
-	public void setProductSpecialCode(ProductSpecialCodeDto productSpecialCode) {
-		this.productSpecialCode = productSpecialCode;
 	}
 
 	public void fillOrderLine(MdoUserContext userContext, Product product, OrderLineDto orderLine) {
@@ -84,7 +70,7 @@ public enum ManagedProductSpecialCode {
 
 	public Product getProductByCode(IProductsDao productsDao, Long restaurantId, Long localeId, String productCode) throws MdoException {
 		Product result = null;
-		result = (Product) productsDao.getProductByCode(restaurantId, productCode);
+		result = (Product) productsDao.find(restaurantId, productCode);
 		// Return only one label
 		if (result != null) {
 			Map<Long, String> labels = result.getLabels();

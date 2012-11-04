@@ -22,8 +22,6 @@ public class ProductsManagerViewBean extends AdministrationManagerViewBean
 
     private List<IMdoDtoBean> categories;
 
-    private List<IMdoDtoBean> vats;
-
     private List<IMdoDtoBean> restaurants;
     
 	private Map<Long, String> labels;
@@ -64,14 +62,6 @@ public class ProductsManagerViewBean extends AdministrationManagerViewBean
 
     public void setLanguages(Map<Long, String> languages) {
         this.languages = languages;
-    }
-
-    public List<IMdoDtoBean> getVats() {
-        return vats;
-    }
-
-    public void setVats(List<IMdoDtoBean> vats) {
-        this.vats = vats;
     }
 
     public List<IMdoDtoBean> getRestaurants() {

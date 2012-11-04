@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
 	<query name="MdoTableAsEnum.SelectAllTypes"> 
@@ -14,7 +14,7 @@
 		WHERE userAuthentication.login = :login
 	</query>
 
-	<query name="User.SelectRestaurantsById">
+	<query name="UserRestaurant.SelectRestaurantsById">
 		SELECT userRestaurant.restaurant
 		FROM UserRestaurant AS userRestaurant
 		WHERE userRestaurant.user.id = :id
@@ -29,4 +29,57 @@
 		FROM Product AS product
 		WHERE product.code = :code
 	</query>
+
+	<query name="RestaurantVatTableType.FindOnlyVats">
+		FROM RestaurantVatTableType vatTableType 
+			join fetch vatTableType.type 
+			join fetch vatTableType.type.code 
+			join fetch vatTableType.vat
+		WHERE vatTableType.restaurant.id = :restaurantId
+	</query>
+	
+	<query name="RestaurantPrefixTable.FindOnlyPrefixTables">
+		FROM RestaurantPrefixTable prefixTable 
+			join fetch prefixTable.type 
+			join fetch prefixTable.type.code 
+			join fetch prefixTable.prefix
+		WHERE prefixTable.restaurant.id = :restaurantId
+	</query>
+	
+	<query name="RestaurantReductionTable.FindOnlyReductionTables">
+		FROM RestaurantReductionTable reductionTable 
+			join fetch reductionTable.type 
+			join fetch reductionTable.type.code 
+		WHERE reductionTable.restaurant.id = :restaurantId
+	</query>
+
+	<query name="RestaurantReductionTable.FindByUniqueKey">
+		FROM RestaurantReductionTable reductionTable 
+			join fetch reductionTable.type 
+			join fetch reductionTable.type.code 
+		WHERE reductionTable.restaurant.id = :restaurantId
+		AND reductionTable.type.id = :typeId
+	</query>
+	
+	<query name="Restaurant.SelectDefaultTableTypeById">
+	    SELECT restaurant.defaultTableType
+		FROM Restaurant restaurant 
+			join fetch restaurant.defaultTableType.code 
+		WHERE restaurant.id = :restaurantId
+	</query>
+			
+	<query name="OrderLine.FindByDinnerTableId">
+		SELECT ol.id, ol.quantity, ol.unitPrice, ol.amount, 
+	 	psc.shortCode, psc.code.name, 
+		pd.code, CASE WHEN pl.label IS NOT NULL THEN pl.label ELSE ol.label END
+		FROM OrderLine ol
+		<!-- We must use the 2 following lines because we want left outer join. -->
+		<!-- If we comment the 2 following lines, we will have inner join so order lines without product id will not get. -->
+		LEFT OUTER JOIN ol.product pd
+		LEFT OUTER JOIN ol.productSpecialCode psc
+		LEFT OUTER JOIN pd.productLanguages pl with pl.locId = :locId 
+		WHERE ol.dinnerTable.id = :dinnerTableId
+		ORDER BY ol.id	
+	</query>
+
 </hibernate-mapping>

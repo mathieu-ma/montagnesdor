@@ -23,13 +23,14 @@
 				<s:label label="%{getText('value.added.taxes.manager.code.name')}" name="form.dtoBean.code.name" />
 				<s:label label="%{getText('value.added.taxes.manager.code.label.key')}" name="form.dtoBean.code.languageKeyLabel" />
 			</c:if>
-		
+			
 		 	<%-- 
 		 		Change Locale for Number Format in input text because of javascript
 		 		Use the change of locale instead of BigDecimal Converter because we want that user type "." instead of "," in case of french locale 
 		 	--%>
+			<s:text name="value.added.taxes.manager.rate" var="tvaRateLabel" />
 			<mdo:setLocale value="en"/>
-			<s:textfield cssClass="number-float-percent required" label="%{getText('value.added.taxes.manager.rate')}"
+			<s:textfield cssClass="number-float-percent required" label="%{tvaRateLabel}"
 				name="form.dtoBean.rate" value="%{form.dtoBean.rate==null?'':getText('format.number.decimal.3.2',{form.dtoBean.rate})}" required="true" />
 		 	<%-- Change back Locale --%>
 			<mdo:setLocale value="${userSession.currentLocale.languageCode}"/>

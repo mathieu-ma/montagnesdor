@@ -12,6 +12,7 @@ import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.UserAuthenticationDto;
 import fr.mch.mdo.restaurant.dto.beans.UserAuthenticationsManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.UserLocaleDto;
+import fr.mch.mdo.restaurant.exception.MdoBusinessException;
 import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.ioc.spring.WebAdministrationBeanFactory;
 import fr.mch.mdo.restaurant.ui.forms.IMdoAdministrationForm;
@@ -51,7 +52,7 @@ public class UserAuthenticationsManagerWebAction extends AdministrationManagerAc
 	}
 
 	@Override
-	public String save() {
+	public String save() throws MdoBusinessException {
 		
 		this.processSave(new String[] {null});
 		
@@ -83,7 +84,7 @@ public class UserAuthenticationsManagerWebAction extends AdministrationManagerAc
 		viewBean.setLanguages(availableLanguages);
 	}
 
-	private void processSave(String... languageIdToRemove) {
+	private void processSave(String... languageIdToRemove) throws MdoBusinessException {
 		if (languageIdToRemove != null && languageIdToRemove.length == 1) {
 			removeLocaleBeforeSaving(languageIdToRemove[0]);
 		}
@@ -105,7 +106,7 @@ public class UserAuthenticationsManagerWebAction extends AdministrationManagerAc
 			UserAuthenticationDto newDtoBean = dtoBean; 
 			if (dtoBean.getId() !=null) {
 				try {
-					newDtoBean = (UserAuthenticationDto) this.getAdministrationManager().findByPrimaryKey(dtoBean.getId(), (MdoUserContext) super.getForm().getUserContext());
+					newDtoBean = (UserAuthenticationDto) this.getAdministrationManager().findByPrimaryKey(dtoBean.getId());
 				} catch (MdoException e) {
 					super.addActionError(super.getText("error.action.technical", new String[] {this.getClass().getName(), "form"}));
 				}

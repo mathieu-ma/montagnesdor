@@ -10,8 +10,12 @@ import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.beans.MdoDtoBean;
 import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
+import fr.mch.mdo.restaurant.exception.MdoBusinessException;
 import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.services.business.managers.IAdministrationManager;
+import fr.mch.mdo.restaurant.services.business.managers.IManagerLabelable;
+import fr.mch.mdo.restaurant.services.business.managers.locales.ILocalesManager;
+import fr.mch.mdo.restaurant.services.business.managers.users.IUserAuthenticationsManager;
 import fr.mch.mdo.restaurant.ui.forms.IMdoAdministrationForm;
 import fr.mch.mdo.restaurant.ui.forms.IMdoForm;
 
@@ -43,7 +47,7 @@ public class AdministrationManagerAction extends MdoAbstractWebAction implements
 		IMdoDtoBean newDtoBean = dtoBean; 
 		if (dtoBean.getId() !=null) {
 			try {
-				newDtoBean = this.getAdministrationManager().findByPrimaryKey(dtoBean.getId(), (MdoUserContext) super.getForm().getUserContext());
+				newDtoBean = this.getAdministrationManager().findByPrimaryKey(dtoBean.getId());
 			} catch (MdoException e) {
 				super.addActionError(super.getText("error.action.technical", new String[] {this.getClass().getName(), "form"}));
 			}
@@ -52,10 +56,10 @@ public class AdministrationManagerAction extends MdoAbstractWebAction implements
 		return Constants.ACTION_RESULT_AFTER_SUCCESS_FORM_LIST;
 	}
 
-	public String save() {
+	public String save() throws MdoBusinessException {
 		boolean isCreation = super.getForm().getDtoBean().getId() == null;
 		try {
-			IMdoDtoBean newDtoBean = this.getAdministrationManager().save(super.getForm().getDtoBean(), (MdoUserContext) super.getForm().getUserContext());
+			IMdoDtoBean newDtoBean = this.getAdministrationManager().save(super.getForm().getDtoBean());
 			super.getForm().setDtoBean(newDtoBean);
 		} catch (Exception e) {
 			// Do not add action error because of validation
@@ -80,7 +84,7 @@ public class AdministrationManagerAction extends MdoAbstractWebAction implements
 
 	public String delete() {
 		try {
-			this.getAdministrationManager().delete(super.getForm().getDtoBean(), (MdoUserContext) super.getForm().getUserContext());
+			this.getAdministrationManager().delete(super.getForm().getDtoBean());
 		} catch (Exception e) {
 			// Do not add action error because of validation
 			super.addActionMessage(super.getText(e.getLocalizedMessage()));
@@ -104,7 +108,15 @@ public class AdministrationManagerAction extends MdoAbstractWebAction implements
 		IAdministrationManagerViewBean viewBean = ((IMdoAdministrationForm) super.getForm()).getViewBean();
 		if (viewBean != null) {
 			try {
-				this.getAdministrationManager().processList(viewBean, (MdoUserContext) super.getForm().getUserContext());
+				if (IManagerLabelable.class.isAssignableFrom(this.getAdministrationManager().getClass())) {
+					((IManagerLabelable) this.getAdministrationManager()).processList(viewBean, ((MdoUserContext) super.getForm().getUserContext()).getCurrentLocale());
+				} else if (ILocalesManager.class.isAssignableFrom(this.getAdministrationManager().getClass())) {
+					((ILocalesManager) this.getAdministrationManager()).processList(viewBean, ((MdoUserContext) super.getForm().getUserContext()).getCurrentLocale());
+				} else if (IUserAuthenticationsManager.class.isAssignableFrom(this.getAdministrationManager().getClass())) {
+					((IUserAuthenticationsManager) this.getAdministrationManager()).processList(viewBean, ((MdoUserContext) super.getForm().getUserContext()).getCurrentLocale());
+				} else  {
+					this.getAdministrationManager().processList(viewBean);
+				}
 			} catch (MdoException e) {
 				super.addActionError(super.getText("error.action.technical", new String[] { this.getClass().getName(), "prepare" }));
 			}

@@ -2,32 +2,25 @@ package fr.mch.mdo.restaurant.dao.tables.hibernate;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Projections;
+import org.hibernate.sql.JoinType;
 
 import fr.mch.mdo.logs.ILogger;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.dao.beans.DinnerTable;
-import fr.mch.mdo.restaurant.dao.beans.MdoTableAsEnum;
-import fr.mch.mdo.restaurant.dao.beans.OrderLine;
-import fr.mch.mdo.restaurant.dao.beans.Product;
-import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode;
 import fr.mch.mdo.restaurant.dao.beans.TableCashing;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServices;
 import fr.mch.mdo.restaurant.dao.hibernate.TransactionSession;
 import fr.mch.mdo.restaurant.dao.tables.IDinnerTablesDao;
 import fr.mch.mdo.restaurant.exception.MdoDataBeanException;
-import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 
 public class DefaultDinnerTablesDao extends DefaultDaoServices implements IDinnerTablesDao 
@@ -49,47 +42,47 @@ public class DefaultDinnerTablesDao extends DefaultDaoServices implements IDinne
 	public DefaultDinnerTablesDao() {
 	}
 
+	private List<MdoCriteria> findAllByPrefixNumberCriteria(Long restaurantId, Long userAuthenticationId, String prefixTableNumber) {
+		List<MdoCriteria> result = new ArrayList<MdoCriteria>();
+		result.add(new MdoCriteria("number", PropertiesRestrictions.LIKE, prefixTableNumber + "%"));
+		result.add(new MdoCriteria("restaurant.id", PropertiesRestrictions.EQUALS, restaurantId));
+		if (userAuthenticationId != null) {
+			result.add(new MdoCriteria("user.id", PropertiesRestrictions.EQUALS, userAuthenticationId));
+		}
+		result.add(new MdoCriteria("cashing.id", JoinType.LEFT_OUTER_JOIN.getJoinTypeValue(), PropertiesRestrictions.IS_NULL));
+		
+		return result;
+	}
+
+	@Override
+	public List<DinnerTable> findAllByPrefixNumber(Long restaurantId, String prefixTableNumber, boolean... isLazy) throws MdoDataBeanException {
+		return this.findAllByPrefixNumber(restaurantId, null, prefixTableNumber);
+	}
+
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<IMdoBean> findAllByPrefixNumber(Long restaurantId, String prefixTableNumber, boolean... isLazy) throws MdoDataBeanException {
-		List<IMdoBean> result = new ArrayList<IMdoBean>();
+	public List<DinnerTable> findAllByPrefixNumber(Long restaurantId, Long userAuthenticationId, String prefixTableNumber, boolean... isLazy) throws MdoDataBeanException {
+		List<DinnerTable> result = new ArrayList<DinnerTable>();
 
-//		Map<String, Entry<PropertiesRestrictions, Object>> propertyValueMap = new HashMap<String, Entry<PropertiesRestrictions, Object>>();
-//		String property = "restaurant.id";
-//		Entry<PropertiesRestrictions, Object> value = new MdoEntry<PropertiesRestrictions, Object>(PropertiesRestrictions.EQUALS, restaurantId);
-//		propertyValueMap.put(property, value);
-
-//		property = "number";
-//		value = new MdoEntry<PropertiesRestrictions, Object>(PropertiesRestrictions.LIKE, prefixTableNumber);
-//		propertyValueMap.put(property, value);
-
-//		// Only the ones who cashing date is null
-//		property = "cashingDate";
-//		value = new MdoEntry<PropertiesRestrictions, Object>(PropertiesRestrictions.IS_NULL, null);
-//		propertyValueMap.put(property, value);
-//		result = super.findByPropertiesRestrictions(propertyValueMap, false);
-
-		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
-		criterias.add(new MdoCriteria("number", PropertiesRestrictions.LIKE, prefixTableNumber + "%"));
-		criterias.add(new MdoCriteria("restaurant.id", PropertiesRestrictions.EQUALS, restaurantId));
-		criterias.add(new MdoCriteria("cashing.id", CriteriaSpecification.LEFT_JOIN, PropertiesRestrictions.IS_NULL, null));
-
+		List<MdoCriteria> criterias = this.findAllByPrefixNumberCriteria(restaurantId, userAuthenticationId, prefixTableNumber);
 		result = super.findByPropertiesRestrictions(criterias, false);
 
 		return result;
 	}
 
 	@Override
-	public Map<Long, String> findAllTableNamesByPrefix(Long restaurantId, String prefixTableNumber) throws MdoDataBeanException {
+	public Map<Long, String> findAllNumberByPrefixNumber(Long restaurantId, String prefixTableNumber) throws MdoDataBeanException {
+		return this.findAllNumberByPrefixNumber(restaurantId, null, prefixTableNumber);
+	}
+
+	@Override
+	public Map<Long, String> findAllNumberByPrefixNumber(Long restaurantId, Long userAuthenticationId, String prefixTableNumber) throws MdoDataBeanException {
 		Map<Long, String> result = new HashMap<Long, String>();
 		
-		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
-		criterias.add(new MdoCriteria("number", PropertiesRestrictions.LIKE, prefixTableNumber + "%"));
-		criterias.add(new MdoCriteria("restaurant.id", PropertiesRestrictions.EQUALS, restaurantId));
-		criterias.add(new MdoCriteria("cashing.id", CriteriaSpecification.LEFT_JOIN, PropertiesRestrictions.IS_NULL, null));
+		List<MdoCriteria> criterias = findAllByPrefixNumberCriteria(restaurantId, userAuthenticationId, prefixTableNumber);
 		// Only select id and number fields
-		criterias.add(new MdoCriteria("id", PropertiesRestrictions.PROJECTION, null));
-		criterias.add(new MdoCriteria("number", PropertiesRestrictions.PROJECTION, null));
+		criterias.add(new MdoCriteria("id", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("number", PropertiesRestrictions.PROJECTION));
 		
 		@SuppressWarnings("unchecked")
 		List<Object[]> list = super.findByPropertiesRestrictions(criterias, false);
@@ -104,152 +97,31 @@ public class DefaultDinnerTablesDao extends DefaultDaoServices implements IDinne
 	}
 
 	@Override
-	public Integer findCustomersNumberByNumber(Long restaurantId, String number) throws MdoDataBeanException {
-		Integer result = null;
-
-		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
-		criterias.add(new MdoCriteria("number", PropertiesRestrictions.EQUALS, number));
-		criterias.add(new MdoCriteria("restaurant.id", PropertiesRestrictions.EQUALS, restaurantId));
-		criterias.add(new MdoCriteria("cashing.id", CriteriaSpecification.LEFT_JOIN, PropertiesRestrictions.IS_NULL));
-		criterias.add(new MdoCriteria("customersNumber", PropertiesRestrictions.PROJECTION, Projections.property("customersNumber")));
-		Object object = super.uniqueResult(super.findByCriteria(super.getBean().getClass(), criterias));
-		if (object != null) {
-			result = new Integer(object.toString());
-		}
-		return result;
-	}
-
-	@Override
-	public DinnerTable findByNumber(Long restaurantId, String number, boolean... isLazy) throws MdoDataBeanException {
-		// Only the one who cashing date is null: in SQL Standard, 
-		// if unique constraint is on 2 fields then the values of the 2 fields could be (1, null), (1, null)
-
-		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
-		criterias.add(new MdoCriteria("number", PropertiesRestrictions.EQUALS, number));
-		criterias.add(new MdoCriteria("restaurant.id", PropertiesRestrictions.EQUALS, restaurantId));
-		criterias.add(new MdoCriteria("cashing.id", CriteriaSpecification.LEFT_JOIN, PropertiesRestrictions.IS_NULL));
-
-		return (DinnerTable) super.uniqueResult(super.findByCriteria(super.getBean().getClass(), criterias, isLazy));
-	}
-
-	@Override
-	public DinnerTable displayTableByNumber(Long restaurantId, String number) throws MdoDataBeanException {
+	public DinnerTable findTable(Long id) throws MdoDataBeanException {
 		DinnerTable result = null;
 
-		// Dinner Table part
-		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
-		criterias.add(new MdoCriteria("number", PropertiesRestrictions.EQUALS, number));
-		criterias.add(new MdoCriteria("restaurant.id", PropertiesRestrictions.EQUALS, restaurantId));
 		// Only the one who cashing date is null: in SQL Standard, 
 		// if unique constraint is on 2 fields then the values of the 2 fields could be (1, null), (1, null)
-		criterias.add(new MdoCriteria("cashing.id", CriteriaSpecification.LEFT_JOIN, PropertiesRestrictions.IS_NULL));
+
+		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
+		criterias.add(new MdoCriteria("id", PropertiesRestrictions.EQUALS, id));
+		// Only the one who cashing date is null: in SQL Standard, 
+		// if unique constraint is on 2 fields then the values of the 2 fields could be (1, null), (1, null)
+		criterias.add(new MdoCriteria("cashing.id", JoinType.LEFT_OUTER_JOIN.getJoinTypeValue(), PropertiesRestrictions.IS_NULL));
 
 		// Only select needed fields
 		criterias.add(new MdoCriteria("id", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("number", PropertiesRestrictions.PROJECTION));
 		criterias.add(new MdoCriteria("customersNumber", PropertiesRestrictions.PROJECTION));
 		criterias.add(new MdoCriteria("registrationDate", PropertiesRestrictions.PROJECTION));
 		criterias.add(new MdoCriteria("printingDate", PropertiesRestrictions.PROJECTION));
 		criterias.add(new MdoCriteria("reductionRatio", PropertiesRestrictions.PROJECTION));
 		criterias.add(new MdoCriteria("reductionRatioChanged", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("quantitiesSum", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("amountsSum", PropertiesRestrictions.PROJECTION));
 		
-		Object[] dinnerTable = (Object[]) super.uniqueResult(super.findByCriteria(super.getBean().getClass(), criterias, true));
-		
-		if (dinnerTable != null) {
-			result = new DinnerTable();
-			result.setNumber(number);
-			
-			int index = 0;
-			Long id = (Long) dinnerTable[index++];
-			Integer customersNumber = (Integer) dinnerTable[index++];
-			Date registrationDate = (Date) dinnerTable[index++];
-			Date printingDate = (Date) dinnerTable[index++];
-			BigDecimal reductionRatio = (BigDecimal) dinnerTable[index++];
-			Boolean reductionRatioChanged = (Boolean) dinnerTable[index++];
-			result.setId(id);
-			result.setCustomersNumber(customersNumber);
-			result.setRegistrationDate(registrationDate);
-			result.setPrintingDate(printingDate);
-			if (reductionRatio == null) {
-				reductionRatio = BigDecimal.ZERO;	
-			}
-			result.setReductionRatio(reductionRatio);
-			result.setReductionRatioChanged(reductionRatioChanged);
+		result = (DinnerTable) super.uniqueResult(super.findByCriteria(super.getBean().getClass(), DinnerTable.class, criterias, true));
 
-			// Orders Part
-			criterias.clear();
-			criterias.add(new MdoCriteria("dinnerTable.id", PropertiesRestrictions.EQUALS, result.getId()));
-			// We must use the 2 following lines because we want left outer join.
-			// If we comment the 2 following lines, we will have inner join so order lines without product id will not get.
-			criterias.add(new MdoCriteria("productSpecialCode.id", CriteriaSpecification.LEFT_JOIN, PropertiesRestrictions.DEFAULT));
-			criterias.add(new MdoCriteria("product.id", CriteriaSpecification.LEFT_JOIN, PropertiesRestrictions.DEFAULT));
-
-			// Only select needed fields
-			criterias.add(new MdoCriteria("id", PropertiesRestrictions.PROJECTION));
-			criterias.add(new MdoCriteria("quantity", PropertiesRestrictions.PROJECTION));
-			criterias.add(new MdoCriteria("label", PropertiesRestrictions.PROJECTION));
-			criterias.add(new MdoCriteria("unitPrice", PropertiesRestrictions.PROJECTION));
-			criterias.add(new MdoCriteria("amount", PropertiesRestrictions.PROJECTION));
-
-//				criterias.add(new MdoCriteria("product", PropertiesRestrictions.PROJECTION));
-//				criterias.add(new MdoCriteria("productSpecialCode", PropertiesRestrictions.PROJECTION));
-			// These 3 lines is used to build the code
-			criterias.add(new MdoCriteria("product.code", PropertiesRestrictions.PROJECTION));
-			criterias.add(new MdoCriteria("productSpecialCode.shortCode", PropertiesRestrictions.PROJECTION));
-			criterias.add(new MdoCriteria("productSpecialCode.code.name", PropertiesRestrictions.PROJECTION));
-
-			criterias.add(new MdoCriteria("label", PropertiesRestrictions.ORDER, Boolean.FALSE));
-
-			List<?> orders = super.findByCriteria(OrderLine.class, criterias, true);
-			BigDecimal quantitiesSum = BigDecimal.ZERO;
-			BigDecimal amountsSum = BigDecimal.ZERO;
-			if (orders != null) {
-				LinkedHashSet<OrderLine> buildOrders = new LinkedHashSet<OrderLine>();
-				for (Object object : orders) {
-					Object[] arrays = (Object[]) object;
-					OrderLine orderLine = new OrderLine();
-					index = 0;
-					id = (Long) arrays[index++];
-					BigDecimal quantity = (BigDecimal) arrays[index++];
-					String label = (String) arrays[index++];
-					BigDecimal unitPrice = (BigDecimal) arrays[index++];
-					BigDecimal amount = (BigDecimal) arrays[index++];
-					String productCode = (String) arrays[index++];
-					String productSpecialCodeShortCode = (String) arrays[index++];
-					String productSpecialCodeCodeName = (String) arrays[index++];
-					orderLine.setId(id);
-					orderLine.setQuantity(quantity);
-					orderLine.setLabel(label);
-					orderLine.setUnitPrice(unitPrice);
-					orderLine.setAmount(amount);
-					if (productCode != null) {
-						Product product = new Product();
-						product.setCode(productCode);
-						orderLine.setProduct(product);
-					}
-					if (productSpecialCodeShortCode != null) {
-						ProductSpecialCode productSpecialCode = new ProductSpecialCode();
-						productSpecialCode.setShortCode(productSpecialCodeShortCode);
-						MdoTableAsEnum code = new MdoTableAsEnum();
-						code.setName(productSpecialCodeCodeName);
-						productSpecialCode.setCode(code);
-						orderLine.setProductSpecialCode(productSpecialCode);
-					}
-					buildOrders.add(orderLine);
-					// Assume that the quantity is never null; 
-					quantitiesSum = quantitiesSum.add(quantity);
-					// Assume that the amount is never null; 
-					amountsSum = amountsSum.add(amount);
-				}
-				result.setOrders(buildOrders);
-				
-				result.setQuantitiesSum(quantitiesSum);
-				result.setAmountsSum(amountsSum);
-				// Assume that the amountsSum and reductionRatio are never null; 
-				BigDecimal amountPay = result.getReductionRatio().multiply(amountsSum).divide(new BigDecimal(100));
-				result.setAmountPay(amountPay);
-			}
-		}
-		
 		return result;
 	}
 
@@ -265,93 +137,169 @@ public class DefaultDinnerTablesDao extends DefaultDaoServices implements IDinne
 	}
 
 	@Override
-	public void addOrderLine(OrderLine orderLine) throws MdoDataBeanException {
-		super.insert(orderLine);
+	public DinnerTable findIdAndCustomersNumber(Long restaurantId, String number) throws MdoDataBeanException {
+		DinnerTable result = this.findIdAndCustomersNumber(restaurantId, null, number);
+
+		return result;
 	}
 
 	@Override
-	public void updateOrderLine(OrderLine orderLine) throws MdoDataBeanException {
-		super.update(orderLine);		
-	}
+	public DinnerTable findIdAndCustomersNumber(Long restaurantId, Long userAuthenticationId, String number) throws MdoDataBeanException {
+		DinnerTable result = null;
 
-	@Override
-	public void removeOrderLine(OrderLine orderLine) throws MdoDataBeanException {
-		Map<String, Object> keys = new HashMap<String, Object>();
-		keys.put("id", orderLine.getId());
-		super.deleteByKeys(OrderLine.class, keys);
-	}
+		/**
+		 * TODO
+		 * 
+		 * SELECT count(orl.orl_id), dtb.dtb_code 
+FROM t_order_line orl right join t_dinner_table dtb on orl.dtb_id = dtb.dtb_id
+WHERE dtb.dtb_id=2
+GROUP BY dtb.dtb_code
 
-	@Override
-	public OrderLine findOrderLine(Long orderLineId) throws MdoDataBeanException {
-		OrderLine result = new OrderLine();
-		result.setId(orderLineId);
+		 * 
+		 */
 		
-		super.load(result, true);
+		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
+		criterias.add(new MdoCriteria("number", PropertiesRestrictions.EQUALS, number));
+		criterias.add(new MdoCriteria("restaurant.id", PropertiesRestrictions.EQUALS, restaurantId));
+		criterias.add(new MdoCriteria("cashing.id", JoinType.LEFT_OUTER_JOIN.getJoinTypeValue(), PropertiesRestrictions.IS_NULL));
+		if (userAuthenticationId != null) {
+			criterias.add(new MdoCriteria("user.id", PropertiesRestrictions.EQUALS, userAuthenticationId));
+		}
+
+		// Only select needed fields
+		criterias.add(new MdoCriteria("id", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("number", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("customersNumber", PropertiesRestrictions.PROJECTION));
+		
+		result = (DinnerTable) super.uniqueResult(super.findByCriteria(super.getBean().getClass(), DinnerTable.class, criterias));
 		
 		return result;
 	}
 
 	@Override
-	public boolean isDinnerTableFree(Long restaurantId, String number) throws MdoException {
-		Integer customersNumber = this.findCustomersNumberByNumber(restaurantId, number);
+	public boolean isDinnerTableFree(Long restaurantId, String number) throws MdoDataBeanException {
+		boolean result = false;
+
+		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
+		criterias.add(new MdoCriteria("number", PropertiesRestrictions.EQUALS, number));
+		criterias.add(new MdoCriteria("restaurant.id", PropertiesRestrictions.EQUALS, restaurantId));
+		criterias.add(new MdoCriteria("cashing.id", JoinType.LEFT_OUTER_JOIN.getJoinTypeValue(), PropertiesRestrictions.IS_NULL));
+		criterias.add(new MdoCriteria("id", PropertiesRestrictions.PROJECTION, Projections.property("id")));
+		Object object = super.uniqueResult(super.findByCriteria(super.getBean().getClass(), criterias));
+		// if object is not null this means that there is at least one table found.
+		result = (object == null);
 		
-		return customersNumber == null;
+		return result;
+	}
+
+	@Override
+	public List<DinnerTable> findAllCashed(Long restaurantId, boolean... isLazy) throws MdoDataBeanException {
+		return findAllByCriterias(restaurantId, 
+				null, 
+				null, 
+				new MdoCriteria("cashing.id", JoinType.INNER_JOIN.getJoinTypeValue(), PropertiesRestrictions.IS_NOT_NULL), isLazy);
+	}
+
+	@Override
+	public List<DinnerTable> findAllCashed(Long restaurantId, Long userAuthenticationId, boolean... isLazy) throws MdoDataBeanException {
+		return findAllByCriterias(restaurantId, 
+				userAuthenticationId, 
+				null, 
+				new MdoCriteria("cashing.id", JoinType.INNER_JOIN.getJoinTypeValue(), PropertiesRestrictions.IS_NOT_NULL), isLazy);
+	}
+
+	@Override
+	public List<DinnerTable> findAllPrinted(Long restaurantId, boolean... isLazy) throws MdoDataBeanException {
+		return findAllByCriterias(restaurantId, 
+				null, 
+				new MdoCriteria("printingDate", PropertiesRestrictions.IS_NOT_NULL), 
+				new MdoCriteria("cashing.id", JoinType.LEFT_OUTER_JOIN.getJoinTypeValue(), PropertiesRestrictions.IS_NULL), isLazy);
+	}
+
+	@Override
+	public List<DinnerTable> findAllPrinted(Long restaurantId, Long userAuthenticationId, boolean... isLazy) throws MdoDataBeanException {
+		return findAllByCriterias(restaurantId, 
+				userAuthenticationId, 
+				new MdoCriteria("printingDate", PropertiesRestrictions.IS_NOT_NULL), 
+				new MdoCriteria("cashing.id", JoinType.LEFT_OUTER_JOIN.getJoinTypeValue(), PropertiesRestrictions.IS_NULL), isLazy);
+	}
+
+	@Override
+	public List<DinnerTable> findAllNotPrinted(Long restaurantId, boolean... isLazy) throws MdoDataBeanException {
+		return findAllByCriterias(restaurantId, 
+				null, 
+				new MdoCriteria("printingDate", PropertiesRestrictions.IS_NULL), 
+				new MdoCriteria("cashing.id", JoinType.LEFT_OUTER_JOIN.getJoinTypeValue(), PropertiesRestrictions.IS_NULL), isLazy);
+	}
+
+	@Override
+	public List<DinnerTable> findAllNotPrinted(Long restaurantId, Long userAuthenticationId, boolean... isLazy) throws MdoDataBeanException {
+		return findAllByCriterias(restaurantId, 
+				userAuthenticationId, 
+				new MdoCriteria("printingDate", PropertiesRestrictions.IS_NULL), 
+				new MdoCriteria("cashing.id", JoinType.LEFT_OUTER_JOIN.getJoinTypeValue(), PropertiesRestrictions.IS_NULL), isLazy);
+	}
+
+	@Override
+	public List<DinnerTable> findAllAlterable(Long restaurantId, boolean... isLazy) throws MdoDataBeanException {
+		return findAllByCriterias(restaurantId, 
+				null, 
+				null, 
+				new MdoCriteria("cashing.id", JoinType.LEFT_OUTER_JOIN.getJoinTypeValue(), PropertiesRestrictions.IS_NULL), isLazy);
+	}
+
+	@Override
+	public List<DinnerTable> findAllAlterable(Long restaurantId, Long userAuthenticationId, boolean... isLazy) throws MdoDataBeanException {
+		return findAllByCriterias(restaurantId, 
+				userAuthenticationId, 
+				null, 
+				new MdoCriteria("cashing.id", JoinType.LEFT_OUTER_JOIN.getJoinTypeValue(), PropertiesRestrictions.IS_NULL), isLazy);
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
-	public List<IMdoBean> findAllFreeTables(Long restaurantId) throws MdoException {
-		List<IMdoBean> result = new ArrayList<IMdoBean>();
+	private List<DinnerTable> findAllByCriterias(Long restaurantId, Long userAuthenticationId, 
+			MdoCriteria printingDateCriteria, MdoCriteria cashingCriteria, boolean... isLazy)
+					throws MdoDataBeanException {
+		List<DinnerTable> result = new ArrayList<DinnerTable>();
+		
 		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
 		criterias.add(new MdoCriteria("restaurant.id", PropertiesRestrictions.EQUALS, restaurantId));
-		criterias.add(new MdoCriteria("cashing.id", CriteriaSpecification.LEFT_JOIN, PropertiesRestrictions.IS_NULL, null));
+		if (userAuthenticationId != null) {
+			criterias.add(new MdoCriteria("user.id", PropertiesRestrictions.EQUALS, userAuthenticationId));
+		}
+		if (printingDateCriteria != null) {
+			criterias.add(printingDateCriteria);
+		}
+		if (cashingCriteria != null) {
+			criterias.add(cashingCriteria);
+		}
 
-		result = super.findByPropertiesRestrictions(criterias, true);
+		// Only select needed fields
+		criterias.add(new MdoCriteria("id", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("amountPay", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("cashing.cashingDate", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("customersNumber", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("printingDate", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("quantitiesSum", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("amountsSum", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("number", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("reductionRatio", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("registrationDate", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("reductionRatioChanged", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("type.code.name", PropertiesRestrictions.PROJECTION));
+		
+		result = super.findByCriteria(super.getBean().getClass(), DinnerTable.class, criterias, isLazy);
 		
 		return result;
 	}
 
 	@Override
 	public void updateCustomersNumber(Long dinnerTableId, Integer customersNumber) throws MdoDataBeanException {
-		try {
-			TransactionSession transactionSession = super.beginTransaction();
-	
-			Session session = transactionSession.getSession();
-			session.createQuery("Update DinnerTable dinnerTable set " +
-					" dinnerTable.customersNumber = :customersNumber " +
-					" WHERE dinnerTable.id=" + dinnerTableId).setInteger("customersNumber", customersNumber).executeUpdate();
-			super.endTransaction(transactionSession, null, true);
-		} catch (HibernateException e) {
-			super.getLogger().error("message.error.dao.DefaultDinnerTablesDao.updateCustomersNumber", e);
-			throw new MdoDataBeanException("message.error.dao.DefaultDinnerTablesDao.updateCustomersNumber", e);
-		} catch (Exception e) {
-			super.getLogger().error("message.error.dao.DefaultDinnerTablesDao.updateCustomersNumber", e);
-			throw new MdoDataBeanException("message.error.dao.DefaultDinnerTablesDao.updateCustomersNumber", e);
-		} finally {
-			try {
-				super.closeSession();
-			} catch (HibernateException e) {
-				super.getLogger().error("message.error.dao.session.close", e);
-				throw new MdoDataBeanException("message.error.dao.session.close", e);
-			}
-		}
-	}
-
-	@Override
-	public int getOrderLinesSize(Long dinnerTableId) throws MdoException {
-		int result = 0;
-
-		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
-		criterias.add(new MdoCriteria("dinnerTable.id", PropertiesRestrictions.EQUALS, dinnerTableId));
-		criterias.add(new MdoCriteria(null, PropertiesRestrictions.PROJECTION_ROW_COUNT, Projections.rowCount()));
-//		criterias.add(new MdoCriteria("quantity", PropertiesRestrictions.PROJECTION_SUM, Projections.sum("quantity")));
-//		criterias.add(new MdoCriteria("amount", PropertiesRestrictions.PROJECTION_SUM, Projections.sum("amount")));
-		Object object = super.uniqueResult(super.findByCriteria(OrderLine.class, criterias));
-		if (object != null) {
-			result = new Integer(object.toString());
-		}
-
-		return result;
+		Map<String, Object> fields = new HashMap<String, Object>();
+		fields.put("customersNumber", customersNumber);
+		Map<String, Object> keys = new HashMap<String, Object>();
+		keys.put("id", dinnerTableId);
+		super.updateFieldsByKeys(fields, keys);
 	}
 
 	/**
@@ -401,6 +349,33 @@ public class DefaultDinnerTablesDao extends DefaultDaoServices implements IDinne
 				throw new MdoDataBeanException("message.error.dao.session.close", e);
 			}
 		}
+		return result;
+	}
+
+	@Override
+	public void updateDerivedFieldsFromOrderLine(Long dinnerTableId, BigDecimal quantitiesSum, BigDecimal amountsSum, BigDecimal amountPay) throws MdoDataBeanException {
+		Map<String, Object> fields = new HashMap<String, Object>();
+		fields.put("quantitiesSum", quantitiesSum);
+		fields.put("amountsSum", amountsSum);
+		fields.put("amountPay", amountPay);
+		Map<String, Object> keys = new HashMap<String, Object>();
+		keys.put("id", dinnerTableId);
+		super.updateFieldsByKeys(fields, keys);
+	}
+
+	@Override
+	public BigDecimal getReductionRatio(Long dinnerTableId) throws MdoDataBeanException {
+		 BigDecimal result = BigDecimal.ZERO;
+		 
+		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
+		criterias.add(new MdoCriteria("id", PropertiesRestrictions.EQUALS, dinnerTableId));
+		criterias.add(new MdoCriteria("reductionRatio", PropertiesRestrictions.PROJECTION));
+
+		Object object = super.uniqueResult(super.findByCriteria(DinnerTable.class, criterias));
+		if (object != null) {
+			result = new BigDecimal(object.toString());
+		}
+		
 		return result;
 	}
 }

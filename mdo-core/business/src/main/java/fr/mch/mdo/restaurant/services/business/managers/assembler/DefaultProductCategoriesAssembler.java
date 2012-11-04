@@ -8,7 +8,6 @@ import fr.mch.mdo.restaurant.dao.beans.Category;
 import fr.mch.mdo.restaurant.dao.beans.Product;
 import fr.mch.mdo.restaurant.dao.beans.ProductCategory;
 import fr.mch.mdo.restaurant.dto.beans.CategoryDto;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.ProductCategoryDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductDto;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
@@ -46,14 +45,14 @@ public class DefaultProductCategoriesAssembler extends AbstractAssembler impleme
 	}
 
 	@Override
-	public IMdoDtoBean marshal(IMdoDaoBean daoBean, MdoUserContext userContext) {
+	public IMdoDtoBean marshal(IMdoDaoBean daoBean) {
 		ProductCategoryDto dto = null;
 		if (daoBean != null) {
 			ProductCategory bean = (ProductCategory) daoBean;
 			dto = new ProductCategoryDto();
 			dto.setId(bean.getId());
 			dto.setQuantity(bean.getQuantity());
-			CategoryDto category = (CategoryDto) categoriesAssembler.marshal(bean.getCategory(), userContext);
+			CategoryDto category = (CategoryDto) categoriesAssembler.marshal(bean.getCategory());
 			dto.setCategory(category);
 			ProductDto product = null;
 			dto.setProduct(product);

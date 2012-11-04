@@ -13,14 +13,13 @@ import java.util.TreeSet;
 import fr.mch.mdo.logs.ILogger;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
+import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.beans.Locale;
 import fr.mch.mdo.restaurant.dao.locales.ILocalesDao;
 import fr.mch.mdo.restaurant.dao.locales.hibernate.DefaultLocalesDao;
 import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.LocaleDto;
 import fr.mch.mdo.restaurant.dto.beans.LocalesManagerViewBean;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
-import fr.mch.mdo.restaurant.dto.beans.UserAuthenticationDto;
 import fr.mch.mdo.restaurant.dto.beans.UserLocaleDto;
 import fr.mch.mdo.restaurant.exception.MdoBusinessException;
 import fr.mch.mdo.restaurant.exception.MdoException;
@@ -28,6 +27,7 @@ import fr.mch.mdo.restaurant.services.business.managers.AbstractAdministrationMa
 import fr.mch.mdo.restaurant.services.business.managers.assembler.DefaultLocalesAssembler;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 import fr.mch.mdo.restaurant.services.util.UtilsImpl;
+import fr.mch.mdo.utils.ILocalesAssembler;
 import fr.mch.mdo.utils.IManagerAssembler;
 
 public class DefaultLocalesManager extends AbstractAdministrationManager implements ILocalesManager 
@@ -56,20 +56,32 @@ public class DefaultLocalesManager extends AbstractAdministrationManager impleme
 	}
 
 	@Override
-	public void processList(IAdministrationManagerViewBean viewBean, MdoUserContext userContext, boolean... lazy) throws MdoBusinessException {
-		super.processList(viewBean, userContext, lazy);
+	public void processList(IAdministrationManagerViewBean viewBean, LocaleDto locale, boolean... lazy) throws MdoBusinessException {
+		List<IMdoDtoBean> list = null;
+		try {
+			List<IMdoBean> locales = dao.findAll(lazy);
+			if (locales != null) {
+				list = ((ILocalesAssembler) assembler).marshal(locales, locale.getLanguageCode());
+			}
+		} catch (MdoException e) {
+			logger.error("message.error.administration.business.find.all", e);
+			throw new MdoBusinessException("message.error.administration.business.find.all", e);
+		}
+
+		
 		LocalesManagerViewBean view = (LocalesManagerViewBean) viewBean;
-		java.util.Locale userLocale = new java.util.Locale(userContext.getCurrentLocale().getLanguageCode());
+		view.setList(list);
+		java.util.Locale userLocale = new java.util.Locale(locale.getLanguageCode());
 		view.setLanguages(this.getAvailableLanguages(userLocale));
 	}
 
 	@Override
-	public IMdoBean findByLanguage(Object id, MdoUserContext userContext) throws MdoBusinessException {
+	public IMdoBean findByLanguage(String language) throws MdoBusinessException {
 		try {
-			return assembler.marshal((IMdoDaoBean) dao.findByUniqueKey(id), userContext);
+			return assembler.marshal((IMdoDaoBean) dao.findByUniqueKey(language));
 		} catch (MdoException e) {
-			logger.error("message.error.administration.business.find", new Object[] { id }, e);
-			throw new MdoBusinessException("message.error.administration.business.find", new Object[] { id }, e);
+			logger.error("message.error.administration.business.find", new Object[] { language }, e);
+			throw new MdoBusinessException("message.error.administration.business.find", new Object[] { language }, e);
 		}
 	}
 
@@ -166,7 +178,7 @@ public class DefaultLocalesManager extends AbstractAdministrationManager impleme
 	}
 	
 	@Override
-	public List<LocaleDto> getLanguageLocales(MdoUserContext userContext) throws MdoBusinessException {
+	public List<LocaleDto> getLanguageLocales(String defaultLanguageCode) throws MdoBusinessException {
 		List<IMdoBean> localesListFromDba;
 		try {
 			localesListFromDba = dao.findAll();
@@ -174,11 +186,17 @@ public class DefaultLocalesManager extends AbstractAdministrationManager impleme
 			logger.error("message.error.administration.business.find.all", e);
 			throw new MdoBusinessException("message.error.administration.business.find.all", e);
 		}
-
+/*
+ TODO userContext
+		String defaultLanguageCode = null;
+		if (userContext != null && userContext.getCurrentLocale() != null) {
+			defaultLanguageCode = userContext.getCurrentLocale().getLanguageCode();
+		}
+*/		
 		Set<LocaleDto> result = new TreeSet<LocaleDto>(comparator);
 		for (int i = 0; i < localesListFromDba.size(); i++) {
 			Locale myLocale = (Locale) localesListFromDba.get(i);
-			LocaleDto localeDto = (LocaleDto) super.assembler.marshal(myLocale, userContext);
+			LocaleDto localeDto = (LocaleDto) ((ILocalesAssembler) super.assembler).marshal(myLocale, defaultLanguageCode);
 			result.add(localeDto);
 		}
 
@@ -215,13 +233,15 @@ public class DefaultLocalesManager extends AbstractAdministrationManager impleme
 	};
 
 	@Override
-	public LocaleDto findLocale(java.util.Locale locale, MdoUserContext userContext) throws MdoBusinessException {
+	public LocaleDto findLocale(java.util.Locale locale, Set<UserLocaleDto> defaultLocales) throws MdoBusinessException {
 		LocaleDto result = null;
 		// Be sure that the server manages this language
 		if (!isoLanguagesList.contains(locale)) {
 			locale = java.util.Locale.getDefault();
 		}
 		String language = locale.getLanguage();
+/**		
+ TODO userContext
 		if (userContext != null) {
 			UserAuthenticationDto userX = userContext.getUserAuthentication();
 			if (userX != null && userX.getLocales() != null && !userX.getLocales().isEmpty()) {
@@ -242,16 +262,35 @@ public class DefaultLocalesManager extends AbstractAdministrationManager impleme
 				}
 			}
 		}
+*/		
+		if (defaultLocales != null && !defaultLocales.isEmpty()) {
+			UserLocaleDto userLocale = null;
+			for (Iterator<UserLocaleDto> i = defaultLocales.iterator(); i.hasNext();) {
+				userLocale = i.next();
+				if (userLocale != null && userLocale.getLocale() != null && userLocale.getLocale().getLanguageCode() != null
+						&& userLocale.getLocale().getLanguageCode().equals(language)) {
+					// Get the one in the user locales equals to the
+					// specific locale
+					result = userLocale.getLocale();
+					break;
+				}
+			}
+			// Get the last one in the user locales
+			if (result == null && userLocale != null) {
+				result = userLocale.getLocale();
+			}
+		}
+
 		if (result == null) {
 			// Get the one from database by specific language
-			result = (LocaleDto) findByLanguage(language, userContext);
+			result = (LocaleDto) findByLanguage(language);
 		}
 		if (result == null) {
 			try {
 				// Get the first one from database without specific language
 				List<IMdoBean> list = dao.findAll();
 				if (list != null && !list.isEmpty()) {
-					result = (LocaleDto) assembler.marshal((IMdoDaoBean) dao.findAll().get(0), userContext);
+					result = (LocaleDto) assembler.marshal((IMdoDaoBean) dao.findAll().get(0));
 				}
 			} catch (MdoException e) {
 				logger.error("message.error.administration.business.find.all", e);

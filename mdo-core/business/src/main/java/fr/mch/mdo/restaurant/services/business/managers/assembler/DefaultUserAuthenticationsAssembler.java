@@ -8,14 +8,12 @@ import fr.mch.mdo.logs.ILoggerBean;
 import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.beans.Locale;
-import fr.mch.mdo.restaurant.dao.beans.ProductCategory;
 import fr.mch.mdo.restaurant.dao.beans.Restaurant;
 import fr.mch.mdo.restaurant.dao.beans.User;
 import fr.mch.mdo.restaurant.dao.beans.UserAuthentication;
 import fr.mch.mdo.restaurant.dao.beans.UserLocale;
 import fr.mch.mdo.restaurant.dao.beans.UserRole;
 import fr.mch.mdo.restaurant.dto.beans.LocaleDto;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
 import fr.mch.mdo.restaurant.dto.beans.UserAuthenticationDto;
 import fr.mch.mdo.restaurant.dto.beans.UserDto;
@@ -97,7 +95,7 @@ public class DefaultUserAuthenticationsAssembler extends AbstractAssembler imple
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public IMdoDtoBean marshal(IMdoDaoBean daoBean, MdoUserContext userContext) {
+	public IMdoDtoBean marshal(IMdoDaoBean daoBean) {
 		UserAuthenticationDto dto = null;
 		if (daoBean != null) {
 			UserAuthentication bean = (UserAuthentication) daoBean;
@@ -108,15 +106,15 @@ public class DefaultUserAuthenticationsAssembler extends AbstractAssembler imple
 			dto.setLevelPass3(bean.getLevelPass3());
 			dto.setLogin(bean.getLogin());
 			dto.setPassword(bean.getPassword());
-			LocaleDto printingLocale = (LocaleDto) localesAssembler.marshal(bean.getPrintingLocale(), userContext);
+			LocaleDto printingLocale = (LocaleDto) localesAssembler.marshal(bean.getPrintingLocale());
 			dto.setPrintingLocale(printingLocale);
-			RestaurantDto restaurant = (RestaurantDto) restaurantsAssembler.marshal(bean.getRestaurant(), userContext);
+			RestaurantDto restaurant = (RestaurantDto) restaurantsAssembler.marshal(bean.getRestaurant());
 			dto.setRestaurant(restaurant);	
-			UserDto user = (UserDto) usersAssembler.marshal(bean.getUser(), userContext);
+			UserDto user = (UserDto) usersAssembler.marshal(bean.getUser());
 			dto.setUser(user);
-			UserRoleDto userRole = (UserRoleDto) userRolesAssembler.marshal(bean.getUserRole(), userContext);
+			UserRoleDto userRole = (UserRoleDto) userRolesAssembler.marshal(bean.getUserRole());
 			dto.setUserRole(userRole);
-			Set<UserLocaleDto> locales = (Set) userLocalesAssembler.marshal(bean.getLocales(), userContext); 
+			Set<UserLocaleDto> locales = (Set) userLocalesAssembler.marshal(bean.getLocales()); 
 			dto.setLocales(locales);
 		}
 		return dto;

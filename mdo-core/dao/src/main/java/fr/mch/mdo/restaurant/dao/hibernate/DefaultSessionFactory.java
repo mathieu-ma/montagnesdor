@@ -9,6 +9,7 @@ package fr.mch.mdo.restaurant.dao.hibernate;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,15 +23,16 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.collection.PersistentBag;
-import org.hibernate.collection.PersistentList;
-import org.hibernate.collection.PersistentMap;
-import org.hibernate.collection.PersistentSet;
-import org.hibernate.collection.PersistentSortedMap;
-import org.hibernate.collection.PersistentSortedSet;
-import org.hibernate.connection.ConnectionProvider;
+import org.hibernate.collection.internal.PersistentBag;
+import org.hibernate.collection.internal.PersistentList;
+import org.hibernate.collection.internal.PersistentMap;
+import org.hibernate.collection.internal.PersistentSet;
+import org.hibernate.collection.internal.PersistentSortedMap;
+import org.hibernate.collection.internal.PersistentSortedSet;
+import org.hibernate.internal.util.xml.DTDEntityResolver;
 import org.hibernate.proxy.HibernateProxy;
-import org.hibernate.util.DTDEntityResolver;
+import org.hibernate.service.ServiceRegistry;
+import org.hibernate.service.ServiceRegistryBuilder;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -200,7 +202,16 @@ public class DefaultSessionFactory implements ISessionFactory, ILoggerBean
 					// Define Hibernate Interceptor
 					configuration.setInterceptor(MdoHibernateInterceptor.getInstance());
 					// Create the SessionFactory
-					sessionFactory = configuration.buildSessionFactory();
+					//sessionFactory = configuration.buildSessionFactory();
+					ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(configuration.getProperties()).buildServiceRegistry();        
+					sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+					
+					/*
+					ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().configure().buildServiceRegistry();
+					MetadataSources metadataSources = new MetadataSources(serviceRegistry);
+					sessionFactory = metadataSources.buildMetadata().buildSessionFactory();
+					*/
+					
 					// Put in the cache
 					sessionFactoryCache.put(cacheKey, sessionFactory);
 					configurationCache.put(cacheKey, configuration);
@@ -357,12 +368,29 @@ public class DefaultSessionFactory implements ISessionFactory, ILoggerBean
 		return this.getConnection(IResources.HIBERNATE_CONFIGURATION_FILE);
 	}
 	
-	public Connection getConnection(String... configFiles) throws MdoDataBeanException {
+	private Connection getConnection(String... configFiles) throws MdoDataBeanException {
 
 		Connection result = null;
 
 		this.getSessionFactory(configFiles);
 
+		// Create key for sessionFactoryCache and configurationCache.
+		String cacheKey = this.getCacheKey(configFiles);
+		// Get the configuration in cache
+		Configuration configuration = configurationCache.get(cacheKey);
+
+		String hibernateConnectionUrl = configuration.getProperty("hibernate.connection.url");
+		String hibernateConnectionUsername = configuration.getProperty("hibernate.connection.username");
+		String hibernateConnectionPassword = configuration.getProperty("hibernate.connection.password");
+		try {
+			result = DriverManager.getConnection(hibernateConnectionUrl, hibernateConnectionUsername, hibernateConnectionPassword);
+		} catch (SQLException e) {
+			logger.error("message.error.dao.provider.connection");
+			throw new MdoDataBeanException("message.error.dao.provider.connection");
+		}
+		
+		/**
+		this.getSessionFactory(configFiles); 
 		// Create key for sessionFactoryCache and configurationCache.
 		String cacheKey = this.getCacheKey(configFiles);
 		// Get the configuration in cache
@@ -377,6 +405,7 @@ public class DefaultSessionFactory implements ISessionFactory, ILoggerBean
 				throw new MdoDataBeanException("message.error.dao.provider.connection");
 			}
 		}
+		**/
 		
 		return result;
 	}

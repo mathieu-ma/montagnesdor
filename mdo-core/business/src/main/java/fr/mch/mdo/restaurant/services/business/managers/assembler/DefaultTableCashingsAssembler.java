@@ -11,7 +11,6 @@ import fr.mch.mdo.restaurant.dao.beans.DinnerTable;
 import fr.mch.mdo.restaurant.dao.beans.TableCashing;
 import fr.mch.mdo.restaurant.dto.beans.CashingTypeDto;
 import fr.mch.mdo.restaurant.dto.beans.DinnerTableDto;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.TableCashingDto;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 import fr.mch.mdo.utils.IManagerAssembler;
@@ -40,7 +39,7 @@ public class DefaultTableCashingsAssembler extends AbstractAssembler implements 
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public IMdoDtoBean marshal(IMdoDaoBean daoBean, MdoUserContext userContext) {
+	public IMdoDtoBean marshal(IMdoDaoBean daoBean) {
 		TableCashingDto dto = null;
 		if (daoBean != null) {
 			TableCashing bean = (TableCashing) daoBean;
@@ -55,7 +54,7 @@ public class DefaultTableCashingsAssembler extends AbstractAssembler implements 
 
 			Set<CashingTypeDto> cashingTypes = null;
 			if (bean.getCashingTypes() != null) {
-				cashingTypes = (Set) cashingTypesAssembler.marshal(bean.getCashingTypes(), userContext);
+				cashingTypes = (Set) cashingTypesAssembler.marshal(bean.getCashingTypes());
 			}
 			dto.setCashingTypes(cashingTypes);
 		}

@@ -14,6 +14,7 @@ import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto;
 import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumsManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.UserRestaurantDto;
+import fr.mch.mdo.restaurant.exception.MdoBusinessException;
 import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.ioc.spring.WebAdministrationBeanFactory;
 import fr.mch.mdo.restaurant.services.business.managers.products.IMdoTableAsEnumsManager;
@@ -46,7 +47,7 @@ public class MdoTableAsEnumsManagerWebAction extends AdministrationManagerAction
 		IAdministrationManagerViewBean viewBean = ((IMdoAdministrationForm) super.getForm()).getViewBean();
 		if (viewBean != null) {
 			try {
-				this.getAdministrationManager().processList(viewBean, (MdoUserContext) super.getForm().getUserContext());
+				this.getAdministrationManager().processList(viewBean);
 			} catch (MdoException e) {
 				super.addActionError(super.getText("error.action.technical", new String[] { this.getClass().getName(), "form" }));
 			}
@@ -62,7 +63,7 @@ public class MdoTableAsEnumsManagerWebAction extends AdministrationManagerAction
 		if (viewBean != null) {
 			IMdoTableAsEnumsManager manager = (IMdoTableAsEnumsManager) administrationManager;
 			MdoUserContext userContext = (MdoUserContext) super.getForm().getUserContext();
-			List<IMdoDtoBean> list = manager.getList(dtoBean.getType(), userContext);
+			List<IMdoDtoBean> list = manager.getList(dtoBean.getType());
 			viewBean.setList(list);
 			// START Check bean that must not be deleted
 			List<Long> notDeletedBeanIds = new ArrayList<Long>();
@@ -91,7 +92,7 @@ public class MdoTableAsEnumsManagerWebAction extends AdministrationManagerAction
 	}
 
 	@Override
-	public String save() {
+	public String save() throws MdoBusinessException {
 		super.save();
 		return Constants.ACTION_RESULT_AFTER_CUD_LIST_TYPE;
 	}
@@ -101,11 +102,10 @@ public class MdoTableAsEnumsManagerWebAction extends AdministrationManagerAction
 		String result = super.delete();
 		MdoTableAsEnumDto dtoBean = (MdoTableAsEnumDto) super.getForm().getDtoBean();
 		IMdoTableAsEnumsManager manager = (IMdoTableAsEnumsManager) administrationManager;
-		MdoUserContext userContext = (MdoUserContext) super.getForm().getUserContext();
 		List<IMdoDtoBean> list = null;
 		try {
 			// Get a list by type.
-			list = manager.getList(dtoBean.getType(), userContext);
+			list = manager.getList(dtoBean.getType());
 		} catch (MdoException e) {
 			// Do not add action error because of validation
 			super.addActionMessage(super.getText(e.getLocalizedMessage()));

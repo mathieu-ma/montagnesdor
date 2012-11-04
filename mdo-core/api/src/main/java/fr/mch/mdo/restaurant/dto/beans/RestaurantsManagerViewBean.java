@@ -22,12 +22,16 @@ public class RestaurantsManagerViewBean extends AdministrationManagerViewBean
 	
 	private List<IMdoDtoBean> specificRounds;
 
+	private List<IMdoDtoBean> vatTableTypes;
+
 	private List<IMdoDtoBean> prefixTableNames;
 
 	private List<IMdoDtoBean> valueAddedTaxes;
-	
+
 	private List<IMdoDtoBean> tableTypes;
-	
+
+	private List<IMdoDtoBean> reductionTableTypes;
+
 	/**
 	 * @return the specificRounds
 	 */
@@ -40,6 +44,20 @@ public class RestaurantsManagerViewBean extends AdministrationManagerViewBean
 	 */
 	public void setSpecificRounds(List<IMdoDtoBean> specificRounds) {
 		this.specificRounds = specificRounds;
+	}
+
+	/**
+	 * @return the vatTableTypes
+	 */
+	public List<IMdoDtoBean> getVatTableTypes() {
+		return vatTableTypes;
+	}
+
+	/**
+	 * @param vatTableTypes the vatTableTypes to set
+	 */
+	public void setVatTableTypes(List<IMdoDtoBean> vatTableTypes) {
+		this.vatTableTypes = vatTableTypes;
 	}
 
 	/**
@@ -83,5 +101,19 @@ public class RestaurantsManagerViewBean extends AdministrationManagerViewBean
 	 */
 	public List<IMdoDtoBean> getTableTypes() {
 		return tableTypes;
+	}
+
+	/**
+	 * @return the reductionTableTypes
+	 */
+	public List<IMdoDtoBean> getReductionTableTypes() {
+		return reductionTableTypes;
+	}
+
+	/**
+	 * @param reductionTableTypes the reductionTableTypes to set
+	 */
+	public void setReductionTableTypes(List<IMdoDtoBean> reductionTableTypes) {
+		this.reductionTableTypes = reductionTableTypes;
 	}
 }
