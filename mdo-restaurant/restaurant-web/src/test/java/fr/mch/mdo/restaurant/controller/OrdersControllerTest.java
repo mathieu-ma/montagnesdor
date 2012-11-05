@@ -169,8 +169,20 @@ public final class OrdersControllerTest extends AbstractControllerTest
 		Long pathVarUserAuthenticationId = 1L;
     	String userEntryTableNumber = "1";
     	Integer userEntryCustomersNumber = 2;
-    	// The table exists with orders size 1
+    	// The table exists with orders size 1. It is not a take-away type. The customer number has changed compared to the one from database.
     	DinnerTableDto table = this.tableHeaderIntegration(pathVarRestaurantId, pathVarUserAuthenticationId, userEntryTableNumber, userEntryCustomersNumber);
+    	// The table exists with orders size 1. It is not a take-away type. The customer number has not changed compared to the one from database.
+    	table = this.tableHeaderIntegration(pathVarRestaurantId, pathVarUserAuthenticationId, userEntryTableNumber, userEntryCustomersNumber);
+    	// The table exists with orders size 1. It is a take-away type.
+    	userEntryTableNumber = "E1";
+    	table = this.tableHeaderIntegration(pathVarRestaurantId, pathVarUserAuthenticationId, userEntryTableNumber, userEntryCustomersNumber);
+    	// The table exists with empty orders.
+    	table = this.tableHeaderIntegration(pathVarRestaurantId, pathVarUserAuthenticationId, userEntryTableNumber, userEntryCustomersNumber);
+
+    	// The table does not exist but table type is take-away so create it.
+    	table = this.tableHeaderIntegration(pathVarRestaurantId, pathVarUserAuthenticationId, userEntryTableNumber, userEntryCustomersNumber);
+    	// The table does not exist but table type is not take-away type.
+    	table = this.tableHeaderIntegration(pathVarRestaurantId, pathVarUserAuthenticationId, userEntryTableNumber, userEntryCustomersNumber);
 	}
 	
 	private DinnerTableDto tableHeaderIntegration(Long pathVarRestaurantId, Long pathVarUserAuthenticationId, String userEntryTableNumber, Integer userEntryCustomersNumber) {
@@ -186,50 +198,50 @@ public final class OrdersControllerTest extends AbstractControllerTest
 			if (size != null && size.intValue() > 0 ) {
 				// No, orders is not empty.
 
-		    	// Is this table for take-away(check takeaway) ?
+		    	// Is this table for take-away(check take-away) ?
 				if (Boolean.TRUE.equals(header.getTakeaway())) {
 					// Yes, the table is for take-away then directly display the table.
-					result = this.findTable(header.getId());
 	    		} else {
 	    	    	// Get user entry number of customers
 	    			// Is user entry number of customers equal to the one from database ?
-	    			if (userEntryCustomersNumber != null && !userEntryCustomersNumber.equals(header.getCustomersNumber())) {
+	    			Assert.assertNotNull("tableHeaderIntegration userEntryCustomersNumber", userEntryCustomersNumber);
+	    			if (!userEntryCustomersNumber.equals(header.getCustomersNumber())) {
 	    				// No, the user entry number of customers is not equal to the one from database then update the field
 	    				header.setCustomersNumber(userEntryCustomersNumber);
 	    		    	// Update the customers number.
 						AcknowledgmentMessage message = this.updateTableCustomersNumber(header.getId(), header.getCustomersNumber());
+						if (AcknowledgmentMessage.Type.ERROR.equals(message.getType())) {
+							// Back to the previous step, i.e, ask to enter the customers number again with warning message.
+						}
 	    			}
-	    			// Display the table.
-	    			result = this.findTable(header.getId());
 	    		}
 			} else {
 				// Yes, orders is empty then reset the customers number to 0 and the creation date to now and display the table.
 				AcknowledgmentMessage message = this.resetTableCreationDateCustomersNumber(header.getId());
-    			// Display the table.
-				result = this.findTable(header.getId());
+				if (AcknowledgmentMessage.Type.ERROR.equals(message.getType())) {
+					// Back to the previous step, i.e, ask to enter the table number again with warning message.
+				}
 			}
+			// Display the table.
+			result = this.findTable(header.getId());
     	} else {
         	// Second case: No, the table does not exist.
 
-    		// Is this table for take-away(check takeaway) ?
+	    	TableHeaderForm tableHeaderForm = new TableHeaderForm();
+	    	tableHeaderForm.setNumber(header.getNumber());
+
+	    	// Is this table for take-away(check takeaway) ?
 			if (Boolean.TRUE.equals(header.getTakeaway())) {
 				// Yes, the table is for take-away 
-				
 				// Create the table and display it.
-		    	TableHeaderForm tableHeaderForm = new TableHeaderForm();
-		    	tableHeaderForm.setNumber(header.getNumber());
 		    	tableHeaderForm.setCustomersNumber(0);
-		    	result = this.createTable(pathVarRestaurantId, pathVarUserAuthenticationId, tableHeaderForm);
     		} else {
     	    	// Get user entry number of customers
-    			if (userEntryCustomersNumber != null) {
-                	// Create the table and display it.
-    		    	TableHeaderForm tableHeaderForm = new TableHeaderForm();
-    		    	tableHeaderForm.setNumber(header.getNumber());
-    		    	tableHeaderForm.setCustomersNumber(userEntryCustomersNumber);
-    		    	result = this.createTable(pathVarRestaurantId, pathVarUserAuthenticationId, tableHeaderForm);
-    			}
+    			Assert.assertNotNull("tableHeaderIntegration userEntryCustomersNumber", userEntryCustomersNumber);
+               	// Create the table and display it.
+   		    	tableHeaderForm.setCustomersNumber(userEntryCustomersNumber);
     		}
+	    	result = this.createTable(pathVarRestaurantId, pathVarUserAuthenticationId, tableHeaderForm);
     	}
 		
 		return result;

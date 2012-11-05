@@ -6,7 +6,7 @@ public class AcknowledgmentMessage {
 		ERROR, SUCCESS
 	}
 	
-	private Type type = Type.ERROR;
+	private Type type = Type.SUCCESS;
 
 	private String title;
 

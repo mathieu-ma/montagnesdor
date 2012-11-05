@@ -2,6 +2,7 @@ package fr.mch.mdo.restaurant.dao.tables.hibernate;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +22,7 @@ import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServices;
 import fr.mch.mdo.restaurant.dao.hibernate.TransactionSession;
 import fr.mch.mdo.restaurant.dao.tables.IDinnerTablesDao;
 import fr.mch.mdo.restaurant.exception.MdoDataBeanException;
+import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 
 public class DefaultDinnerTablesDao extends DefaultDaoServices implements IDinnerTablesDao 
@@ -137,27 +139,16 @@ public class DefaultDinnerTablesDao extends DefaultDaoServices implements IDinne
 	}
 
 	@Override
-	public DinnerTable findIdAndCustomersNumber(Long restaurantId, String number) throws MdoDataBeanException {
-		DinnerTable result = this.findIdAndCustomersNumber(restaurantId, null, number);
+	public DinnerTable findTableHeader(Long restaurantId, String number) throws MdoDataBeanException {
+		DinnerTable result = this.findTableHeader(restaurantId, null, number);
 
 		return result;
 	}
 
 	@Override
-	public DinnerTable findIdAndCustomersNumber(Long restaurantId, Long userAuthenticationId, String number) throws MdoDataBeanException {
+	public DinnerTable findTableHeader(Long restaurantId, Long userAuthenticationId, String number) throws MdoDataBeanException {
 		DinnerTable result = null;
 
-		/**
-		 * TODO
-		 * 
-		 * SELECT count(orl.orl_id), dtb.dtb_code 
-FROM t_order_line orl right join t_dinner_table dtb on orl.dtb_id = dtb.dtb_id
-WHERE dtb.dtb_id=2
-GROUP BY dtb.dtb_code
-
-		 * 
-		 */
-		
 		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
 		criterias.add(new MdoCriteria("number", PropertiesRestrictions.EQUALS, number));
 		criterias.add(new MdoCriteria("restaurant.id", PropertiesRestrictions.EQUALS, restaurantId));
@@ -170,6 +161,7 @@ GROUP BY dtb.dtb_code
 		criterias.add(new MdoCriteria("id", PropertiesRestrictions.PROJECTION));
 		criterias.add(new MdoCriteria("number", PropertiesRestrictions.PROJECTION));
 		criterias.add(new MdoCriteria("customersNumber", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("type.code.name", PropertiesRestrictions.PROJECTION));
 		
 		result = (DinnerTable) super.uniqueResult(super.findByCriteria(super.getBean().getClass(), DinnerTable.class, criterias));
 		
@@ -377,5 +369,15 @@ GROUP BY dtb.dtb_code
 		}
 		
 		return result;
+	}
+
+	@Override
+	public void resetTableCreationDateCustomersNumber(Long dinnerTableId) throws MdoException {
+		Map<String, Object> fields = new HashMap<String, Object>();
+		fields.put("registrationDate", new Date());
+		fields.put("customersNumber", Integer.valueOf(0));
+		Map<String, Object> keys = new HashMap<String, Object>();
+		keys.put("id", dinnerTableId);
+		super.updateFieldsByKeys(fields, keys);
 	}
 }

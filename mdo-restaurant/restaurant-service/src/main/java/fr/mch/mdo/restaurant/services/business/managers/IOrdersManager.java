@@ -41,4 +41,8 @@ public interface IOrdersManager
 	DinnerTableDto createTable(Long restaurantId, Long userAuthenticationId, String number, Integer customersNumber) throws MdoException;
 
 	Integer getTableOrdersSize(Long dinnerTableId) throws MdoException;
+
+	void updateTableCustomersNumber(Long dinnerTableId, Integer customersNumber) throws MdoException;
+
+	void resetTableCreationDateCustomersNumber(Long dinnerTableId) throws MdoException;
 }

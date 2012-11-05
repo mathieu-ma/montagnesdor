@@ -3,6 +3,7 @@ package fr.mch.mdo.restaurant.dao.tables.hibernate;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Connection;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -523,17 +524,25 @@ public class DefaultDinnerTablesDaoTest extends DefaultDaoServicesTestCase
 		return newBean;
 	}
 
-	public void testFindIdAndCustomersNumber() {
+	public void testFindTableHeader() {
 		IDinnerTablesDao iDinnerTablesDao = (IDinnerTablesDao) this.getInstance();
 		Long restaurantId = Long.valueOf(1);
 		Long userAuthenticationId = Long.valueOf(1);
 		String number = "12";
 		DinnerTable table = null;
 		try {
-			table = iDinnerTablesDao.findIdAndCustomersNumber(restaurantId, number);
-			assertNotNull("Table Number found", table);
-			table = iDinnerTablesDao.findIdAndCustomersNumber(restaurantId, userAuthenticationId, number);
-			assertNotNull("Table Number found", table);
+			table = iDinnerTablesDao.findTableHeader(restaurantId, number);
+			assertNotNull("Table found", table);
+			assertNotNull("Table Number found", table.getNumber());
+			assertNotNull("Table Type found", table.getType());
+			assertNotNull("Table Type Code found", table.getType().getCode());
+			assertNotNull("Table Type Code Name found", table.getType().getCode().getName());
+			table = iDinnerTablesDao.findTableHeader(restaurantId, userAuthenticationId, number);
+			assertNotNull("Table found", table);
+			assertNotNull("Table Number found", table.getNumber());
+			assertNotNull("Table Type found", table.getType());
+			assertNotNull("Table Type Code found", table.getType().getCode());
+			assertNotNull("Table Type Code Name found", table.getType().getCode().getName());
 		} catch (MdoException e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
@@ -700,4 +709,26 @@ public class DefaultDinnerTablesDaoTest extends DefaultDaoServicesTestCase
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
+	
+	public void testResetTableCreationDateCustomersNumber() {
+		IDinnerTablesDao iDinnerTablesDao = (IDinnerTablesDao) this.getInstance();
+		try {
+			Long dinnerTableId = Long.valueOf(1);
+			DinnerTable dinnerTable = (DinnerTable) iDinnerTablesDao.findByPrimaryKey(dinnerTableId);
+			Date registrationDateBackup = dinnerTable.getRegistrationDate();
+			Integer customersNumberBackup = dinnerTable.getCustomersNumber();
+			iDinnerTablesDao.resetTableCreationDateCustomersNumber(dinnerTableId);
+			DinnerTable updatedDinnerTable = (DinnerTable) iDinnerTablesDao.findByPrimaryKey(dinnerTableId);
+			DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
+			assertEquals("Check Dinner Table's registrationDate updated value", df.format(new Date()), df.format(updatedDinnerTable.getRegistrationDate()));
+			assertEquals("Check Dinner Table's customersNumber updated value", Integer.valueOf(0), updatedDinnerTable.getCustomersNumber());
+			// Restore updated values
+			updatedDinnerTable.setRegistrationDate(registrationDateBackup);
+			updatedDinnerTable.setCustomersNumber(customersNumberBackup);
+			iDinnerTablesDao.update(updatedDinnerTable);
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+	
 }

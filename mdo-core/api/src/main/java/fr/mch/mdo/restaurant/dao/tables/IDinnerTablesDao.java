@@ -55,7 +55,7 @@ public interface IDinnerTablesDao extends IDaoServices
     Map<Long, String> findAllNumberByPrefixNumber(Long restaurantId, Long userAuthenticationId, String prefixTableNumber) throws MdoException;
 
     /**
-     * This will find the unique id and customer number with dinner table's number. 
+     * This will find the unique id and customer number and type with dinner table's number. 
      * The Table is not cashed i.e. the cashing date is null.
      * Be aware, only the following fields are filled:
      * 		id, customersNumber.
@@ -66,10 +66,10 @@ public interface IDinnerTablesDao extends IDaoServices
      * @return a dinner table fill only with id and the customers number and table's number. The remaining field is left to default values.
      * @throws MdoException any exception occurs.
      */
-    DinnerTable findIdAndCustomersNumber(Long restaurantId, String number) throws MdoException;
+    DinnerTable findTableHeader(Long restaurantId, String number) throws MdoException;
 
     /**
-     * This will find the unique id and customer number with dinner table's number. 
+     * This will find the unique id and customer number and type with dinner table's number. 
      * The Table is not cashed i.e. the cashing date is null.
      * @param restaurantId the restaurant id. Maybe useless because userAuthenticationId already belong to a restaurant.
      * @param userAuthenticationId the user authentication id.
@@ -77,7 +77,7 @@ public interface IDinnerTablesDao extends IDaoServices
      * @return a dinner table fill only with id and the customers number and table's number. The remaining field is left to default values.
      * @throws MdoException any exception occurs.
      */
-    DinnerTable findIdAndCustomersNumber(Long restaurantId, Long userAuthenticationId, String number) throws MdoException;
+    DinnerTable findTableHeader(Long restaurantId, Long userAuthenticationId, String number) throws MdoException;
 
     /**
      * This will find the unique dinner table that is not cashed i.e. the cashing date is null.
@@ -219,4 +219,12 @@ public interface IDinnerTablesDao extends IDaoServices
 	 * @throws MdoException any exception occurs.
 	 */
 	BigDecimal getReductionRatio(Long dinnerTableId) throws MdoException;
+
+	/**
+	 * Update the customers number to 0 and the creation date to now.
+	 *  
+	 * @param dinnerTableId the dinner table id.
+	 * @throws MdoException any exception occurs.
+	 */
+	void resetTableCreationDateCustomersNumber(Long dinnerTableId) throws MdoException;
 }

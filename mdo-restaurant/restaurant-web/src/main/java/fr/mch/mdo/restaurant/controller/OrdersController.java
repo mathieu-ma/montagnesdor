@@ -48,12 +48,18 @@ public final class OrdersController //extends AbstractController
 
 	@RequestMapping(value = "/delete/order/line/{id}", method = RequestMethod.DELETE)
 	@ResponseBody
-	public AcknowledgmentMessage deleteOrderLine(@PathVariable Long id) throws MdoException {
-		AcknowledgmentMessage message = new AcknowledgmentMessage();
+	public AcknowledgmentMessage deleteOrderLine(@PathVariable Long id) {
+		AcknowledgmentMessage ack = new AcknowledgmentMessage();
 
-		manager.deleteOrderLine(id);
+		try {
+			manager.deleteOrderLine(id);
+		} catch (MdoException e) {
+			ack.setType(AcknowledgmentMessage.Type.ERROR);
+			ack.setTitle("delete.order.line.error.ack.title");
+			ack.setMessage("delete.order.line.error.ack.message");
+		}
 		
-		return message;
+		return ack;
 	}
 
 	@RequestMapping(value = "/{restaurantId}/table/header/by/number/{number}", method = RequestMethod.GET)
@@ -76,10 +82,16 @@ public final class OrdersController //extends AbstractController
 
 	@RequestMapping(value = "/delete/table/{id}", method = RequestMethod.DELETE)
 	@ResponseBody
-	public AcknowledgmentMessage deleteTable(@PathVariable Long id) throws MdoException {
-		AcknowledgmentMessage message = new AcknowledgmentMessage();
-		manager.deleteTable(id);
-		return message;
+	public AcknowledgmentMessage deleteTable(@PathVariable Long id) {
+		AcknowledgmentMessage ack = new AcknowledgmentMessage();
+		try {
+			manager.deleteTable(id);
+		} catch (MdoException e) {
+			ack.setType(AcknowledgmentMessage.Type.ERROR);
+			ack.setTitle("delete.table.error.ack.title");
+			ack.setMessage("delete.table.error.ack.message");
+		}
+		return ack;
 	}
 
 	@RequestMapping(value = "/find/table/{id}")
@@ -99,8 +111,15 @@ public final class OrdersController //extends AbstractController
 	@RequestMapping(value = "/update/table/{id}/customers/number/{customersNumber}", method = RequestMethod.POST)
 	@ResponseBody
 	public AcknowledgmentMessage updateTableCustomersNumber(@PathVariable Long id, @PathVariable Integer customersNumber) {
-		AcknowledgmentMessage message = null; //manager.updateTableCustomersNumber(id, customersNumber);
-		return message;
+		AcknowledgmentMessage ack = new AcknowledgmentMessage();
+		try {
+			manager.updateTableCustomersNumber(id, customersNumber);
+		} catch (MdoException e) {
+			ack.setType(AcknowledgmentMessage.Type.ERROR);
+			ack.setTitle("update.table.customers.number.error.ack.title");
+			ack.setMessage("update.table.customers.number.error.ack.message");
+		}
+		return ack;
 	}
 
 	@RequestMapping(value = "/update/table/creation/date/now/{id}", method = RequestMethod.POST)
@@ -113,8 +132,15 @@ public final class OrdersController //extends AbstractController
 	@RequestMapping(value = "/reset/table/creation/date/customers/number/{id}", method = RequestMethod.POST)
 	@ResponseBody
 	public AcknowledgmentMessage resetTableCreationDateCustomersNumber(@PathVariable Long id) {
-		AcknowledgmentMessage message = null; //manager.updateTableCreationDateCustomersNumber(id, customersNumber, new Date());
-		return message;
+		AcknowledgmentMessage ack = new AcknowledgmentMessage();
+		try {
+			manager.resetTableCreationDateCustomersNumber(id);
+		} catch (MdoException e) {
+			ack.setType(AcknowledgmentMessage.Type.ERROR);
+			ack.setTitle("reset.table.creation.date.customers.number.error.ack.title");
+			ack.setMessage("reset.table.creation.date.customers.number.error.ack.message");
+		}
+		return ack;
 	}
 
 	/**

@@ -309,27 +309,36 @@ public class DefaultOrdersManager extends AbstractRestaurantManager implements I
 		try {
 			DinnerTable table = null;
 			if (userAuthenticationId != null) {
-				table = ((IDinnerTablesDao) dao).findIdAndCustomersNumber(restaurantId, userAuthenticationId, number);
+				table = ((IDinnerTablesDao) dao).findTableHeader(restaurantId, userAuthenticationId, number);
 			} else {
-				table = ((IDinnerTablesDao) dao).findIdAndCustomersNumber(restaurantId, number);
+				table = ((IDinnerTablesDao) dao).findTableHeader(restaurantId, number);
+			}
+			Boolean takeaway = Boolean.FALSE;
+			TableType type = null;
+			// If table does not exist, don't forget to check if the number is a take-away table, i.e, set the take-away field.
+			if (table == null) {
+				table = new DinnerTable();
+				table.setNumber(number);
+				// The type is never null because of restaurant default table type.
+				type = this.findTableTypeByTableNumber(restaurantId, number);
+			} else {
+				// The type is never null because of restaurant default table type.
+				type = table.getType();
+			}
+			// The type is never null because of restaurant default table type.
+			if (ManagedTableType.TAKE_AWAY.name().equals(type.getCode().getName())) {
+				takeaway = Boolean.TRUE;
 			}
 			result = helper.findTableHeader(table);
-			// If table does not exist, don't forget to check if the number is a take-away table, i.e, set the take-away field.
-			if (result != null && result.getId() == null) {
-				Boolean takeaway = Boolean.FALSE;
-				// The type is never null because of restaurant default table type.
-				TableType type = this.findTableTypeByTableNumber(restaurantId, number);
-				if (ManagedTableType.TAKE_AWAY.name().equals(type.getCode().getType())) {
-					takeaway = Boolean.TRUE;
-				}
-				result.setTakeaway(takeaway); 	
-			}
+			result.setTakeaway(takeaway);
 		} catch (MdoException e) {
-			logger.error("message.error.business.DefaultOrdersManager.findDinnerTableDto", new Object[]{ restaurantId, userAuthenticationId, number }, e);
-			throw new MdoBusinessException("message.error.business.DefaultOrdersManager.findDinnerTableDto", new Object[]{ restaurantId, userAuthenticationId, number }, e);
+			logger.error("message.error.business.DefaultOrdersManager.findTableHeader", new Object[]{ restaurantId, userAuthenticationId, number }, e);
+			throw new MdoBusinessException("message.error.business.DefaultOrdersManager.findTableHeader", new Object[]{ restaurantId, userAuthenticationId, number }, e);
 		}
 		return result;
 	}
+	
+	
 
 	@Override
 	public DinnerTableDto findTable(Long id, Locale locale) throws MdoBusinessException {
@@ -451,5 +460,25 @@ public class DefaultOrdersManager extends AbstractRestaurantManager implements I
 			throw new MdoBusinessException("message.error.business.DefaultOrdersManager.getTableOrdersSize", new Object[]{ dinnerTableId }, e);
 		}
 		return result;
+	}
+
+	@Override
+	public void updateTableCustomersNumber(Long dinnerTableId, Integer customersNumber) throws MdoBusinessException {
+		try {
+			((IDinnerTablesDao) dao).updateCustomersNumber(dinnerTableId, customersNumber);
+		} catch (MdoException e) {
+			logger.error("message.error.business.DefaultOrdersManager.updateTableCustomersNumber", new Object[]{ dinnerTableId, customersNumber }, e);
+			throw new MdoBusinessException("message.error.business.DefaultOrdersManager.updateTableCustomersNumber", new Object[]{ dinnerTableId, customersNumber }, e);
+		}
+	}
+
+	@Override
+	public void resetTableCreationDateCustomersNumber(Long dinnerTableId) throws MdoBusinessException {
+		try {
+			((IDinnerTablesDao) dao).resetTableCreationDateCustomersNumber(dinnerTableId);
+		} catch (MdoException e) {
+			logger.error("message.error.business.DefaultOrdersManager.resetTableCreationDateCustomersNumber", new Object[]{ dinnerTableId }, e);
+			throw new MdoBusinessException("message.error.business.DefaultOrdersManager.resetTableCreationDateCustomersNumber", new Object[]{ dinnerTableId }, e);
+		}
 	}
 }
