@@ -45,4 +45,7 @@ public interface IOrdersManager
 	void updateTableCustomersNumber(Long dinnerTableId, Integer customersNumber) throws MdoException;
 
 	void resetTableCreationDateCustomersNumber(Long dinnerTableId) throws MdoException;
+
+	void resetTable(Long dinnerTableId, Long restaurantId, Long userAuthenticationId, String number,
+			Integer customersNumber) throws MdoException;
 }

@@ -421,10 +421,10 @@
 	</bean>
 
 
-	<bean id="OrdersUtils" class="fr.mch.mdo.restaurant.services.business.utils.DefaultOrdersUtils">
+	<bean id="OrdersDtoHelper" class="fr.mch.mdo.restaurant.services.business.utils.DefaultOrdersDtoHelper">
 		<property name="logger">
 			 <bean factory-bean="Logger" factory-method="getLogger">
-			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.utils.DefaultOrdersUtils</value></constructor-arg>
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.utils.DefaultOrdersDtoHelper</value></constructor-arg>
    		   	</bean>
 		</property>	
 	</bean>
@@ -435,10 +435,14 @@
    		   	</bean>
 		</property>	
 		<property name="dao" ref="DinnerTablesDao" />
+		<property name="localesDao" ref="LocalesDao" />
+		<property name="restaurantsDao" ref="RestaurantsDao" />
+		<property name="restaurantPrefixTablesDao" ref="RestaurantPrefixTablesDao" />
+		<property name="restaurantReductionTablesDao" ref="RestaurantReductionTablesDao" />
 		<property name="productsDao" ref="ProductsDao" />
 		<property name="productSpecialCodeDao" ref="ProductSpecialCodesDao" />
 		<property name="orderLinesDao" ref="OrderLinesDao" />
-		<property name="utils" ref="OrdersUtils" />
+		<property name="helper" ref="OrdersDtoHelper" />
 	</bean>
 	
 </beans>       

@@ -1,5 +1,6 @@
 package fr.mch.mdo.restaurant.services.business.utils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,9 @@ import fr.mch.mdo.restaurant.dao.beans.DinnerTable;
 import fr.mch.mdo.restaurant.dao.beans.OrderLine;
 import fr.mch.mdo.restaurant.dao.beans.Product;
 import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode;
+import fr.mch.mdo.restaurant.dao.beans.TableType;
 import fr.mch.mdo.restaurant.beans.dto.ProductDto;
+import fr.mch.mdo.restaurant.services.business.managers.assembler.ManagedTableType;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 
 public class DefaultOrdersDtoHelper implements IOrdersDtoHelper 
@@ -87,6 +90,7 @@ public class DefaultOrdersDtoHelper implements IOrdersDtoHelper
 		result.setCustomersNumber(table.getCustomersNumber());
 		result.setId(table.getId());
 		result.setNumber(table.getNumber());
+		result.setTakeaway(this.isTakeaway(table.getType()));
 		
 		return result;
 	}
@@ -95,14 +99,16 @@ public class DefaultOrdersDtoHelper implements IOrdersDtoHelper
 	public DinnerTableDto findTable(DinnerTable table) {
 		DinnerTableDto result = new DinnerTableDto();
 		result.setId(table.getId());
+		result.setNumber(table.getNumber());
 		result.setCustomersNumber(table.getCustomersNumber());
+		result.setTakeaway(this.isTakeaway(table.getType()));
 		result.setRegistrationDate(table.getRegistrationDate());
 		result.setPrintingDate(table.getPrintingDate());
 		result.setReductionRatio(table.getReductionRatio());
 		result.setReductionRatioManuallyChanged(table.getReductionRatioChanged());
-		result.setAmountsSum(table.getAmountsSum());
-		result.setQuantitiesSum(table.getQuantitiesSum());
 
+		BigDecimal quantitiesSum = BigDecimal.ZERO;
+		BigDecimal amountsSum = BigDecimal.ZERO;
 		List<OrderLineDto> orders = new ArrayList<OrderLineDto>();
 		for (OrderLine orderLine : table.getOrders()) {
 			OrderLineDto orderLineDto = new OrderLineDto();
@@ -118,9 +124,21 @@ public class DefaultOrdersDtoHelper implements IOrdersDtoHelper
 			orderLineDto.setProduct(product);
 
 			orders.add(orderLineDto);
+			
+			quantitiesSum = quantitiesSum.add(orderLineDto.getQuantity());
+			amountsSum = amountsSum.add(orderLineDto.getAmount());
 		}
 		result.setOrders(orders);
-
+//		result.setAmountsSum(table.getAmountsSum());
+		result.setAmountsSum(amountsSum);
+//		result.setQuantitiesSum(table.getQuantitiesSum());
+		result.setQuantitiesSum(quantitiesSum);
+		//amountPay = dtb_amounts_sum-dtb_amounts_sum*dtb_reduction_ratio/100
+		BigDecimal reduction = amountsSum.multiply(result.getReductionRatio()).divide(BigDecimal.TEN.multiply(BigDecimal.TEN));
+		BigDecimal amountPay = amountsSum.subtract(reduction); 
+		result.setReduction(reduction);
+		result.setAmountPay(amountPay);
+						
 		return result;
 	}
 
@@ -129,7 +147,7 @@ public class DefaultOrdersDtoHelper implements IOrdersDtoHelper
 		if (product != null) {
 			result = new ProductDto();
 			// Maybe useless 
-			result.setId(product.getId());
+			//result.setId(product.getId());
 			result.setColorRGB(product.getColorRGB());
 		}
 		return result;
@@ -144,7 +162,16 @@ public class DefaultOrdersDtoHelper implements IOrdersDtoHelper
 		if (orderLine.getProduct() != null) {
 			result += orderLine.getProduct().getCode();
 		}
-		// TODO Auto-generated method stub
+		return result;
+	}
+	
+	@Override
+	public Boolean isTakeaway(TableType type) {
+		Boolean result = Boolean.FALSE;
+		// The type is never null because of restaurant default table type.
+		if (ManagedTableType.TAKE_AWAY.name().equals(type.getCode().getName())) {
+			result = Boolean.TRUE;
+		}
 		return result;
 	}
 }

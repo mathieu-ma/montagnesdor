@@ -31,7 +31,8 @@ import fr.mch.mdo.test.MdoLoadingDatabaseTestCase;
 import fr.mch.mdo.test.MdoTestCase;
 
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = ControllerTestConfig.class)
-public abstract class AbstractControllerTest extends AbstractJUnit4SpringContextTests implements InitializingBean {
+public abstract class AbstractControllerTest extends AbstractJUnit4SpringContextTests implements InitializingBean 
+{
 
     protected static final int PORT = 8788;
 
@@ -42,7 +43,9 @@ public abstract class AbstractControllerTest extends AbstractJUnit4SpringContext
     protected static final String SERVER_URL = "http://127.0.0.1:" + PORT + URL_CONTROLER_PREFIX;
 
     private Server webAppServer;
-    
+
+	protected boolean isIntegrationTest = false;
+
     @Inject
     protected ObjectMapper objectMapper;
 
@@ -54,8 +57,6 @@ public abstract class AbstractControllerTest extends AbstractJUnit4SpringContext
 
     @Override
     public void afterPropertiesSet() throws Exception {
-//    	boolean isIntegrationTest = true;
-    	boolean isIntegrationTest = false;
     	if (isIntegrationTest) {
         	this.processIntegrationConfiguration();
     	} else {
@@ -131,8 +132,13 @@ public abstract class AbstractControllerTest extends AbstractJUnit4SpringContext
     }
     
     @Before
-    public void startServer() throws Exception {
-    	webAppServer.start();
+    public void startServer() throws Exception  {
+    	try {
+			webAppServer.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
         logger.debug("Jetty Server started");
     }
 

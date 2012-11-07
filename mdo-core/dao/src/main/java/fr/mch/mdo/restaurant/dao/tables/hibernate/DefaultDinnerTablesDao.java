@@ -121,6 +121,7 @@ public class DefaultDinnerTablesDao extends DefaultDaoServices implements IDinne
 		criterias.add(new MdoCriteria("reductionRatioChanged", PropertiesRestrictions.PROJECTION));
 		criterias.add(new MdoCriteria("quantitiesSum", PropertiesRestrictions.PROJECTION));
 		criterias.add(new MdoCriteria("amountsSum", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("type.code.name", PropertiesRestrictions.PROJECTION));
 		
 		result = (DinnerTable) super.uniqueResult(super.findByCriteria(super.getBean().getClass(), DinnerTable.class, criterias, true));
 

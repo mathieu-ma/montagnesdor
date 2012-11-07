@@ -71,7 +71,7 @@
 	<query name="OrderLine.FindByDinnerTableId">
 		SELECT ol.id, ol.quantity, ol.unitPrice, ol.amount, 
 	 	psc.shortCode, psc.code.name, 
-		pd.code, CASE WHEN pl.label IS NOT NULL THEN pl.label ELSE ol.label END
+		pd.code, pd.colorRGB, CASE WHEN pl.label IS NOT NULL THEN pl.label ELSE ol.label END
 		FROM OrderLine ol
 		<!-- We must use the 2 following lines because we want left outer join. -->
 		<!-- If we comment the 2 following lines, we will have inner join so order lines without product id will not get. -->

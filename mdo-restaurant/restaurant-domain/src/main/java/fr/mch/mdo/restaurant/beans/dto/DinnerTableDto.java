@@ -241,7 +241,7 @@ public class DinnerTableDto extends MdoDtoBean {
 
 	@Override
 	public String toString() {
-		return "DinnerTableDetails [number=" + number + ", takeaway="
+		return "DinnerTableDto [number=" + number + ", takeaway="
 				+ takeaway + ", customersNumber=" + customersNumber
 				+ ", allowModifyOrdersAfterPrinting="
 				+ allowModifyOrdersAfterPrinting + ", reduction=" + reduction

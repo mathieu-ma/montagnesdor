@@ -4,6 +4,7 @@ import java.util.List;
 
 import fr.mch.mdo.restaurant.beans.dto.DinnerTableDto;
 import fr.mch.mdo.restaurant.dao.beans.DinnerTable;
+import fr.mch.mdo.restaurant.dao.beans.TableType;
 
 public interface IOrdersDtoHelper {
 
@@ -12,5 +13,7 @@ public interface IOrdersDtoHelper {
 	DinnerTableDto findTableHeader(DinnerTable table);
 
 	DinnerTableDto findTable(DinnerTable table);
+
+	Boolean isTakeaway(TableType type);
 
 }

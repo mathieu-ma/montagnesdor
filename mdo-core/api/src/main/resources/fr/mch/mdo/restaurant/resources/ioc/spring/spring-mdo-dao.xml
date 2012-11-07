@@ -67,6 +67,28 @@
 		</property>
 		<property name="sessionFactory" ref="DaoSessionFactory" />
 	</bean>
+	<bean id="RestaurantPrefixTablesDao" class="fr.mch.mdo.restaurant.dao.restaurants.hibernate.DefaultRestaurantPrefixTablesDao">
+		<property name="logger">
+			<bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.dao.restaurants.hibernate.DefaultRestaurantPrefixTablesDao</value></constructor-arg>
+   		   	</bean>
+		</property>
+		<property name="bean">
+			<bean class="fr.mch.mdo.restaurant.dao.beans.RestaurantPrefixTable"/>
+		</property>
+		<property name="sessionFactory" ref="DaoSessionFactory" />
+	</bean>
+	<bean id="RestaurantReductionTablesDao" class="fr.mch.mdo.restaurant.dao.restaurants.hibernate.DefaultRestaurantReductionTablesDao">
+		<property name="logger">
+			<bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.dao.restaurants.hibernate.DefaultRestaurantReductionTablesDao</value></constructor-arg>
+   		   	</bean>
+		</property>
+		<property name="bean">
+			<bean class="fr.mch.mdo.restaurant.dao.beans.RestaurantReductionTable"/>
+		</property>
+		<property name="sessionFactory" ref="DaoSessionFactory" />
+	</bean>
 	<bean id="UsersDao" class="fr.mch.mdo.restaurant.dao.users.hibernate.DefaultUsersDao">
 		<property name="logger">
 			<bean factory-bean="Logger" factory-method="getLogger">

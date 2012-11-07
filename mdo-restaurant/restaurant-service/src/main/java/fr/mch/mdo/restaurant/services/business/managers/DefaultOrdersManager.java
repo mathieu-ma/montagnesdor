@@ -36,7 +36,6 @@ import fr.mch.mdo.restaurant.dao.tables.hibernate.DefaultDinnerTablesDao;
 import fr.mch.mdo.restaurant.dto.beans.ProductDto;
 import fr.mch.mdo.restaurant.exception.MdoBusinessException;
 import fr.mch.mdo.restaurant.exception.MdoException;
-import fr.mch.mdo.restaurant.services.business.managers.assembler.ManagedTableType;
 import fr.mch.mdo.restaurant.services.business.utils.DefaultOrdersDtoHelper;
 import fr.mch.mdo.restaurant.services.business.utils.IOrdersDtoHelper;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
@@ -313,24 +312,15 @@ public class DefaultOrdersManager extends AbstractRestaurantManager implements I
 			} else {
 				table = ((IDinnerTablesDao) dao).findTableHeader(restaurantId, number);
 			}
-			Boolean takeaway = Boolean.FALSE;
-			TableType type = null;
 			// If table does not exist, don't forget to check if the number is a take-away table, i.e, set the take-away field.
 			if (table == null) {
 				table = new DinnerTable();
 				table.setNumber(number);
 				// The type is never null because of restaurant default table type.
-				type = this.findTableTypeByTableNumber(restaurantId, number);
-			} else {
-				// The type is never null because of restaurant default table type.
-				type = table.getType();
-			}
-			// The type is never null because of restaurant default table type.
-			if (ManagedTableType.TAKE_AWAY.name().equals(type.getCode().getName())) {
-				takeaway = Boolean.TRUE;
+				TableType type = this.findTableTypeByTableNumber(restaurantId, number);
+				table.setType(type);
 			}
 			result = helper.findTableHeader(table);
-			result.setTakeaway(takeaway);
 		} catch (MdoException e) {
 			logger.error("message.error.business.DefaultOrdersManager.findTableHeader", new Object[]{ restaurantId, userAuthenticationId, number }, e);
 			throw new MdoBusinessException("message.error.business.DefaultOrdersManager.findTableHeader", new Object[]{ restaurantId, userAuthenticationId, number }, e);
@@ -365,31 +355,14 @@ public class DefaultOrdersManager extends AbstractRestaurantManager implements I
 	public DinnerTableDto createTable(Long restaurantId, Long userAuthenticationId, String number, Integer customersNumber) throws MdoBusinessException {
 		DinnerTableDto result = new DinnerTableDto();
 		
-		DinnerTable table = new DinnerTable();
-		Restaurant restaurant = new Restaurant();
-		restaurant.setId(restaurantId);
-		table.setRestaurant(restaurant);
-		UserAuthentication userAuthentication = new UserAuthentication();
-		userAuthentication.setId(userAuthenticationId);
-		table.setUser(userAuthentication);
-		table.setRegistrationDate(new Date());
-		table.setCustomersNumber(customersNumber);
-		table.setNumber(number);
 		// 3 requests to perform: 
-		// 2 for TableType 
-		TableType type = this.findTableTypeByTableNumber(restaurantId, number);
-		table.setType(type);
-		// and the other for RestaurantReductionTable
-		RestaurantReductionTable reductionTable = this.findReductionTableByUniqueKey(restaurantId, type.getId());
-		if (reductionTable != null) {
-			BigDecimal reductionRatio = this.getReductionRatio(BigDecimal.ZERO, reductionTable.getMinAmount(), reductionTable.getValue());
-			table.setReductionRatio(reductionRatio);
-			try {
-				table = (DinnerTable) this.dao.insert(table);
-			} catch (MdoException e) {
-				logger.error("message.error.business.DefaultOrdersManager.createTable", new Object[]{ restaurantId, userAuthenticationId, number, customersNumber }, e);
-				throw new MdoBusinessException("message.error.business.DefaultOrdersManager.createTable", new Object[]{ restaurantId, userAuthenticationId, number, customersNumber }, e);
-			}
+		DinnerTable table = this.prepareTableResetAndCreation(null, restaurantId, userAuthenticationId, number, customersNumber);
+		try {
+			// 1 for inserting
+			table = (DinnerTable) this.dao.insert(table);
+		} catch (MdoException e) {
+			logger.error("message.error.business.DefaultOrdersManager.createTable", new Object[]{ restaurantId, userAuthenticationId, number, customersNumber }, e);
+			throw new MdoBusinessException("message.error.business.DefaultOrdersManager.createTable", new Object[]{ restaurantId, userAuthenticationId, number, customersNumber }, e);
 		}
 		
 		result = helper.findTable(table);
@@ -481,4 +454,43 @@ public class DefaultOrdersManager extends AbstractRestaurantManager implements I
 			throw new MdoBusinessException("message.error.business.DefaultOrdersManager.resetTableCreationDateCustomersNumber", new Object[]{ dinnerTableId }, e);
 		}
 	}
+	
+	@Override
+	public void resetTable(Long dinnerTableId, Long restaurantId, Long userAuthenticationId, String number, Integer customersNumber) throws MdoBusinessException {
+		// 3 requests to perform: 
+		DinnerTable table = this.prepareTableResetAndCreation(dinnerTableId, restaurantId, userAuthenticationId, number, customersNumber);
+		try {
+			// 1 for updating
+			dao.update(table, true);
+		} catch (MdoException e) {
+			logger.error("message.error.business.DefaultOrdersManager.resetTable", new Object[]{ dinnerTableId }, e);
+			throw new MdoBusinessException("message.error.business.DefaultOrdersManager.resetTable", new Object[]{ dinnerTableId }, e);
+		}
+	}
+
+	private DinnerTable prepareTableResetAndCreation(Long dinnerTableId, Long restaurantId,	Long userAuthenticationId, String number, Integer customersNumber) throws MdoBusinessException {
+		DinnerTable result = new DinnerTable();
+		result.setId(dinnerTableId);
+		Restaurant restaurant = new Restaurant();
+		restaurant.setId(restaurantId);
+		result.setRestaurant(restaurant);
+		UserAuthentication userAuthentication = new UserAuthentication();
+		userAuthentication.setId(userAuthenticationId);
+		result.setUser(userAuthentication);
+		result.setRegistrationDate(new Date());
+		result.setCustomersNumber(customersNumber);
+		result.setNumber(number);
+		// 3 requests to perform: 
+		// 2 for TableType 
+		TableType type = this.findTableTypeByTableNumber(restaurantId, number);
+		result.setType(type);
+		// 1 for RestaurantReductionTable
+		RestaurantReductionTable reductionTable = this.findReductionTableByUniqueKey(restaurantId, type.getId());
+		if (reductionTable != null) {
+			BigDecimal reductionRatio = this.getReductionRatio(BigDecimal.ZERO, reductionTable.getMinAmount(), reductionTable.getValue());
+			result.setReductionRatio(reductionRatio);
+		}
+		return result;
+	}
+
 }

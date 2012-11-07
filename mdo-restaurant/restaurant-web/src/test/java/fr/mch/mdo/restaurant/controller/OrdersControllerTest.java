@@ -16,22 +16,22 @@ import fr.mch.mdo.restaurant.web.AbstractControllerTest;
 
 public final class OrdersControllerTest extends AbstractControllerTest
 {
-	public static final String context = SERVER_URL + "/orders";
-
+	public static final String context = SERVER_URL + OrdersController.ORDERS_CONTROLLER;
+	
 	@Test
 	public void tables() {
 		String state = TableState.ALTERABLE.name();
 		Long restaurantId = 1L;
 		Long userAuthenticationId = 1L;
-        StringBuilder sb = new StringBuilder(context).append("/{restaurantId}/tables/{state}");
+        StringBuilder sb = new StringBuilder(context).append(OrdersController.RESTAURANT_ID_TABLES_STATE);
         DinnerTableDto[] dinnerTableItems = restTemplate.getForObject(sb.toString(), DinnerTableDto[].class, restaurantId, state);
     	Assert.assertNotNull(dinnerTableItems);
-        sb = new StringBuilder(context).append("/{restaurantId}/{userAuthenticationId}/tables/{state}");
+        sb = new StringBuilder(context).append(OrdersController.RESTAURANT_ID_USER_AUTHENTICATION_ID_TABLES_STATE);
         dinnerTableItems = restTemplate.getForObject(sb.toString(), DinnerTableDto[].class, userAuthenticationId, restaurantId, state);
     	Assert.assertNotNull(dinnerTableItems);
 
 		state = TableState.CASHED.name();
-        sb = new StringBuilder(context).append("/{restaurantId}/{userAuthenticationId}/tables/{state}");
+        sb = new StringBuilder(context).append(OrdersController.RESTAURANT_ID_USER_AUTHENTICATION_ID_TABLES_STATE);
         dinnerTableItems = restTemplate.getForObject(sb.toString(), DinnerTableDto[].class, userAuthenticationId, restaurantId, state);
     	Assert.assertNotNull(dinnerTableItems);
 
@@ -40,7 +40,7 @@ public final class OrdersControllerTest extends AbstractControllerTest
 	@Test
 	public void deleteTable() {
     	Long tableId = 1L;
-        StringBuilder sb = new StringBuilder(context).append("/delete/table/{id}");
+        StringBuilder sb = new StringBuilder(context).append(OrdersController.DELETE_TABLE_ID);
 		// Do not use restTemplate.delete method because the service returns nothing
     	ResponseEntity<AcknowledgmentMessage> response = restTemplate.exchange(sb.toString(), HttpMethod.DELETE, null, AcknowledgmentMessage.class, tableId);
     	Assert.assertNotNull(response.getBody());
@@ -49,7 +49,7 @@ public final class OrdersControllerTest extends AbstractControllerTest
     @Test
     public void deleteOrderLine() {
     	Long orderLineId = 1L;
-        StringBuilder sb = new StringBuilder(context).append("/delete/order/line/{id}");
+        StringBuilder sb = new StringBuilder(context).append(OrdersController.DELETE_ORDER_LINE_ID);
 		// Do not use delete method because the service returns nothing
     	ResponseEntity<AcknowledgmentMessage> response = restTemplate.exchange(sb.toString(), HttpMethod.DELETE, null, AcknowledgmentMessage.class, orderLineId);
     	Assert.assertNotNull(response.getBody());
@@ -67,11 +67,11 @@ public final class OrdersControllerTest extends AbstractControllerTest
     private DinnerTableDto tableHeader(Long restaurantId, Long userAuthenticationId, String tableNumber) {
     	ResponseEntity<DinnerTableDto> response = null;
     	if (userAuthenticationId == null) {
-            StringBuilder sb = new StringBuilder(context).append("{restaurantId}/table/header/by/number/{number}");
+            StringBuilder sb = new StringBuilder(context).append(OrdersController.RESTAURANT_ID_TABLE_HEADER_BY_NUMBER_NUMBER);
             response = restTemplate.getForEntity(sb.toString(), DinnerTableDto.class, restaurantId, tableNumber);
     	} else {
-    		StringBuilder sb = new StringBuilder(context).append("{userAuthenticationId}/{restaurantId}/table/header/by/number/{number}");
-            response = restTemplate.getForEntity(sb.toString(), DinnerTableDto.class, userAuthenticationId, restaurantId, tableNumber);
+    		StringBuilder sb = new StringBuilder(context).append(OrdersController.RESTAURANT_ID_USER_AUTHENTICATION_ID_TABLE_HEADER_BY_NUMBER_NUMBER);
+            response = restTemplate.getForEntity(sb.toString(), DinnerTableDto.class, restaurantId, userAuthenticationId, tableNumber);
     	}
     	Assert.assertNotNull(response.getBody());
     	return response.getBody();
@@ -84,7 +84,7 @@ public final class OrdersControllerTest extends AbstractControllerTest
     }
 
     private Integer tableOrdersSize(Long id) {
-        StringBuilder sb = new StringBuilder(context).append("/table/orders/size/{id}");
+        StringBuilder sb = new StringBuilder(context).append(OrdersController.TABLE_ORDERS_SIZE_ID);
         ResponseEntity<Integer> response = restTemplate.getForEntity(sb.toString(), Integer.class, id);
         
         return response.getBody();
@@ -99,7 +99,7 @@ public final class OrdersControllerTest extends AbstractControllerTest
 	}
 
 	private DinnerTableDto createTable(Long restaurantId, Long userAuthenticationId, TableHeaderForm table) {
-        StringBuilder sb = new StringBuilder(context).append("/create/table/{restaurantId}/{userAuthenticationId}");
+        StringBuilder sb = new StringBuilder(context).append(OrdersController.CREATE_TABLE_RESTAURANT_ID_USER_AUTHENTICATION_ID);
     	ResponseEntity<DinnerTableDto> response = restTemplate.postForEntity(sb.toString(), table, DinnerTableDto.class, restaurantId, userAuthenticationId);
     	return response.getBody();
 	}
@@ -112,7 +112,7 @@ public final class OrdersControllerTest extends AbstractControllerTest
 	}
 
 	private DinnerTableDto findTable(Long id) {
-        StringBuilder sb = new StringBuilder(context).append("/find/table/{id}");
+        StringBuilder sb = new StringBuilder(context).append(OrdersController.FIND_TABLE_ID);
         ResponseEntity<DinnerTableDto> response = restTemplate.getForEntity(sb.toString(), DinnerTableDto.class, id);
         return response.getBody();
 	}
@@ -121,7 +121,7 @@ public final class OrdersControllerTest extends AbstractControllerTest
 	public void findProduct() {
     	Long restaurantId = 1L; 
     	String code = "11";
-        StringBuilder sb = new StringBuilder(context).append("/{restaurantId}/find/product/{code}");
+        StringBuilder sb = new StringBuilder(context).append(OrdersController.RESTAURANT_ID_FIND_PRODUCT_CODE);
         ResponseEntity<ProductDto> response = restTemplate.getForEntity(sb.toString(), ProductDto.class, restaurantId, code);
     	Assert.assertNotNull(response.getBody());
 	}
@@ -134,7 +134,7 @@ public final class OrdersControllerTest extends AbstractControllerTest
 	}
 
 	private AcknowledgmentMessage resetTableCreationDateCustomersNumber(Long id) {
-        StringBuilder sb = new StringBuilder(context).append("/reset/table/creation/date/customers/number/{id}");
+        StringBuilder sb = new StringBuilder(context).append(OrdersController.RESET_TABLE_DINNER_TABLE_ID);
         ResponseEntity<AcknowledgmentMessage> response = restTemplate.postForEntity(sb.toString(), null, AcknowledgmentMessage.class, id);
     	return response.getBody();
 	}
@@ -149,7 +149,7 @@ public final class OrdersControllerTest extends AbstractControllerTest
 	}
 
 	private AcknowledgmentMessage updateTableCustomersNumber(Long id, Integer customersNumber) {
-        StringBuilder sb = new StringBuilder(context).append("/update/table/{id}/customers/number/{customersNumber}");
+        StringBuilder sb = new StringBuilder(context).append(OrdersController.UPDATE_TABLE_ID_CUSTOMERS_NUMBER_CUSTOMERS_NUMBER);
         ResponseEntity<AcknowledgmentMessage> response = restTemplate.postForEntity(sb.toString(), null, AcknowledgmentMessage.class, id, customersNumber);
     	return response.getBody();
 	}
@@ -157,93 +157,9 @@ public final class OrdersControllerTest extends AbstractControllerTest
 	@Test
 	public void tablesView() {
 		Long restaurantId = 1L;
-		String type = "type";
-        StringBuilder sb = new StringBuilder(context).append("/{restaurantId}/tables/{type}/view");
-        ResponseEntity<String> response = restTemplate.getForEntity(sb.toString(), String.class, restaurantId, type);
+		String state = "state";
+        StringBuilder sb = new StringBuilder(context).append(OrdersController.RESTAURANT_ID_TABLES_STATE_VIEW);
+        ResponseEntity<String> response = restTemplate.getForEntity(sb.toString(), String.class, restaurantId, state);
     	Assert.assertNull(response.getBody());
-	}
-
-	@Test
-	public void ordersIntegration() {
-		Long pathVarRestaurantId = 1L;
-		Long pathVarUserAuthenticationId = 1L;
-    	String userEntryTableNumber = "1";
-    	Integer userEntryCustomersNumber = 2;
-    	// The table exists with orders size 1. It is not a take-away type. The customer number has changed compared to the one from database.
-    	DinnerTableDto table = this.tableHeaderIntegration(pathVarRestaurantId, pathVarUserAuthenticationId, userEntryTableNumber, userEntryCustomersNumber);
-    	// The table exists with orders size 1. It is not a take-away type. The customer number has not changed compared to the one from database.
-    	table = this.tableHeaderIntegration(pathVarRestaurantId, pathVarUserAuthenticationId, userEntryTableNumber, userEntryCustomersNumber);
-    	// The table exists with orders size 1. It is a take-away type.
-    	userEntryTableNumber = "E1";
-    	table = this.tableHeaderIntegration(pathVarRestaurantId, pathVarUserAuthenticationId, userEntryTableNumber, userEntryCustomersNumber);
-    	// The table exists with empty orders.
-    	table = this.tableHeaderIntegration(pathVarRestaurantId, pathVarUserAuthenticationId, userEntryTableNumber, userEntryCustomersNumber);
-
-    	// The table does not exist but table type is take-away so create it.
-    	table = this.tableHeaderIntegration(pathVarRestaurantId, pathVarUserAuthenticationId, userEntryTableNumber, userEntryCustomersNumber);
-    	// The table does not exist but table type is not take-away type.
-    	table = this.tableHeaderIntegration(pathVarRestaurantId, pathVarUserAuthenticationId, userEntryTableNumber, userEntryCustomersNumber);
-	}
-	
-	private DinnerTableDto tableHeaderIntegration(Long pathVarRestaurantId, Long pathVarUserAuthenticationId, String userEntryTableNumber, Integer userEntryCustomersNumber) {
-		DinnerTableDto result = null;
-
-    	DinnerTableDto header = this.tableHeader(pathVarRestaurantId, pathVarUserAuthenticationId, userEntryTableNumber);
-
-		// Does this table already exist(check id) ?
-    	if (header.getId() != null) {
-        	// First case: Yes, the table already exists.
-			Integer size = this.tableOrdersSize(header.getId());
-	    	// Are the orders empty(check orders) ?  
-			if (size != null && size.intValue() > 0 ) {
-				// No, orders is not empty.
-
-		    	// Is this table for take-away(check take-away) ?
-				if (Boolean.TRUE.equals(header.getTakeaway())) {
-					// Yes, the table is for take-away then directly display the table.
-	    		} else {
-	    	    	// Get user entry number of customers
-	    			// Is user entry number of customers equal to the one from database ?
-	    			Assert.assertNotNull("tableHeaderIntegration userEntryCustomersNumber", userEntryCustomersNumber);
-	    			if (!userEntryCustomersNumber.equals(header.getCustomersNumber())) {
-	    				// No, the user entry number of customers is not equal to the one from database then update the field
-	    				header.setCustomersNumber(userEntryCustomersNumber);
-	    		    	// Update the customers number.
-						AcknowledgmentMessage message = this.updateTableCustomersNumber(header.getId(), header.getCustomersNumber());
-						if (AcknowledgmentMessage.Type.ERROR.equals(message.getType())) {
-							// Back to the previous step, i.e, ask to enter the customers number again with warning message.
-						}
-	    			}
-	    		}
-			} else {
-				// Yes, orders is empty then reset the customers number to 0 and the creation date to now and display the table.
-				AcknowledgmentMessage message = this.resetTableCreationDateCustomersNumber(header.getId());
-				if (AcknowledgmentMessage.Type.ERROR.equals(message.getType())) {
-					// Back to the previous step, i.e, ask to enter the table number again with warning message.
-				}
-			}
-			// Display the table.
-			result = this.findTable(header.getId());
-    	} else {
-        	// Second case: No, the table does not exist.
-
-	    	TableHeaderForm tableHeaderForm = new TableHeaderForm();
-	    	tableHeaderForm.setNumber(header.getNumber());
-
-	    	// Is this table for take-away(check takeaway) ?
-			if (Boolean.TRUE.equals(header.getTakeaway())) {
-				// Yes, the table is for take-away 
-				// Create the table and display it.
-		    	tableHeaderForm.setCustomersNumber(0);
-    		} else {
-    	    	// Get user entry number of customers
-    			Assert.assertNotNull("tableHeaderIntegration userEntryCustomersNumber", userEntryCustomersNumber);
-               	// Create the table and display it.
-   		    	tableHeaderForm.setCustomersNumber(userEntryCustomersNumber);
-    		}
-	    	result = this.createTable(pathVarRestaurantId, pathVarUserAuthenticationId, tableHeaderForm);
-    	}
-		
-		return result;
 	}
 }

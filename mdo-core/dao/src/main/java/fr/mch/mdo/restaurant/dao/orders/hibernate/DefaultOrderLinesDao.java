@@ -80,7 +80,7 @@ public class DefaultOrderLinesDao extends DefaultDaoServices implements IOrderLi
 		ResultTransformer resultTransformer = new MdoAliasToBean(OrderLine.class, new String[] {
 			"id", "quantity", "unitPrice", "amount", 
 			"productSpecialCode.shortCode", "productSpecialCode.code.name", 
-			"product.code", "label"
+			"product.code", "product.colorRGB", "label"
 		});
 
 		result = super.findAllByQuery(Constants.HQL_ORDER_LINE_FIND_BY_DINNER_TABLE_ID, values, resultTransformer);

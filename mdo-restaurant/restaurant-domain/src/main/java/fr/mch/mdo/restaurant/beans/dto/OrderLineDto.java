@@ -113,7 +113,7 @@ public class OrderLineDto extends MdoDtoBean
 
 	@Override
 	public String toString() {
-		return "OrderLineDetails [quantity=" + quantity + ", code=" + code
+		return "OrderLineDto [quantity=" + quantity + ", code=" + code
 				+ ", label=" + label + ", unitPrice=" + unitPrice + ", amount="
 				+ amount + ", product=" + product + ", id=" + id + "]";
 	}
