@@ -39,9 +39,8 @@ public final class OrdersController //extends AbstractController
 	public static final String RESTAURANT_ID_TABLES_STATE_VIEW = "/{restaurantId}/tables/{state}/view";
 	public static final String RESTAURANT_ID_FIND_PRODUCT_CODE = "/{restaurantId}/find/product/{code}";
 	public static final String CREATE_TABLE_RESTAURANT_ID_USER_AUTHENTICATION_ID = "/create/table/{restaurantId}/{userAuthenticationId}";
-	public static final String UPDATE_TABLE_CREATION_DATE_NOW_ID = "/update/table/creation/date/now/{id}";
 	public static final String UPDATE_TABLE_ID_CUSTOMERS_NUMBER_CUSTOMERS_NUMBER = "/update/table/{id}/customers/number/{customersNumber}";
-	public static final String TABLE_ORDERS_SIZE_ID = "/table/orders/size/{id}";
+	public static final String TABLE_ORDERS_SIZE_ID = "/table/orders/size/{dinnerTableId}";
 	public static final String FIND_TABLE_ID = "/find/table/{id}";
 	public static final String DELETE_TABLE_ID = "/delete/table/{id}";
 	public static final String RESTAURANT_ID_USER_AUTHENTICATION_ID_TABLE_HEADER_BY_NUMBER_NUMBER = "/{restaurantId}/{userAuthenticationId}/table/header/by/number/{number}";
@@ -69,25 +68,9 @@ public final class OrdersController //extends AbstractController
 		return tables;
 	}
 
-	@RequestMapping(value = DELETE_ORDER_LINE_ID, method = RequestMethod.DELETE)
-	@ResponseBody
-	public AcknowledgmentMessage deleteOrderLine(@PathVariable Long id) {
-		AcknowledgmentMessage ack = new AcknowledgmentMessage();
-
-		try {
-			manager.deleteOrderLine(id);
-		} catch (MdoException e) {
-			ack.setType(AcknowledgmentMessage.Type.ERROR);
-			ack.setTitle("delete.order.line.error.ack.title");
-			ack.setMessage("delete.order.line.error.ack.message");
-		}
-		
-		return ack;
-	}
-
 	@RequestMapping(value = RESTAURANT_ID_TABLE_HEADER_BY_NUMBER_NUMBER, method = RequestMethod.GET)
 	@ResponseBody
-	public DinnerTableDto tableHeader(@PathVariable Long restaurantId, @PathVariable String number, Model model) throws MdoException {
+	public DinnerTableDto tableHeader(@PathVariable Long restaurantId, @PathVariable String number) throws MdoException {
 		
 		DinnerTableDto result = manager.findTableHeader(restaurantId, number);
 		
@@ -124,13 +107,6 @@ public final class OrdersController //extends AbstractController
 		return table;
 	}
 
-	@RequestMapping(value = TABLE_ORDERS_SIZE_ID)
-	@ResponseBody
-	public Integer tableOrdersSize(@PathVariable Long id) throws MdoException {
-		Integer result = manager.getTableOrdersSize(id);
-		return result;
-	}
-
 	@RequestMapping(value = UPDATE_TABLE_ID_CUSTOMERS_NUMBER_CUSTOMERS_NUMBER, method = RequestMethod.POST)
 	@ResponseBody
 	public AcknowledgmentMessage updateTableCustomersNumber(@PathVariable Long id, @PathVariable Integer customersNumber) {
@@ -143,13 +119,6 @@ public final class OrdersController //extends AbstractController
 			ack.setMessage("update.table.customers.number.error.ack.message");
 		}
 		return ack;
-	}
-
-	@RequestMapping(value = UPDATE_TABLE_CREATION_DATE_NOW_ID, method = RequestMethod.POST)
-	@ResponseBody
-	public AcknowledgmentMessage updateTableCreationDate(@PathVariable Long id) {
-		AcknowledgmentMessage message = null; //manager.updateTableCreationDate(id, new Date());
-		return message;
 	}
 
 	@RequestMapping(value = RESET_TABLE_DINNER_TABLE_ID, method = RequestMethod.POST)
@@ -179,11 +148,33 @@ public final class OrdersController //extends AbstractController
 		return table;
 	}
 
+	@RequestMapping(value = TABLE_ORDERS_SIZE_ID)
+	@ResponseBody
+	public Integer tableOrdersSize(@PathVariable Long dinnerTableId) throws MdoException {
+		Integer result = manager.getTableOrdersSize(dinnerTableId);
+		return result;
+	}
+
 	@RequestMapping(value = RESTAURANT_ID_FIND_PRODUCT_CODE, method = RequestMethod.GET)
 	@ResponseBody
 	public ProductDto findProduct(@PathVariable Long restaurantId, @PathVariable String code) throws MdoException {
 		ProductDto product = manager.findProduct(restaurantId, code);
 		return product;
+	}
+	
+	@RequestMapping(value = DELETE_ORDER_LINE_ID, method = RequestMethod.DELETE)
+	@ResponseBody
+	public AcknowledgmentMessage deleteOrderLine(@PathVariable Long id) {
+		AcknowledgmentMessage ack = new AcknowledgmentMessage();
+		try {
+			manager.deleteOrderLine(id);
+		} catch (MdoException e) {
+			ack.setType(AcknowledgmentMessage.Type.ERROR);
+			ack.setTitle("delete.order.line.error.ack.title");
+			ack.setMessage("delete.order.line.error.ack.message");
+		}
+		
+		return ack;
 	}
 
 	@RequestMapping(RESTAURANT_ID_TABLES_STATE_VIEW)

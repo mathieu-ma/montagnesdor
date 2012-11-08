@@ -2,6 +2,7 @@ package fr.mch.mdo.restaurant.services.business.utils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import fr.mch.mdo.logs.ILogger;
@@ -12,7 +13,9 @@ import fr.mch.mdo.restaurant.dao.beans.DinnerTable;
 import fr.mch.mdo.restaurant.dao.beans.OrderLine;
 import fr.mch.mdo.restaurant.dao.beans.Product;
 import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode;
+import fr.mch.mdo.restaurant.dao.beans.Restaurant;
 import fr.mch.mdo.restaurant.dao.beans.TableType;
+import fr.mch.mdo.restaurant.dao.beans.UserAuthentication;
 import fr.mch.mdo.restaurant.beans.dto.ProductDto;
 import fr.mch.mdo.restaurant.services.business.managers.assembler.ManagedTableType;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
@@ -110,23 +113,25 @@ public class DefaultOrdersDtoHelper implements IOrdersDtoHelper
 		BigDecimal quantitiesSum = BigDecimal.ZERO;
 		BigDecimal amountsSum = BigDecimal.ZERO;
 		List<OrderLineDto> orders = new ArrayList<OrderLineDto>();
-		for (OrderLine orderLine : table.getOrders()) {
-			OrderLineDto orderLineDto = new OrderLineDto();
-			
-			orderLineDto.setAmount(orderLine.getAmount());
-			String code = this.getCode(orderLine);
-			orderLineDto.setCode(code);
-			orderLineDto.setId(orderLine.getId());
-			orderLineDto.setLabel(orderLine.getLabel());
-			orderLineDto.setQuantity(orderLine.getQuantity());
-			orderLineDto.setUnitPrice(orderLine.getUnitPrice());
-			ProductDto product = this.productToProductDto(orderLine.getProduct());
-			orderLineDto.setProduct(product);
-
-			orders.add(orderLineDto);
-			
-			quantitiesSum = quantitiesSum.add(orderLineDto.getQuantity());
-			amountsSum = amountsSum.add(orderLineDto.getAmount());
+		if (table.getOrders() != null) {
+			for (OrderLine orderLine : table.getOrders()) {
+				OrderLineDto orderLineDto = new OrderLineDto();
+				
+				orderLineDto.setAmount(orderLine.getAmount());
+				String code = this.getCode(orderLine);
+				orderLineDto.setCode(code);
+				orderLineDto.setId(orderLine.getId());
+				orderLineDto.setLabel(orderLine.getLabel());
+				orderLineDto.setQuantity(orderLine.getQuantity());
+				orderLineDto.setUnitPrice(orderLine.getUnitPrice());
+				ProductDto product = this.productToProductDto(orderLine.getProduct());
+				orderLineDto.setProduct(product);
+	
+				orders.add(orderLineDto);
+				
+				quantitiesSum = quantitiesSum.add(orderLineDto.getQuantity());
+				amountsSum = amountsSum.add(orderLineDto.getAmount());
+			}
 		}
 		result.setOrders(orders);
 //		result.setAmountsSum(table.getAmountsSum());
@@ -173,5 +178,28 @@ public class DefaultOrdersDtoHelper implements IOrdersDtoHelper
 			result = Boolean.TRUE;
 		}
 		return result;
+	}
+
+	@Override
+	public DinnerTable buildTableReset(Long dinnerTableId, Long restaurantId, Long userAuthenticationId, String number, Integer customersNumber) {
+		DinnerTable result = new DinnerTable();
+		result.setId(dinnerTableId);
+		Restaurant restaurant = new Restaurant();
+		restaurant.setId(restaurantId);
+		result.setRestaurant(restaurant);
+		UserAuthentication userAuthentication = new UserAuthentication();
+		userAuthentication.setId(userAuthenticationId);
+		result.setUser(userAuthentication);
+		result.setRegistrationDate(new Date());
+		result.setCustomersNumber(customersNumber);
+		result.setNumber(number);
+
+		return result;
+	}
+
+	@Override
+	public fr.mch.mdo.restaurant.dto.beans.ProductDto findProduct(Product product) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

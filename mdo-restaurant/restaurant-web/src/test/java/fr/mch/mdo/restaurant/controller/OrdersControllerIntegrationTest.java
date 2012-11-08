@@ -1,5 +1,10 @@
 package fr.mch.mdo.restaurant.controller;
 
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.NumberFormat;
+import java.util.Date;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -7,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 
 import fr.mch.mdo.restaurant.beans.dto.AcknowledgmentMessage;
 import fr.mch.mdo.restaurant.beans.dto.DinnerTableDto;
+import fr.mch.mdo.restaurant.dto.beans.ProductDto;
 import fr.mch.mdo.restaurant.ui.forms.ResetTableForm;
 import fr.mch.mdo.restaurant.ui.forms.TableHeaderForm;
 import fr.mch.mdo.restaurant.web.AbstractControllerIntegrationTest;
@@ -22,8 +28,9 @@ public final class OrdersControllerIntegrationTest extends AbstractControllerInt
 	private static final String CUSTOMERS_NUMBER_PARAM_EXIST_TAKEAWAY_ORDERS_NOT_EMPTY = "E1";
 	private static final String CREATION_DATE_CUSTOMERS_NUMBER_PARAM_EXIST_TAKEAWAY_ORDERS_EMPTY_RESET_OK = "E1ROK";
 	private static final String CREATION_DATE_CUSTOMERS_NUMBER_PARAM_EXIST_TAKEAWAY_ORDERS_EMPTY_RESET_NOK = "E1RKO";
-	private static final String CREATION_DATE_CUSTOMERS_NUMBER_PARAM_NOT_EXIST_TAKEAWAY = null;
-	private static final String CREATION_DATE_CUSTOMERS_NUMBER_PARAM_NOT_EXIST_EAT_IN = null;
+	private static final String CREATION_DATE_CUSTOMERS_NUMBER_PARAM_NOT_EXIST_TAKEAWAY = "E1NE";
+	private static final String CREATION_DATE_CUSTOMERS_NUMBER_PARAM_NOT_EXIST_EAT_IN_1 = "12NE1";
+	private static final String CREATION_DATE_CUSTOMERS_NUMBER_PARAM_NOT_EXIST_EAT_IN_2 = "12NE2";
 	
     private DinnerTableDto tableHeader(Long restaurantId, Long userAuthenticationId, String tableNumber) {
     	ResponseEntity<DinnerTableDto> response = null;
@@ -130,22 +137,27 @@ public final class OrdersControllerIntegrationTest extends AbstractControllerInt
     	// The method resetTableCreationDateCustomersNumber is OK.
     	userEntryTableNumber = CREATION_DATE_CUSTOMERS_NUMBER_PARAM_EXIST_TAKEAWAY_ORDERS_EMPTY_RESET_OK;
     	table = this.tableHeader(pathVarRestaurantId, pathVarUserAuthenticationId, userEntryTableNumber, userEntryCustomersNumber);
+    	checkTableHeaderCreateOrReset(table);
     	// The table exists with empty orders.
     	// The method resetTableCreationDateCustomersNumber is NOK.
     	userEntryTableNumber = CREATION_DATE_CUSTOMERS_NUMBER_PARAM_EXIST_TAKEAWAY_ORDERS_EMPTY_RESET_NOK;
     	table = this.tableHeader(pathVarRestaurantId, pathVarUserAuthenticationId, userEntryTableNumber, userEntryCustomersNumber);
+    	checkTableHeaderCreateOrReset(table);
 
     	// The table does not exist but table type is take-away so create it.
     	userEntryTableNumber = CREATION_DATE_CUSTOMERS_NUMBER_PARAM_NOT_EXIST_TAKEAWAY;
     	table = this.tableHeader(pathVarRestaurantId, pathVarUserAuthenticationId, userEntryTableNumber, userEntryCustomersNumber);
+    	checkTableHeaderCreateOrReset(table);
     	// The table does not exist but table type is not take-away type.
     	// The userEntryCustomersNumber is not null.
-    	userEntryTableNumber = CREATION_DATE_CUSTOMERS_NUMBER_PARAM_NOT_EXIST_EAT_IN;
+    	userEntryTableNumber = CREATION_DATE_CUSTOMERS_NUMBER_PARAM_NOT_EXIST_EAT_IN_1;
     	table = this.tableHeader(pathVarRestaurantId, pathVarUserAuthenticationId, userEntryTableNumber, userEntryCustomersNumber);
+    	checkTableHeaderCreateOrReset(table);
     	// The table does not exist but table type is not take-away type.
     	// The userEntryCustomersNumber is null.
-    	userEntryTableNumber = CREATION_DATE_CUSTOMERS_NUMBER_PARAM_NOT_EXIST_EAT_IN;
+    	userEntryTableNumber = CREATION_DATE_CUSTOMERS_NUMBER_PARAM_NOT_EXIST_EAT_IN_2;
     	table = this.tableHeader(pathVarRestaurantId, pathVarUserAuthenticationId, userEntryTableNumber, null);
+    	checkTableHeaderCreateOrReset(table);
 	}
 	
 	private DinnerTableDto tableHeader(Long pathVarRestaurantId, Long pathVarUserAuthenticationId, 
@@ -217,7 +229,7 @@ public final class OrdersControllerIntegrationTest extends AbstractControllerInt
     			// If userEntryCustomersNumber is null then do not create the table.
     			// Ask to enter the customers number again with warning message.
     			if (userEntryCustomersNumber == null) {
-    				this.tableHeader(pathVarRestaurantId, pathVarUserAuthenticationId, 
+    				return this.tableHeader(pathVarRestaurantId, pathVarUserAuthenticationId, 
     						userEntryTableNumber, DEFAULT_CUSTOMERS_NUMBER);
     			}
     			
@@ -252,22 +264,57 @@ public final class OrdersControllerIntegrationTest extends AbstractControllerInt
 		Assert.assertNotNull("DinnerTableDto.takeaway", table.getTakeaway());
 	}
 	
-	private void checkTableHeaderResultExistOrdersEmpty(DinnerTableDto table) {
+	private void checkTableHeaderCreateOrReset(DinnerTableDto table) {
+		NumberFormat nf = NumberFormat.getInstance();
+		DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
+		
 		Assert.assertNotNull("DinnerTableDto", table);
 		Assert.assertFalse("DinnerTableDto.allowModifyOrdersAfterPrinting", table.getAllowModifyOrdersAfterPrinting());
 		Assert.assertNotNull("DinnerTableDto.amountPay", table.getAmountPay());
+		Assert.assertEquals("DinnerTableDto.amountPay", nf.format(BigDecimal.ZERO), nf.format(table.getAmountPay()));
 		Assert.assertNotNull("DinnerTableDto.amountsSum", table.getAmountsSum());
+		Assert.assertEquals("DinnerTableDto.amountsSum", nf.format(BigDecimal.ZERO), nf.format(table.getAmountsSum()));
 		Assert.assertNull("DinnerTableDto.cashingDate", table.getCashingDate());
 		Assert.assertNotNull("DinnerTableDto.customersNumber", table.getCustomersNumber());
 		Assert.assertNotNull("DinnerTableDto.id", table.getId());
 		Assert.assertNotNull("DinnerTableDto.number", table.getNumber());
 		Assert.assertNotNull("DinnerTableDto.orders", table.getOrders());
+		Assert.assertTrue("DinnerTableDto.orders", table.getOrders().isEmpty());
 		Assert.assertNull("DinnerTableDto.printingDate", table.getPrintingDate());
 		Assert.assertNotNull("DinnerTableDto.quantitiesSum", table.getQuantitiesSum());
+		Assert.assertEquals("DinnerTableDto.quantitiesSum", nf.format(BigDecimal.ZERO), nf.format(table.getQuantitiesSum()));
 		Assert.assertNotNull("DinnerTableDto.reduction", table.getReduction());
+		Assert.assertEquals("DinnerTableDto.reduction", nf.format(BigDecimal.ZERO), nf.format(table.getReduction()));
 		Assert.assertNotNull("DinnerTableDto.reductionRatio", table.getReductionRatio());
 		Assert.assertFalse("DinnerTableDto.reductionRatioManuallyChanged", table.getReductionRatioManuallyChanged());
-		Assert.assertNotNull("DinnerTableDto.registrationDate", table.getRegistrationDate());
+		// WARNING : this could be false if the test is launched between 23:59:59 and 00:00:01
+		Assert.assertEquals("DinnerTableDto.registrationDate", df.format(new Date()), df.format(table.getRegistrationDate()));
 		Assert.assertNotNull("DinnerTableDto.takeaway", table.getTakeaway());
 	}
+	
+	@Test
+	public void orders() {
+		Long pathVarRestaurantId = 1L;
+		Long pathVarDinnerTableId = 1L;
+		BigDecimal userEntryQuantities = new BigDecimal(2);
+		String userEntryCode = "#11";
+		String userEntryLabel = "";
+		BigDecimal userEntryUnitPrice = new BigDecimal(2.5);
+		
+		Assert.assertNotNull("User Entry Quantities", userEntryQuantities);
+		Assert.assertNotNull("User Entry code", userEntryCode);
+		Assert.assertNotNull("User Entry label", userEntryLabel);
+		Assert.assertNotNull("User Entry unit price", userEntryUnitPrice);
+		
+		ProductDto product = this.findProduct(pathVarRestaurantId, userEntryCode);
+	}
+	
+	public ProductDto findProduct(Long restaurantId, String code) {
+        StringBuilder sb = new StringBuilder(context).append(OrdersController.RESTAURANT_ID_FIND_PRODUCT_CODE);
+        ProductDto result = restTemplate.getForObject(sb.toString(), ProductDto.class, restaurantId, code);
+    	Assert.assertNotNull(result);
+    	Assert.assertEquals("ProductDto code", code, result.getCode());
+    	return result;
+	}
+
 }

@@ -22,7 +22,6 @@ import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServices;
 import fr.mch.mdo.restaurant.dao.hibernate.TransactionSession;
 import fr.mch.mdo.restaurant.dao.tables.IDinnerTablesDao;
 import fr.mch.mdo.restaurant.exception.MdoDataBeanException;
-import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 
 public class DefaultDinnerTablesDao extends DefaultDaoServices implements IDinnerTablesDao 
@@ -373,7 +372,7 @@ public class DefaultDinnerTablesDao extends DefaultDaoServices implements IDinne
 	}
 
 	@Override
-	public void resetTableCreationDateCustomersNumber(Long dinnerTableId) throws MdoException {
+	public void resetTableCreationDateCustomersNumber(Long dinnerTableId) throws MdoDataBeanException {
 		Map<String, Object> fields = new HashMap<String, Object>();
 		fields.put("registrationDate", new Date());
 		fields.put("customersNumber", Integer.valueOf(0));
@@ -381,4 +380,19 @@ public class DefaultDinnerTablesDao extends DefaultDaoServices implements IDinne
 		keys.put("id", dinnerTableId);
 		super.updateFieldsByKeys(fields, keys);
 	}
+	
+	@Override
+	public void updateResetTable(DinnerTable table) throws MdoDataBeanException {
+		Map<String, Object> fields = new HashMap<String, Object>();
+		fields.put("restaurant.id", table.getRestaurant().getId());
+		fields.put("user.id", table.getUser().getId());
+		fields.put("registrationDate", table.getRegistrationDate());
+		fields.put("customersNumber", table.getCustomersNumber());
+		fields.put("type.id", table.getType().getId());
+		fields.put("reductionRatio", table.getReductionRatio());
+		Map<String, Object> keys = new HashMap<String, Object>();
+		keys.put("id", table.getId());
+		super.updateFieldsByKeys(fields, keys);
+	}
+
 }

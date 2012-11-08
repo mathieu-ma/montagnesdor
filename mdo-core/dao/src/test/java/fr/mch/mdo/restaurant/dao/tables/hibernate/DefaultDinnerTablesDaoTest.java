@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Connection;
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -730,5 +731,64 @@ public class DefaultDinnerTablesDaoTest extends DefaultDaoServicesTestCase
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
-	
+
+	public void testResetTable() {
+		IDinnerTablesDao iDinnerTablesDao = (IDinnerTablesDao) this.getInstance();
+		try {
+			Long dinnerTableId = Long.valueOf(1);
+			DinnerTable dinnerTable = (DinnerTable) iDinnerTablesDao.findByPrimaryKey(dinnerTableId);
+
+			Long restaurantIdBackup = dinnerTable.getRestaurant().getId();
+			Long userIdBackup = dinnerTable.getUser().getId();
+			Date registrationDateBackup = dinnerTable.getRegistrationDate();
+			Integer customersNumberBackup = dinnerTable.getCustomersNumber();
+			Long typeIdBackup = dinnerTable.getType().getId();
+			BigDecimal reductionRatioBackup = dinnerTable.getReductionRatio(); 
+
+			Long restaurantIdReset = 2L;
+			Long userIdReset = 1L;
+			Date registrationDateReset = new Date();
+			Integer customersNumberReset = 2000;
+			Long typeIdReset = 2L;
+			BigDecimal reductionRatioReset = BigDecimal.TEN;
+			
+			DinnerTable resetTable = new DinnerTable();
+			resetTable.setId(dinnerTableId);
+			Restaurant restaurant = new Restaurant();
+			restaurant.setId(restaurantIdReset);
+			resetTable.setRestaurant(restaurant);
+			UserAuthentication userAuthentication = new UserAuthentication();
+			userAuthentication.setId(userIdReset);
+			resetTable.setUser(userAuthentication);
+			resetTable.setRegistrationDate(registrationDateReset);
+			resetTable.setCustomersNumber(customersNumberReset);
+			resetTable.setNumber("test");
+			TableType type = new TableType();
+			type.setId(typeIdReset);
+			resetTable.setType(type);
+			resetTable.setReductionRatio(reductionRatioReset);
+			
+			iDinnerTablesDao.updateResetTable(resetTable);
+			DinnerTable updatedDinnerTable = (DinnerTable) iDinnerTablesDao.findByPrimaryKey(dinnerTableId);
+			DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
+			assertEquals("Check Dinner Table's restaurant updated value", restaurantIdReset, updatedDinnerTable.getRestaurant().getId());
+			assertEquals("Check Dinner Table's user updated value", userIdReset, updatedDinnerTable.getUser().getId());
+			assertEquals("Check Dinner Table's registrationDate updated value", df.format(new Date()), df.format(updatedDinnerTable.getRegistrationDate()));
+			assertEquals("Check Dinner Table's customersNumber updated value", customersNumberReset, updatedDinnerTable.getCustomersNumber());
+			assertEquals("Check Dinner Table's type updated value", typeIdReset, updatedDinnerTable.getType().getId());
+			NumberFormat nf = NumberFormat.getInstance();
+			assertEquals("Check Dinner Table's reductionRatio updated value", nf.format(reductionRatioReset.doubleValue()), nf.format(updatedDinnerTable.getReductionRatio().doubleValue()));
+
+			// Restore updated values
+			updatedDinnerTable.getRestaurant().setId(restaurantIdBackup);
+			updatedDinnerTable.getUser().setId(userIdBackup);
+			updatedDinnerTable.setRegistrationDate(registrationDateBackup);
+			updatedDinnerTable.setCustomersNumber(customersNumberBackup);
+			updatedDinnerTable.getType().setId(typeIdBackup);
+			updatedDinnerTable.setReductionRatio(reductionRatioBackup);
+			iDinnerTablesDao.update(updatedDinnerTable);
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
 }

@@ -1,5 +1,7 @@
 package fr.mch.mdo.restaurant.web.config;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import org.mockito.Mockito;
@@ -22,7 +24,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import fr.mch.mdo.logs.ILogger;
+import fr.mch.mdo.restaurant.beans.dto.DinnerTableDto;
+import fr.mch.mdo.restaurant.beans.dto.OrderLineDto;
+import fr.mch.mdo.restaurant.dto.beans.ProductDto;
+import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
+import fr.mch.mdo.restaurant.exception.MdoBusinessException;
+import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.services.business.managers.IOrdersManager;
+import fr.mch.mdo.restaurant.services.business.managers.TableState;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 
 @Configuration
@@ -76,10 +85,56 @@ public class MvcContextTestConfig extends WebMvcConfigurerAdapter {
 	}
 
     @Bean(name="OrdersManager")
-    public IOrdersManager ordersManager() {
+    public IOrdersManager ordersService() throws MdoException {
     	IOrdersManager result =  null;
     	result = Mockito.mock(IOrdersManager.class);
 //    	result = WebRestaurantBeanFactory.getInstance().getOrdersManager();
+
+    	Long restaurantId = 1L;
+    	Long userAuthenticationId = 1L;
+
+    	String state = TableState.ALTERABLE.name();
+    	List<DinnerTableDto> tables = new ArrayList<DinnerTableDto>();
+    	DinnerTableDto table = new DinnerTableDto();
+    	tables.add(table);
+    	Mockito.when(result.findAllTables(Mockito.eq(restaurantId), Mockito.eq(userAuthenticationId), Mockito.eq(TableState.valueOf(state)))).thenReturn(tables);
+    	tables = new ArrayList<DinnerTableDto>();
+    	table = new DinnerTableDto();
+    	tables.add(table);
+    	table = new DinnerTableDto();
+    	tables.add(table);
+    	Mockito.when(result.findAllTables(Mockito.eq(restaurantId), Mockito.eq((Long) null), Mockito.eq(TableState.valueOf(state)))).thenReturn(tables);
+    	
+    	table = new DinnerTableDto();
+    	table.setId(1L);
+    	table.setNumber("1");
+    	table.setCustomersNumber(2);
+    	List<OrderLineDto> orders = new ArrayList<OrderLineDto>();
+    	OrderLineDto order = new OrderLineDto();
+    	orders.add(order);
+    	table.setOrders(orders);
+    	Mockito.when(result.findTableHeader(Mockito.eq(restaurantId), Mockito.eq(userAuthenticationId), Mockito.eq(table.getNumber()))).thenReturn(table);
+    	Mockito.when(result.findTableHeader(Mockito.eq(restaurantId), Mockito.eq(table.getNumber()))).thenReturn(table);
+    	Mockito.when(result.getTableOrdersSize(Mockito.eq(table.getId()))).thenReturn(orders.size());
+
+    	Mockito.when(result.createTable(Mockito.eq(restaurantId), Mockito.eq(userAuthenticationId), Mockito.eq(table.getNumber()), Mockito.eq(table.getCustomersNumber()))).thenReturn(table);
+    	
+    	Mockito.when(result.findTable(Mockito.eq(table.getId()), Mockito.any(Locale.class))).thenReturn(table);
+    	
+    	Mockito.doThrow(new MdoBusinessException("test")).when(result).resetTable(Mockito.eq(table.getId()), Mockito.eq(restaurantId), Mockito.eq(userAuthenticationId), Mockito.eq(table.getNumber()), Mockito.eq(table.getCustomersNumber()));
+
+    	Mockito.doThrow(new MdoBusinessException("test")).when(result).updateTableCustomersNumber(Mockito.eq(table.getId()), Mockito.eq(table.getCustomersNumber()));
+    	
+    	Mockito.doThrow(new MdoBusinessException("test")).when(result).deleteOrderLine(Mockito.eq(table.getId()));
+    	
+    	String productCode = "11";
+    	ProductDto product = new ProductDto();
+    	RestaurantDto restaurant = new RestaurantDto();
+    	restaurant.setId(restaurantId);
+    	product.setRestaurant(restaurant);
+    	product.setCode(productCode);
+    	Mockito.when(result.findProduct(Mockito.eq(restaurantId), Mockito.eq(productCode))).thenReturn(product);
+    	
     	return result;
-    }
+    }    
 }

@@ -227,4 +227,12 @@ public interface IDinnerTablesDao extends IDaoServices
 	 * @throws MdoException any exception occurs.
 	 */
 	void resetTableCreationDateCustomersNumber(Long dinnerTableId) throws MdoException;
+
+	/**
+	 * Update dinner table.
+	 *  
+	 * @param table the dinner table.
+	 * @throws MdoException any exception occurs.
+	 */
+	void updateResetTable(DinnerTable table) throws MdoException;
 }

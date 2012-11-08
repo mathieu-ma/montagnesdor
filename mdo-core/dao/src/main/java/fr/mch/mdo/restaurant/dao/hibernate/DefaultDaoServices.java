@@ -619,8 +619,11 @@ public abstract class DefaultDaoServices extends MdoDaoBase implements IDaoServi
 				Session session = transactionSession.getSession();
 				StringBuilder query = new StringBuilder("UPDATE " + clazz.getName() + " bean ");
 				query.append(" SET ");
+				Map<String, Object> renamedFields = new HashMap<String, Object>();
 				for (String key : fields.keySet()) {
-					query.append(" bean.").append(key).append("=:").append(key).append(",");
+					String renamedKey = key.replace(".", "_");
+					query.append(" bean.").append(key).append("=:").append(renamedKey).append(",");
+					renamedFields.put(renamedKey, fields.get(key));
 				}
 				query.deleteCharAt(query.lastIndexOf(","));
 				query.append(" WHERE 1=1 ");
@@ -632,7 +635,7 @@ public abstract class DefaultDaoServices extends MdoDaoBase implements IDaoServi
 				}
 
 				Query hQuery = session.createQuery(query.toString());
-				hQuery.setProperties(fields);
+				hQuery.setProperties(renamedFields);
 				hQuery.setProperties(renamedKeys);
 				
 				hQuery.executeUpdate();

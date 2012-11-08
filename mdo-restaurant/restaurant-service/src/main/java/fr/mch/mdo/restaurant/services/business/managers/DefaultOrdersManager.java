@@ -2,7 +2,6 @@ package fr.mch.mdo.restaurant.services.business.managers;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -12,11 +11,10 @@ import fr.mch.mdo.restaurant.beans.dto.DinnerTableDto;
 import fr.mch.mdo.restaurant.dao.IDaoServices;
 import fr.mch.mdo.restaurant.dao.beans.DinnerTable;
 import fr.mch.mdo.restaurant.dao.beans.OrderLine;
-import fr.mch.mdo.restaurant.dao.beans.Restaurant;
+import fr.mch.mdo.restaurant.dao.beans.Product;
 import fr.mch.mdo.restaurant.dao.beans.RestaurantPrefixTable;
 import fr.mch.mdo.restaurant.dao.beans.RestaurantReductionTable;
 import fr.mch.mdo.restaurant.dao.beans.TableType;
-import fr.mch.mdo.restaurant.dao.beans.UserAuthentication;
 import fr.mch.mdo.restaurant.dao.locales.ILocalesDao;
 import fr.mch.mdo.restaurant.dao.locales.hibernate.DefaultLocalesDao;
 import fr.mch.mdo.restaurant.dao.orders.IOrderLinesDao;
@@ -277,8 +275,11 @@ public class DefaultOrdersManager extends AbstractRestaurantManager implements I
 	@Override
 	public ProductDto findProduct(Long restaurantId, String code) throws MdoBusinessException {
 		ProductDto result = null;
+ 		// Check product special code
+		// Check product
 		try {
-			productsDao.find(restaurantId, code);
+			Product product  = (Product) productsDao.find(restaurantId, code);
+			result = helper.findProduct(product);
 		} catch (MdoException e) {
 			logger.error("message.error.business.DefaultOrdersManager.findProduct", new Object[]{ restaurantId, code }, e);
 			throw new MdoBusinessException("message.error.business.DefaultOrdersManager.findProduct", new Object[]{ restaurantId, code }, e);
@@ -461,7 +462,7 @@ public class DefaultOrdersManager extends AbstractRestaurantManager implements I
 		DinnerTable table = this.prepareTableResetAndCreation(dinnerTableId, restaurantId, userAuthenticationId, number, customersNumber);
 		try {
 			// 1 for updating
-			dao.update(table, true);
+			((IDinnerTablesDao) dao).updateResetTable(table);
 		} catch (MdoException e) {
 			logger.error("message.error.business.DefaultOrdersManager.resetTable", new Object[]{ dinnerTableId }, e);
 			throw new MdoBusinessException("message.error.business.DefaultOrdersManager.resetTable", new Object[]{ dinnerTableId }, e);
@@ -469,28 +470,19 @@ public class DefaultOrdersManager extends AbstractRestaurantManager implements I
 	}
 
 	private DinnerTable prepareTableResetAndCreation(Long dinnerTableId, Long restaurantId,	Long userAuthenticationId, String number, Integer customersNumber) throws MdoBusinessException {
-		DinnerTable result = new DinnerTable();
-		result.setId(dinnerTableId);
-		Restaurant restaurant = new Restaurant();
-		restaurant.setId(restaurantId);
-		result.setRestaurant(restaurant);
-		UserAuthentication userAuthentication = new UserAuthentication();
-		userAuthentication.setId(userAuthenticationId);
-		result.setUser(userAuthentication);
-		result.setRegistrationDate(new Date());
-		result.setCustomersNumber(customersNumber);
-		result.setNumber(number);
+		DinnerTable result = helper.buildTableReset(dinnerTableId, restaurantId, userAuthenticationId, number, customersNumber);
+		
 		// 3 requests to perform: 
 		// 2 for TableType 
 		TableType type = this.findTableTypeByTableNumber(restaurantId, number);
 		result.setType(type);
 		// 1 for RestaurantReductionTable
+		BigDecimal reductionRatio = BigDecimal.ZERO;
 		RestaurantReductionTable reductionTable = this.findReductionTableByUniqueKey(restaurantId, type.getId());
 		if (reductionTable != null) {
-			BigDecimal reductionRatio = this.getReductionRatio(BigDecimal.ZERO, reductionTable.getMinAmount(), reductionTable.getValue());
-			result.setReductionRatio(reductionRatio);
+			reductionRatio = this.getReductionRatio(BigDecimal.ZERO, reductionTable.getMinAmount(), reductionTable.getValue());
 		}
+		result.setReductionRatio(reductionRatio);
 		return result;
 	}
-
 }
