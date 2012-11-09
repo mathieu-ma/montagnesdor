@@ -150,7 +150,7 @@ public class ProductSpecialCodeDto extends MdoDtoBean implements IBeanLabelable
 
 	@Override
 	public String toString() {
-		return "ProductSpecialCode [code=" + code + ", labels=" + labels + ", restaurant=" + restaurant 
+		return "ProductSpecialCodeDto [code=" + code + ", labels=" + labels + ", restaurant=" + restaurant 
 				+ ", shortCode=" + shortCode 
 				+ ", vat=" + vat 
 				+ ", id=" + id + "]";

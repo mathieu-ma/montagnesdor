@@ -9,6 +9,7 @@ import fr.mch.mdo.logs.ILogger;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.dto.DinnerTableDto;
 import fr.mch.mdo.restaurant.beans.dto.OrderLineDto;
+import fr.mch.mdo.restaurant.beans.dto.ProductDto;
 import fr.mch.mdo.restaurant.dao.beans.DinnerTable;
 import fr.mch.mdo.restaurant.dao.beans.OrderLine;
 import fr.mch.mdo.restaurant.dao.beans.Product;
@@ -16,7 +17,6 @@ import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode;
 import fr.mch.mdo.restaurant.dao.beans.Restaurant;
 import fr.mch.mdo.restaurant.dao.beans.TableType;
 import fr.mch.mdo.restaurant.dao.beans.UserAuthentication;
-import fr.mch.mdo.restaurant.beans.dto.ProductDto;
 import fr.mch.mdo.restaurant.services.business.managers.assembler.ManagedTableType;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 

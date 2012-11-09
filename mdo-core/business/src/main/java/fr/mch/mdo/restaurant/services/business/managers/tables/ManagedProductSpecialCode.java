@@ -8,7 +8,6 @@ import fr.mch.mdo.restaurant.dao.products.IProductsDao;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.OrderLineDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductDto;
-import fr.mch.mdo.restaurant.dto.beans.ProductSpecialCodeDto;
 import fr.mch.mdo.restaurant.dto.beans.ValueAddedTaxDto;
 import fr.mch.mdo.restaurant.exception.MdoException;
 
@@ -107,4 +106,13 @@ public enum ManagedProductSpecialCode {
 		}
 	}
 
+	public static ManagedProductSpecialCode getEnum(String name) {
+		ManagedProductSpecialCode result = null;
+		try {
+			result = ManagedProductSpecialCode.valueOf(name);
+		} catch (IllegalArgumentException e) {
+			// Do nothing.
+		}
+		return result;
+	}
 }

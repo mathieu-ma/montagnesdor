@@ -165,11 +165,11 @@ public final class OrdersControllerTest extends AbstractControllerTest
     @Test
 	public void findProduct() {
     	Long restaurantId = 1L; 
-    	String code = "11";
+    	String orderCode = "11";
         StringBuilder sb = new StringBuilder(context).append(OrdersController.RESTAURANT_ID_FIND_PRODUCT_CODE);
-        ProductDto product = restTemplate.getForObject(sb.toString(), ProductDto.class, restaurantId, code);
+        ProductDto product = restTemplate.getForObject(sb.toString(), ProductDto.class, restaurantId, orderCode);
     	Assert.assertNotNull(product);
-    	Assert.assertEquals("ProductDto code", code, product.getCode());
+    	Assert.assertEquals("ProductDto orderCode", orderCode, product.getCode());
 	}
 
 	@Test

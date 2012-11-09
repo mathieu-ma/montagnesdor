@@ -243,7 +243,7 @@ INSERT INTO t_product_part VALUES(1, 26, false);
 --COMMENT ON COLUMN t_product.pdt_colorRGB IS 'This is the highlight color product line see table t_order_line. The value is formatted as css color like xxyyzz.';
 --COMMENT ON COLUMN t_product.vat_id IS 'This is a foreign key that refers to t_value_added_tax. It is used to specify the product value added tax.';
 --COMMENT ON COLUMN t_product.pdt_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_product VALUES(1, 1, '11', 3.50, null, 1, false);
+INSERT INTO t_product VALUES(1, 1, '11', 3.50, '0B0B0B', 1, false);
 INSERT INTO t_product VALUES(2, 1, '12', 43.50, null, 1, false);
 INSERT INTO t_product VALUES(3, 1, '13', 4.50, null, 1, false);
 
@@ -318,6 +318,14 @@ INSERT INTO t_dinner_table (dtb_id, res_id, dtb_code, aut_id, roo_id, dtb_custom
 VALUES (8, 2, '25', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:23', null, false, 1, false);
 INSERT INTO t_dinner_table (dtb_id, res_id, dtb_code, aut_id, roo_id, dtb_customers_number, dtb_quantities_sum, dtb_amounts_sum, dtb_reduction_ratio, dtb_amount_pay, dtb_registration_date, dtb_printing_date, dtb_reduction_ratio_changed, tbt_id, dtb_deleted) 
 VALUES (9, 1, '101', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:19', '1970-08-15 16:08:19', false, 1, false);
+INSERT INTO t_dinner_table (dtb_id, res_id, dtb_code, aut_id, roo_id, dtb_customers_number, dtb_quantities_sum, dtb_amounts_sum, dtb_reduction_ratio, dtb_amount_pay, dtb_registration_date, dtb_printing_date, dtb_reduction_ratio_changed, tbt_id, dtb_deleted) 
+VALUES (10, 1, '12NOK', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:19', null, false, 1, false);
+INSERT INTO t_dinner_table (dtb_id, res_id, dtb_code, aut_id, roo_id, dtb_customers_number, dtb_quantities_sum, dtb_amounts_sum, dtb_reduction_ratio, dtb_amount_pay, dtb_registration_date, dtb_printing_date, dtb_reduction_ratio_changed, tbt_id, dtb_deleted) 
+VALUES (11, 1, 'E1', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:19', null, false, 2, false);
+INSERT INTO t_dinner_table (dtb_id, res_id, dtb_code, aut_id, roo_id, dtb_customers_number, dtb_quantities_sum, dtb_amounts_sum, dtb_reduction_ratio, dtb_amount_pay, dtb_registration_date, dtb_printing_date, dtb_reduction_ratio_changed, tbt_id, dtb_deleted) 
+VALUES (12, 1, 'E1ROK', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:19', null, false, 2, false);
+INSERT INTO t_dinner_table (dtb_id, res_id, dtb_code, aut_id, roo_id, dtb_customers_number, dtb_quantities_sum, dtb_amounts_sum, dtb_reduction_ratio, dtb_amount_pay, dtb_registration_date, dtb_printing_date, dtb_reduction_ratio_changed, tbt_id, dtb_deleted) 
+VALUES (13, 1, 'E1RKO', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:19', null, false, 2, false);
 
 --COMMENT ON TABLE t_order_line IS 'This table is used for order lines depending on the specific dinner table.';
 --COMMENT ON COLUMN t_order_line.orl_id IS 'This is primary key of this table.';
@@ -335,6 +343,10 @@ VALUES (9, 1, '101', 1, null, 2, 3, 23, 0, 23, '1970-08-15 15:08:19', '1970-08-1
 INSERT INTO t_order_line VALUES(1, 1, 1, 1, 1, 1, 1, 2.5, 'Nems', 5.4, 13.5, false);
 INSERT INTO t_order_line VALUES(2, 1, 1, 1, 1, 1, 1, 5, 'Nems', 5, 25, false);
 INSERT INTO t_order_line VALUES(3, 1, 1, null, null, null, 1, 4, 'Roule Ma Poule', 6.66, 26.64, false);
+INSERT INTO t_order_line VALUES(4, 10, 1, 1, 1, 1, 1, 2.5, 'Nems', 5.4, 13.5, false);
+INSERT INTO t_order_line VALUES(5, 10, 1, 1, 1, 1, 1, 5, 'Nems', 5, 25, false);
+INSERT INTO t_order_line VALUES(6, 10, 1, null, null, null, 1, 4, 'Roule Ma Poule', 6.66, 26.64, false);
+INSERT INTO t_order_line VALUES(7, 11, 1, 1, 1, 1, 1, 5, 'Nems', 5, 25, false);
 
 --COMMENT ON TABLE t_table_credit IS 'This table is used for dinner table credits. This table is used for credits dinner tables association. For a given dinner table, we could have several credits but often just one. These credits must have the cre_closing_date value equals to null.';
 --COMMENT ON COLUMN t_table_credit.tcr_id IS 'This is primary key of this table.';

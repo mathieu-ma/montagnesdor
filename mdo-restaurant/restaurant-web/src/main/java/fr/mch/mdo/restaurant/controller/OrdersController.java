@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import fr.mch.mdo.restaurant.beans.dto.AcknowledgmentMessage;
 import fr.mch.mdo.restaurant.beans.dto.DinnerTableDto;
-import fr.mch.mdo.restaurant.dto.beans.ProductDto;
+import fr.mch.mdo.restaurant.beans.dto.OrderLineDto;
 import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.services.business.managers.IOrdersManager;
 import fr.mch.mdo.restaurant.services.business.managers.TableState;
@@ -37,7 +37,7 @@ public final class OrdersController //extends AbstractController
 	public static final String DELETE_TABLE_ID_VIEW = "/delete/table/{id}/view";
 	public static final String RESTAURANT_ID_USER_AUTHENTICATION_ID_TABLES_STATE_VIEW = "/{restaurantId}/{userAuthenticationId}/tables/{state}/view";
 	public static final String RESTAURANT_ID_TABLES_STATE_VIEW = "/{restaurantId}/tables/{state}/view";
-	public static final String RESTAURANT_ID_FIND_PRODUCT_CODE = "/{restaurantId}/find/product/{code}";
+	public static final String RESTAURANT_ID_FIND_PRODUCT_CODE = "/{restaurantId}/find/product/{orderCode}";
 	public static final String CREATE_TABLE_RESTAURANT_ID_USER_AUTHENTICATION_ID = "/create/table/{restaurantId}/{userAuthenticationId}";
 	public static final String UPDATE_TABLE_ID_CUSTOMERS_NUMBER_CUSTOMERS_NUMBER = "/update/table/{id}/customers/number/{customersNumber}";
 	public static final String TABLE_ORDERS_SIZE_ID = "/table/orders/size/{dinnerTableId}";
@@ -157,9 +157,9 @@ public final class OrdersController //extends AbstractController
 
 	@RequestMapping(value = RESTAURANT_ID_FIND_PRODUCT_CODE, method = RequestMethod.GET)
 	@ResponseBody
-	public ProductDto findProduct(@PathVariable Long restaurantId, @PathVariable String code) throws MdoException {
-		ProductDto product = manager.findProduct(restaurantId, code);
-		return product;
+	public OrderLineDto findProduct(@PathVariable Long restaurantId, @PathVariable String orderCode) throws MdoException {
+		OrderLineDto orderLine = manager.getOrderLine(restaurantId, orderCode);
+		return orderLine;
 	}
 	
 	@RequestMapping(value = DELETE_ORDER_LINE_ID, method = RequestMethod.DELETE)

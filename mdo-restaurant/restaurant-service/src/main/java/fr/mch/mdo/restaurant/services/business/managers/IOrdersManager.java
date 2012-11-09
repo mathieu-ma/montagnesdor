@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.Locale;
 
 import fr.mch.mdo.restaurant.beans.dto.DinnerTableDto;
-import fr.mch.mdo.restaurant.dto.beans.ProductDto;
+import fr.mch.mdo.restaurant.beans.dto.OrderLineDto;
+import fr.mch.mdo.restaurant.beans.dto.ProductSpecialCodeDto;
 import fr.mch.mdo.restaurant.exception.MdoException;
 
 public interface IOrdersManager 
@@ -19,7 +20,7 @@ public interface IOrdersManager
 
 	void deleteTable(Long id) throws MdoException;
 	
-	ProductDto findProduct(Long restaurantId, String code) throws MdoException;
+	OrderLineDto getOrderLine(Long restaurantId, String orderCode) throws MdoException;
 
 	void deleteOrderLine(Long id) throws MdoException;
 
@@ -46,6 +47,7 @@ public interface IOrdersManager
 
 	void resetTableCreationDateCustomersNumber(Long dinnerTableId) throws MdoException;
 
-	void resetTable(Long dinnerTableId, Long restaurantId, Long userAuthenticationId, String number,
-			Integer customersNumber) throws MdoException;
+	void resetTable(Long dinnerTableId, Long restaurantId, Long userAuthenticationId, String number, Integer customersNumber) throws MdoException;
+
+	ProductSpecialCodeDto getProductSpecialCode(Long restaurantId, String productSpecialShortCode) throws MdoException;
 }

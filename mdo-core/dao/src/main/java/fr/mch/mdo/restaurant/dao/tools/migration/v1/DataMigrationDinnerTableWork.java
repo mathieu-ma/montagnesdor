@@ -215,8 +215,8 @@ public class DataMigrationDinnerTableWork extends DataMigrationWork
 							" t_value_added_tax " +
 							" WHERE 1=1 " +
 							" AND product_part_enum.enm_language_key_label='PRODUCT_PART.MISCELLANEOUS.0' " +
-							" AND t_product.pdt_code= " + this.getProductV1ToV2(productSpecialCodeV1ToV2, orderLine.getProduct().getCode(), orderLine.getProductSpecialCode().getCode().getLanguageKeyLabel()) + "" +
-							" AND product_special_code_enum.enm_language_key_label='" + this.getProductSpecialCodeV1ToV2(productSpecialCodeV1ToV2, orderLine.getProduct().getCode()) + "'" +
+							" AND t_product.pdt_code= " + super.getProductV1ToV2(productSpecialCodeV1ToV2, orderLine.getProduct().getCode(), orderLine.getProductSpecialCode().getCode().getLanguageKeyLabel()) + "" +
+							" AND product_special_code_enum.enm_language_key_label='" + super.getProductSpecialCodeV1ToV2(productSpecialCodeV1ToV2, orderLine.getProduct().getCode()) + "'" +
 							" AND restaurant_psc.res_reference = '" + restaurantReference + "'" +
 							" AND t_dinner_table.dtb_code='" + table.getNumber() + "'" +
 							" AND t_dinner_table.dtb_registration_date=" + this.formatDate(sdfTimes, table.getRegistrationDate()) + "" +
