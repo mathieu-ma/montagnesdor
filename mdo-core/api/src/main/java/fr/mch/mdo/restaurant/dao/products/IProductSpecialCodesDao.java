@@ -4,6 +4,7 @@ import java.util.List;
 
 import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.dao.IDaoServices;
+import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode;
 import fr.mch.mdo.restaurant.exception.MdoException;
 
 public interface IProductSpecialCodesDao extends IDaoServices
@@ -14,6 +15,7 @@ public interface IProductSpecialCodesDao extends IDaoServices
 
     /**
      * This method is used to find the ProductSpecialCode bean by the specific code name and restaurant id.
+     * 
      * @param restaurantId the restaurant id.
      * @param codeName the code name.
      * @return the ProductSpecialCode bean.
@@ -23,6 +25,7 @@ public interface IProductSpecialCodesDao extends IDaoServices
 
     /**
      * This method is used to get only the id of the ProductSpecialCode bean by the specific code name and restaurant id.
+     * 
      * @param restaurantId the restaurant id.
      * @param codeName the code name.
      * @return the id
@@ -32,9 +35,10 @@ public interface IProductSpecialCodesDao extends IDaoServices
 
 	/**
 	 * Find the list of ProductSpecialCodes by restaurant Id.
+	 * 
 	 * @param restaurantId the restaurant id.
 	 * @return list of ProductSpecialCodes.
      * @throws MdoException when any exceptions occur
 	 */
-	List<IMdoBean> findAllByRestaurant(Long restaurantId) throws MdoException;
+	List<ProductSpecialCode> findAllByRestaurant(Long restaurantId) throws MdoException;
 }

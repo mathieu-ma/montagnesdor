@@ -23,6 +23,8 @@ public class OrderLineDto extends MdoDtoBean
     
     private ProductDto product;
     
+    private ProductSpecialCodeDto productSpecialCode;
+    
     public OrderLineDto()
     {
     }
@@ -111,11 +113,27 @@ public class OrderLineDto extends MdoDtoBean
 		this.product = product;
 	}
 
+	/**
+	 * @return the productSpecialCode
+	 */
+	public ProductSpecialCodeDto getProductSpecialCode() {
+		return productSpecialCode;
+	}
+
+	/**
+	 * @param productSpecialCode the productSpecialCode to set
+	 */
+	public void setProductSpecialCode(ProductSpecialCodeDto productSpecialCode) {
+		this.productSpecialCode = productSpecialCode;
+	}
+
 	@Override
 	public String toString() {
 		return "OrderLineDto [quantity=" + quantity + ", code=" + code
-				+ ", label=" + label + ", unitPrice=" + unitPrice + ", amount="
-				+ amount + ", product=" + product + ", id=" + id + "]";
+				+ ", label=" + label + ", unitPrice=" + unitPrice 
+				+ ", amount=" + amount + ", product=" + product 
+				+ ", productSpecialCode=" + productSpecialCode
+				+ ", id=" + id + "]";
 	}
 
 }

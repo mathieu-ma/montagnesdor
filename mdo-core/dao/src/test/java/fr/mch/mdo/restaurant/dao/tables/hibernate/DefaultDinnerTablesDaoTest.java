@@ -192,7 +192,7 @@ public class DefaultDinnerTablesDaoTest extends DefaultDaoServicesTestCase
 				} else {
 					List<DinnerTable> list = ((IDinnerTablesDao) this.getInstance()).findAllByPrefixNumber(restaurantId, "1");
 					assertNotNull("Check List of IMdoBean", list);
-					assertEquals("Check List of IMdoBean size", 2, list.size());
+					assertEquals("Check List of IMdoBean size", 3, list.size());
 					bean = list.get(0);
 				}
 				assertTrue("IMdoBean must be instance of " + DinnerTable.class, bean instanceof DinnerTable);

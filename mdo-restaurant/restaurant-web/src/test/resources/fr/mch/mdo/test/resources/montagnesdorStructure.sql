@@ -553,7 +553,7 @@ CREATE TABLE t_product_special_code (
   vat_id integer,
   psc_deleted BOOLEAN DEFAULT false NOT null,
   CONSTRAINT psc_id_uni UNIQUE (psc_id),
-  CONSTRAINT psc_psc_code_enum_id_uni UNIQUE (psc_code_enm_id),
+--  CONSTRAINT psc_psc_code_enum_id_uni UNIQUE (psc_code_enm_id),
   CONSTRAINT psc_res_id_psc_short_code_uni UNIQUE (res_id, psc_short_code),
   CONSTRAINT psc_res_id_psc_code_enum_id_uni UNIQUE (res_id, psc_code_enm_id),
 --  CONSTRAINT psc_res_id_psc_short_code_psc_enum_id_uni UNIQUE (res_id, psc_short_code, psc_code_enm_id),
@@ -564,9 +564,9 @@ CREATE TABLE t_product_special_code (
 -- COMMENT Statement is used for PostGresql but this is also compatible with HSQLDB 2.0.
 COMMENT ON TABLE t_product_special_code IS 'This table is used for product special code.';
 COMMENT ON COLUMN t_product_special_code.psc_id IS 'This is primary key of this table.';
-COMMENT ON COLUMN t_product_special_code.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant.';
-COMMENT ON COLUMN t_product_special_code.psc_short_code IS 'This is used to specify the short code enter by user.';
-COMMENT ON COLUMN t_product_special_code.psc_code_enm_id IS 'This is a foreign key that refers to t_enum. It is used to specify the product special code.';
+COMMENT ON COLUMN t_product_special_code.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant. This field and the other psc_code_enm_id field consist of a unique field. And so, this field and the other psc_short_code field consist of a unique field.';
+COMMENT ON COLUMN t_product_special_code.psc_short_code IS 'This is used to specify the short code enter by user. This field behaves as the field psc_code_enm_id but it is used as user entry constant. This field and the other res_id field consist of a unique field.';
+COMMENT ON COLUMN t_product_special_code.psc_code_enm_id IS 'This is a foreign key that refers to t_enum. It is used to specify the product special code. This field behaves as the field psc_short_code but it is used as business constant. This field and the other res_id field consist of a unique field.';
 COMMENT ON COLUMN t_product_special_code.vat_id IS 'This is a foreign key that refers to t_value_added_tax. It is used to specify the product special code value added tax.';
 COMMENT ON COLUMN t_product_special_code.psc_deleted IS 'This is used for logical deletion.';
 -- For PostGresql, the sequence is marked as "*{OWNED BY" the column, so that it will be dropped if the column or table is dropped.
@@ -655,8 +655,8 @@ CREATE TABLE t_product (
 -- COMMENT Statement is used for PostGresql but this is also compatible with HSQLDB 2.0.
 COMMENT ON TABLE t_product IS 'This table is used for product.';
 COMMENT ON COLUMN t_product.pdt_id IS 'This is primary key of this table.';
-COMMENT ON COLUMN t_product.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant.';
-COMMENT ON COLUMN t_product.pdt_code IS 'This is product code.';
+COMMENT ON COLUMN t_product.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant. This field and the other pdt_code field consist of a unique field.';
+COMMENT ON COLUMN t_product.pdt_code IS 'This is product code. This field and the other res_id field consist of a unique field.';
 COMMENT ON COLUMN t_product.pdt_price IS 'This is product price.';
 COMMENT ON COLUMN t_product.pdt_colorRGB IS 'This is the highlight color product line see table t_order_line. The value is formatted as css color like xxyyzz.';
 COMMENT ON COLUMN t_product.vat_id IS 'This is a foreign key that refers to t_value_added_tax. It is used to specify the product value added tax.';
@@ -813,7 +813,7 @@ CREATE SEQUENCE t_order_line_orl_id_seq;
 CREATE TABLE t_order_line (
   orl_id integer *{DEFAULT NEXTVAL('t_order_line_orl_id_seq')} NOT null PRIMARY KEY,
   dtb_id integer NOT null,
-  psc_id integer NOT null,
+  psc_id integer,
   pdt_id integer,
   cre_id integer,
   prp_id integer,
@@ -829,13 +829,15 @@ CREATE TABLE t_order_line (
   CONSTRAINT orl_pdt_id_fk FOREIGN KEY (pdt_id) REFERENCES t_product (pdt_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
   CONSTRAINT orl_cre_id_fk FOREIGN KEY (cre_id) REFERENCES t_credit (cre_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
   CONSTRAINT orl_prp_id_fk FOREIGN KEY (prp_id) REFERENCES t_product_part (prp_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
-  CONSTRAINT orl_vat_id_fk FOREIGN KEY (vat_id) REFERENCES t_value_added_tax (vat_id) ON UPDATE RESTRICT ON DELETE RESTRICT
+  CONSTRAINT orl_vat_id_fk FOREIGN KEY (vat_id) REFERENCES t_value_added_tax (vat_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CHECK ((psc_id IS NOT null) OR (psc_id IS null AND pdt_id IS NOT null)),
+  CHECK ((pdt_id IS NOT null) OR (pdt_id IS null AND psc_id IS NOT null))
 );
 -- COMMENT Statement is used for PostGresql but this is also compatible with HSQLDB 2.0.
 COMMENT ON TABLE t_order_line IS 'This table is used for order lines depending on the specific dinner table.';
 COMMENT ON COLUMN t_order_line.orl_id IS 'This is primary key of this table.';
 COMMENT ON COLUMN t_order_line.dtb_id IS 'This is a foreign key that refers to t_dinner_table. It is used to specify the dinner table.';
-COMMENT ON COLUMN t_order_line.psc_id IS 'This is a foreign key that refers to t_product_special_code. It is used to specify the product special code. This code is never null, it takes a default value with "". The code could be for example "/", "-", "#", "@".';
+COMMENT ON COLUMN t_order_line.psc_id IS 'This is a foreign key that refers to t_product_special_code. It is used to specify the product special code. This code could be null. But if this code is null then the pdt_id must not be null. The code could be for example "/", "-", "#", "@".';
 COMMENT ON COLUMN t_order_line.pdt_id IS 'This is a foreign key that refers to t_product. It is used to specify the product. If this field is null then the order line depends on the product special code psc_id which must not be null.';
 COMMENT ON COLUMN t_order_line.cre_id IS 'This is a foreign key that refers to t_credit. It is used to specify the credit consumed. If this field is NOT null then the order line depends on the product special code psc_id which must not be null with code value equals to @.';
 COMMENT ON COLUMN t_order_line.prp_id IS 'This is a foreign key that refers to t_product_part. It is used to specify the product part the order line belongs: ENTREE, PLAT or DESSERT for example.';

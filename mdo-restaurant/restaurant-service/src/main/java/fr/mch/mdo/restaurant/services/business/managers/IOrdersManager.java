@@ -2,8 +2,8 @@ package fr.mch.mdo.restaurant.services.business.managers;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
-import fr.mch.mdo.restaurant.beans.MdoEntry;
 import fr.mch.mdo.restaurant.beans.dto.DinnerTableDto;
 import fr.mch.mdo.restaurant.beans.dto.OrderLineDto;
 import fr.mch.mdo.restaurant.beans.dto.ProductSpecialCodeDto;
@@ -51,5 +51,15 @@ public interface IOrdersManager
 
 	void resetTable(Long dinnerTableId, Long restaurantId, Long userAuthenticationId, String number, Integer customersNumber) throws MdoException;
 
-	MdoEntry<ManagedProductSpecialCode, ProductSpecialCodeDto> getProductSpecialCode(Long restaurantId, String productSpecialShortCode) throws MdoException;
+	/**
+	 * This method is used to get product special code by order code.
+	 * It returns an entry map.
+	 * The key of the entry is the managed product special code and the value the corresponding product special code. 
+	 * 
+	 * @param restaurantId
+	 * @param orderCode
+	 * @return an entry map. The key of the entry is the managed product special code and the value the corresponding product special code.
+	 * @throws MdoException
+	 */
+	Map.Entry<ManagedProductSpecialCode, ProductSpecialCodeDto> getProductSpecialCode(Long restaurantId, String productSpecialShortCode) throws MdoException;
 }

@@ -148,11 +148,14 @@ public class DefaultProductsDao extends DefaultDaoServices implements IProductsD
 	
 	@Override
 	public IMdoBean delete(IMdoBean daoBean, boolean... isLazy) throws MdoDataBeanException {
+		Product product = (Product) daoBean;
 		// Delete first all categories.
 		Map<String, Object> keys = new HashMap<String, Object>();
-		keys.put("product.id", ((IMdoDaoBean) daoBean).getId());
+		keys.put("product.id", product.getId());
 		this.deleteByKeys(ProductCategory.class, keys);
+		// The categories are deleted then remove category references from bean:
+		product.setCategories(null);
 
-		return super.delete(daoBean, isLazy);
+		return super.delete(product, isLazy);
 	}
 }

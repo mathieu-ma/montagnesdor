@@ -6,13 +6,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.hibernate.criterion.Projections;
+import org.hibernate.transform.ResultTransformer;
 
 import fr.mch.mdo.logs.ILogger;
+import fr.mch.mdo.restaurant.Constants;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.dao.MdoTableAsEnumTypeDao;
 import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServices;
+import fr.mch.mdo.restaurant.dao.hibernate.MdoAliasToBean;
 import fr.mch.mdo.restaurant.dao.products.IProductSpecialCodesDao;
 import fr.mch.mdo.restaurant.exception.MdoDataBeanException;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
@@ -89,14 +92,18 @@ public class DefaultProductSpecialCodesDao extends DefaultDaoServices implements
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<IMdoBean> findAllByRestaurant(Long restaurantId) throws MdoDataBeanException {
-		List<IMdoBean> result = new ArrayList<IMdoBean>();
+	public List<ProductSpecialCode> findAllByRestaurant(Long restaurantId) throws MdoDataBeanException {
+		List<ProductSpecialCode> result = new ArrayList<ProductSpecialCode>();
 		
 		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
 		criterias.add(new MdoCriteria("restaurant.id", PropertiesRestrictions.EQUALS, restaurantId));
-		criterias.add(new MdoCriteria("code.order", PropertiesRestrictions.ORDER, Boolean.FALSE));
-		result = super.findByPropertiesRestrictions(criterias, false);
+
+		criterias.add(new MdoCriteria("id", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("shortCode", PropertiesRestrictions.PROJECTION));
+		criterias.add(new MdoCriteria("code.name", PropertiesRestrictions.PROJECTION));
+
+		result = super.findByCriteria(ProductSpecialCode.class, ProductSpecialCode.class, criterias, true);
+
 		return result;
 	}
-
 }

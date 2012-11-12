@@ -13,7 +13,7 @@ import fr.mch.mdo.restaurant.exception.MdoException;
 
 public enum ManagedProductSpecialCode {
 	
-	DEFAULT(""), OFFERED_PRODUCT("#") {
+	OFFERED_PRODUCT("#") {
 		public void fillOrderLine(MdoUserContext userContext, Product product, OrderLineDto orderLine) {
 			super.fillOrderLine(userContext, product, orderLine);
 			String label = orderLine.getLabel();
@@ -22,7 +22,35 @@ public enum ManagedProductSpecialCode {
 			orderLine.setLabel(label);
 			orderLine.setUnitPrice(BigDecimal.ZERO);
 		}
-	}, DISCOUNT_ORDER("-"),
+		
+		@Override
+		public boolean isOrderCodeManaged(String productSpecialCodeShortCode, String orderCode) {
+			boolean result = false;
+			
+			if (orderCode != null) {
+				// The user entry code starts with product special code short code.
+				result = orderCode.startsWith(productSpecialCodeShortCode);
+			}
+			
+			return result;
+		}
+		
+		@Override
+		public boolean mustCheckProductCode() {
+			return Boolean.TRUE;
+		}
+		
+		@Override
+		public String getProductCode(String productSpecialCodeShortCode, String orderCode) {
+			String result = null;
+			if (orderCode != null) {
+				int beginIndex = productSpecialCodeShortCode.length();
+				result = orderCode.substring(beginIndex);
+			}
+			return result;
+		}
+	}, 
+	DISCOUNT_ORDER("-"),
 	USER_ORDER("/") {
 		public Product getProductByCode(IProductsDao productsDao, Long restaurantId, Long localeId, String productCode) throws MdoException {
 			return null;
@@ -39,7 +67,34 @@ public enum ManagedProductSpecialCode {
 		public void postProcessCode(OrderLineDto orderLine) {
 			// Do nothing
 		}
-	}, CREDIT("@");
+		
+		@Override
+		public boolean isOrderCodeManaged(String productSpecialCodeShortCode, String orderCode) {
+			boolean result = false;
+			
+			if (orderCode != null) {
+				// The user entry code equals product special code short code.
+				// Note the productSpecialCodeShortCode is never null.
+				result = orderCode.equals(productSpecialCodeShortCode);
+			}
+			
+			return result;
+		}
+
+		@Override
+		public boolean mustCheckProductCode() {
+			return Boolean.FALSE;
+		}
+		
+		@Override
+		public String getProductCode(String productSpecialCodeShortCode, String orderCode) {
+			String result = null;
+			return result;
+		}
+	}, 
+	CREDIT("@");
+	
+	/** Currently not used, just here for reminder. */
 	private String code = "";
 	
 	ManagedProductSpecialCode(String code) {
@@ -106,6 +161,7 @@ public enum ManagedProductSpecialCode {
 		}
 	}
 
+	/////////////////////////////////////////////////////////////////// NEW //////////////////////////////////////////////
 	public static ManagedProductSpecialCode getEnum(String name) {
 		ManagedProductSpecialCode result = null;
 		try {
@@ -114,5 +170,36 @@ public enum ManagedProductSpecialCode {
 			// Do nothing.
 		}
 		return result;
+	}
+
+	/**
+	 * Check if the user code is managed by this enum. 
+	 * 
+	 * @param productSpecialCodeShortCode the database code to be checked.
+	 * @param orderCode the user entry code to be checked.
+	 * @return true if the user code is managed by this enum.
+	 */
+	public boolean isOrderCodeManaged(String productSpecialCodeShortCode, String orderCode) {
+		return false;
+	}
+
+	/**
+	 * Check if this enum has to check the product code.
+	 *  
+	 * @return true if this enum has to check the product code.
+	 */
+	public boolean mustCheckProductCode() {
+		return false;
+	}
+
+	/**
+	 * Get the product code by the user entry code and the database short code.
+	 * 
+	 * @param productSpecialCodeShortCode the database short code.
+	 * @param orderCode the user entry code.
+	 * @return the product code.
+	 */
+	public String getProductCode(String productSpecialCodeShortCode, String orderCode) {
+		return null;
 	}
 }

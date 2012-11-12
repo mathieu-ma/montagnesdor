@@ -10,6 +10,7 @@ import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.dto.DinnerTableDto;
 import fr.mch.mdo.restaurant.beans.dto.OrderLineDto;
 import fr.mch.mdo.restaurant.beans.dto.ProductDto;
+import fr.mch.mdo.restaurant.beans.dto.ProductSpecialCodeDto;
 import fr.mch.mdo.restaurant.dao.beans.DinnerTable;
 import fr.mch.mdo.restaurant.dao.beans.OrderLine;
 import fr.mch.mdo.restaurant.dao.beans.Product;
@@ -17,6 +18,7 @@ import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode;
 import fr.mch.mdo.restaurant.dao.beans.Restaurant;
 import fr.mch.mdo.restaurant.dao.beans.TableType;
 import fr.mch.mdo.restaurant.dao.beans.UserAuthentication;
+import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto;
 import fr.mch.mdo.restaurant.services.business.managers.assembler.ManagedTableType;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 
@@ -198,8 +200,22 @@ public class DefaultOrdersDtoHelper implements IOrdersDtoHelper
 	}
 
 	@Override
-	public fr.mch.mdo.restaurant.dto.beans.ProductDto findProduct(Product product) {
+	public ProductDto findProduct(Product product) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public ProductSpecialCodeDto fromProductSpecialCode(ProductSpecialCode productSpecialCode) {
+		ProductSpecialCodeDto result = new ProductSpecialCodeDto();
+		if (productSpecialCode != null) {
+			result.setId(productSpecialCode.getId());
+			result.setShortCode(productSpecialCode.getShortCode());
+			String codeName = productSpecialCode.getCode().getName();
+			MdoTableAsEnumDto code = new MdoTableAsEnumDto();
+			code.setName(codeName);
+			result.setCode(code);
+		}
+		return result;
 	}
 }

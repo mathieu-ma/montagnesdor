@@ -232,8 +232,11 @@ public class DefaultProductSpecialCodesDaoTest extends DefaultDaoServicesTestCas
 			assertNotNull("List of IMdoBean must not be null", list);
 			assertFalse("List of IMdoBean must not be empty", list.isEmpty());
 			ProductSpecialCode psc = (ProductSpecialCode) list.get(0);
+			// Only these 3 fields are not null: psc.getId(), psc.getShortCode(), psc.getCode().getName()
+			assertNotNull("ProductSpecialCode id", psc.getId());
+			assertNotNull("ProductSpecialCode short code", psc.getShortCode());
 			assertNotNull("ProductSpecialCode code not null", psc.getCode());
-			assertNotNull("ProductSpecialCode code id not null", psc.getCode().getId());
+			assertNotNull("ProductSpecialCode code name not null", psc.getCode().getName());
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
