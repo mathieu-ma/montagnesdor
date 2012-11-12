@@ -5,37 +5,13 @@
 <script type="text/javascript" src="<c:out value="${pageContext.request.contextPath}"/>/javascript/products.js"></script>
 
 <s:form action="ProductsManager" method="post" validate="false">
-	<s:if test="%{form.dtoBean.vats.size()==0}">
-		<div class="global-transparent-hidden" id="products-manager-warn-create-product-vat-label">
-			<p>
-				<fmt:message key="products.manager.warn.create.product.vat.label"/>
-			</p>
-			<p>
-				<span class="mdo-ui-button ui-state-default ui-corner-all">
-					<span class="ui-icon ui-icon-pencil"></span>
-    				<s:url id="url" action="ValueAddedTaxesManager" method="form">
-    					<s:param name="selectedMenuItemId">4_3</s:param>
-    				</s:url>
-					<s:a href="%{url}"><fmt:message key="admin.manager.create"/></s:a>
-				</span>
-			</p>
-		</div>		
-	</s:if>
 	<div class="scroll-table-outer-body">
 		<div class="scroll-table-inner-body">
 			<table id="listsortable" class="sortable">
 				<thead>
 					<tr>
 					    <th><fmt:message key="products.manager.restaurant"/></th>
-					    <th>
-							<div style="padding: 7px; float: left;">
-								<span id="create-product" class="mdo-ui-button ui-state-default ui-corner-all">
-									<span class="ui-icon ui-icon-pencil"></span>
-				    				<s:url id="url" action="ProductsManager" method="form" includeParams="none"/>
-									<s:a href="%{url}"><fmt:message key="admin.manager.create"/></s:a>
-								</span>
-							</div>
-					    </th>
+					    <th>&nbsp;</th>
 				  	</tr>
 				</thead>
 				<tbody>		  	

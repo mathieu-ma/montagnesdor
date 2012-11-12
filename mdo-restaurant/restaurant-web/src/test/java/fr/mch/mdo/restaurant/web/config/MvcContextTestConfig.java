@@ -133,7 +133,7 @@ public class MvcContextTestConfig extends WebMvcConfigurerAdapter {
     	restaurant.setId(restaurantId);
     	product.setRestaurant(restaurant);
     	product.setCode(productCode);
-    	Mockito.when(result.findProduct(Mockito.eq(restaurantId), Mockito.eq(productCode))).thenReturn(product);
+//    	Mockito.when(result.findProduct(Mockito.eq(restaurantId), Mockito.eq(productCode))).thenReturn(product);
     	
     	return result;
     }    

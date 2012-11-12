@@ -87,12 +87,14 @@ public class DefaultProductSpecialCodesDao extends DefaultDaoServices implements
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<IMdoBean> findAllByRestaurant(Long restaurantId) throws MdoDataBeanException {
 		List<IMdoBean> result = new ArrayList<IMdoBean>();
 		
 		List<MdoCriteria> criterias = new ArrayList<MdoCriteria>();
 		criterias.add(new MdoCriteria("restaurant.id", PropertiesRestrictions.EQUALS, restaurantId));
+		criterias.add(new MdoCriteria("code.order", PropertiesRestrictions.ORDER, Boolean.FALSE));
 		result = super.findByPropertiesRestrictions(criterias, false);
 		return result;
 	}

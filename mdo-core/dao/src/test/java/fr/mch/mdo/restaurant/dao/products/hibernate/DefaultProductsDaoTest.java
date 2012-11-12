@@ -416,4 +416,50 @@ public class DefaultProductsDaoTest extends DefaultDaoServicesTestCase
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}
 	}
+	
+	public void testDeleteProductCategories() {
+		// Use the existing data in database
+		String code = "ABC";
+		Restaurant restaurant = new Restaurant();
+		restaurant.setId(1L);
+		// Used for Restaurant.equals
+		restaurant.setReference(DefaultDaoServicesTestCase.RESTAURANT_FIRST_REFERENCE);
+		ValueAddedTax vat = new ValueAddedTax();
+		vat.setId(1L);
+		BigDecimal price = new BigDecimal(12);
+
+		Set<ProductCategory> categories = new HashSet<ProductCategory>();
+
+		Map<Long, String> labels = new HashMap<Long, String>();
+		Long localeId = 1L;
+		String label = "Boulette de porc à la vapeur";
+		labels.put(localeId, label);
+
+		Product product = (Product) createNewBean(restaurant, vat, code, price, categories, labels);
+		
+		ProductCategory productCategory = new ProductCategory();
+		Category category = new Category();
+		category.setId(1L);
+		productCategory.setCategory(category);
+		BigDecimal quantity = new BigDecimal(1.7);
+		productCategory.setQuantity(quantity);
+		product.addCategory(productCategory);
+		
+		Product inserted = null;
+		try {
+			inserted = (Product) this.getInstance().insert(product);
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+		
+		Product bean = new Product();
+		bean.setId(inserted.getId());
+		try {
+			this.getInstance().delete(bean);
+		} catch (MdoException e) {
+			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
+		}
+	}
+	
+
 }

@@ -1,9 +1,11 @@
 package fr.mch.mdo.restaurant.web.struts.actions;
 
 import fr.mch.mdo.restaurant.Constants;
+import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.ProductSpecialCodeDto;
+import fr.mch.mdo.restaurant.dto.beans.ProductSpecialCodesManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
 import fr.mch.mdo.restaurant.exception.MdoBusinessException;
 import fr.mch.mdo.restaurant.exception.MdoException;
@@ -46,6 +48,27 @@ public class ProductSpecialCodesManagerWebAction extends AdministrationManagerLa
 	}
 
 	@Override
+	public String form() throws Exception {
+		String result = super.form();
+		
+		this.prepareCurrentRestaurant();
+		
+		return result;
+	};
+
+	private void prepareCurrentRestaurant() {
+		ProductSpecialCodesManagerForm form = (ProductSpecialCodesManagerForm) super.getForm();
+		ProductSpecialCodesManagerViewBean view = (ProductSpecialCodesManagerViewBean) form.getViewBean();
+		ProductSpecialCodeDto psc = (ProductSpecialCodeDto) form.getDtoBean();
+		for(IMdoDtoBean bean : view.getRestaurants()) {
+			if (bean.getId().equals(psc.getRestaurant().getId())) {
+				form.setRestaurant((RestaurantDto) bean);
+				break;
+			}
+		}
+	}
+
+	@Override
 	public String save() throws MdoBusinessException {
 		super.save();
 		
@@ -63,6 +86,13 @@ public class ProductSpecialCodesManagerWebAction extends AdministrationManagerLa
 
 	}
 	
+	@Override
+	public String delete() {
+		super.delete();
+		// Return to the products list
+		return Constants.ACTION_RESULT_AFTER_CUD_LIST_PRODUCT_SPECIAL_CODES;
+	}
+
 	public String listProductSpecialCodes() throws Exception {
 		String result = Constants.ACTION_RESULT_AFTER_SUCCESS_FORM_LIST;
 		ProductSpecialCodeDto dtoBean = ((ProductSpecialCodeDto) super.getForm().getDtoBean());
@@ -76,6 +106,7 @@ public class ProductSpecialCodesManagerWebAction extends AdministrationManagerLa
 				}
 			}
 		}
+		this.prepareCurrentRestaurant();
 		return result;
 	}
 

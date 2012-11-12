@@ -69,11 +69,21 @@ public class DefaultProductsManagerTest extends DefaultAdministrationManagerTest
 		vat.setId(1L);
 		BigDecimal price = new BigDecimal(12);
 
-		Set<ProductCategoryDto> categories = null;
+		Set<ProductCategoryDto> categories = new HashSet<ProductCategoryDto>();
 
 		Map<Long, String> labels = null;
 
-		return createNewBean(restaurant, vat, code, price, categories, labels);
+		IMdoDtoBean result = createNewBean(restaurant, vat, code, price, categories, labels);
+		
+		ProductCategoryDto productCategory = new ProductCategoryDto();
+		CategoryDto category = new CategoryDto();
+		category.setId(1L);
+		productCategory.setCategory(category);
+		BigDecimal quantity = new BigDecimal(1.7);
+		productCategory.setQuantity(quantity);
+		categories.add(productCategory);
+
+		return result;
 	}
 
 	@Override

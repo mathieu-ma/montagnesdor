@@ -5,6 +5,7 @@ import java.io.InputStream;
 
 import fr.mch.mdo.restaurant.dto.beans.ProductDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductsManagerViewBean;
+import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
 
 public class ProductsManagerForm extends MdoLabelsForm 
 {
@@ -14,7 +15,9 @@ public class ProductsManagerForm extends MdoLabelsForm
 	private File importedFile;
 	private String importedFileContentType;
 	private String importedFileFileName;
-	
+
+	private RestaurantDto restaurant;
+
 	public ProductsManagerForm() {
 		super(new ProductDto());
 		super.setViewBean(new ProductsManagerViewBean());
@@ -88,5 +91,19 @@ public class ProductsManagerForm extends MdoLabelsForm
 	 */
 	public void setImportedFileFileName(String importedFileFileName) {
 		this.importedFileFileName = importedFileFileName;
+	}
+
+	/**
+	 * @return the restaurant
+	 */
+	public RestaurantDto getRestaurant() {
+		return restaurant;
+	}
+
+	/**
+	 * @param restaurant the restaurant to set
+	 */
+	public void setRestaurant(RestaurantDto restaurant) {
+		this.restaurant = restaurant;
 	}
 }

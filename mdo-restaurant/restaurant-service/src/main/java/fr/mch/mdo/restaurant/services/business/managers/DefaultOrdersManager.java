@@ -8,6 +8,7 @@ import java.util.Locale;
 
 import fr.mch.mdo.logs.ILogger;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
+import fr.mch.mdo.restaurant.beans.MdoEntry;
 import fr.mch.mdo.restaurant.beans.dto.DinnerTableDto;
 import fr.mch.mdo.restaurant.beans.dto.OrderLineDto;
 import fr.mch.mdo.restaurant.beans.dto.ProductSpecialCodeDto;
@@ -285,18 +286,17 @@ public class DefaultOrdersManager extends AbstractRestaurantManager implements I
 		if (orderCode != null && orderCode.length() > 0) {
 			try {
 		 		// The product special code always exists.
-				productSpecialCode = this.getProductSpecialCode(restaurantId, orderCode);
-				ManagedProductSpecialCode managedProductSpecialCode = ManagedProductSpecialCode.getEnum(productSpecialCode.getCode().getName());
-				boolean mustCheckProductCode = false;
-				String productCode = null;
+				MdoEntry<ManagedProductSpecialCode, ProductSpecialCodeDto> entry = this.getProductSpecialCode(restaurantId, orderCode);
+				ManagedProductSpecialCode managedProductSpecialCode = entry.getKey();
 				if (managedProductSpecialCode != null) {
+					boolean mustCheckProductCode = false;
+					String productCode = null;
+					productSpecialCode = entry.getValue();
 					// For instance productSpecialCode=="/" means we do not have to check the product code. 
 					mustCheckProductCode = managedProductSpecialCode.mustCheckProductCode(productSpecialCode, orderCode);
 					if (mustCheckProductCode) {
 						// If instance productSpecialCode=="/" then the productCode is null. 
 						productCode = managedProductSpecialCode.getProductCode(productSpecialCode, orderCode); //orderCode.substring(1);
-					}
-					if (mustCheckProductCode) {
 						// Check there is a product.
 						Product foundProduct = (Product) productsDao.find(restaurantId, productCode);
 						if (foundProduct != null) {
@@ -315,28 +315,35 @@ public class DefaultOrdersManager extends AbstractRestaurantManager implements I
 	}
 	
 	@Override
-	public ProductSpecialCodeDto getProductSpecialCode(Long restaurantId, String orderCode) throws MdoBusinessException {
-		ProductSpecialCodeDto result = null;
+	public MdoEntry<ManagedProductSpecialCode, ProductSpecialCodeDto> getProductSpecialCode(Long restaurantId, String orderCode) throws MdoBusinessException {
+		MdoEntry<ManagedProductSpecialCode, ProductSpecialCodeDto> result = new MdoEntry<ManagedProductSpecialCode, ProductSpecialCodeDto>();
 		if (orderCode != null) {
 			try {
 				ProductSpecialCode foundProductSpecialCode = null;
 		 		// Check the is a product special code.
-				// Must cache the list of productSpecialCodes by restaurantId(with AOP for instance). 
+				// Must cache the list of productSpecialCodes by restaurantId(with AOP for instance).
+				// The list must be ordered by the way that the last element is the default one.
+				// The default productSpecialCode.getShortCode() must be ""(empty string).
 				List<IMdoBean> productSpecialCodes = productSpecialCodeDao.findAllByRestaurant(restaurantId);
 				for (IMdoBean iMdoBean : productSpecialCodes) {
 					ProductSpecialCode productSpecialCode = (ProductSpecialCode) iMdoBean;
-					// The default productSpecialCode.getShortCode() is ""(empty string).
+					ManagedProductSpecialCode managedProductSpecialCode = ManagedProductSpecialCode.getEnum(productSpecialCode.getCode().getName());
+					// The default productSpecialCode.getShortCode() must be ""(empty string).
 					// So the orderCode.startsWith(productSpecialCode.getShortCode()) is always true for empty string. 
 					if (orderCode.startsWith(productSpecialCode.getShortCode())) {
-						foundProductSpecialCode = productSpecialCode;
-						break;
+						if (managedProductSpecialCode != null && managedProductSpecialCode.checkOrderCode(orderCode)) {
+							result.setKey(managedProductSpecialCode);
+							foundProductSpecialCode = productSpecialCode;
+							break;
+						}
 					}
 				}
 				if (foundProductSpecialCode == null) {
 					logger.error("message.error.business.DefaultOrdersManager.getProductSpecialCode.not.found", new Object[]{ restaurantId, orderCode });
 					throw new MdoBusinessException("message.error.business.DefaultOrdersManager.getProductSpecialCode.not.found", new Object[]{ restaurantId, orderCode });
 				}
-				result = helper.fromProductSpecialCode(foundProductSpecialCode);
+				ProductSpecialCodeDto productSpecialCode = helper.fromProductSpecialCode(foundProductSpecialCode);
+				result.setValue(productSpecialCode);
 			} catch (MdoException e) {
 				logger.error("message.error.business.DefaultOrdersManager.getProductSpecialCode", new Object[]{ restaurantId, orderCode }, e);
 				throw new MdoBusinessException("message.error.business.DefaultOrdersManager.getProductSpecialCode", new Object[]{ restaurantId, orderCode }, e);

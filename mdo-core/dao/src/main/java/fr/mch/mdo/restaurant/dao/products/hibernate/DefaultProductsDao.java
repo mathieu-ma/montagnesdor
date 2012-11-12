@@ -16,6 +16,7 @@ import fr.mch.mdo.logs.ILogger;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.dao.beans.Product;
+import fr.mch.mdo.restaurant.dao.beans.ProductCategory;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServices;
 import fr.mch.mdo.restaurant.dao.hibernate.TransactionSession;
 import fr.mch.mdo.restaurant.dao.products.IProductsDao;
@@ -143,5 +144,15 @@ public class DefaultProductsDao extends DefaultDaoServices implements IProductsD
 
 		result = super.findByPropertiesRestrictions(criterias, false);
 		return result;
+	}
+	
+	@Override
+	public IMdoBean delete(IMdoBean daoBean, boolean... isLazy) throws MdoDataBeanException {
+		// Delete first all categories.
+		Map<String, Object> keys = new HashMap<String, Object>();
+		keys.put("product.id", ((IMdoDaoBean) daoBean).getId());
+		this.deleteByKeys(ProductCategory.class, keys);
+
+		return super.delete(daoBean, isLazy);
 	}
 }

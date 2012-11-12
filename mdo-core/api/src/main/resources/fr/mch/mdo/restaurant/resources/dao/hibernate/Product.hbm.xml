@@ -39,6 +39,7 @@
 			<element column="pdl_label" type="string" />
 		</map>
 
+		<!-- Use inverse="true" in order to not update the collection productLanguages -->
 		<set name="categories" cascade="all-delete-orphan" inverse="true" table="t_product_category">
 			<key column="pdt_id" />
 			<one-to-many class="fr.mch.mdo.restaurant.dao.beans.ProductCategory" />

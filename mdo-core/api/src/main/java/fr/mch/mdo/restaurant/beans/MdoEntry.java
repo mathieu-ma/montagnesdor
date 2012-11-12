@@ -7,27 +7,34 @@ public class MdoEntry<K, V> implements Entry<K, V> {
     private K key;
     private V value;
 
+    public MdoEntry() {
+    }
+    	
     /**
      * @param key
      *            the key to set
      */
     public MdoEntry(K key, V value) {
-	this.key = key;
-	this.value = value;
+    	this.key = key;
+    	this.value = value;
+    }
+
+    public K setKey(K key) {
+    	return key;
     }
 
     @Override
     public K getKey() {
-	return key;
+    	return key;
     }
 
     @Override
     public V getValue() {
-	return value;
+    	return value;
     }
 
     @Override
     public V setValue(V value) {
-	return value;
+    	return value;
     }
 }

@@ -7,7 +7,7 @@
 <script type="text/javascript" src="<c:out value="${pageContext.request.contextPath}"/>/javascript/products.js"></script>
 
 <s:form action="ProductsManagerCUD" method="post" validate="false">
-	<s:if test="%{form.viewBean.vats.size()>0}">
+	<s:if test="%{form.restaurant.vats.size()>0}">
 		<s:hidden name="form.dtoBean.id"/>
 
 		<div id="tabs" class="ui-tabs ui-widget ui-widget-content ui-corner-all">

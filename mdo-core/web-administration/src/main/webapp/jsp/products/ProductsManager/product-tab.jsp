@@ -4,7 +4,9 @@
 <%@ taglib uri="/struts-tags" prefix="s" %>
 
 <div class="hspacer-left-100p">
-	<s:select label="%{getText('products.manager.restaurant')}" name="form.dtoBean.restaurant.id" list="form.viewBean.restaurants" listKey="id" listValue="name" value="form.dtoBean.restaurant.id" required="true"/>
+	<s:label label="%{getText('products.manager.restaurant')}" value="%{form.dtoBean.restaurant.name}" required="true" />
+	<s:hidden name="form.dtoBean.restaurant.id" />
+
 	<s:textfield label="%{getText('products.manager.code')}" name="form.dtoBean.code" readonly='%{form.dtoBean.id!=null}' required="true"/>
 
  	<%-- 
@@ -18,7 +20,7 @@
 	<mdo:setLocale value="${userSession.currentLocale.languageCode}"/>
 	
 	<s:select label="%{getText('products.manager.vat')}" name="form.dtoBean.vat.id" 
-		list="form.dtoBean.restaurant.vats" listKey="vat.id" listValue="%{getText('format.number.decimal.3.2',{vat.rate})}" required="true"/>
+		list="form.restaurant.vats" listKey="vat.id" listValue="%{getText('format.number.decimal.3.2',{vat.rate})}" required="true"/>
 	<div class="hspacer-left-100p">
 		<label class="label"><fmt:message key="products.manager.color"/>:</label>
 		<div class="hspacer-left-25p">&nbsp;</div>

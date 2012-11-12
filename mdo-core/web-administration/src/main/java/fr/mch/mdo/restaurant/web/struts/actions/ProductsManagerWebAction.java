@@ -6,10 +6,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import fr.mch.mdo.restaurant.Constants;
+import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.ProductCategoryDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductDto;
+import fr.mch.mdo.restaurant.dto.beans.ProductsManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
 import fr.mch.mdo.restaurant.exception.MdoBusinessException;
 import fr.mch.mdo.restaurant.exception.MdoException;
@@ -50,7 +52,7 @@ public class ProductsManagerWebAction extends AdministrationManagerLabelsAction
 	public void setRestaurantsManager(IRestaurantsManager restaurantsManager) {
 		this.restaurantsManager = restaurantsManager;
 	}
-
+	
 	public String listProducts() throws Exception {
 		String result = Constants.ACTION_RESULT_AFTER_SUCCESS_FORM_LIST;
 		ProductDto dtoBean = ((ProductDto) super.getForm().getDtoBean());
@@ -64,7 +66,29 @@ public class ProductsManagerWebAction extends AdministrationManagerLabelsAction
 				}
 			}
 		}
+		this.prepareCurrentRestaurant();
 		return result;
+	}
+	
+	@Override
+	public String form() throws Exception {
+		String result = super.form();
+
+		this.prepareCurrentRestaurant();
+		
+		return result;
+	};
+
+	private void prepareCurrentRestaurant() {
+		ProductsManagerForm form = (ProductsManagerForm) super.getForm();
+		ProductsManagerViewBean view = (ProductsManagerViewBean) form.getViewBean();
+		ProductDto product = (ProductDto) form.getDtoBean();
+		for(IMdoDtoBean bean : view.getRestaurants()) {
+			if (bean.getId().equals(product.getRestaurant().getId())) {
+				form.setRestaurant((RestaurantDto) bean);
+				break;
+			}
+		}
 	}
 	
 	public String removeCategory() throws Exception {

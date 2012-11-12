@@ -3,10 +3,12 @@ package fr.mch.mdo.restaurant.services.business.managers;
 import java.util.List;
 import java.util.Locale;
 
+import fr.mch.mdo.restaurant.beans.MdoEntry;
 import fr.mch.mdo.restaurant.beans.dto.DinnerTableDto;
 import fr.mch.mdo.restaurant.beans.dto.OrderLineDto;
 import fr.mch.mdo.restaurant.beans.dto.ProductSpecialCodeDto;
 import fr.mch.mdo.restaurant.exception.MdoException;
+import fr.mch.mdo.restaurant.services.business.managers.tables.ManagedProductSpecialCode;
 
 public interface IOrdersManager 
 {
@@ -49,5 +51,5 @@ public interface IOrdersManager
 
 	void resetTable(Long dinnerTableId, Long restaurantId, Long userAuthenticationId, String number, Integer customersNumber) throws MdoException;
 
-	ProductSpecialCodeDto getProductSpecialCode(Long restaurantId, String productSpecialShortCode) throws MdoException;
+	MdoEntry<ManagedProductSpecialCode, ProductSpecialCodeDto> getProductSpecialCode(Long restaurantId, String productSpecialShortCode) throws MdoException;
 }

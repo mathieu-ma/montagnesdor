@@ -11,15 +11,7 @@
 				<thead>
 					<tr>
 					    <th><fmt:message key="products.manager.restaurant"/></th>
-					    <th>
-							<div style="padding: 7px; float: left;">
-								<span id="create-product" class="mdo-ui-button ui-state-default ui-corner-all">
-									<span class="ui-icon ui-icon-pencil"></span>
-				    				<s:url id="url" action="ProductSpecialCodesManager" method="form" includeParams="none"/>
-									<s:a href="%{url}"><fmt:message key="admin.manager.create"/></s:a>
-								</span>
-							</div>
-					    </th>
+					    <th>&nbsp;</th>
 				  	</tr>
 				</thead>
 				<tbody>		  	

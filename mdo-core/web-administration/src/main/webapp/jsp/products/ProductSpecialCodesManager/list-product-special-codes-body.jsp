@@ -16,15 +16,33 @@
 					    <th><fmt:message key="product.special.codes.manager.restaurant" /> : <c:out value="${form.dtoBean.restaurant.name}"/> (<c:out value="${form.dtoBean.restaurant.reference}"/>)</th>
 					    <th style="width: 31em;">
 							<div style="padding: 7px; float: left;">
-								<span class="mdo-ui-button ui-state-default ui-corner-all">
-									<span class="ui-icon ui-icon-pencil"></span>
-			    					<s:url id="url" action="ProductSpecialCodesManager" method="form">
-			    						<s:param name="form.dtoBean.restaurant.id" value="%{form.dtoBean.restaurant.id}"/>
-			    						<s:param name="form.dtoBean.restaurant.reference" value="%{form.dtoBean.restaurant.reference}"/>
-			    						<s:param name="form.dtoBean.restaurant.name" value="%{form.dtoBean.restaurant.name}"/>
-			    					</s:url>
-									<s:a href="%{url}"><fmt:message key="admin.manager.create"/></s:a>
-								</span>
+								<s:if test="%{form.restaurant.vats.size()==0}">
+									<div class="global-transparent-hidden" id="products-manager-warn-create-product-vat-label">
+										<p>
+											<fmt:message key="products.manager.warn.create.product.vat.label"/>
+										</p>
+										<p>
+											<span class="mdo-ui-button ui-state-default ui-corner-all">
+												<span class="ui-icon ui-icon-pencil"></span>
+								   				<s:url id="url" action="ValueAddedTaxesManager" method="form">
+								   					<s:param name="selectedMenuItemId">4_3</s:param>
+								   				</s:url>
+												<s:a href="%{url}"><fmt:message key="admin.manager.create"/></s:a>
+											</span>
+										</p>
+									</div>		
+								</s:if>
+								<s:else>
+									<span class="mdo-ui-button ui-state-default ui-corner-all">
+										<span class="ui-icon ui-icon-pencil"></span>
+				    					<s:url id="url" action="ProductSpecialCodesManager" method="form">
+				    						<s:param name="form.dtoBean.restaurant.id" value="%{form.dtoBean.restaurant.id}"/>
+				    						<s:param name="form.dtoBean.restaurant.reference" value="%{form.dtoBean.restaurant.reference}"/>
+				    						<s:param name="form.dtoBean.restaurant.name" value="%{form.dtoBean.restaurant.name}"/>
+				    					</s:url>
+										<s:a href="%{url}"><fmt:message key="admin.manager.create"/></s:a>
+									</span>
+								</s:else>
 							</div>
 							<div style="padding: 7px; float: left;">
 								<span class="mdo-ui-button ui-state-default ui-corner-all">
@@ -71,6 +89,9 @@
 										<span class="ui-icon ui-icon-trash"></span>
 				    					<s:url id="url" action="ProductSpecialCodesManagerCUD" method="delete">
 				    						<s:param name="form.dtoBean.id" value="%{id}"/>
+				    						<s:param name="form.dtoBean.restaurant.id" value="%{restaurant.id}"/>
+				    						<s:param name="form.dtoBean.restaurant.reference" value="%{restaurant.reference}"/>
+				    						<s:param name="form.dtoBean.restaurant.name" value="%{restaurant.name}"/>
 				    					</s:url>
 				    					<s:a id="%{id}" href="%{url}"><fmt:message key="admin.manager.delete"/></s:a>
 									</span>
