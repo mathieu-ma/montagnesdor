@@ -5,14 +5,12 @@ import java.util.List;
 
 import fr.mch.mdo.logs.ILogger;
 import fr.mch.mdo.restaurant.beans.IBeanLabelable;
-import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDtoBean;
 import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode;
 import fr.mch.mdo.restaurant.dao.products.IProductSpecialCodesDao;
 import fr.mch.mdo.restaurant.dao.products.hibernate.DefaultProductSpecialCodesDao;
 import fr.mch.mdo.restaurant.dto.beans.IAdministrationManagerViewBean;
 import fr.mch.mdo.restaurant.dto.beans.LocaleDto;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.ProductSpecialCodeDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductSpecialCodesManagerViewBean;
 import fr.mch.mdo.restaurant.exception.MdoBusinessException;
@@ -175,11 +173,11 @@ public class DefaultProductSpecialCodesManager extends AbstractAdministrationMan
 	}
 
 	@Override
-	public List<IMdoDtoBean> getList(Long restaurantId, MdoUserContext userContext) throws MdoBusinessException {
+	public List<IMdoDtoBean> getList(Long restaurantId) throws MdoBusinessException {
 		List<IMdoDtoBean> result = new ArrayList<IMdoDtoBean>();
 		
 		try {
-			List<IMdoBean> list = ((IProductSpecialCodesDao) dao).findAllByRestaurant(restaurantId);
+			List<ProductSpecialCode> list = ((IProductSpecialCodesDao) dao).findAllByRestaurant(restaurantId);
 			if (list != null) {
 				result = assembler.marshal(list);
 			}

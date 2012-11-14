@@ -11,13 +11,17 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.ResultTransformer;
 
 import fr.mch.mdo.logs.ILogger;
+import fr.mch.mdo.restaurant.Constants;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.dao.beans.Product;
 import fr.mch.mdo.restaurant.dao.beans.ProductCategory;
+import fr.mch.mdo.restaurant.dao.beans.ProductLabel;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServices;
+import fr.mch.mdo.restaurant.dao.hibernate.MdoAliasToBean;
 import fr.mch.mdo.restaurant.dao.hibernate.TransactionSession;
 import fr.mch.mdo.restaurant.dao.products.IProductsDao;
 import fr.mch.mdo.restaurant.exception.MdoDataBeanException;
@@ -62,6 +66,24 @@ public class DefaultProductsDao extends DefaultDaoServices implements IProductsD
 		propertyValueMap.put("restaurant.id", restaurantId);
 		propertyValueMap.put("code", code);
 		return (IMdoBean) super.findByUniqueKey(propertyValueMap, false);
+	}
+
+	@Override
+	public ProductLabel find(Long restaurantId, String code, Long locId) throws MdoDataBeanException {
+		ProductLabel result = new ProductLabel();
+		
+		Map<String, Object> values = new HashMap<String, Object>();
+		values.put("locId", locId);
+		values.put("restaurantId", restaurantId);
+		values.put("code", code);
+		ResultTransformer resultTransformer = new MdoAliasToBean(ProductLabel.class, new String[] {
+			 "id", "code", "price", "colorRGB", 
+			 "locale.id", "label", "vat.id"
+		});
+
+		result = (ProductLabel) super.uniqueResult(super.findAllByQuery(Constants.HQL_PRODUCT_FIND_BY_CODE_WITH_LOCALE, values, resultTransformer));
+
+		return result;
 	}
 
 	@Override

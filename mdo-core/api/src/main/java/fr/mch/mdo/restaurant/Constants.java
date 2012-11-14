@@ -97,6 +97,8 @@ public interface Constants
     String HQL_USER_AUTHENTICATION_SELECT_BY_LOGIN = "UserAuthentication.SelectByLogin";
     String HQL_MDO_TABLE_AS_ENUM_SELECT_ALL_TYPES = "MdoTableAsEnum.SelectAllTypes";
     String HQL_ORDER_LINE_FIND_BY_DINNER_TABLE_ID = "OrderLine.FindByDinnerTableId";
+    String HQL_PRODUCT_FIND_BY_CODE_WITH_LOCALE = "Product.findByCodeWithLocale";
+    String HQL_PRODUCT_SPECIAL_CODE_FIND_ALL_WITH_LOCALE = "ProductSpecialCode.findAllWithLocale";
     /**
      * END HIBERNATE
      */

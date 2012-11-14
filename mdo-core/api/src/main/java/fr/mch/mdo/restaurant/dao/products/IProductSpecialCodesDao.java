@@ -5,6 +5,7 @@ import java.util.List;
 import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.dao.IDaoServices;
 import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode;
+import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCodeLabel;
 import fr.mch.mdo.restaurant.exception.MdoException;
 
 public interface IProductSpecialCodesDao extends IDaoServices
@@ -41,4 +42,14 @@ public interface IProductSpecialCodesDao extends IDaoServices
      * @throws MdoException when any exceptions occur
 	 */
 	List<ProductSpecialCode> findAllByRestaurant(Long restaurantId) throws MdoException;
+
+	/**
+	 * Find the list of ProductSpecialCodes by restaurant Id with specific locale.
+	 * 
+	 * @param restaurantId the restaurant id.
+	 * @param locId the locale id.
+	 * @return list of ProductSpecialCodes.
+     * @throws MdoException when any exceptions occur
+	 */
+	List<ProductSpecialCodeLabel> findAllByRestaurant(Long restaurantId, Long locId) throws MdoException;
 }

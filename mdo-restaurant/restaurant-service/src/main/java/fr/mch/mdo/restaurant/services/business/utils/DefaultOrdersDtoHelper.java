@@ -14,10 +14,13 @@ import fr.mch.mdo.restaurant.beans.dto.ProductSpecialCodeDto;
 import fr.mch.mdo.restaurant.dao.beans.DinnerTable;
 import fr.mch.mdo.restaurant.dao.beans.OrderLine;
 import fr.mch.mdo.restaurant.dao.beans.Product;
+import fr.mch.mdo.restaurant.dao.beans.ProductLabel;
 import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode;
+import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCodeLabel;
 import fr.mch.mdo.restaurant.dao.beans.Restaurant;
 import fr.mch.mdo.restaurant.dao.beans.TableType;
 import fr.mch.mdo.restaurant.dao.beans.UserAuthentication;
+import fr.mch.mdo.restaurant.dao.beans.ValueAddedTax;
 import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto;
 import fr.mch.mdo.restaurant.services.business.managers.assembler.ManagedTableType;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
@@ -200,13 +203,7 @@ public class DefaultOrdersDtoHelper implements IOrdersDtoHelper
 	}
 
 	@Override
-	public ProductDto findProduct(Product product) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ProductSpecialCodeDto fromProductSpecialCode(ProductSpecialCode productSpecialCode) {
+	public ProductSpecialCodeDto fromProductSpecialCode(ProductSpecialCodeLabel productSpecialCode) {
 		ProductSpecialCodeDto result = new ProductSpecialCodeDto();
 		if (productSpecialCode != null) {
 			result.setId(productSpecialCode.getId());
@@ -215,6 +212,54 @@ public class DefaultOrdersDtoHelper implements IOrdersDtoHelper
 			MdoTableAsEnumDto code = new MdoTableAsEnumDto();
 			code.setName(codeName);
 			result.setCode(code);
+			result.setLabel(productSpecialCode.getLabel());
+			if (productSpecialCode.getVat() != null) {
+				result.setVatId(productSpecialCode.getVat().getId());
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public ProductDto fromProduct(ProductLabel product) {
+		ProductDto result = new ProductDto();
+		if (product != null) {
+			result.setId(product.getId());
+			result.setCode(product.getCode());
+			result.setColorRGB(product.getColorRGB());
+			result.setLabel(product.getLabel());
+			result.setPrice(product.getPrice());
+			result.setVatId(product.getVat().getId());
+		}
+		return result;
+	}
+
+	@Override
+	public OrderLine toOrderLine(OrderLineDto orderLine) {
+		OrderLine result = new OrderLine();
+		if (orderLine != null) {
+			result.setId(orderLine.getId());
+			DinnerTable dinnerTable = new DinnerTable();
+			dinnerTable.setId(orderLine.getDinnerTableId());
+			result.setDinnerTable(dinnerTable);
+			ValueAddedTax vat = new ValueAddedTax();
+			vat.setId(orderLine.getVatId());
+			result.setVat(vat);
+			result.setQuantity(orderLine.getQuantity());
+			result.setLabel(orderLine.getLabel());
+			result.setUnitPrice(orderLine.getUnitPrice());
+			result.setAmount(orderLine.getAmount());
+			result.setQuantity(orderLine.getQuantity());
+			if (orderLine.getProductSpecialCode() != null) {
+				ProductSpecialCode productSpecialCode = new ProductSpecialCode();
+				productSpecialCode.setId(orderLine.getProductSpecialCode().getId());
+				result.setProductSpecialCode(productSpecialCode);
+			}
+			if (orderLine.getProduct() != null) {
+				Product product = new Product();
+				product.setId(orderLine.getProduct().getId());
+				result.setProduct(product);
+			}
 		}
 		return result;
 	}

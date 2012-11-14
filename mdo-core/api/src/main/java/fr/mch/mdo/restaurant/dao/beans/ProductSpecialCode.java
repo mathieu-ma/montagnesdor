@@ -7,6 +7,7 @@
 package fr.mch.mdo.restaurant.dao.beans;
 
 import java.util.Map;
+import java.util.Set;
 
 import fr.mch.mdo.restaurant.beans.IBeanLabelable;
 import fr.mch.mdo.restaurant.beans.MdoDaoBean;
@@ -48,6 +49,11 @@ public class ProductSpecialCode extends MdoDaoBean implements IBeanLabelable
 	 * This is used for i18n label.
 	 */
 	private Map<Long, String> labels;
+
+	/**
+	 * This is used for i18n label.
+	 */
+	private Set<ProductSpecialCodeLanguage> productSpecialCodeLanguages;
 
 	/**
 	 * @return the shortCode
@@ -121,6 +127,21 @@ public class ProductSpecialCode extends MdoDaoBean implements IBeanLabelable
 	 */
 	public void setLabels(Map<Long, String> labels) {
 		this.labels = labels;
+	}
+
+	/**
+	 * @return the productSpecialCodeLanguages
+	 */
+	public Set<ProductSpecialCodeLanguage> getProductSpecialCodeLanguages() {
+		return productSpecialCodeLanguages;
+	}
+
+	/**
+	 * @param productSpecialCodeLanguages the productSpecialCodeLanguages to set
+	 */
+	public void setProductSpecialCodeLanguages(
+			Set<ProductSpecialCodeLanguage> productSpecialCodeLanguages) {
+		this.productSpecialCodeLanguages = productSpecialCodeLanguages;
 	}
 
 	@Override

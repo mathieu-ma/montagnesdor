@@ -43,5 +43,4 @@ public interface IOrderLinesDao extends IDaoServices
      * @throws MdoException any exception occurs.
 	 */
 	List<OrderLine> findAllScalarFieldsByDinnerTableId(Long dinnerTableId, Long localeId) throws MdoException;
-
 }

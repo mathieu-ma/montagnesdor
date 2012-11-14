@@ -246,10 +246,10 @@ public abstract class DefaultDaoServices extends MdoDaoBase implements IDaoServi
 			super.endTransaction(transactionSession, result, isLazy);
 
 		} catch (HibernateException e) {
-			super.getLogger().error("message.error.dao.save", new Object[] { super.getBean().getClass().getName(), result }, e);
+			super.getLogger().error("message.error.dao.insert", new Object[] { super.getBean().getClass().getName(), result }, e);
 			throw new MdoDataBeanException(e);
 		} catch (Exception e) {
-			super.getLogger().error("message.error.dao.save", new Object[] { super.getBean().getClass().getName(), result }, e);
+			super.getLogger().error("message.error.dao.insert", new Object[] { super.getBean().getClass().getName(), result }, e);
 			throw new MdoDataBeanException(e);
 		} finally {
 			try {
@@ -260,6 +260,34 @@ public abstract class DefaultDaoServices extends MdoDaoBase implements IDaoServi
 //	// TODO Auto-generated catch block
 //	e.printStackTrace();
 //}				
+				super.closeSession();
+			} catch (HibernateException e) {
+				super.getLogger().error("message.error.dao.session.close", e);
+				throw new MdoDataBeanException("message.error.dao.session.close", e);
+			}
+		}
+		return result;
+	}
+	
+	@Override
+	public IMdoBean save(IMdoBean daoBean, boolean... isLazy) throws MdoDataBeanException {
+		IMdoBean result = daoBean;
+		try {
+			TransactionSession transactionSession = super.beginTransaction();
+
+			Session session = transactionSession.getSession();
+			session.save(result);
+
+			super.endTransaction(transactionSession, result, isLazy);
+
+		} catch (HibernateException e) {
+			super.getLogger().error("message.error.dao.insert", new Object[] { super.getBean().getClass().getName(), result }, e);
+			throw new MdoDataBeanException(e);
+		} catch (Exception e) {
+			super.getLogger().error("message.error.dao.insert", new Object[] { super.getBean().getClass().getName(), result }, e);
+			throw new MdoDataBeanException(e);
+		} finally {
+			try {
 				super.closeSession();
 			} catch (HibernateException e) {
 				super.getLogger().error("message.error.dao.session.close", e);

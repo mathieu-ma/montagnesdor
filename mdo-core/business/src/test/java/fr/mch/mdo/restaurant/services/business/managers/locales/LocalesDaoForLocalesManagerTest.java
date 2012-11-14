@@ -112,4 +112,10 @@ public class LocalesDaoForLocalesManagerTest implements ILocalesDao
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public IMdoBean save(IMdoBean bean, boolean... isLazy) throws MdoException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -14,12 +14,13 @@ import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.MdoEntry;
 import fr.mch.mdo.restaurant.beans.dto.DinnerTableDto;
 import fr.mch.mdo.restaurant.beans.dto.OrderLineDto;
+import fr.mch.mdo.restaurant.beans.dto.ProductDto;
 import fr.mch.mdo.restaurant.beans.dto.ProductSpecialCodeDto;
 import fr.mch.mdo.restaurant.dao.IDaoServices;
 import fr.mch.mdo.restaurant.dao.beans.DinnerTable;
 import fr.mch.mdo.restaurant.dao.beans.OrderLine;
-import fr.mch.mdo.restaurant.dao.beans.Product;
-import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode;
+import fr.mch.mdo.restaurant.dao.beans.ProductLabel;
+import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCodeLabel;
 import fr.mch.mdo.restaurant.dao.beans.RestaurantPrefixTable;
 import fr.mch.mdo.restaurant.dao.beans.RestaurantReductionTable;
 import fr.mch.mdo.restaurant.dao.beans.TableType;
@@ -39,7 +40,6 @@ import fr.mch.mdo.restaurant.dao.restaurants.hibernate.DefaultRestaurantReductio
 import fr.mch.mdo.restaurant.dao.restaurants.hibernate.DefaultRestaurantsDao;
 import fr.mch.mdo.restaurant.dao.tables.IDinnerTablesDao;
 import fr.mch.mdo.restaurant.dao.tables.hibernate.DefaultDinnerTablesDao;
-import fr.mch.mdo.restaurant.beans.dto.ProductDto;
 import fr.mch.mdo.restaurant.exception.MdoBusinessException;
 import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.services.business.managers.tables.ManagedProductSpecialCode;
@@ -282,16 +282,36 @@ public class DefaultOrdersManager extends AbstractRestaurantManager implements I
 	}
 
 	@Override
-	public OrderLineDto getOrderLine(Long restaurantId, String orderCode) throws MdoBusinessException {
+	public OrderLineDto getOrderLine(Long restaurantId, BigDecimal quantity, String orderCode, Locale locale) throws MdoBusinessException {
 		OrderLineDto result = new OrderLineDto();
-		ProductDto product = null;
+		try {
+			fr.mch.mdo.restaurant.dao.beans.Locale localeFromDb = (fr.mch.mdo.restaurant.dao.beans.Locale) localesDao.findByUniqueKey(locale.getLanguage());
+			result = this.getOrderLine(restaurantId, quantity, orderCode, localeFromDb.getId());
+		} catch (MdoException e) {
+			logger.error("message.error.business.DefaultOrdersManager.getOrderLine.find.locale", new Object[]{ restaurantId, orderCode, locale }, e);
+			throw new MdoBusinessException("message.error.business.DefaultOrdersManager.getOrderLine.find.locale", new Object[]{ restaurantId, orderCode, locale }, e);
+		}
+		return result;
+	}
+	
+	@Override
+	public OrderLineDto getOrderLine(Long restaurantId, BigDecimal quantity, String orderCode, Long locId) throws MdoBusinessException {
+		OrderLineDto result = new OrderLineDto();
 		ProductSpecialCodeDto productSpecialCode = null;
+		ProductDto product = null;
+		String label = null;
+		BigDecimal unitPrice = null;
+		BigDecimal amount = null;
+		Long vatId = null;
 		if (orderCode != null && orderCode.length() > 0) {
+			if (quantity == null) {
+				quantity = BigDecimal.ONE;
+			}
 			try {
 				boolean mustCheckProductCode = true;
 				String productCode = orderCode;
 		 		// The product special code entry's key and value could be both null.
-				Map.Entry<ManagedProductSpecialCode, ProductSpecialCodeDto> productSpecialCodeEntry = this.getProductSpecialCode(restaurantId, orderCode);
+				Map.Entry<ManagedProductSpecialCode, ProductSpecialCodeDto> productSpecialCodeEntry = this.getProductSpecialCode(restaurantId, orderCode, locId);
 				// If the productSpecialCodeEntry key is null then we consider that the productSpecialCode is default one, i.e, try to get the product by code.
 				ManagedProductSpecialCode managedProductSpecialCode = productSpecialCodeEntry.getKey();
 				if (managedProductSpecialCode != null) {
@@ -302,35 +322,66 @@ public class DefaultOrdersManager extends AbstractRestaurantManager implements I
 						// If instance productSpecialCode=="/" then the productCode is null.
 						productCode = managedProductSpecialCode.getProductCode(productSpecialCode.getShortCode(), orderCode); //orderCode.substring(1);
 					}
+					// The vatId could be overridden by the product vat if the latter is not null. 
+					vatId = productSpecialCode.getVatId();
 				}
 				if (mustCheckProductCode) {
 					// Check there is a product.
 					// Get id, label, price, colorRGB
-					Product foundProduct = (Product) productsDao.find(restaurantId, productCode);
+					ProductLabel foundProduct = (ProductLabel) productsDao.find(restaurantId, productCode, locId);
 					if (foundProduct != null) {
 						product = helper.fromProduct(foundProduct);
+						// Default values when the managedProductSpecialCode is null.
+						label = product.getLabel();
+						unitPrice = product.getPrice();
+						amount = quantity.multiply(unitPrice);
+						vatId = product.getVatId();
 					}
 				}
+				if (managedProductSpecialCode != null) {
+					// In this method the unit price is set by product.
+					amount = managedProductSpecialCode.getAmount(quantity, unitPrice);
+					// In this case, the productSpecialCode is not null.
+					String productSpecialCodeLabel = productSpecialCode.getLabel();
+					// At this point, the label in the argument could be null if the product is null.
+					label = managedProductSpecialCode.getLabel(productSpecialCodeLabel, label);
+				}
 			} catch (MdoException e) {
-				logger.error("message.error.business.DefaultOrdersManager.getOrderLine", new Object[]{ restaurantId, orderCode }, e);
-				throw new MdoBusinessException("message.error.business.DefaultOrdersManager.getOrderLine", new Object[]{ restaurantId, orderCode }, e);
+				logger.error("message.error.business.DefaultOrdersManager.getOrderLine", new Object[]{ restaurantId, orderCode, locId }, e);
+				throw new MdoBusinessException("message.error.business.DefaultOrdersManager.getOrderLine", new Object[]{ restaurantId, orderCode, locId }, e);
 			}
 		}
+		result.setQuantity(quantity);
 		result.setProductSpecialCode(productSpecialCode);
 		result.setProduct(product);
+		result.setCode(orderCode);
+		result.setLabel(label);
+		result.setUnitPrice(unitPrice);
+		result.setAmount(amount);
+		result.setVatId(vatId);
 		return result;
 	}
 
-	@Override
-	public Map.Entry<ManagedProductSpecialCode, ProductSpecialCodeDto> getProductSpecialCode(Long restaurantId, String orderCode) throws MdoBusinessException {
+	/**
+	 * This method is used to get product special code by order code.
+	 * It returns an entry map.
+	 * The key of the entry is the managed product special code and the value the corresponding product special code. 
+	 * 
+	 * @param restaurantId
+	 * @param productSpecialShortCode
+	 * @param locale used to get the language ISO code 2.
+	 * @return an entry map. The key of the entry is the managed product special code and the value the corresponding product special code.
+	 * @throws MdoException
+	 */
+	private Map.Entry<ManagedProductSpecialCode, ProductSpecialCodeDto> getProductSpecialCode(Long restaurantId, String orderCode, Long locId) throws MdoBusinessException {
 		MdoEntry<ManagedProductSpecialCode, ProductSpecialCodeDto> result = new MdoEntry<ManagedProductSpecialCode, ProductSpecialCodeDto>();
 		if (orderCode != null) {
 			try {
 				// Get all managed ProductSpecialCodes.
-				Map<ManagedProductSpecialCode, ProductSpecialCode> filteredManagedProductSpecialCodes = this.getFilteredManagedProductSpecialCodes(restaurantId);
+				Map<ManagedProductSpecialCode, ProductSpecialCodeLabel> filteredManagedProductSpecialCodes = this.getFilteredManagedProductSpecialCodes(restaurantId, locId);
 				for (Iterator<ManagedProductSpecialCode> it = filteredManagedProductSpecialCodes.keySet().iterator(); it.hasNext();) {
 					ManagedProductSpecialCode managedProductSpecialCode = it.next();
-					ProductSpecialCode productSpecialCode = filteredManagedProductSpecialCodes.get(managedProductSpecialCode);
+					ProductSpecialCodeLabel productSpecialCode = filteredManagedProductSpecialCodes.get(managedProductSpecialCode);
 			 		// Check there is a product special code that matches orderCode.
 					if (managedProductSpecialCode.isOrderCodeManaged(productSpecialCode.getShortCode(), orderCode)) {
 						// Yes the application can manage the ProductSpecialCode from database with this orderCode.
@@ -353,19 +404,20 @@ public class DefaultOrdersManager extends AbstractRestaurantManager implements I
 	 * This method filters all ProductSpecialCodes from database with ProductSpecialCodes that could be managed by the business application.
 	 * 
 	 * @param restaurantId the restaurant id.
+	 * @param language the language ISO code 2.
 	 * @return a filtered ProductSpecialCode as map.
 	 * @throws MdoBusinessException when exception occurs.
 	 */
-	private Map<ManagedProductSpecialCode, ProductSpecialCode> getFilteredManagedProductSpecialCodes(Long restaurantId) throws MdoBusinessException {
-		Map<ManagedProductSpecialCode, ProductSpecialCode> result = new HashMap<ManagedProductSpecialCode, ProductSpecialCode>();
+	private Map<ManagedProductSpecialCode, ProductSpecialCodeLabel> getFilteredManagedProductSpecialCodes(Long restaurantId, Long locId) throws MdoBusinessException {
+		Map<ManagedProductSpecialCode, ProductSpecialCodeLabel> result = new HashMap<ManagedProductSpecialCode, ProductSpecialCodeLabel>();
 		// Must cache the list of productSpecialCodes by restaurantId(with AOP for instance).
 		try {
 			// Get the list from database.
-			List<ProductSpecialCode> productSpecialCodes = productSpecialCodeDao.findAllByRestaurant(restaurantId);
+			List<ProductSpecialCodeLabel> productSpecialCodes = productSpecialCodeDao.findAllByRestaurant(restaurantId, locId);
 			result = this.getFilteredManagedProductSpecialCodes(productSpecialCodes);
 		} catch (MdoException e) {
-			logger.error("message.error.business.DefaultOrdersManager.getManageableProductSpecialCode", new Object[]{ restaurantId }, e);
-			throw new MdoBusinessException("message.error.business.DefaultOrdersManager.getManageableProductSpecialCode", new Object[]{ restaurantId }, e);
+			logger.error("message.error.business.DefaultOrdersManager.getFilteredManagedProductSpecialCodes", new Object[]{ restaurantId, locId }, e);
+			throw new MdoBusinessException("message.error.business.DefaultOrdersManager.getFilteredManagedProductSpecialCodes", new Object[]{ restaurantId, locId }, e);
 		}
 		return result;
 	}
@@ -376,16 +428,32 @@ public class DefaultOrdersManager extends AbstractRestaurantManager implements I
 	 * @param productSpecialCodes list of ProductSpecialCode.
 	 * @return a filtered ProductSpecialCode as map.
 	 */
-	private Map<ManagedProductSpecialCode, ProductSpecialCode> getFilteredManagedProductSpecialCodes(List<ProductSpecialCode> productSpecialCodes) {
-		Map<ManagedProductSpecialCode, ProductSpecialCode> result = new HashMap<ManagedProductSpecialCode, ProductSpecialCode>();
+	private Map<ManagedProductSpecialCode, ProductSpecialCodeLabel> getFilteredManagedProductSpecialCodes(List<ProductSpecialCodeLabel> productSpecialCodes) {
+		Map<ManagedProductSpecialCode, ProductSpecialCodeLabel> result = new HashMap<ManagedProductSpecialCode, ProductSpecialCodeLabel>();
 		// Filter the database list with the managed enum list.
 		for (IMdoBean iMdoBean : productSpecialCodes) {
-			ProductSpecialCode productSpecialCode = (ProductSpecialCode) iMdoBean;
+			ProductSpecialCodeLabel productSpecialCode = (ProductSpecialCodeLabel) iMdoBean;
 			ManagedProductSpecialCode managedProductSpecialCode = ManagedProductSpecialCode.getEnum(productSpecialCode.getCode().getName());
 			if (managedProductSpecialCode != null) {
 				// The productSpecialCode could be managed by the application.
 				result.put(managedProductSpecialCode, productSpecialCode);
 			}
+		}
+		return result;
+	}
+
+	@Override
+	public Long saveOrderLine(OrderLineDto orderLine) throws MdoBusinessException {
+		Long result = null;
+		OrderLine orderLineSaving = helper.toOrderLine(orderLine);
+		try {
+			orderLinesDao.save(orderLineSaving);
+			result = orderLineSaving.getId();
+			// Fill the id if this one is not already set
+			orderLine.setId(result);
+		} catch (MdoException e) {
+			logger.error("message.error.business.DefaultOrdersManager.saveOrderLine", new Object[]{ orderLine }, e);
+			throw new MdoBusinessException("message.error.business.DefaultOrdersManager.saveOrderLine", new Object[]{ orderLine }, e);
 		}
 		return result;
 	}
@@ -432,16 +500,26 @@ public class DefaultOrdersManager extends AbstractRestaurantManager implements I
 		return result;
 	}
 	
-	
-
 	@Override
 	public DinnerTableDto findTable(Long id, Locale locale) throws MdoBusinessException {
+		DinnerTableDto result = null;
+		try {
+			fr.mch.mdo.restaurant.dao.beans.Locale localeFromDb = (fr.mch.mdo.restaurant.dao.beans.Locale) localesDao.findByUniqueKey(locale.getLanguage());
+			result = this.findTable(id, localeFromDb.getId());
+		} catch (MdoException e) {
+			logger.error("message.error.business.DefaultOrdersManager.findTable.find.locale", new Object[]{ id, locale }, e);
+			throw new MdoBusinessException("message.error.business.DefaultOrdersManager.findTable.find.locale", new Object[]{ id, locale }, e);
+		}
+		return result;
+	}
+
+	@Override
+	public DinnerTableDto findTable(Long id, Long locId) throws MdoBusinessException {
 		DinnerTableDto result = new DinnerTableDto();
 		try {
 			DinnerTable table = ((IDinnerTablesDao) dao).findTable(id);
 			if (table != null && table.getId() != null) {
-				fr.mch.mdo.restaurant.dao.beans.Locale localeFromDb = (fr.mch.mdo.restaurant.dao.beans.Locale) localesDao.findByUniqueKey(locale.getLanguage());
-				List<OrderLine> orders = orderLinesDao.findAllScalarFieldsByDinnerTableId(table.getId(), localeFromDb.getId());
+				List<OrderLine> orders = orderLinesDao.findAllScalarFieldsByDinnerTableId(table.getId(), locId);
 				table.setOrders(new HashSet<OrderLine>(orders));
 			} else {
 				//TODO throw unknown error DinnerTable not found exception
@@ -449,8 +527,8 @@ public class DefaultOrdersManager extends AbstractRestaurantManager implements I
 			}
 			result = helper.findTable(table);
 		} catch (MdoException e) {
-			logger.error("message.error.business.DefaultOrdersManager.findTable", new Object[]{ id, locale }, e);
-			throw new MdoBusinessException("message.error.business.DefaultOrdersManager.findTable", new Object[]{ id, locale }, e);
+			logger.error("message.error.business.DefaultOrdersManager.findTable", new Object[]{ id, locId }, e);
+			throw new MdoBusinessException("message.error.business.DefaultOrdersManager.findTable", new Object[]{ id, locId }, e);
 		}
 		return result;
 	}

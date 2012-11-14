@@ -12,7 +12,8 @@ public class AcknowledgmentMessage {
 
 	private String message;
 
-
+	private Object attachment;
+	
 	public String getMessage() {
 		return message;
 	}
@@ -37,9 +38,26 @@ public class AcknowledgmentMessage {
 		this.type = type;
 	}
 
+	/**
+	 * @return the attachment
+	 */
+	public Object getAttachment() {
+		return attachment;
+	}
+
+	/**
+	 * @param attachment the attachment to set
+	 */
+	public void setAttachment(Object attachment) {
+		this.attachment = attachment;
+	}
+
 	@Override
 	public String toString() {
-		return "MessageDTO [type=" + type + ", title=" + title + ", message="
-				+ message + "]";
+		return "MessageDTO [type=" + type 
+				+ ", title=" + title 
+				+ ", message=" + message 
+				+ ", attachment=" + attachment 
+				+ "]";
 	}
 }

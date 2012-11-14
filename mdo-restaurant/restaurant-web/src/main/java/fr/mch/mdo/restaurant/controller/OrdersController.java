@@ -1,5 +1,6 @@
 package fr.mch.mdo.restaurant.controller;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -22,6 +23,7 @@ import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.services.business.managers.IOrdersManager;
 import fr.mch.mdo.restaurant.services.business.managers.TableState;
 import fr.mch.mdo.restaurant.ui.forms.ResetTableForm;
+import fr.mch.mdo.restaurant.ui.forms.SaveOrderLineForm;
 import fr.mch.mdo.restaurant.ui.forms.TableHeaderForm;
 
 @Controller
@@ -34,14 +36,18 @@ public final class OrdersController //extends AbstractController
 	public static final String RESET_TABLE_DINNER_TABLE_ID = "/reset/table/{dinnerTableId}";
 	public static final String CREATE_TABLE_RESTAURANT_ID_USER_AUTHENTICATION_ID_VIEW = "/create/table/{restaurantId}/{userAuthenticationId}/view";
 	public static final String FIND_TABLE_ID_VIEW = "/find/table/{id}/view";
+	public static final String FIND_TABLE_ID_LOC_ID_VIEW = "/find/table/{id}/{locId}/view";
 	public static final String DELETE_TABLE_ID_VIEW = "/delete/table/{id}/view";
 	public static final String RESTAURANT_ID_USER_AUTHENTICATION_ID_TABLES_STATE_VIEW = "/{restaurantId}/{userAuthenticationId}/tables/{state}/view";
 	public static final String RESTAURANT_ID_TABLES_STATE_VIEW = "/{restaurantId}/tables/{state}/view";
-	public static final String RESTAURANT_ID_FIND_PRODUCT_CODE = "/{restaurantId}/find/product/{orderCode}";
+	public static final String RESTAURANT_ID_FIND_ORDER_LINE_CODE = "/{restaurantId}/find/order/line/{quantity}/{orderCode}";
+	public static final String RESTAURANT_ID_FIND_ORDER_LINE_CODE_LOC_ID = "/{restaurantId}/find/order/line/{quantity}/{orderCode}/{locId}";
 	public static final String CREATE_TABLE_RESTAURANT_ID_USER_AUTHENTICATION_ID = "/create/table/{restaurantId}/{userAuthenticationId}";
 	public static final String UPDATE_TABLE_ID_CUSTOMERS_NUMBER_CUSTOMERS_NUMBER = "/update/table/{id}/customers/number/{customersNumber}";
 	public static final String TABLE_ORDERS_SIZE_ID = "/table/orders/size/{dinnerTableId}";
 	public static final String FIND_TABLE_ID = "/find/table/{id}";
+	public static final String FIND_TABLE_ID_LOC_ID = "/find/table/{id}/{locId}";
+	public static final String SAVE_ORDER_LINE = "/save/order/line";
 	public static final String DELETE_TABLE_ID = "/delete/table/{id}";
 	public static final String RESTAURANT_ID_USER_AUTHENTICATION_ID_TABLE_HEADER_BY_NUMBER_NUMBER = "/{restaurantId}/{userAuthenticationId}/table/header/by/number/{number}";
 	public static final String RESTAURANT_ID_TABLE_HEADER_BY_NUMBER_NUMBER = "/{restaurantId}/table/header/by/number/{number}";
@@ -107,6 +113,13 @@ public final class OrdersController //extends AbstractController
 		return table;
 	}
 
+	@RequestMapping(value = FIND_TABLE_ID_LOC_ID)
+	@ResponseBody
+	public DinnerTableDto findTable(@PathVariable Long id, @PathVariable Long locId) throws MdoException {
+		DinnerTableDto table = manager.findTable(id, locId);
+		return table;
+	}
+
 	@RequestMapping(value = UPDATE_TABLE_ID_CUSTOMERS_NUMBER_CUSTOMERS_NUMBER, method = RequestMethod.POST)
 	@ResponseBody
 	public AcknowledgmentMessage updateTableCustomersNumber(@PathVariable Long id, @PathVariable Integer customersNumber) {
@@ -155,13 +168,36 @@ public final class OrdersController //extends AbstractController
 		return result;
 	}
 
-	@RequestMapping(value = RESTAURANT_ID_FIND_PRODUCT_CODE, method = RequestMethod.GET)
+	@RequestMapping(value = RESTAURANT_ID_FIND_ORDER_LINE_CODE, method = RequestMethod.GET)
 	@ResponseBody
-	public OrderLineDto findProduct(@PathVariable Long restaurantId, @PathVariable String orderCode) throws MdoException {
-		OrderLineDto orderLine = manager.getOrderLine(restaurantId, orderCode);
+	public OrderLineDto findOrderLine(@PathVariable Long restaurantId, @PathVariable BigDecimal quantity, @PathVariable String orderCode, Locale locale) throws MdoException {
+		OrderLineDto orderLine = manager.getOrderLine(restaurantId, quantity, orderCode, locale);
 		return orderLine;
 	}
 	
+	@RequestMapping(value = RESTAURANT_ID_FIND_ORDER_LINE_CODE_LOC_ID, method = RequestMethod.GET)
+	@ResponseBody
+	public OrderLineDto findProduct(@PathVariable Long restaurantId, @PathVariable BigDecimal quantity, @PathVariable String orderCode, @PathVariable Long locId) throws MdoException {
+		OrderLineDto orderLine = manager.getOrderLine(restaurantId, quantity, orderCode, locId);
+		return orderLine;
+	}
+
+	@RequestMapping(value = SAVE_ORDER_LINE, method = RequestMethod.POST)
+	@ResponseBody
+	public AcknowledgmentMessage saveOrderLine(@RequestBody SaveOrderLineForm form) {
+		AcknowledgmentMessage ack = new AcknowledgmentMessage();
+		try {
+			Long savedId = manager.saveOrderLine(form.getOrderLine());
+			ack.setAttachment(savedId);
+		} catch (MdoException e) {
+			ack.setType(AcknowledgmentMessage.Type.ERROR);
+			ack.setTitle("save.order.line.error.ack.title");
+			ack.setMessage("save.order.line.error.ack.message");
+		}
+		
+		return ack;
+	}
+
 	@RequestMapping(value = DELETE_ORDER_LINE_ID, method = RequestMethod.DELETE)
 	@ResponseBody
 	public AcknowledgmentMessage deleteOrderLine(@PathVariable Long id) {
@@ -199,8 +235,15 @@ public final class OrdersController //extends AbstractController
 	}
 	
 	@RequestMapping(FIND_TABLE_ID_VIEW)
-	public String findTableView(@PathVariable Long id, Model model, Locale locale) throws MdoException {
+	public String findTableView(@PathVariable Long id, Locale locale, Model model) throws MdoException {
 		DinnerTableDto table = this.findTable(id, locale);
+		model.addAttribute("table", table);
+		return "orders/table";
+	}
+
+	@RequestMapping(FIND_TABLE_ID_LOC_ID_VIEW)
+	public String findTableView(@PathVariable Long id, @PathVariable Long locId, Model model) throws MdoException {
+		DinnerTableDto table = this.findTable(id, locId);
 		model.addAttribute("table", table);
 		return "orders/table";
 	}

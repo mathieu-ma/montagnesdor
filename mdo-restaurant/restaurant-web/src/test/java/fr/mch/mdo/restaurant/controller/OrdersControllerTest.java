@@ -1,5 +1,7 @@
 package fr.mch.mdo.restaurant.controller;
 
+import java.math.BigDecimal;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -8,9 +10,10 @@ import org.springframework.http.ResponseEntity;
 
 import fr.mch.mdo.restaurant.beans.dto.AcknowledgmentMessage;
 import fr.mch.mdo.restaurant.beans.dto.DinnerTableDto;
-import fr.mch.mdo.restaurant.dto.beans.ProductDto;
+import fr.mch.mdo.restaurant.beans.dto.OrderLineDto;
 import fr.mch.mdo.restaurant.services.business.managers.TableState;
 import fr.mch.mdo.restaurant.ui.forms.ResetTableForm;
+import fr.mch.mdo.restaurant.ui.forms.SaveOrderLineForm;
 import fr.mch.mdo.restaurant.ui.forms.TableHeaderForm;
 import fr.mch.mdo.restaurant.web.AbstractControllerTest;
 
@@ -153,6 +156,17 @@ public final class OrdersControllerTest extends AbstractControllerTest
 	}
 
     @Test
+    public void saveOrderLine() {
+    	SaveOrderLineForm form = new SaveOrderLineForm();
+    	OrderLineDto orderLine = new OrderLineDto();
+    	form.setOrderLine(orderLine);
+        StringBuilder sb = new StringBuilder(context).append(OrdersController.SAVE_ORDER_LINE);
+        AcknowledgmentMessage ack = restTemplate.postForObject(sb.toString(), form, AcknowledgmentMessage.class);
+    	Assert.assertNotNull(ack);
+    	Assert.assertNotNull(ack.getAttachment());
+    }
+
+    @Test
     public void deleteOrderLine() {
     	Long orderLineId = 1L;
         StringBuilder sb = new StringBuilder(context).append(OrdersController.DELETE_ORDER_LINE_ID);
@@ -163,13 +177,15 @@ public final class OrdersControllerTest extends AbstractControllerTest
     }
 
     @Test
-	public void findProduct() {
-    	Long restaurantId = 1L; 
-    	String orderCode = "11";
-        StringBuilder sb = new StringBuilder(context).append(OrdersController.RESTAURANT_ID_FIND_PRODUCT_CODE);
-        ProductDto product = restTemplate.getForObject(sb.toString(), ProductDto.class, restaurantId, orderCode);
-    	Assert.assertNotNull(product);
-    	Assert.assertEquals("ProductDto orderCode", orderCode, product.getCode());
+	public void findOrderLine() {
+    	Long restaurantId = 1L;
+    	BigDecimal quantity = BigDecimal.TEN; 
+    	String orderCode = "#11";
+    	Long locId = 1L;
+        StringBuilder sb = new StringBuilder(context).append(OrdersController.RESTAURANT_ID_FIND_ORDER_LINE_CODE_LOC_ID);
+        OrderLineDto orderLine = restTemplate.getForObject(sb.toString(), OrderLineDto.class, restaurantId, quantity, orderCode, locId);
+    	Assert.assertNotNull(orderLine);
+    	Assert.assertEquals("OrderLineDto orderCode", orderCode, orderLine.getCode());
 	}
 
 	@Test

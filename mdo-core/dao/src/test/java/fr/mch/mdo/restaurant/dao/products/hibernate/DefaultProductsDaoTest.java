@@ -16,6 +16,7 @@ import fr.mch.mdo.restaurant.dao.IDaoServices;
 import fr.mch.mdo.restaurant.dao.beans.Category;
 import fr.mch.mdo.restaurant.dao.beans.Product;
 import fr.mch.mdo.restaurant.dao.beans.ProductCategory;
+import fr.mch.mdo.restaurant.dao.beans.ProductLabel;
 import fr.mch.mdo.restaurant.dao.beans.ProductLanguage;
 import fr.mch.mdo.restaurant.dao.beans.Restaurant;
 import fr.mch.mdo.restaurant.dao.beans.ValueAddedTax;
@@ -412,6 +413,21 @@ public class DefaultProductsDaoTest extends DefaultDaoServicesTestCase
 
 			Product product = (Product) productsDao.find(restaurantId, prefixProductCode);
 			assertNotNull("Product must not be null", product);
+			
+			Long locId = 1L;
+			ProductLabel productLabel = (ProductLabel) productsDao.find(restaurantId, prefixProductCode, locId);
+			assertNotNull("Product must not be null", productLabel);
+			assertNotNull("Product Label must not be null", productLabel.getLabel());
+			assertNotNull("Product VAT must not be null", productLabel.getVat());
+			assertNotNull("Product VAT must not be null", productLabel.getVat().getId());
+			
+			locId = 3L;
+			productLabel = (ProductLabel) productsDao.find(restaurantId, prefixProductCode, locId);
+			assertNotNull("Product must not be null", productLabel);
+			assertNull("Product Label must be null", productLabel.getLabel());
+			assertNotNull("Product VAT must not be null", productLabel.getVat());
+			assertNotNull("Product VAT must not be null", productLabel.getVat().getId());
+
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}

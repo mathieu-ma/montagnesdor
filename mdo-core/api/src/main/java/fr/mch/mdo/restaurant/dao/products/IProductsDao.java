@@ -5,6 +5,7 @@ import java.util.Map;
 
 import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.dao.IDaoServices;
+import fr.mch.mdo.restaurant.dao.beans.ProductLabel;
 import fr.mch.mdo.restaurant.exception.MdoException;
 
 public interface IProductsDao  extends IDaoServices
@@ -47,4 +48,13 @@ public interface IProductsDao  extends IDaoServices
 	 */
     IMdoBean find(String restaurantReference, String code) throws MdoException;
 
+    /**
+     * This method tries to get the Product by code for specific locale.
+     * @param restaurantId the restaurant id.
+     * @param code the unique code.
+	 * @param locId the locale id.
+     * @return the Product.
+     * @throws MdoException when any exception occur.
+     */
+	ProductLabel find(Long restaurantId, String code, Long locId) throws MdoException;
 }

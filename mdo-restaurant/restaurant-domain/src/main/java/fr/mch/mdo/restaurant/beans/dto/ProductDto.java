@@ -19,6 +19,8 @@ public class ProductDto extends MdoDtoBean
     private BigDecimal price;
     private String colorRGB;
     private String label;
+    
+    private Long vatId;
 
     public ProductDto()
     {
@@ -80,10 +82,26 @@ public class ProductDto extends MdoDtoBean
 		this.label = label;
 	}
 
+	/**
+	 * @return the vatId
+	 */
+	public Long getVatId() {
+		return vatId;
+	}
+
+	/**
+	 * @param vatId the vatId to set
+	 */
+	public void setVatId(Long vatId) {
+		this.vatId = vatId;
+	}
+
 	@Override
 	public String toString() {
 		return "ProductDetails [code=" + code + ", price=" + price
-				+ ", colorRGB=" + colorRGB + ", label=" + label + ", id=" + id
+				+ ", colorRGB=" + colorRGB + ", label=" + label 
+				+ ", vatId=" + vatId
+				+ ", id=" + id
 				+ "]";
 	}
 }

@@ -102,7 +102,7 @@ public class ProductSpecialCodesManagerWebAction extends AdministrationManagerLa
 				IAdministrationManagerViewBean viewBean = ((IMdoAdministrationForm) super.getForm()).getViewBean();
 				if (viewBean != null && dtoBean.getRestaurant() != null) {
 					IProductSpecialCodesManager manager = (IProductSpecialCodesManager) administrationManager;
-					viewBean.setList(manager.getList(dtoBean.getRestaurant().getId(), userContext));
+					viewBean.setList(manager.getList(dtoBean.getRestaurant().getId()));
 				}
 			}
 		}

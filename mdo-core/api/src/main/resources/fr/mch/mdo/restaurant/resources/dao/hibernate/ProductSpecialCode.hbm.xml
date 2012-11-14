@@ -26,6 +26,12 @@
 			<element column="pcl_label" type="string" />
 		</map>
 
+		<!-- Use inverse="true" in order to not update the collection productSpecialCodeLanguages -->
+		<set name="productSpecialCodeLanguages" inverse="true" table="t_product_special_code_language">
+			<key column="psc_id" />
+			<one-to-many class="fr.mch.mdo.restaurant.dao.beans.ProductSpecialCodeLanguage" />
+		</set>
+		
 	</class>
 
 </hibernate-mapping>

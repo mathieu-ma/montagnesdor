@@ -1,14 +1,12 @@
 package fr.mch.mdo.restaurant.services.business.managers;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import fr.mch.mdo.restaurant.beans.dto.DinnerTableDto;
 import fr.mch.mdo.restaurant.beans.dto.OrderLineDto;
-import fr.mch.mdo.restaurant.beans.dto.ProductSpecialCodeDto;
 import fr.mch.mdo.restaurant.exception.MdoException;
-import fr.mch.mdo.restaurant.services.business.managers.tables.ManagedProductSpecialCode;
 
 public interface IOrdersManager 
 {
@@ -22,7 +20,8 @@ public interface IOrdersManager
 
 	void deleteTable(Long id) throws MdoException;
 	
-	OrderLineDto getOrderLine(Long restaurantId, String orderCode) throws MdoException;
+	OrderLineDto getOrderLine(Long restaurantId, BigDecimal quantity, String orderCode, Locale locale) throws MdoException;
+	OrderLineDto getOrderLine(Long restaurantId, BigDecimal quantity, String orderCode, Long locId) throws MdoException;
 
 	void deleteOrderLine(Long id) throws MdoException;
 
@@ -31,6 +30,7 @@ public interface IOrdersManager
 	DinnerTableDto findTableHeader(Long restaurantId, Long userAuthenticationId, String number) throws MdoException;
 
 	DinnerTableDto findTable(Long id, Locale locale) throws MdoException;
+	DinnerTableDto findTable(Long id, Long locId) throws MdoException;
 
 	/**
 	 * 
@@ -51,15 +51,5 @@ public interface IOrdersManager
 
 	void resetTable(Long dinnerTableId, Long restaurantId, Long userAuthenticationId, String number, Integer customersNumber) throws MdoException;
 
-	/**
-	 * This method is used to get product special code by order code.
-	 * It returns an entry map.
-	 * The key of the entry is the managed product special code and the value the corresponding product special code. 
-	 * 
-	 * @param restaurantId
-	 * @param orderCode
-	 * @return an entry map. The key of the entry is the managed product special code and the value the corresponding product special code.
-	 * @throws MdoException
-	 */
-	Map.Entry<ManagedProductSpecialCode, ProductSpecialCodeDto> getProductSpecialCode(Long restaurantId, String productSpecialShortCode) throws MdoException;
+	Long saveOrderLine(OrderLineDto orderLine) throws MdoException;
 }

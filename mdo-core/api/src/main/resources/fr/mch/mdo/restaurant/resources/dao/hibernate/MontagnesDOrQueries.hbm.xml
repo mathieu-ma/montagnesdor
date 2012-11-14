@@ -30,6 +30,21 @@
 		WHERE product.code = :code
 	</query>
 
+	<query name="Product.findByCodeWithLocale">
+		SELECT pd.id, pd.code, pd.price, pd.colorRGB, pl.locId, pl.label, pd.vat.id
+		FROM Product pd
+		LEFT OUTER JOIN pd.productLanguages pl with pl.locId = :locId 
+		WHERE pd.restaurant.id = :restaurantId
+		AND pd.code = :code
+	</query>
+	
+	<query name="ProductSpecialCode.findAllWithLocale">
+		SELECT psc.id, psc.shortCode, psc.code.name, pscl.locId, pscl.label, psc.vat.id
+		FROM ProductSpecialCode psc
+		LEFT OUTER JOIN psc.productSpecialCodeLanguages pscl WITH pscl.locId = :locId
+		WHERE psc.restaurant.id = :restaurantId
+	</query>
+		
 	<query name="RestaurantVatTableType.FindOnlyVats">
 		FROM RestaurantVatTableType vatTableType 
 			join fetch vatTableType.type 

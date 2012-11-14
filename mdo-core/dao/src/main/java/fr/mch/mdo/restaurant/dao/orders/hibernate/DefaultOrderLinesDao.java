@@ -87,5 +87,4 @@ public class DefaultOrderLinesDao extends DefaultDaoServices implements IOrderLi
 
 		return result;
 	}
-
 }

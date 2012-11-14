@@ -14,6 +14,7 @@ import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.beans.IMdoDaoBean;
 import fr.mch.mdo.restaurant.dao.MdoTableAsEnumTypeDao;
 import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode;
+import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCodeLabel;
 import fr.mch.mdo.restaurant.dao.hibernate.DefaultDaoServices;
 import fr.mch.mdo.restaurant.dao.hibernate.MdoAliasToBean;
 import fr.mch.mdo.restaurant.dao.products.IProductSpecialCodesDao;
@@ -103,6 +104,24 @@ public class DefaultProductSpecialCodesDao extends DefaultDaoServices implements
 		criterias.add(new MdoCriteria("code.name", PropertiesRestrictions.PROJECTION));
 
 		result = super.findByCriteria(ProductSpecialCode.class, ProductSpecialCode.class, criterias, true);
+
+		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductSpecialCodeLabel> findAllByRestaurant(Long restaurantId, Long locId) throws MdoDataBeanException {
+		List<ProductSpecialCodeLabel> result = new ArrayList<ProductSpecialCodeLabel>();
+		
+		Map<String, Object> values = new HashMap<String, Object>();
+		values.put("locId", locId);
+		values.put("restaurantId", restaurantId);
+		ResultTransformer resultTransformer = new MdoAliasToBean(ProductSpecialCodeLabel.class, new String[] {
+			 "id", "shortCode", "code.name",
+			 "locale.id", "label", "vat.id"
+		});
+
+		result = super.findAllByQuery(Constants.HQL_PRODUCT_SPECIAL_CODE_FIND_ALL_WITH_LOCALE, values, resultTransformer);
 
 		return result;
 	}

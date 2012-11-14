@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 
 import fr.mch.mdo.restaurant.beans.dto.AcknowledgmentMessage;
 import fr.mch.mdo.restaurant.beans.dto.DinnerTableDto;
+import fr.mch.mdo.restaurant.beans.dto.OrderLineDto;
 import fr.mch.mdo.restaurant.dto.beans.ProductDto;
 import fr.mch.mdo.restaurant.ui.forms.ResetTableForm;
 import fr.mch.mdo.restaurant.ui.forms.TableHeaderForm;
@@ -296,6 +297,7 @@ public final class OrdersControllerIntegrationTest extends AbstractControllerInt
 	public void orders() {
 		Long pathVarRestaurantId = 1L;
 		Long pathVarDinnerTableId = 1L;
+		Long pathVarLocId = 1L;
 		BigDecimal userEntryQuantities = new BigDecimal(2);
 		String userEntryCode = "#11";
 		String userEntryLabel = "";
@@ -306,12 +308,12 @@ public final class OrdersControllerIntegrationTest extends AbstractControllerInt
 		Assert.assertNotNull("User Entry label", userEntryLabel);
 		Assert.assertNotNull("User Entry unit price", userEntryUnitPrice);
 		
-		ProductDto product = this.findProduct(pathVarRestaurantId, userEntryCode);
+		OrderLineDto orderLine = this.findOrderLine(pathVarRestaurantId, pathVarLocId, userEntryCode);
 	}
 	
-	public ProductDto findProduct(Long restaurantId, String code) {
-        StringBuilder sb = new StringBuilder(context).append(OrdersController.RESTAURANT_ID_FIND_PRODUCT_CODE);
-        ProductDto result = restTemplate.getForObject(sb.toString(), ProductDto.class, restaurantId, code);
+	public OrderLineDto findOrderLine(Long pathVarRestaurantId, Long pathVarLocId, String code) {
+        StringBuilder sb = new StringBuilder(context).append(OrdersController.RESTAURANT_ID_FIND_ORDER_LINE_CODE_LOC_ID);
+        OrderLineDto result = restTemplate.getForObject(sb.toString(), OrderLineDto.class, pathVarRestaurantId, code, pathVarLocId);
     	Assert.assertNotNull(result);
     	Assert.assertEquals("ProductDto code", code, result.getCode());
     	return result;

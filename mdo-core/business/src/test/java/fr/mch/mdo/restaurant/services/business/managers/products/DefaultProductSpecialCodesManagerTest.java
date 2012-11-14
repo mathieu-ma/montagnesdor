@@ -165,7 +165,7 @@ public class DefaultProductSpecialCodesManagerTest extends DefaultAdministration
 	public void testGetList() {
 		Long restaurantId = 1L;
 		try {
-			List<IMdoDtoBean> list= ((IProductSpecialCodesManager) DefaultProductSpecialCodesManager.getInstance()).getList(restaurantId, userContext);
+			List<IMdoDtoBean> list= ((IProductSpecialCodesManager) DefaultProductSpecialCodesManager.getInstance()).getList(restaurantId);
 			assertNotNull("List must not be null", list);
 			assertFalse("List must not be empty", list.isEmpty());
 		} catch (MdoException e) {

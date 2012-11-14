@@ -2,7 +2,6 @@ package fr.mch.mdo.restaurant.beans.dto;
 
 import fr.mch.mdo.restaurant.beans.MdoDtoBean;
 import fr.mch.mdo.restaurant.dto.beans.MdoTableAsEnumDto;
-import fr.mch.mdo.restaurant.dto.beans.ValueAddedTaxDto;
 
 /**
  * @author Mathieu MA
@@ -30,7 +29,7 @@ public class ProductSpecialCodeDto extends MdoDtoBean
 	 * This is a foreign key that refers to t_value_added_tax. It is used to
 	 * specify the product special code value added tax.
 	 */
-	private ValueAddedTaxDto vat;
+	private Long vatId;
 
 	/**
 	 * This is used for i18n label.
@@ -68,17 +67,17 @@ public class ProductSpecialCodeDto extends MdoDtoBean
 	}
 
 	/**
-	 * @return the vat
+	 * @return the vatId
 	 */
-	public ValueAddedTaxDto getVat() {
-		return vat;
+	public Long getVatId() {
+		return vatId;
 	}
 
 	/**
-	 * @param vat the vat to set
+	 * @param vatId the vatId to set
 	 */
-	public void setVat(ValueAddedTaxDto vat) {
-		this.vat = vat;
+	public void setVatId(Long vatId) {
+		this.vatId = vatId;
 	}
 
 	/**
@@ -100,7 +99,7 @@ public class ProductSpecialCodeDto extends MdoDtoBean
 	public String toString() {
 		return "ProductSpecialCode [code=" + code + ", label=" + label 
 				+ ", shortCode=" + shortCode 
-				+ ", vat=" + vat 
+				+ ", vatId=" + vatId 
 				+ ", id=" + id + "]";
 	}
 }

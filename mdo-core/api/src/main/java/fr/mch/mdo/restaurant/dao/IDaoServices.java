@@ -21,6 +21,9 @@ public interface IDaoServices extends IDaoBase
     IMdoBean insert(IMdoBean bean, boolean... isLazy) throws MdoException;
 
     IMdoBean update(IMdoBean bean, boolean... isLazy) throws MdoException;
+    
+    IMdoBean save(IMdoBean bean, boolean... isLazy) throws MdoException;
+    
     /**
      * Update fields "fields" of the current bean by keys "keys".
      * This method allows to update in mass or only one row depending on the values in the keys map.

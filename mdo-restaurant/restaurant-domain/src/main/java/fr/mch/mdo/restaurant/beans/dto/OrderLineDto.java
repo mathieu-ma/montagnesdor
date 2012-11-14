@@ -15,19 +15,36 @@ public class OrderLineDto extends MdoDtoBean
      */
     private static final long serialVersionUID = 1L;
 
+    private Long dinnerTableId;
+
     private BigDecimal quantity;
     private String code;
     private String label;
     private BigDecimal unitPrice;
     private BigDecimal amount;
-    
+
+    private Long vatId;
+
     private ProductDto product;
-    
     private ProductSpecialCodeDto productSpecialCode;
-    
+
     public OrderLineDto()
     {
     }
+
+	/**
+	 * @return the dinnerTableId
+	 */
+	public Long getDinnerTableId() {
+		return dinnerTableId;
+	}
+
+	/**
+	 * @param dinnerTableId the dinnerTableId to set
+	 */
+	public void setDinnerTableId(Long dinnerTableId) {
+		this.dinnerTableId = dinnerTableId;
+	}
 
 	/**
 	 * @return the quantity
@@ -100,6 +117,20 @@ public class OrderLineDto extends MdoDtoBean
 	}
 
 	/**
+	 * @return the vatId
+	 */
+	public Long getVatId() {
+		return vatId;
+	}
+
+	/**
+	 * @param vatId the vatId to set
+	 */
+	public void setVatId(Long vatId) {
+		this.vatId = vatId;
+	}
+
+	/**
 	 * @return the product
 	 */
 	public ProductDto getProduct() {
@@ -129,9 +160,11 @@ public class OrderLineDto extends MdoDtoBean
 
 	@Override
 	public String toString() {
-		return "OrderLineDto [quantity=" + quantity + ", code=" + code
+		return "OrderLineDto [dinnerTableId=" + dinnerTableId 
+				+ ", quantity=" + quantity + ", code=" + code
 				+ ", label=" + label + ", unitPrice=" + unitPrice 
 				+ ", amount=" + amount + ", product=" + product 
+				+ ", vatId=" + vatId 
 				+ ", productSpecialCode=" + productSpecialCode
 				+ ", id=" + id + "]";
 	}

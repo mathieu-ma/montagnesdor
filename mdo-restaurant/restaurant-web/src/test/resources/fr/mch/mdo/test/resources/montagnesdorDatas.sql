@@ -222,11 +222,22 @@ INSERT INTO t_category VALUES(2, 27, false);
 
 --COMMENT ON TABLE t_product_special_code IS 'This table is used for product special code.';
 --COMMENT ON COLUMN t_product_special_code.psc_id IS 'This is primary key of this table.';
---COMMENT ON COLUMN t_product_special_code.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant.';
---COMMENT ON COLUMN t_product_special_code.psc_short_code IS 'This is used to specify the short code enter by user.';
---COMMENT ON COLUMN t_product_special_code.psc_code_enm_id IS 'This is a foreign key that refers to t_enum. It is used to specify the product special code.';
+--COMMENT ON COLUMN t_product_special_code.res_id IS 'This is a foreign key that refers to t_restaurant. It is used to specify the restaurant. This field and the other psc_code_enm_id field consist of a unique field. And so, this field and the other psc_short_code field consist of a unique field.';
+--COMMENT ON COLUMN t_product_special_code.psc_short_code IS 'This is used to specify the short code enter by user. This field behaves as the field psc_code_enm_id but it is used as user entry constant. This field and the other res_id field consist of a unique field.';
+--COMMENT ON COLUMN t_product_special_code.psc_code_enm_id IS 'This is a foreign key that refers to t_enum. It is used to specify the product special code. This field behaves as the field psc_short_code but it is used as business constant. This field and the other res_id field consist of a unique field.';
+--COMMENT ON COLUMN t_product_special_code.vat_id IS 'This is a foreign key that refers to t_value_added_tax. It is used to specify the product special code value added tax.';
 --COMMENT ON COLUMN t_product_special_code.psc_deleted IS 'This is used for logical deletion.';
 INSERT INTO t_product_special_code VALUES(1, 1, '#', 20, 1, false);
+INSERT INTO t_product_special_code VALUES(2, 1, '*', 30, null, false);
+
+--COMMENT ON TABLE t_product_special_code_language IS 'This table is used for product special code depending on the specific language.';
+--COMMENT ON COLUMN t_product_special_code_language.pcl_id IS 'This is primary key of this table.';
+--COMMENT ON COLUMN t_product_special_code_language.psc_id IS 'This is a foreign key that refers to t_product_special_code. It is used to specify the product special code. This field and the other loc_id field consist of a unique field.';
+--COMMENT ON COLUMN t_product_special_code_language.loc_id IS 'This is a foreign key that refers to t_locale. It is used to specify the language of the product special code. This field and the other psc_id field consist of a unique field.';
+--COMMENT ON COLUMN t_product_special_code_language.pcl_label IS 'This is the label of the product special code depending on the language.';
+--COMMENT ON COLUMN t_product_special_code_language.pcl_deleted IS 'This is used for logical deletion.';
+INSERT INTO t_product_special_code_language (psc_id, loc_id, pcl_label, pcl_deleted) VALUES(1, 1, 'Offert en francais', false);
+INSERT INTO t_product_special_code_language (psc_id, loc_id, pcl_label, pcl_deleted) VALUES(1, 2, 'Offert en chinois', false);
 
 --COMMENT ON TABLE t_product_part IS 'This table is used for product part.';
 --COMMENT ON COLUMN t_product_part.prp_id IS 'This is primary key of this table.';

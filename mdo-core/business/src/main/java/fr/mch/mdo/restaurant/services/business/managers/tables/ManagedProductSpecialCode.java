@@ -1,28 +1,10 @@
 package fr.mch.mdo.restaurant.services.business.managers.tables;
 
 import java.math.BigDecimal;
-import java.util.Map;
-
-import fr.mch.mdo.restaurant.dao.beans.Product;
-import fr.mch.mdo.restaurant.dao.products.IProductsDao;
-import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
-import fr.mch.mdo.restaurant.dto.beans.OrderLineDto;
-import fr.mch.mdo.restaurant.dto.beans.ProductDto;
-import fr.mch.mdo.restaurant.dto.beans.ValueAddedTaxDto;
-import fr.mch.mdo.restaurant.exception.MdoException;
 
 public enum ManagedProductSpecialCode {
 	
 	OFFERED_PRODUCT("#") {
-		public void fillOrderLine(MdoUserContext userContext, Product product, OrderLineDto orderLine) {
-			super.fillOrderLine(userContext, product, orderLine);
-			String label = orderLine.getLabel();
-			//TODO
-//			label = this.getProductSpecialCode().getLabels().get(userContext.getCurrentLocale().getId()) + " : " + label;
-			orderLine.setLabel(label);
-			orderLine.setUnitPrice(BigDecimal.ZERO);
-		}
-		
 		@Override
 		public boolean isOrderCodeManaged(String productSpecialCodeShortCode, String orderCode) {
 			boolean result = false;
@@ -49,25 +31,14 @@ public enum ManagedProductSpecialCode {
 			}
 			return result;
 		}
+
+		@Override
+		public BigDecimal getAmount(BigDecimal quantity, BigDecimal unitPrice) {
+			return BigDecimal.ZERO;
+		}
 	}, 
 	DISCOUNT_ORDER("-"),
 	USER_ORDER("/") {
-		public Product getProductByCode(IProductsDao productsDao, Long restaurantId, Long localeId, String productCode) throws MdoException {
-			return null;
-		}
-		public boolean checkCode(String code) {
-			return code!=null && code.length() == 1;
-		}
-		public void fillOrderLine(MdoUserContext userContext, Product product, OrderLineDto orderLine) {
-			// For setting VAT
-			super.fillOrderLine(userContext, product, orderLine);
-			// Currently the dataCode is used for merging 2 rows
-			orderLine.setDataCode("");
-		}
-		public void postProcessCode(OrderLineDto orderLine) {
-			// Do nothing
-		}
-		
 		@Override
 		public boolean isOrderCodeManaged(String productSpecialCodeShortCode, String orderCode) {
 			boolean result = false;
@@ -103,62 +74,6 @@ public enum ManagedProductSpecialCode {
 
 	public String getCode() {
 		return this.code;
-	}
-
-	public void fillOrderLine(MdoUserContext userContext, Product product, OrderLineDto orderLine) {
-		ValueAddedTaxDto vat = new ValueAddedTaxDto();
-		if (product != null) {
-			ProductDto productDto = new ProductDto();
-			productDto.setId(product.getId());
-			productDto.setColorRGB(product.getColorRGB());
-			orderLine.setProduct(productDto);
-			// Update unit price and label...
-			orderLine.setLabel(this.getLabel(product.getLabels(), userContext.getCurrentLocale().getId()));
-			orderLine.setUnitPrice(product.getPrice());
-			vat.setId(product.getVat().getId());
-		}
-		// Always set the vat even if the id is null
-		orderLine.setVat(vat);
-		orderLine.setDataCode(orderLine.getCode());
-	}
-
-	public Product getProductByCode(IProductsDao productsDao, Long restaurantId, Long localeId, String productCode) throws MdoException {
-		Product result = null;
-		result = (Product) productsDao.find(restaurantId, productCode);
-		// Return only one label
-		if (result != null) {
-			Map<Long, String> labels = result.getLabels();
-			if (labels != null && !labels.isEmpty()) {
-				String label = labels.get(localeId);
-				if (label == null) {
-					// Get the first one
-					label = labels.get(labels.keySet().iterator().next());
-				}
-			}
-		}
-		return result;
-	}
-
-	public boolean checkCode(String code) {
-		return true;
-	}
-
-	private String getLabel(Map<Long, String> labels, Long localeId) {
-		String result = null;
-		if (labels != null && !labels.isEmpty()) {
-			result = labels.get(localeId);
-			if (result == null) {
-				result = labels.values().iterator().next();
-			}
-		}
-		return result;
-	}
-
-	public void postProcessCode(OrderLineDto orderLine) {
-		if (orderLine.getUnitPrice() == null) {
-			// Set empty code means that there is no matching code 
-			orderLine.setCode("");
-		}
 	}
 
 	/////////////////////////////////////////////////////////////////// NEW //////////////////////////////////////////////
@@ -201,5 +116,39 @@ public enum ManagedProductSpecialCode {
 	 */
 	public String getProductCode(String productSpecialCodeShortCode, String orderCode) {
 		return null;
+	}
+
+	/**
+	 * Build the label.
+	 * 
+	 * @param productSpecialCodeLabel the product special code label.
+	 * @param productLabel the product label.
+	 * @return the built label.
+	 */
+	public String getLabel(String productSpecialCodeLabel, String productLabel) {
+		String result = null;
+		if (productSpecialCodeLabel != null) {
+			result = productSpecialCodeLabel;
+		}
+		if (productLabel != null) {
+			result += " " + productLabel;
+		}
+		return result;
+	}
+	
+	/**
+	 * Get the amount by quantity and unit price.
+	 * The process is dependent on the product special code.
+	 * 
+	 * @param quantity the quantity.
+	 * @param unitPrice the unit price.
+	 * @return the amount by quantity and unit price.
+	 */
+	public BigDecimal getAmount(BigDecimal quantity, BigDecimal unitPrice) {
+		BigDecimal result = null;
+		if (quantity != null && unitPrice != null) {
+			result = quantity.multiply(unitPrice);
+		}
+		return result;
 	}
 }

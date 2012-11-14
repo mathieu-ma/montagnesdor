@@ -11,6 +11,7 @@ import fr.mch.mdo.restaurant.beans.IMdoBean;
 import fr.mch.mdo.restaurant.dao.IDaoServices;
 import fr.mch.mdo.restaurant.dao.beans.MdoTableAsEnum;
 import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCode;
+import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCodeLabel;
 import fr.mch.mdo.restaurant.dao.beans.ProductSpecialCodeLanguage;
 import fr.mch.mdo.restaurant.dao.beans.Restaurant;
 import fr.mch.mdo.restaurant.dao.beans.ValueAddedTax;
@@ -228,7 +229,7 @@ public class DefaultProductSpecialCodesDaoTest extends DefaultDaoServicesTestCas
 		try {
 			IProductSpecialCodesDao productSpecialCodesDao = (IProductSpecialCodesDao) this.getInstance();
 
-			List<IMdoBean> list = productSpecialCodesDao.findAllByRestaurant(restaurantId);
+			List<ProductSpecialCode> list = productSpecialCodesDao.findAllByRestaurant(restaurantId);
 			assertNotNull("List of IMdoBean must not be null", list);
 			assertFalse("List of IMdoBean must not be empty", list.isEmpty());
 			ProductSpecialCode psc = (ProductSpecialCode) list.get(0);
@@ -237,6 +238,23 @@ public class DefaultProductSpecialCodesDaoTest extends DefaultDaoServicesTestCas
 			assertNotNull("ProductSpecialCode short code", psc.getShortCode());
 			assertNotNull("ProductSpecialCode code not null", psc.getCode());
 			assertNotNull("ProductSpecialCode code name not null", psc.getCode().getName());
+			
+			Long locId = 1L;
+			List<ProductSpecialCodeLabel> listLabels = productSpecialCodesDao.findAllByRestaurant(restaurantId, locId);
+			assertNotNull("List of IMdoBean must not be null", listLabels);
+			assertFalse("List of IMdoBean must not be empty", listLabels.isEmpty());
+			ProductSpecialCodeLabel pscLabel = (ProductSpecialCodeLabel) listLabels.get(0);
+			// Only these 5 fields are not null: pscLabel.getId(), pscLabel.getShortCode(), pscLabel.getCode().getName(), pscLabel.getLabel(), pscLabel.getLocale().getId()
+			assertNotNull("ProductSpecialCode id", pscLabel.getId());
+			assertNotNull("ProductSpecialCode short code", pscLabel.getShortCode());
+			assertNotNull("ProductSpecialCode code not null", pscLabel.getCode());
+			assertNotNull("ProductSpecialCode code name not null", pscLabel.getCode().getName());
+			assertNotNull("ProductSpecialCode label not null", pscLabel.getLabel());
+			assertNotNull("ProductSpecialCode locale name not null", pscLabel.getLocale());
+			assertNotNull("ProductSpecialCode locale name not null", pscLabel.getLocale().getId());
+			assertNotNull("ProductSpecialCode VAT must not be null", pscLabel.getVat());
+			assertNotNull("ProductSpecialCode VAT must not be null", pscLabel.getVat().getId());
+
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getMessage());
 		}

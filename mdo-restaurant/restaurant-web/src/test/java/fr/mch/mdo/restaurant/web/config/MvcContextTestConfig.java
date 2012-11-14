@@ -1,5 +1,6 @@
 package fr.mch.mdo.restaurant.web.config;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -26,8 +27,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import fr.mch.mdo.logs.ILogger;
 import fr.mch.mdo.restaurant.beans.dto.DinnerTableDto;
 import fr.mch.mdo.restaurant.beans.dto.OrderLineDto;
-import fr.mch.mdo.restaurant.dto.beans.ProductDto;
-import fr.mch.mdo.restaurant.dto.beans.RestaurantDto;
 import fr.mch.mdo.restaurant.exception.MdoBusinessException;
 import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.services.business.managers.IOrdersManager;
@@ -127,13 +126,17 @@ public class MvcContextTestConfig extends WebMvcConfigurerAdapter {
     	
     	Mockito.doThrow(new MdoBusinessException("test")).when(result).deleteOrderLine(Mockito.eq(table.getId()));
     	
-    	String productCode = "11";
-    	ProductDto product = new ProductDto();
-    	RestaurantDto restaurant = new RestaurantDto();
-    	restaurant.setId(restaurantId);
-    	product.setRestaurant(restaurant);
-    	product.setCode(productCode);
-//    	Mockito.when(result.findProduct(Mockito.eq(restaurantId), Mockito.eq(productCode))).thenReturn(product);
+    	String orderCode = "#11";
+    	BigDecimal quantity = BigDecimal.TEN;
+    	Long locId = 1L;
+    	OrderLineDto orderLine = new OrderLineDto();
+    	orderLine.setCode(orderCode);
+    	Mockito.when(result.getOrderLine(Mockito.eq(restaurantId), Mockito.eq(quantity), 
+    			Mockito.eq(orderCode), Mockito.eq(locId))).thenReturn(orderLine);
+    	
+    	Long orderLineSavedId = 1L;
+    	Mockito.when(result.saveOrderLine(Mockito.any(OrderLineDto.class))).thenReturn(orderLineSavedId);
+
     	
     	return result;
     }    
