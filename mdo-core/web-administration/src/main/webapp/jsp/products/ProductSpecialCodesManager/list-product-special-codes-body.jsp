@@ -89,9 +89,9 @@
 										<span class="ui-icon ui-icon-trash"></span>
 				    					<s:url id="url" action="ProductSpecialCodesManagerCUD" method="delete">
 				    						<s:param name="form.dtoBean.id" value="%{id}"/>
-				    						<s:param name="form.dtoBean.restaurant.id" value="%{restaurant.id}"/>
-				    						<s:param name="form.dtoBean.restaurant.reference" value="%{restaurant.reference}"/>
-				    						<s:param name="form.dtoBean.restaurant.name" value="%{restaurant.name}"/>
+				    						<s:param name="form.dtoBean.restaurant.id" value="%{form.dtoBean.restaurant.id}"/>
+				    						<s:param name="form.dtoBean.restaurant.reference" value="%{form.dtoBean.restaurant.reference}"/>
+				    						<s:param name="form.dtoBean.restaurant.name" value="%{form.dtoBean.restaurant.name}"/>
 				    					</s:url>
 				    					<s:a id="%{id}" href="%{url}"><fmt:message key="admin.manager.delete"/></s:a>
 									</span>
@@ -102,6 +102,6 @@
 				</tbody>	
 			</table>
 		</div>
-	</div>		
+	</div>
 </s:form>
 
