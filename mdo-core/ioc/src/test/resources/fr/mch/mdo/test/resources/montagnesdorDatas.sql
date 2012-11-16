@@ -227,8 +227,9 @@ INSERT INTO t_category VALUES(2, 27, false);
 --COMMENT ON COLUMN t_product_special_code.psc_code_enm_id IS 'This is a foreign key that refers to t_enum. It is used to specify the product special code. This field behaves as the field psc_short_code but it is used as business constant. This field and the other res_id field consist of a unique field.';
 --COMMENT ON COLUMN t_product_special_code.vat_id IS 'This is a foreign key that refers to t_value_added_tax. It is used to specify the product special code value added tax.';
 --COMMENT ON COLUMN t_product_special_code.psc_deleted IS 'This is used for logical deletion.';
-INSERT INTO t_product_special_code VALUES(1, 1, '#', 20, 1, false);
-INSERT INTO t_product_special_code VALUES(2, 1, '*', 30, null, false);
+INSERT INTO t_product_special_code VALUES(1, 1, '#', 21, 1, false);
+INSERT INTO t_product_special_code VALUES(2, 1, '/', 23, 1, false);
+INSERT INTO t_product_special_code VALUES(3, 1, '*', 30, null, false);
 
 --COMMENT ON TABLE t_product_special_code_language IS 'This table is used for product special code depending on the specific language.';
 --COMMENT ON COLUMN t_product_special_code_language.pcl_id IS 'This is primary key of this table.';

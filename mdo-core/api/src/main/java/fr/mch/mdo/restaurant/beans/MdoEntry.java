@@ -19,8 +19,8 @@ public class MdoEntry<K, V> implements Entry<K, V> {
     	this.value = value;
     }
 
-    public K setKey(K key) {
-    	return key;
+    public void setKey(K key) {
+    	this.key = key;
     }
 
     @Override
@@ -35,6 +35,7 @@ public class MdoEntry<K, V> implements Entry<K, V> {
 
     @Override
     public V setValue(V value) {
+    	this.value = value;
     	return value;
     }
 }

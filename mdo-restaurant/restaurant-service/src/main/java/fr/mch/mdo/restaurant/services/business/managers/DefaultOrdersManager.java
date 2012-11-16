@@ -447,7 +447,7 @@ public class DefaultOrdersManager extends AbstractRestaurantManager implements I
 		Long result = null;
 		OrderLine orderLineSaving = helper.toOrderLine(orderLine);
 		try {
-			orderLinesDao.save(orderLineSaving);
+			orderLinesDao.save(orderLineSaving, true);
 			result = orderLineSaving.getId();
 			// Fill the id if this one is not already set
 			orderLine.setId(result);

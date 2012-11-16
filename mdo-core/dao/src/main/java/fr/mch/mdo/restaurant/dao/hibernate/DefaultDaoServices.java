@@ -276,7 +276,7 @@ public abstract class DefaultDaoServices extends MdoDaoBase implements IDaoServi
 			TransactionSession transactionSession = super.beginTransaction();
 
 			Session session = transactionSession.getSession();
-			session.save(result);
+			session.saveOrUpdate(result);
 
 			super.endTransaction(transactionSession, result, isLazy);
 

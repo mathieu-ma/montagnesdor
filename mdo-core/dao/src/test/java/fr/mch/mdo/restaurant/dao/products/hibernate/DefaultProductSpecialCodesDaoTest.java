@@ -48,7 +48,7 @@ public class DefaultProductSpecialCodesDaoTest extends DefaultDaoServicesTestCas
 		Restaurant restaurant = new Restaurant();
 		restaurant.setId(1L);
 		MdoTableAsEnum code = new MdoTableAsEnum();
-		code.setId(21L);
+		code.setId(11L);
 		ValueAddedTax vat = new ValueAddedTax();
 		vat.setId(1L);
 
@@ -59,11 +59,11 @@ public class DefaultProductSpecialCodesDaoTest extends DefaultDaoServicesTestCas
 
 	protected List<IMdoBean> createListBeans() {
 		List<IMdoBean> list = new ArrayList<IMdoBean>();
-		String shortCode = "/";
+		String shortCode = "+";
 		Restaurant restaurant = new Restaurant();
 		restaurant.setId(1L);
 		MdoTableAsEnum code = new MdoTableAsEnum();
-		code.setId(22L);
+		code.setId(12L);
 		ValueAddedTax vat = new ValueAddedTax();
 		vat.setId(1L);
 
@@ -74,7 +74,7 @@ public class DefaultProductSpecialCodesDaoTest extends DefaultDaoServicesTestCas
 		restaurant = new Restaurant();
 		restaurant.setId(1L);
 		code = new MdoTableAsEnum();
-		code.setId(23L);
+		code.setId(13L);
 		labels = new HashMap<Long, String>();
 		labels.put(1L, "Test 1");
 		list.add(createNewBean(shortCode, restaurant, code, vat, labels));
@@ -203,7 +203,7 @@ public class DefaultProductSpecialCodesDaoTest extends DefaultDaoServicesTestCas
 	public void testGetIdByCodeName() {
 		IProductSpecialCodesDao dao = (IProductSpecialCodesDao) this.getInstance();
 		try {
-			Long beanId = dao.getIdByCodeName(1L, "DEFAULT");
+			Long beanId = dao.getIdByCodeName(1L, "USER_ORDER");
 			assertNotNull(beanId);
 		} catch (Exception e) {
 			fail(MdoTestCase.DEFAULT_FAILED_MESSAGE + ": " + e.getLocalizedMessage());

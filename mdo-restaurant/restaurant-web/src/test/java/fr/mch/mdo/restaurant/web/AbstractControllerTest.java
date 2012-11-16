@@ -7,8 +7,11 @@ import java.sql.Connection;
 
 import javax.inject.Inject;
 
+import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.server.session.SessionHandler;
+import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.junit.After;
 import org.junit.Before;
@@ -85,13 +88,14 @@ public abstract class AbstractControllerTest extends AbstractJUnit4SpringContext
         String webAppDirLocation = "src/main/webapp";
         jettyWebAppContext.setResourceBase(webAppDirLocation);
         jettyWebAppContext.setContextPath("/");
+        jettyWebAppContext.setDefaultsDescriptor("src/test/resources/WEB-INF/jetty-webdefault.xml");
         // Define the spring DispatcherServlet in the jetty-for-web.xml file(not with servletContextHandler.addServlet(new ServletHolder(dispatcherServlet), "/");)
         // because we want to use jetty JSP servlet but not jetty default servlet so the spring DispatcherServlet will override the jetty default servlet.
         // Set the web.xml descriptor to use. If set to null, WEB-INF/web.xml is used if it exists.
         jettyWebAppContext.setDescriptor(descriptor);
         // Add argument new SessionHandler() in order to have session manager
-        jettyWebAppContext.setSessionHandler(new SessionHandler());
-        
+        SessionHandler sessionHandler = new SessionHandler();
+        jettyWebAppContext.setSessionHandler(sessionHandler);
         webAppServer.setHandler(jettyWebAppContext);
     }
 

@@ -73,8 +73,9 @@ public class MvcContextTestConfig extends WebMvcConfigurerAdapter {
     
 	@Bean
 	public ClientHttpRequestFactory clientHttpRequestFactory() {
-		return new HttpComponentsClientHttpRequestFactory();
-	}
+    	HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
+    	return factory;
+    }
 
 	@Bean
 	public RestTemplate restTemplate() {

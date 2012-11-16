@@ -13,14 +13,17 @@ import org.springframework.http.ResponseEntity;
 import fr.mch.mdo.restaurant.beans.dto.AcknowledgmentMessage;
 import fr.mch.mdo.restaurant.beans.dto.DinnerTableDto;
 import fr.mch.mdo.restaurant.beans.dto.OrderLineDto;
-import fr.mch.mdo.restaurant.dto.beans.ProductDto;
+import fr.mch.mdo.restaurant.ui.forms.FindOrderLineForm;
 import fr.mch.mdo.restaurant.ui.forms.ResetTableForm;
+import fr.mch.mdo.restaurant.ui.forms.SaveOrderLineForm;
 import fr.mch.mdo.restaurant.ui.forms.TableHeaderForm;
 import fr.mch.mdo.restaurant.web.AbstractControllerIntegrationTest;
 
 
 public final class OrdersControllerIntegrationTest extends AbstractControllerIntegrationTest
 {
+	private static final String USER_ENTRY_AGAIN_ORDER_CODE = "11";
+
 	public static final String context = SERVER_URL + OrdersController.ORDERS_CONTROLLER;
 
 	private static final Integer DEFAULT_CUSTOMERS_NUMBER = 2;
@@ -165,8 +168,7 @@ public final class OrdersControllerIntegrationTest extends AbstractControllerInt
 			String userEntryTableNumber, Integer userEntryCustomersNumber) {
 		DinnerTableDto result = null;
 
-    	DinnerTableDto header = this.tableHeader(pathVarRestaurantId, pathVarUserAuthenticationId, 
-    			userEntryTableNumber);
+    	DinnerTableDto header = this.tableHeader(pathVarRestaurantId, pathVarUserAuthenticationId, userEntryTableNumber);
 
 		// Does this table already exist(check id) ?
     	if (header.getId() != null) {
@@ -293,30 +295,188 @@ public final class OrdersControllerIntegrationTest extends AbstractControllerInt
 		Assert.assertNotNull("DinnerTableDto.takeaway", table.getTakeaway());
 	}
 	
-	@Test
-	public void orders() {
-		Long pathVarRestaurantId = 1L;
-		Long pathVarDinnerTableId = 1L;
-		Long pathVarLocId = 1L;
-		BigDecimal userEntryQuantities = new BigDecimal(2);
-		String userEntryCode = "#11";
-		String userEntryLabel = "";
-		BigDecimal userEntryUnitPrice = new BigDecimal(2.5);
-		
-		Assert.assertNotNull("User Entry Quantities", userEntryQuantities);
-		Assert.assertNotNull("User Entry code", userEntryCode);
-		Assert.assertNotNull("User Entry label", userEntryLabel);
-		Assert.assertNotNull("User Entry unit price", userEntryUnitPrice);
-		
-		OrderLineDto orderLine = this.findOrderLine(pathVarRestaurantId, pathVarLocId, userEntryCode);
-	}
-	
-	public OrderLineDto findOrderLine(Long pathVarRestaurantId, Long pathVarLocId, String code) {
-        StringBuilder sb = new StringBuilder(context).append(OrdersController.RESTAURANT_ID_FIND_ORDER_LINE_CODE_LOC_ID);
-        OrderLineDto result = restTemplate.getForObject(sb.toString(), OrderLineDto.class, pathVarRestaurantId, code, pathVarLocId);
+	private OrderLineDto findOrderLine(FindOrderLineForm form, Long restaurantId, Long locId) {
+		StringBuilder sb = new StringBuilder(context).append(OrdersController.RESTAURANT_ID_FIND_ORDER_LINE_CODE_LOC_ID);
+        OrderLineDto result = restTemplate.postForObject(sb.toString(), form, OrderLineDto.class, restaurantId, locId);
     	Assert.assertNotNull(result);
-    	Assert.assertEquals("ProductDto code", code, result.getCode());
-    	return result;
+    	Assert.assertEquals("OrderLineDto quantity", form.getQuantity(), result.getQuantity());
+    	Assert.assertEquals("OrderLineDto orderCode", form.getOrderCode(), result.getCode());
+        return result;
 	}
 
+	private Long saveOrderLine(OrderLineDto orderLine) {
+    	SaveOrderLineForm form = new SaveOrderLineForm();
+    	form.setOrderLine(orderLine);
+        StringBuilder sb = new StringBuilder(context).append(OrdersController.SAVE_ORDER_LINE);
+        AcknowledgmentMessage ack = restTemplate.postForObject(sb.toString(), form, AcknowledgmentMessage.class);
+    	Assert.assertNotNull(ack);
+    	Assert.assertTrue(ack.getAttachment() instanceof Number);
+    	Long result = Long.valueOf(ack.getAttachment().toString());
+    	return result;
+    }
+
+	@Test
+	public void orders() {
+		
+		Long varOrderLineId = null;
+		Long firstInsertOrderLineId = null;
+		
+		for (int i = 0; i < 2; i++) {
+			if (i == 1) {
+				varOrderLineId = firstInsertOrderLineId;
+			}
+
+			// For finding order line.
+			Long pathVarRestaurantId = 1L;
+			Long pathVarLocId = 1L;
+			// Quantity is used to process the amount.
+			BigDecimal userEntryQuantity = new BigDecimal(2.1);
+			String userEntryCode = "+" + USER_ENTRY_AGAIN_ORDER_CODE;
+			FindOrderLineForm form = new FindOrderLineForm();
+
+			// For saving order line.
+			Long varDinnerTableId = 1L;
+			String userEntryLabel = "User Entry Label";
+			BigDecimal userEntryUnitPrice = new BigDecimal(2.5);
+			
+			// Product Special Code does not exist.
+			// Product does not exist.
+			form = new FindOrderLineForm();
+			form.setQuantity(userEntryQuantity);
+			form.setOrderCode(userEntryCode);		
+			OrderLineDto orderLine = this.findAndSaveOrderLine(pathVarRestaurantId, pathVarLocId, 
+					userEntryLabel, userEntryUnitPrice,
+					varDinnerTableId, varOrderLineId,
+					form);
+			firstInsertOrderLineId = orderLine.getId();
+			this.checkSavingOrderLine(orderLine, firstInsertOrderLineId);
+
+			// Product Special Code does not exist.
+			// Product does exist.
+			userEntryCode = USER_ENTRY_AGAIN_ORDER_CODE;
+			form = new FindOrderLineForm();
+			form.setQuantity(userEntryQuantity);
+			form.setOrderCode(userEntryCode);
+			orderLine = this.findAndSaveOrderLine(pathVarRestaurantId, pathVarLocId, 
+					userEntryLabel, userEntryUnitPrice,
+					varDinnerTableId, varOrderLineId,
+					form);
+			if (varOrderLineId == null) {
+				// Insert new Order Line.
+				firstInsertOrderLineId++;
+			} else {
+				// Update Order Line.
+			}
+			this.checkSavingOrderLine(orderLine, firstInsertOrderLineId);
+
+			// Product Special Code does exist.
+			// Product does not exist.
+			userEntryCode = "/";
+			form = new FindOrderLineForm();
+			form.setQuantity(userEntryQuantity);
+			form.setOrderCode(userEntryCode);		
+			orderLine = this.findAndSaveOrderLine(pathVarRestaurantId, pathVarLocId, 
+					userEntryLabel, userEntryUnitPrice,
+					varDinnerTableId, varOrderLineId,
+					form);
+			if (varOrderLineId == null) {
+				// Insert new Order Line.
+				firstInsertOrderLineId++;
+			} else {
+				// Update Order Line.
+			}
+			this.checkSavingOrderLine(orderLine, firstInsertOrderLineId);
+			
+			// Product Special Code does exist.
+			// Product does exist.
+			userEntryCode = "#" + USER_ENTRY_AGAIN_ORDER_CODE;
+			form = new FindOrderLineForm();
+			form.setQuantity(userEntryQuantity);
+			form.setOrderCode(userEntryCode);		
+			orderLine = this.findAndSaveOrderLine(pathVarRestaurantId, pathVarLocId, 
+					userEntryLabel, userEntryUnitPrice,
+					varDinnerTableId, varOrderLineId,
+					form);
+			if (varOrderLineId == null) {
+				// Insert new Order Line.
+				firstInsertOrderLineId++;
+			} else {
+				// Update Order Line.
+			}
+			this.checkSavingOrderLine(orderLine, firstInsertOrderLineId);			
+		}
+	}
+	
+	private void checkSavingOrderLine(OrderLineDto orderLine, Long checkingInsertOrderLineId) {
+		Assert.assertNotNull("OrderLineDto id", orderLine.getId());
+		Assert.assertEquals("OrderLineDto id", checkingInsertOrderLineId, orderLine.getId());
+	}
+
+	public OrderLineDto findAndSaveOrderLine(Long pathVarRestaurantId, Long pathVarLocId,
+			String userEntryLabel, BigDecimal userEntryUnitPrice, 
+			Long varDinnerTableId, Long varOrderLineId,
+			FindOrderLineForm form) {
+		NumberFormat nf = NumberFormat.getInstance();
+		
+		Assert.assertNotNull("FindOrderLineForm", form);
+		Assert.assertNotNull("FindOrderLineForm.getQuantity", form.getQuantity());
+		Assert.assertNotNull("FindOrderLineForm.getOrderCode", form.getOrderCode());
+		Assert.assertNotNull("pathVarRestaurantId", pathVarRestaurantId);
+		Assert.assertNotNull("pathVarLocId", pathVarLocId);
+
+		Assert.assertNotNull("User Entry label", userEntryLabel);
+		Assert.assertNotNull("User Entry unit price", userEntryUnitPrice);
+
+        OrderLineDto result = this.findOrderLine(form, pathVarRestaurantId, pathVarLocId);
+    	Assert.assertNotNull("OrderLineDto", result);
+    	Assert.assertEquals("OrderLineDto quantity", nf.format(form.getQuantity()), nf.format(result.getQuantity()));
+    	Assert.assertEquals("OrderLineDto code", form.getOrderCode(), result.getCode());
+    	
+    	// Does OrderCode contain product special code ?
+    	if (result.getProductSpecialCode() == null) {
+    		// No, there is no product special code
+
+        	// Does OrderCode contain product ?
+    		if (result.getProduct() == null) {
+    			// No, there is no product associated.
+    			
+    			// Display warning that there isn't any product with this code.
+    			// Ask to change the code.
+    			form.setOrderCode(USER_ENTRY_AGAIN_ORDER_CODE);
+    			return this.findAndSaveOrderLine(pathVarRestaurantId, pathVarLocId, userEntryLabel, userEntryUnitPrice, varDinnerTableId, varOrderLineId, form);
+    		} else {
+    			// Yes, there is product associated.
+    			// Save the order line
+    		}
+    	} else {
+    		// Yes, there is product special code
+    		
+        	// Does OrderCode contain product ?
+    		if (result.getProduct() == null) {
+    			// No, there is no product associated.
+    			
+    			// Set the label and the unit price and amount.
+    			result.setLabel(userEntryLabel);
+    			result.setUnitPrice(userEntryUnitPrice);
+    			result.setAmount(result.getQuantity().multiply(userEntryUnitPrice));
+    			// Save the order line
+    		} else {
+    			// Yes, there is product associated.
+    			// Save the order line
+    		}
+    	}
+    	// Set the table id before saving
+    	result.setDinnerTableId(varDinnerTableId);
+    	if (varOrderLineId != null) {
+    		// Update Order Line.
+    		result.setId(varOrderLineId);
+    	} else {
+    		// Insert new Order Line.
+    	}
+		// Save the order line
+    	Long orderLineId = this.saveOrderLine(result);
+    	result.setId(orderLineId);
+    	
+    	return result;
+	}
 }

@@ -4,11 +4,11 @@
 	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	version="2.5">
-
+<!-- 
   	<listener>
 		<listener-class>fr.mch.mdo.restaurant.web.orders.MdoEmbeddedJmsServerListener</listener-class>
 	</listener>
-
+ -->
 	<context-param>
 		<param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
 		<param-value>fr.mch.mdo.restaurant.resources.i18n.ApplicationMessages</param-value>

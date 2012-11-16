@@ -1,6 +1,5 @@
 package fr.mch.mdo.restaurant.controller;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -22,6 +21,7 @@ import fr.mch.mdo.restaurant.beans.dto.OrderLineDto;
 import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.services.business.managers.IOrdersManager;
 import fr.mch.mdo.restaurant.services.business.managers.TableState;
+import fr.mch.mdo.restaurant.ui.forms.FindOrderLineForm;
 import fr.mch.mdo.restaurant.ui.forms.ResetTableForm;
 import fr.mch.mdo.restaurant.ui.forms.SaveOrderLineForm;
 import fr.mch.mdo.restaurant.ui.forms.TableHeaderForm;
@@ -40,8 +40,8 @@ public final class OrdersController //extends AbstractController
 	public static final String DELETE_TABLE_ID_VIEW = "/delete/table/{id}/view";
 	public static final String RESTAURANT_ID_USER_AUTHENTICATION_ID_TABLES_STATE_VIEW = "/{restaurantId}/{userAuthenticationId}/tables/{state}/view";
 	public static final String RESTAURANT_ID_TABLES_STATE_VIEW = "/{restaurantId}/tables/{state}/view";
-	public static final String RESTAURANT_ID_FIND_ORDER_LINE_CODE = "/{restaurantId}/find/order/line/{quantity}/{orderCode}";
-	public static final String RESTAURANT_ID_FIND_ORDER_LINE_CODE_LOC_ID = "/{restaurantId}/find/order/line/{quantity}/{orderCode}/{locId}";
+	public static final String RESTAURANT_ID_FIND_ORDER_LINE_CODE = "/{restaurantId}/find/order/line";
+	public static final String RESTAURANT_ID_FIND_ORDER_LINE_CODE_LOC_ID = "/{restaurantId}/find/order/line/{locId}";
 	public static final String CREATE_TABLE_RESTAURANT_ID_USER_AUTHENTICATION_ID = "/create/table/{restaurantId}/{userAuthenticationId}";
 	public static final String UPDATE_TABLE_ID_CUSTOMERS_NUMBER_CUSTOMERS_NUMBER = "/update/table/{id}/customers/number/{customersNumber}";
 	public static final String TABLE_ORDERS_SIZE_ID = "/table/orders/size/{dinnerTableId}";
@@ -168,17 +168,19 @@ public final class OrdersController //extends AbstractController
 		return result;
 	}
 
-	@RequestMapping(value = RESTAURANT_ID_FIND_ORDER_LINE_CODE, method = RequestMethod.GET)
+	@RequestMapping(value = RESTAURANT_ID_FIND_ORDER_LINE_CODE, method = RequestMethod.POST)
 	@ResponseBody
-	public OrderLineDto findOrderLine(@PathVariable Long restaurantId, @PathVariable BigDecimal quantity, @PathVariable String orderCode, Locale locale) throws MdoException {
-		OrderLineDto orderLine = manager.getOrderLine(restaurantId, quantity, orderCode, locale);
+	public OrderLineDto findOrderLine(@PathVariable Long restaurantId, @RequestBody FindOrderLineForm form, Locale locale) throws MdoException {
+		// Here, we use POST instead of GET because of user entry Quantity and OrderCode that could contain special characters.
+		OrderLineDto orderLine = manager.getOrderLine(restaurantId, form.getQuantity(), form.getOrderCode(), locale);
 		return orderLine;
 	}
 	
-	@RequestMapping(value = RESTAURANT_ID_FIND_ORDER_LINE_CODE_LOC_ID, method = RequestMethod.GET)
+	@RequestMapping(value = RESTAURANT_ID_FIND_ORDER_LINE_CODE_LOC_ID, method = RequestMethod.POST)
 	@ResponseBody
-	public OrderLineDto findProduct(@PathVariable Long restaurantId, @PathVariable BigDecimal quantity, @PathVariable String orderCode, @PathVariable Long locId) throws MdoException {
-		OrderLineDto orderLine = manager.getOrderLine(restaurantId, quantity, orderCode, locId);
+	public OrderLineDto findOrderLine(@PathVariable Long restaurantId, @PathVariable Long locId, @RequestBody FindOrderLineForm form) throws MdoException {
+		// Here, we use POST instead of GET because of user entry Quantity and OrderCode that could contain special characters.
+		OrderLineDto orderLine = manager.getOrderLine(restaurantId, form.getQuantity(), form.getOrderCode(), locId);
 		return orderLine;
 	}
 

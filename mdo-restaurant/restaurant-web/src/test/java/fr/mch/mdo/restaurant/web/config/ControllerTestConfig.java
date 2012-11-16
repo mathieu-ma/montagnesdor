@@ -1,5 +1,6 @@
 package fr.mch.mdo.restaurant.web.config;
 
+import org.apache.http.params.CoreConnectionPNames;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestFactory;
@@ -18,7 +19,10 @@ public class ControllerTestConfig {
 
     @Bean
     public ClientHttpRequestFactory clientHttpRequestFactory() {
-        return new HttpComponentsClientHttpRequestFactory();
+    	HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
+    	// Set this parameter in order to have more time for debugging, 24*60*60*1000 == 24h.
+    	factory.getHttpClient().getParams().setIntParameter(CoreConnectionPNames.SO_TIMEOUT, 24*60*60*1000);
+    	return factory;
     }
 
     @Bean

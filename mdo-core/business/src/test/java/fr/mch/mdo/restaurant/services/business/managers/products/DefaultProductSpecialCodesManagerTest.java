@@ -50,7 +50,7 @@ public class DefaultProductSpecialCodesManagerTest extends DefaultAdministration
 		RestaurantDto restaurant = new RestaurantDto();
 		restaurant.setId(1L);
 		MdoTableAsEnumDto code = new MdoTableAsEnumDto();
-		code.setId(21L);
+		code.setId(11L);
 		ValueAddedTaxDto vat = new ValueAddedTaxDto();
 		vat.setId(1L);
 
@@ -62,11 +62,11 @@ public class DefaultProductSpecialCodesManagerTest extends DefaultAdministration
 	@Override
 	protected List<IMdoBean> createListBeans() {
 		List<IMdoBean> list = new ArrayList<IMdoBean>();
-		String shortCode = "/";
+		String shortCode = "+";
 		RestaurantDto restaurant = new RestaurantDto();
 		restaurant.setId(1L);
 		MdoTableAsEnumDto code = new MdoTableAsEnumDto();
-		code.setId(22L);
+		code.setId(12L);
 		ValueAddedTaxDto vat = new ValueAddedTaxDto();
 		vat.setId(1L);
 
@@ -78,7 +78,7 @@ public class DefaultProductSpecialCodesManagerTest extends DefaultAdministration
 		restaurant = new RestaurantDto();
 		restaurant.setId(1L);
 		code = new MdoTableAsEnumDto();
-		code.setId(23L);
+		code.setId(13L);
 		labels = new HashMap<Long, String>();
 		labels.put(1L, "Test 1");
 		list.add(createNewBean(shortCode, restaurant, code, vat, labels));
