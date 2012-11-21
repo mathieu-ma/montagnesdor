@@ -23,8 +23,8 @@
 -->
 
 <!DOCTYPE tiles-definitions PUBLIC
-       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
-       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
 
 <!-- Definitions for Tiles documentation   -->
 
@@ -34,18 +34,17 @@
 	<!--	Master definition  											-->
 	<!--	=======================================================  	-->
 
-	<definition name="common.main.layout" template="/jsp/commons/layouts/main-layout.jsp">
+	<definition name="common.main.layout" template="/WEB-INF/views/commons/layouts/main-layout.jspxx">
 		<put-attribute name="title" type="string" value="Default title to be overrided"/>
 		<!-- body-css is id value, it is used for setting body css: default value is body with vertical scroll -->
 		<put-attribute name="body-css" type="string" value="body-scroll"/>		
-		<put-attribute name="header" value="/jsp/commons/header.jsp"/>
-		<put-attribute name="menu" value="/jsp/commons/menu-blank.jsp"/>
-		<put-attribute name="footer" value="/jsp/commons/footer-blank.jsp"/>
+		<put-attribute name="header" value="/WEB-INF/views/commons/header.jspx"/>
+		<put-attribute name="menu" value="/WEB-INF/views/commons/menu-blank.jspx"/>
+		<put-attribute name="footer" value="/WEB-INF/views/commons/footer-blank.jspx"/>
    
  		<put-list-attribute name="css-files-default">
 		    <add-attribute type="string" value="/css/montagnesdor-commons.css"/>
 		    <add-attribute type="string" value="/css/jquery-ui/themes/ui-darkness/jquery.ui.all.css"/>
-		    <add-attribute type="string" value="/struts/css_xhtml/styles.css"/>
     	</put-list-attribute>
     	<put-list-attribute name="css-files-specific">
     		<!-- this is used for child of this definition but must be present -->
@@ -62,22 +61,8 @@
 	<!-- Login -->
 	<definition name="logon" extends="common.main.layout">
 		<put-attribute name="body-css" type="string" value="body"/>
-		<put-attribute name="header" value="/jsp/commons/header-blank.jsp" />
-		<put-attribute name="body" value="/jsp/logon/body.jsp" />
-	</definition>
-
-	<!-- Generic Restaurant -->
-	<definition name="main.layout" extends="common.main.layout">
-		<put-attribute name="body" value="/jsp/user/list-body.jsp" />
-		
-		<put-list-attribute name="css-files-specific">
-	    	<add-attribute type="string" value="/css/montagnesdor-header.css"/>
-    	</put-list-attribute>
-	</definition>
-
-	<!-- Generic Restaurant for ajax only load left menu, body and footer not header -->
-	<definition name="ajax.main.layout" template="/jsp/commons/layouts/menu-body-footer-main-layout.jsp">
-		<put-attribute name="body-css" type="string" value="body-scroll"/>		
+		<put-attribute name="header" value="/WEB-INF/views/commons/header-blank.jspx" />
+		<put-attribute name="body" value="/WEB-INF/views/logon/body.jspx" />
 	</definition>
 
 </tiles-definitions>

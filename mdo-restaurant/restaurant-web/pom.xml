@@ -18,56 +18,6 @@
 
 	<build>
 		<finalName>restaurant-web</finalName>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>unpack-shared-resources</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>unpack-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>
-								src/main/resources
-							</outputDirectory>
-							<includeGroupIds>
-								${project.groupId}
-							</includeGroupIds>
-							<includeArtifacIds>api</includeArtifacIds>
-							<excludeArtifactIds>authentication,business,dao,ioc,service</excludeArtifactIds>
-							<excludeTransitive>true</excludeTransitive>
-							<includes>
-								**\/montagnesdorjaas.login
-							</includes>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>native2ascii-maven-plugin</artifactId>
-				<version>1.0-alpha-1</version>
-				<executions>
-					<execution>
-						<id>configuration-i18n</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>native2ascii</goal>
-						</goals>
-						<configuration>
-							<src>src/main/resources/</src>
-							<dest>src/main/resources/</dest>
-							<ext>.properties</ext>
-							<encoding>UTF-8</encoding>
-							<includes>**/*.utf8</includes>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
 	</build>
 
 	<dependencies>
@@ -165,6 +115,10 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
         </dependency>
+		<dependency>
+	        <groupId>org.eclipse.jetty.aggregate</groupId>
+	        <artifactId>jetty-all</artifactId>
+		</dependency>
         <!-- ===================== provided ===================== -->
 <!-- 		
 		<dependency>
@@ -205,24 +159,6 @@
 			<artifactId>hsqldb</artifactId>
 		</dependency>
 
-<dependency>
-    <groupId>org.mortbay.jetty</groupId>
-    <artifactId>jetty-maven-plugin</artifactId>
-    <version>8.1.0.RC5</version>
-</dependency>
-
-<dependency>
-    <groupId>org.glassfish.web</groupId>
-    <artifactId>jsp-impl</artifactId>
-    <version>2.2.2-b06</version>
-</dependency>
-<dependency>
-    <groupId>org.mortbay.jetty</groupId>
-    <artifactId>servlet-api</artifactId>
-    <version>3.0.20100224</version>
-</dependency>
-     
-     
 		<dependency>
 			<!-- This dependency is used because of the used of Hibernate for logging and override the version from Hibernate-->
 		  	<groupId>org.slf4j</groupId>
@@ -248,13 +184,6 @@
 		</dependency>
 	</dependencies>
 
-<properties>
-<!--     <glassfish.javax.version>2.2.3</glassfish.javax.version> -->
-    <glassfish.javax.version>2.2.3</glassfish.javax.version>
-    <glassfish.javax-jstl.version>1.2.1</glassfish.javax-jstl.version>
-</properties>
-
-
     <profiles>
         <profile>
             <id>jetty</id>
@@ -273,13 +202,14 @@
 		                            <maxIdleTime>60000</maxIdleTime>
 		                        </connector>
 		                    </connectors>
+		                    
 		                    <!-- This is not mandatory because default web.xml is look for into src/main/webapp/WEB-INF/ -->
 <!-- 							<webXml>${basedir}/src/main/webapp/WEB-INF/web.xml</webXml>
- -->						<webAppConfig>
-								<jettyEnvXml>${basedir}/src/test/resources/WEB-INF/jetty-env.xml</jettyEnvXml>
+ -->
+ 							<webApp>
+ 								<jettyEnvXml>${basedir}/src/test/resources/WEB-INF/jetty-env.xml</jettyEnvXml>
 								<defaultsDescriptor>${basedir}/src/test/resources/WEB-INF/jetty-webdefault.xml</defaultsDescriptor>
-							</webAppConfig>	                    
-
+							</webApp>	                    
 							<systemProperties>
 								<systemProperty>
 									<!-- The url of the icons -->
@@ -312,6 +242,11 @@
 								<artifactId>commons-dbcp</artifactId>
 								<version>1.4</version>
 							</dependency>
+ <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jsp-2.1-glassfish</artifactId>
+            <version>2.1.v20100127</version>
+        </dependency>							
 		                 </dependencies>
 					</plugin>
                 </plugins>

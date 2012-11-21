@@ -83,18 +83,19 @@
         <!-- WEB -->
         <jackson.version>1.9.2</jackson.version>
         <spring.version>3.1.2.RELEASE</spring.version>
-		<struts2.version>2.1.8.1</struts2.version>
 
 <!--        
  			<jetty.version>7.4.5.v20110725</jetty.version>
 			<jetty.version>7.6.2.v20120308</jetty.version>
+	        <jetty.version>7.6.4.v20120524</jetty.version>
+			
  			<jetty.version>8.1.0.RC5</jetty.version>
  			<jetty.version>8.1.2.v20120308</jetty.version>
  			<jetty.version>8.1.4.v20120524</jetty.version>
 			<jetty.version>8.1.5.v20120716</jetty.version>
  			
 --> 			
- 			<jetty.version>8.1.0.RC5</jetty.version>
+ 		<jetty.version>8.1.0.RC5</jetty.version>
 
         <!-- ===================== provided ===================== -->
 		<xerces.version>2.6.2</xerces.version>
@@ -116,36 +117,75 @@
 	</properties>
 
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.0.2</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.5</version>
-				<configuration>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.8</version>
-				<configuration>
-					<!-- This is used in order to have more memory when level test log is low like DEBUG -->
-					<forkMode>pertest</forkMode>	
-					<argLine>-Xms10m -Xmx10m</argLine>
-				</configuration>
-			</plugin>					
-		</plugins>
+		<pluginManagement>	    
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<version>2.0.2</version>
+						<configuration>
+							<source>1.6</source>
+							<target>1.6</target>
+							<encoding>UTF-8</encoding>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-resources-plugin</artifactId>
+						<version>2.5</version>
+						<configuration>
+							<encoding>UTF-8</encoding>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.8</version>
+						<configuration>
+							<!-- This is used in order to have more memory when level test log is low like DEBUG -->
+							<forkMode>pertest</forkMode>	
+							<argLine>-Xms10m -Xmx10m</argLine>
+						</configuration>
+					</plugin>	
+				    <plugin>
+				      <groupId>org.eclipse.m2e</groupId>
+				      <artifactId>lifecycle-mapping</artifactId>
+				      <version>1.0.0</version>
+				      <configuration>
+				        <lifecycleMappingMetadata>
+				          <pluginExecutions>
+				            <pluginExecution>
+				              <pluginExecutionFilter>
+								<groupId>org.codehaus.mojo</groupId>
+								<artifactId>native2ascii-maven-plugin</artifactId>
+								<versionRange>1.0-alpha-1</versionRange>
+				                <goals>
+				                  <goal>native2ascii</goal>
+				                </goals>
+				              </pluginExecutionFilter>
+				              <action>
+				                <ignore />
+				              </action>
+				            </pluginExecution>
+				            <pluginExecution>
+				            	<pluginExecutionFilter>
+				            		<groupId>org.apache.maven.plugins</groupId>
+				            		<artifactId>maven-dependency-plugin</artifactId>
+				            		<versionRange>[2.1,)</versionRange>
+				            		<goals>
+				            			<goal>unpack-dependencies</goal>
+				            		</goals>
+				            	</pluginExecutionFilter>
+				            	<action>
+				            		<ignore></ignore>
+				            	</action>
+				            </pluginExecution>
+				          </pluginExecutions>
+				        </lifecycleMappingMetadata>
+				      </configuration>
+				    </plugin>
+				</plugins>
+		</pluginManagement>		
 	</build>
 	<modules>
 		<module>restaurant-domain</module>
@@ -242,11 +282,6 @@
 				<artifactId>jstl</artifactId>
 				<version>${jstl.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>org.apache.struts</groupId>
-				<artifactId>struts2-core</artifactId>
-				<version>${struts2.version}</version>
-			</dependency>
 	        
 	        <!-- DAO -->
 			<dependency>
@@ -326,7 +361,13 @@
 				<artifactId>aspectjweaver</artifactId>
 				<version>${aspectj.version}</version>
 			</dependency>
-	        
+			<dependency>
+		        <groupId>org.eclipse.jetty.aggregate</groupId>
+		        <artifactId>jetty-all</artifactId>
+		        <version>${jetty.version}</version>
+		        <type>jar</type>
+			</dependency>
+							        
 	        <!-- ===================== provided ===================== -->
 			<dependency>
 				<groupId>javax.servlet</groupId>
@@ -378,18 +419,6 @@
                 <version>${httpclient.version}</version>
                 <scope>test</scope>
 	        </dependency>
-            <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-servlet</artifactId>
-                <version>${jetty.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-server</artifactId>
-                <version>${jetty.version}</version>
-                <scope>test</scope>
-            </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-test</artifactId>
