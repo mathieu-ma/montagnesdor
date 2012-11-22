@@ -96,6 +96,8 @@
  			
 --> 			
  		<jetty.version>8.1.0.RC5</jetty.version>
+ 		<!-- Use for testing with jetty jsp support -->
+		<jsp.2.1.glassfish.version>2.1.v20100127</jsp.2.1.glassfish.version>
 
         <!-- ===================== provided ===================== -->
 		<xerces.version>2.6.2</xerces.version>
@@ -118,73 +120,78 @@
 
 	<build>
 		<pluginManagement>	    
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-compiler-plugin</artifactId>
-						<version>2.0.2</version>
-						<configuration>
-							<source>1.6</source>
-							<target>1.6</target>
-							<encoding>UTF-8</encoding>
-						</configuration>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-resources-plugin</artifactId>
-						<version>2.5</version>
-						<configuration>
-							<encoding>UTF-8</encoding>
-						</configuration>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-surefire-plugin</artifactId>
-						<version>2.8</version>
-						<configuration>
-							<!-- This is used in order to have more memory when level test log is low like DEBUG -->
-							<forkMode>pertest</forkMode>	
-							<argLine>-Xms10m -Xmx10m</argLine>
-						</configuration>
-					</plugin>	
-				    <plugin>
-				      <groupId>org.eclipse.m2e</groupId>
-				      <artifactId>lifecycle-mapping</artifactId>
-				      <version>1.0.0</version>
-				      <configuration>
-				        <lifecycleMappingMetadata>
-				          <pluginExecutions>
-				            <pluginExecution>
-				              <pluginExecutionFilter>
-								<groupId>org.codehaus.mojo</groupId>
-								<artifactId>native2ascii-maven-plugin</artifactId>
-								<versionRange>1.0-alpha-1</versionRange>
-				                <goals>
-				                  <goal>native2ascii</goal>
-				                </goals>
-				              </pluginExecutionFilter>
-				              <action>
-				                <ignore />
-				              </action>
-				            </pluginExecution>
-				            <pluginExecution>
-				            	<pluginExecutionFilter>
-				            		<groupId>org.apache.maven.plugins</groupId>
-				            		<artifactId>maven-dependency-plugin</artifactId>
-				            		<versionRange>[2.1,)</versionRange>
-				            		<goals>
-				            			<goal>unpack-dependencies</goal>
-				            		</goals>
-				            	</pluginExecutionFilter>
-				            	<action>
-				            		<ignore></ignore>
-				            	</action>
-				            </pluginExecution>
-				          </pluginExecutions>
-				        </lifecycleMappingMetadata>
-				      </configuration>
-				    </plugin>
-				</plugins>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>2.0.2</version>
+					<configuration>
+						<source>1.6</source>
+						<target>1.6</target>
+						<encoding>UTF-8</encoding>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>2.5</version>
+					<configuration>
+						<encoding>UTF-8</encoding>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.8</version>
+					<configuration>
+						<!-- This is used in order to have more memory when level test log is low like DEBUG -->
+						<forkMode>pertest</forkMode>	
+						<argLine>-Xms10m -Xmx10m</argLine>
+					</configuration>
+				</plugin>
+                <plugin>
+                    <groupId>org.mortbay.jetty</groupId>
+                    <artifactId>jetty-maven-plugin</artifactId>
+                    <version>${jetty.version}</version>
+                </plugin>
+			    <plugin>
+			      <groupId>org.eclipse.m2e</groupId>
+			      <artifactId>lifecycle-mapping</artifactId>
+			      <version>1.0.0</version>
+			      <configuration>
+			        <lifecycleMappingMetadata>
+			          <pluginExecutions>
+			            <pluginExecution>
+			              <pluginExecutionFilter>
+							<groupId>org.codehaus.mojo</groupId>
+							<artifactId>native2ascii-maven-plugin</artifactId>
+							<versionRange>1.0-alpha-1</versionRange>
+			                <goals>
+			                  <goal>native2ascii</goal>
+			                </goals>
+			              </pluginExecutionFilter>
+			              <action>
+			                <ignore />
+			              </action>
+			            </pluginExecution>
+			            <pluginExecution>
+			            	<pluginExecutionFilter>
+			            		<groupId>org.apache.maven.plugins</groupId>
+			            		<artifactId>maven-dependency-plugin</artifactId>
+			            		<versionRange>[2.1,)</versionRange>
+			            		<goals>
+			            			<goal>unpack-dependencies</goal>
+			            		</goals>
+			            	</pluginExecutionFilter>
+			            	<action>
+			            		<ignore></ignore>
+			            	</action>
+			            </pluginExecution>
+			          </pluginExecutions>
+			        </lifecycleMappingMetadata>
+			      </configuration>
+			    </plugin>
+			</plugins>
 		</pluginManagement>		
 	</build>
 	<modules>
@@ -361,12 +368,6 @@
 				<artifactId>aspectjweaver</artifactId>
 				<version>${aspectj.version}</version>
 			</dependency>
-			<dependency>
-		        <groupId>org.eclipse.jetty.aggregate</groupId>
-		        <artifactId>jetty-all</artifactId>
-		        <version>${jetty.version}</version>
-		        <type>jar</type>
-			</dependency>
 							        
 	        <!-- ===================== provided ===================== -->
 			<dependency>
@@ -436,6 +437,18 @@
 				<artifactId>junit</artifactId>
 				<version>${junit.version}</version>
 				<scope>test</scope>
+			</dependency>
+			<dependency>
+		        <groupId>org.eclipse.jetty.aggregate</groupId>
+		        <artifactId>jetty-all</artifactId>
+		        <version>${jetty.version}</version>
+		        <scope>test</scope>
+			</dependency>
+			<dependency>
+		        <groupId>org.mortbay.jetty</groupId>
+		        <artifactId>jsp-2.1-glassfish</artifactId>
+		        <version>${jsp.2.1.glassfish.version}</version>
+		        <scope>test</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

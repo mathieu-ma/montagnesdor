@@ -12,6 +12,7 @@ import fr.mch.mdo.restaurant.beans.dto.AcknowledgmentMessage;
 import fr.mch.mdo.restaurant.beans.dto.DinnerTableDto;
 import fr.mch.mdo.restaurant.beans.dto.OrderLineDto;
 import fr.mch.mdo.restaurant.services.business.managers.TableState;
+import fr.mch.mdo.restaurant.ui.forms.FindOrderLineForm;
 import fr.mch.mdo.restaurant.ui.forms.ResetTableForm;
 import fr.mch.mdo.restaurant.ui.forms.SaveOrderLineForm;
 import fr.mch.mdo.restaurant.ui.forms.TableHeaderForm;
@@ -183,7 +184,10 @@ public final class OrdersControllerTest extends AbstractControllerTest
     	String orderCode = "#11";
     	Long locId = 1L;
         StringBuilder sb = new StringBuilder(context).append(OrdersController.RESTAURANT_ID_FIND_ORDER_LINE_CODE_LOC_ID);
-        OrderLineDto orderLine = restTemplate.getForObject(sb.toString(), OrderLineDto.class, restaurantId, quantity, orderCode, locId);
+        FindOrderLineForm form = new FindOrderLineForm();
+        form.setQuantity(quantity);
+        form.setOrderCode(orderCode);
+        OrderLineDto orderLine = restTemplate.postForObject(sb.toString(), form, OrderLineDto.class, restaurantId, locId);
     	Assert.assertNotNull(orderLine);
     	Assert.assertEquals("OrderLineDto orderCode", orderCode, orderLine.getCode());
 	}

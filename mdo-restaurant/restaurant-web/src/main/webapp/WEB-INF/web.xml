@@ -119,7 +119,7 @@
         <servlet-class>fr.mch.mdo.restaurant.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>classpath*:fr/mch/mdo/restaurant/resources/ioc/spring/spring-mdo.xml,/WEB-INF/spring/webmvc-config.xml</param-value>
+            <param-value>classpath*:fr/mch/mdo/restaurant/resources/ioc/spring/spring-mdo.xml,classpath*:spring/webmvc-config.xml</param-value>
         </init-param>
     </servlet>
 

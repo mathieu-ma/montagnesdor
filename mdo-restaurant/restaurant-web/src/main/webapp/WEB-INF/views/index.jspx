@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jsp:root version="2.1" xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          xmlns:jspx="urn:jsptagdir:/WEB-INF/tags/jspx"
+          xmlns:spring="http://www.springframework.org/tags">
+
+    <jsp:directive.page contentType="text/html" pageEncoding="UTF-8" isELIgnored="false"/>
+    
+	<html>
+		<head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+            <spring:theme code="stylesheet" var="css" />
+            <spring:theme code="stylesheet_custom" var="custom_css" />
+            <link rel="stylesheet" type="text/css" media="all" href="css/jquery-ui/themes/${css}"/>
+            <title>
+                <fmt:message key="application.name"/>
+            </title>
+        </head>	
+		<body class="ui-widget-content">
+			<h2>
+				<fmt:message key="index.description" /><br />
+			</h2>
+		</body>
+	</html>
+
+</jsp:root>          

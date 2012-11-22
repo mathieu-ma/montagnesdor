@@ -115,12 +115,7 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
         </dependency>
-		<dependency>
-	        <groupId>org.eclipse.jetty.aggregate</groupId>
-	        <artifactId>jetty-all</artifactId>
-		</dependency>
         <!-- ===================== provided ===================== -->
-<!-- 		
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
@@ -129,7 +124,6 @@
 			<groupId>javax.servlet.jsp</groupId>
 			<artifactId>jsp-api</artifactId>
 		</dependency>
- -->	
  		<dependency>
 			<groupId>net.sf.saxon</groupId>
 			<artifactId>saxon</artifactId>
@@ -165,7 +159,16 @@
 		  	<artifactId>slf4j-api</artifactId>
 		</dependency>		
         
-        <dependency>
+		<dependency>
+	        <groupId>org.eclipse.jetty.aggregate</groupId>
+	        <artifactId>jetty-all</artifactId>
+		</dependency>
+		<dependency>
+	        <groupId>org.mortbay.jetty</groupId>
+	        <artifactId>jsp-2.1-glassfish</artifactId>
+		</dependency>
+
+		<dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
         </dependency>
@@ -242,11 +245,6 @@
 								<artifactId>commons-dbcp</artifactId>
 								<version>1.4</version>
 							</dependency>
- <dependency>
-            <groupId>org.mortbay.jetty</groupId>
-            <artifactId>jsp-2.1-glassfish</artifactId>
-            <version>2.1.v20100127</version>
-        </dependency>							
 		                 </dependencies>
 					</plugin>
                 </plugins>
