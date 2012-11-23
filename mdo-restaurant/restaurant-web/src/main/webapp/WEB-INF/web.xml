@@ -9,6 +9,10 @@
 		<listener-class>fr.mch.mdo.restaurant.web.orders.MdoEmbeddedJmsServerListener</listener-class>
 	</listener>
  -->
+	<listener>
+		<listener-class>org.apache.tiles.web.startup.simple.SimpleTilesListener</listener-class>
+	</listener>
+    
 	<context-param>
 		<param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
 		<param-value>fr.mch.mdo.restaurant.resources.i18n.ApplicationMessages</param-value>
@@ -105,15 +109,6 @@
 		<servlet-name>jsp</servlet-name>
 	</filter-mapping>
 
-	<servlet>
-		<servlet-name>tiles</servlet-name>
- 		<servlet-class>org.apache.tiles.web.util.TilesDispatchServlet</servlet-class>
-		<init-param>
-			<param-name>org.apache.tiles.impl.BasicTilesContainer.DEFINITIONS_CONFIG</param-name>
-			<param-value>/WEB-INF/classes/fr/mch/mdo/restaurant/web/tiles/tiles-defs.xml</param-value>
-		</init-param>
-		<load-on-startup>2</load-on-startup>
-	</servlet>
     <servlet>
         <servlet-name>webmvc</servlet-name>
         <servlet-class>fr.mch.mdo.restaurant.web.servlet.DispatcherServlet</servlet-class>
@@ -127,7 +122,6 @@
         <servlet-name>webmvc</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
-
 
     <persistence-unit-ref>
         <persistence-unit-ref-name>persistence/montagnesdor-restaurant</persistence-unit-ref-name>

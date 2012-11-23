@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!--
+	/*
+	* $Id: tiles-defs.xml 586909 2007-10-21 15:13:47Z apetrelli $
+	*
+	* Licensed to the Apache Software Foundation (ASF) under one
+	* or more contributor license agreements.  See the NOTICE file
+	* distributed with this work for additional information
+	* regarding copyright ownership.  The ASF licenses this file
+	* to you under the Apache License, Version 2.0 (the
+	* "License"); you may not use this file except in compliance
+	* with the License.  You may obtain a copy of the License at
+	*
+	* http://www.apache.org/licenses/LICENSE-2.0
+	*
+	* Unless required by applicable law or agreed to in writing,
+	* software distributed under the License is distributed on an
+	* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	* KIND, either express or implied.  See the License for the
+	* specific language governing permissions and limitations
+	* under the License.
+	*/
+-->
+
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<!-- Definitions for Tiles documentation   -->
+
+<tiles-definitions>
+
+	<!--	=======================================================  	-->
+	<!--	Master definition  											-->
+	<!--	=======================================================  	-->
+
+	<definition name="main.layout" template="/WEB-INF/views/commons/layouts/main-layout.jspx">
+		<put-attribute name="title" type="string" value="Default title to be overrided"/>
+		<!-- body-css is id value, it is used for setting body css: default value is body with vertical scroll -->
+		<put-attribute name="body" type="string" value="body-scroll"/>		
+		<put-attribute name="header" value="/WEB-INF/views/commons/header.jspx"/>
+		<put-attribute name="menu" value="/WEB-INF/views/commons/menu-blank.jspx"/>
+		<put-attribute name="footer" value="/WEB-INF/views/commons/footer-blank.jspx"/>
+   
+    	<put-list-attribute name="css-files-specific">
+    		<!-- this is used for child of this definition but must be present -->
+    	</put-list-attribute>
+
+		<put-list-attribute name="javascript-files-default">
+		    <add-attribute type="string" value="/javascript/jquery/jquery-1.8.2.min.js"/>
+		    <add-attribute type="string" value="/javascript/jquery/jquery-ui/minified/jquery-ui.custom.min.js"/>
+		    <add-attribute type="string" value="/javascript/mdo-jquery-plugin.js"/>
+    	</put-list-attribute>
+	</definition>
+
+	<!-- Login -->
+	<definition name="logon" extends="main.layout">
+		<put-attribute name="body" type="string" value="body"/>
+		<put-attribute name="header" value="/WEB-INF/views/commons/header-blank.jspx" />
+		<put-attribute name="body" value="/WEB-INF/views/logon/body.jspx" />
+	</definition>
+
+</tiles-definitions>

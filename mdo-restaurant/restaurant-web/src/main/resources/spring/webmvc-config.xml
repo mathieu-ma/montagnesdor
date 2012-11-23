@@ -42,6 +42,6 @@
     <mvc:resources mapping="/js/**" location="/js/" cache-period="31536000" />
 
     <mvc:view-controller path="/mypeugeot" />
-    <mvc:view-controller path="/" view-name="index" />
+    <mvc:view-controller path="/" view-name="logon/logon" />
 
 </beans>
