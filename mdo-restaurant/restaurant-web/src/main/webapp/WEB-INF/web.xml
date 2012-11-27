@@ -59,51 +59,6 @@
 		<filter-name>ForbiddenDirectAccessJspFilter</filter-name>
 		<filter-class>fr.mch.mdo.restaurant.web.ForbiddenDirectAccessJspFilter</filter-class>
 	</filter>
-	<filter>
-		<description>Set HTTP headers for a mapping.</description>
-		<filter-name>HeaderFilter</filter-name>
-		<filter-class>fr.mch.mdo.restaurant.web.HeaderFilter</filter-class>
-		<init-param>
-			<description>Add an Expires Header</description>
-			<param-name>header</param-name>
-			<param-value>Expires: Sat, 15 Aug 2020 00:00:00 GMT</param-value>
-		</init-param>
-	</filter>
-	<filter-mapping>
-		<filter-name>HeaderFilter</filter-name>
-		<url-pattern>*.js</url-pattern>
-		<dispatcher>REQUEST</dispatcher>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>HeaderFilter</filter-name>
-		<url-pattern>*.css</url-pattern>
-		<dispatcher>REQUEST</dispatcher>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>HeaderFilter</filter-name>
-		<url-pattern>*.png</url-pattern>
-		<dispatcher>REQUEST</dispatcher>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>HeaderFilter</filter-name>
-		<url-pattern>*.cur</url-pattern>
-		<dispatcher>REQUEST</dispatcher>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>HeaderFilter</filter-name>
-		<url-pattern>*.gif</url-pattern>
-		<dispatcher>REQUEST</dispatcher>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>HeaderFilter</filter-name>
-		<url-pattern>*.jpg</url-pattern>
-		<dispatcher>REQUEST</dispatcher>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>HeaderFilter</filter-name>
-		<url-pattern>*.ico</url-pattern>
-		<dispatcher>REQUEST</dispatcher>
-	</filter-mapping>
 	<filter-mapping>
 		<filter-name>ForbiddenDirectAccessJspFilter</filter-name>
 		<servlet-name>jsp</servlet-name>

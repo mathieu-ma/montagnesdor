@@ -39,9 +39,9 @@
     </bean>
 
     <mvc:resources mapping="/css/**" location="/css/" cache-period="31536000" />
-    <mvc:resources mapping="/js/**" location="/js/" cache-period="31536000" />
+    <mvc:resources mapping="/javascript/**" location="/javascript/" cache-period="31536000" />
 
-    <mvc:view-controller path="/mypeugeot" />
+    <mvc:view-controller path="/test" view-name="orders/tables" />
     <mvc:view-controller path="/" view-name="logon/logon" />
 
 </beans>

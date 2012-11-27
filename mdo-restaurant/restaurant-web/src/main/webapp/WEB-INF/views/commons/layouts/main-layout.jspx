@@ -23,25 +23,37 @@
 	 		<c:forEach items="${styles}" var="style">
 	 			<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}${style}"/>
 	    	</c:forEach>
-	
+	    	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/montagnesdor-commons.css"/>
+
 			<title><fmt:message key="application.name"/> - <tiles:getAsString name="title"/></title>
 		</head>
+		
 		<body class="ui-widget-content">
 			<tilesx:useAttribute id="javascripts" name="javascript-files-default" classname="java.util.List"/>
 	 		<c:forEach items="${javascripts}" var="javascript">
-	 			<script type="text/javascript" src="${pageContext.request.contextPath}${javascript}"></script>
+	 			<script type="text/javascript" src="${pageContext.request.contextPath}/${javascript}"><!-- // --></script>
 	    	</c:forEach>
-			<script type="text/javascript" src="${pageContext.request.contextPath}/javascript/main-layout.js"></script>
-	
-			<tilesx:useAttribute id="divPart" name="header" classname="java.lang.String"/>
-			<c:if test="${divPart!='none'}">
-				<div id="header">
-					<div id="header-resizable" class="mdo-resizable">
-						<tiles:insertAttribute name="header"/>
-				    </div>
+	    	<script type="text/javascript" src="${pageContext.request.contextPath}/javascript/mvc/controllers.js"><!-- // --></script>
+			<div id="header">
+				<div id="header-resizable" class="mdo-resizable">
+					<tiles:insertAttribute name="header"/>
 			    </div>
-		    </c:if>
+		    </div>
+		    <div id="menu">
+				<div id="menu-resizable" class="mdo-resizable">
+			        <tiles:insertAttribute name="menu"/>
+			    </div>
+		    </div>
+		    <div id="body">
+				<div id="menu-resizable" class="mdo-resizable">
+					<tiles:insertAttribute name="body"/>
+			    </div>
+		    </div>
+			<div id="footer">
+				<div id="footer-resizable" class="mdo-resizable">
+			    	<tiles:insertAttribute name="footer"/>
+			    </div>
+		    </div>		    
 		</body>
 	</html>    
-    
 </jsp:root>          

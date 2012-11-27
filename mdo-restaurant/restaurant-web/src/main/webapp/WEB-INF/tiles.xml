@@ -47,15 +47,17 @@
     	</put-list-attribute>
 
 		<put-list-attribute name="javascript-files-default">
-		    <add-attribute type="string" value="/javascript/jquery/jquery-1.8.2.min.js"/>
-		    <add-attribute type="string" value="/javascript/jquery/jquery-ui/minified/jquery-ui.custom.min.js"/>
-		    <add-attribute type="string" value="/javascript/mdo-jquery-plugin.js"/>
-    	</put-list-attribute>
+		    <add-attribute type="string" value="javascript/jquery/jquery-1.8.2.min.js"/>
+		    <add-attribute type="string" value="javascript/jquery/jquery-ui/minified/jquery-ui.custom.min.js"/>
+		    <add-attribute type="string" value="javascript/mdo-jquery-plugin.js"/>
+		    <add-attribute type="string" value="javascript/mvc/handlebars-1.0.0.beta.6.js"/>
+		    <add-attribute type="string" value="javascript/mvc/ember-1.0.0-pre.2.js"/>
+		    <add-attribute type="string" value="javascript/mvc/mdo.js"/> 
+		</put-list-attribute>
 	</definition>
 
 	<!-- Login -->
 	<definition name="logon" extends="main.layout">
-		<put-attribute name="body" type="string" value="body"/>
 		<put-attribute name="header" value="/WEB-INF/views/commons/header-blank.jspx" />
 		<put-attribute name="body" value="/WEB-INF/views/logon/body.jspx" />
 	</definition>
