@@ -33,26 +33,29 @@
 	 		<c:forEach items="${javascripts}" var="javascript">
 	 			<script type="text/javascript" src="${pageContext.request.contextPath}/${javascript}"><!-- // --></script>
 	    	</c:forEach>
-			<div id="header">
-				<div id="header-resizable" class="mdo-resizable">
-					<tiles:insertAttribute name="header"/>
+
+			<div id="main-application">
+				<div id="header">
+					<div id="header-resizable" class="mdo-resizable">
+						<tiles:insertAttribute name="header"/>
+				    </div>
 			    </div>
-		    </div>
-		    <div id="menu">
-				<div id="menu-resizable" class="mdo-resizable">
-			        <tiles:insertAttribute name="menu"/>
+			    <div id="menu">
+					<div id="menu-resizable" class="mdo-resizable">
+				        <tiles:insertAttribute name="menu"/>
+				    </div>
 			    </div>
-		    </div>
-		    <div id="body">
-				<div id="menu-resizable" class="mdo-resizable">
-					<tiles:insertAttribute name="body"/>
+			    <div id="body">
+					<div id="menu-resizable" class="mdo-resizable">
+						<tiles:insertAttribute name="body"/>
+				    </div>
 			    </div>
-		    </div>
-			<div id="footer">
-				<div id="footer-resizable" class="mdo-resizable">
-			    	<tiles:insertAttribute name="footer"/>
+				<div id="footer">
+					<div id="footer-resizable" class="mdo-resizable">
+				    	<tiles:insertAttribute name="footer"/>
+				    </div>
 			    </div>
-		    </div>		    
+			</div>  		    
 		</body>
 	</html>    
 </jsp:root>          

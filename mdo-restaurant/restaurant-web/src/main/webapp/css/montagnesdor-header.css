@@ -1,17 +1,3 @@
-	#global-transparent
-	{
-		/* effet de transparence : merci Alsacreation */
-		position: absolute;
-		background: red;
-		filter:alpha(opacity=40);
-		-moz-opacity:.40;
-		opacity:.40;
-		height: 100%;
-		width: 100%;
-		top:0;
-		left:0;
-	}
-	
 	img.logo1
 	{
 		height: 19px;

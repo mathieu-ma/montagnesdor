@@ -10,7 +10,7 @@
 			regexFloatPercent: /^((\d{1,3}(\.\d{0,2})?)|((\d{1,3}\.)?\{0,2}))$/,
 		    regexFloat: /^((\d+(\.\d*)?)|((\d*\.)?\d+))$/,
 		    regexSignedFloat: /^(((\+|-)?\d+(\.\d*)?)|((\+|-)?(\d*\.)?\d+))$/
-	}
+	};
 	//END mdoVariables
 	
 	//START mdoFormatNumber
@@ -38,7 +38,7 @@
 			result = jQuery.mdoPadding("0.", "0", len);
 			
 		return result;
-	}
+	};
 	//END mdoFormatNumber
 	//START mdoPadding
 	jQuery.mdoPadding = function(str, chr, len)
@@ -47,7 +47,7 @@
 			str += chr;
 
 		return str;
-	}
+	};
 	//END mdoPadding
 	//START mdoCheckFormat
 	jQuery.mdoCheckFormat = function(jCell)
@@ -79,7 +79,7 @@
 			return false;
 		}
 		return true;
-    }
+    };
 	//END mdoCheckFormat
 	//START mdoResizable
 	jQuery.fn.extend({mdoResizable: function() {
@@ -96,12 +96,12 @@
 				//This is needed when handles is "s"
 				container.css("z-index", "2");
 				container.resize = container.height;
-				container.resizeParent = function(iSize) {container.parent().height(iSize)};
+				container.resizeParent = function(iSize) {container.parent().height(iSize);};
 			} else if((/e/).test(handles)) {
 				isHiddeable = true;
 				container.resizable('option', 'animate', true);
 				container.resize = container.width;
-				container.resizeParent = function(iSize) {container.parent().width(iSize)};
+				container.resizeParent = function(iSize) {container.parent().width(iSize);};
 			}
 			var backupBodyWidth = container.parent().next().width();
 			container.children("div.ui-resizable-handle").each(function() {
@@ -190,7 +190,7 @@
 			input.value = input.value.substring(0, input.value.length-1);
 			$(input).focus();
 		}
-	}
+	};
 	//END mdoFocus
 	//START mdoSubmit
 	jQuery.mdoSubmit = function() {
@@ -205,9 +205,9 @@
 					return false;
 				}
 				return true;
-	    	}
+	    	};
 	  	});
-	}
+	};
 	//END mdoSubmit
 	//START mdoDialog
 	jQuery.mdoDialog = function(jContext) {
@@ -225,13 +225,13 @@
 			resizable: false
 		});
 		return jDialog;
-	}
+	};
 	//END mdoDialog
 	//START mdoPreSelectorName
 	jQuery.mdoPreSelectorName = function(inString) {
 		//Replace "[" by "\\[", "]" by "\\]" and "." by "\\."
 	  	return inString.replace(/([\.\]\[:])/gi, "\\$1");
-	}
+	};
 	//END mdoPreSelectorName
 	//START mdoParentsByCss
 	jQuery.mdoParentByCss = function(jChild, cssProperty, cssValue) {
@@ -244,7 +244,7 @@
 			}
 		});
 	  	return parent;
-	}
+	};
 	//END mdoParentsByCss
 	//START mdoTableSorter
 	jQuery.fn.extend({

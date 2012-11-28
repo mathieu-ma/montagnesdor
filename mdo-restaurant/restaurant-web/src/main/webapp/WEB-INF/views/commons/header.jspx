@@ -4,6 +4,39 @@
           xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
           xmlns:tiles="http://tiles.apache.org/tags-tiles"
           xmlns:spring="http://www.springframework.org/tags">
+
+	<button id="home"><spring:message code="header.access.user" /></button>
+    <button id="orders"><spring:message code="header.access.orders" /></button>
+    <button id="cashed-orders"><spring:message code="header.access.cashed.orders" /></button>
+    <button id="locked-orders"><spring:message code="header.access.locked.orders" /></button>
           
-          Header
+ <script>
+    $(function() {
+        $("#home").button({
+            text: true,
+            icons: {
+                primary: "ui-icon-person"
+            }
+        });
+        $("#orders").button({
+            text: true,
+            icons: {
+                primary: "ui-icon-cart"
+            }
+        });
+        $("#cashed-orders").button({
+            text: true,
+            icons: {
+                primary: "ui-icon-document"
+            }
+        });
+        $("#locked-orders").button({
+            text: true,
+            icons: {
+                primary: "ui-icon-locked"
+            }
+        });
+    });
+    </script>
+          
 </jsp:root>          

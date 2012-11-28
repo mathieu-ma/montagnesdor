@@ -40,6 +40,7 @@
 
     <mvc:resources mapping="/css/**" location="/css/" cache-period="31536000" />
     <mvc:resources mapping="/javascript/**" location="/javascript/" cache-period="31536000" />
+    <mvc:resources mapping="/images/**" location="/images/" cache-period="31536000" />
 
     <mvc:view-controller path="/test" view-name="orders/tables" />
     <mvc:view-controller path="/" view-name="logon/logon" />
