@@ -52,7 +52,10 @@
 		    <add-attribute type="string" value="javascript/mdo-jquery-plugin.js"/>
 		    <add-attribute type="string" value="javascript/mvc/handlebars-1.0.0.beta.6.js"/>
 		    <add-attribute type="string" value="javascript/mvc/ember-1.0.0-pre.2.js"/>
-		    <add-attribute type="string" value="javascript/mvc/mdo.js"/> 
+		    <add-attribute type="string" value="javascript/mvc/models.js"/>
+		    <add-attribute type="string" value="javascript/mvc/views.js"/>
+		    <add-attribute type="string" value="javascript/mvc/controllers.js"/>
+		    <add-attribute type="string" value="javascript/mvc/mdo.js"/>		    
 		</put-list-attribute>
 	</definition>
 

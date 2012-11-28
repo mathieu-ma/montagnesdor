@@ -1,24 +1,21 @@
-Mdo = Ember.Application.create({
-	ready: function() {
-		console.log("Created App namespace");
-	}
-});
-
-//$(document).ready(function() {
+$(document).ready(function() {
 	Mdo.Router = Ember.Router.extend({
 		enableLogging:  true,
 		root: Ember.Route.extend({
 			index: Ember.Route.extend({
-				route: '/'
+				route: '/',
+				enter: function (router){
+					console.log("Mdo index");
+		        },
 			}),
 			orders:  Ember.Route.extend({
 				route: '/orders',
 				enter: function (router){
-					console.log("The shoes sub-state was entered.");
+					console.log("The orders sub-state was entered.");
 		        },
 			})
 		})
 	});
 
 	Mdo.initialize();
-//});
+});

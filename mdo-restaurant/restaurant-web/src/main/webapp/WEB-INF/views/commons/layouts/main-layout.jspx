@@ -33,7 +33,6 @@
 	 		<c:forEach items="${javascripts}" var="javascript">
 	 			<script type="text/javascript" src="${pageContext.request.contextPath}/${javascript}"><!-- // --></script>
 	    	</c:forEach>
-	    	<script type="text/javascript" src="${pageContext.request.contextPath}/javascript/mvc/controllers.js"><!-- // --></script>
 			<div id="header">
 				<div id="header-resizable" class="mdo-resizable">
 					<tiles:insertAttribute name="header"/>
