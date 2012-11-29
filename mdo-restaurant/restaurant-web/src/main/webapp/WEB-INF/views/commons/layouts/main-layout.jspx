@@ -35,26 +35,6 @@
 	    	</c:forEach>
 
 			<div id="main-application">
-				<div id="header">
-					<div id="header-resizable" class="mdo-resizable">
-						<tiles:insertAttribute name="header"/>
-				    </div>
-			    </div>
-			    <div id="menu">
-					<div id="menu-resizable" class="mdo-resizable">
-				        <tiles:insertAttribute name="menu"/>
-				    </div>
-			    </div>
-			    <div id="body">
-					<div id="menu-resizable" class="mdo-resizable">
-						<tiles:insertAttribute name="body"/>
-				    </div>
-			    </div>
-				<div id="footer">
-					<div id="footer-resizable" class="mdo-resizable">
-				    	<tiles:insertAttribute name="footer"/>
-				    </div>
-			    </div>
 			</div>  		    
 		</body>
 	</html>    

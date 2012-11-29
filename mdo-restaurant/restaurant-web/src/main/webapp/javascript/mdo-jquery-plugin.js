@@ -209,24 +209,6 @@
 	  	});
 	};
 	//END mdoSubmit
-	//START mdoDialog
-	jQuery.mdoDialog = function(jContext) {
-		jContext = jContext || jQuery(document);
-		var jDiv = $("div.alert-dialog", jContext);
-		if(!jDiv.get(0)) {
-			jDiv = jQuery('<div class="alert-dialog"/>').appendTo(jContext);
-		}
-		var jDialog = jDiv.dialog({
-			autoOpen: false,
-			closeOnEscape: true,
-			position: 'center',
-			closeText: '',
-			modal: true,
-			resizable: false
-		});
-		return jDialog;
-	};
-	//END mdoDialog
 	//START mdoPreSelectorName
 	jQuery.mdoPreSelectorName = function(inString) {
 		//Replace "[" by "\\[", "]" by "\\]" and "." by "\\."
@@ -246,97 +228,120 @@
 	  	return parent;
 	};
 	//END mdoParentsByCss
-	//START mdoTableSorter
-	jQuery.fn.extend({
-		mdoTableSorter: function(options) {
-			 // add parser through the tablesorter addParser method 
-//		    $.tablesorter.addParser({ 
-//		        // set a unique id 
-//		        id: 'mdonumeric', 
-//		        is: function(s) { 
-//		            // return false so this parser is not auto detected 
-//		            return false; 
-//		        }, 
-//		        format: function(s) { 
-//		            // format your data for normalization
-//		            return s.replace(/[,.']/g, ''); 
-//		        }, 
-//		        // set type, either numeric or text 
-//		        type: 'numeric' 
-//		    });
-		    $.tablesorter.addParser({ 
-		        // set a unique id 
-		        id: 'mdodate', 
-		        is: function(s) { 
-		            // return false so this parser is not auto detected 
-		            return false; 
-		        }, 
-		        format: function(s, table, node) {
-		        	var value = $(":hidden", $(node)).val() || s;
-		            // format your data for normalization
-					return value ? new Date(value).getTime() : "0";
-		        }, 
-		        // set type, either numeric or text 
-		        type: 'numeric' 
-		    });
-		    options = options || {};
-			var sortList = options.sortList || [[0,0]];
-			if($("tbody tr", $(this)).length ==0) {
-				// There is no tr in tbody
-				sortList = [];
-			}
-			jQuery.extend(options, {
-				sortList: sortList, 
-				onRenderHeader: function(header) {
-					this.append("<span class='ui-icon ui-icon-triangle-2-n-s'></span>");
-				}
-			});
-			var result = $(this).tablesorter(options);
-			return result;
-		}
-	});
-	//END mdoTableSorter
-	//START mdoI18nProperties
-	jQuery.mdoI18nProperties = function(options) {
-		options = options || {};
-		var action = "AjaxI18nMessages.action?";
-		var defaults = {
-				name: '',
-				path: '',
-				mode: 'map',
-		};
-		if(options.resourceMessages) {
-			var xArray = options.resourceMessages;
-			// Convert to array
-			xArray = (xArray && xArray.constructor == Array) ? xArray : [xArray];
-			for(i=0; i<xArray.length; i++) {
-				xArray[i] = action + "form.resource=" + xArray[i];
-			}
-			defaults.name = xArray;
-		}
-		if(options.keys) {
-			var name = action;
-			var xArray = options.keys;
-			// Convert to array
-			xArray = (xArray && xArray.constructor == Array) ? xArray : [xArray];
-			for(i=0; i<xArray.length; i++) {
-				name += "form.keys[" + i + "]=" + xArray[i] + "&";
-			}
-			name += "dummyResource=dummy";
-			defaults.name = defaults.name[0]?$.merge(defaults.name, [name]):name;
-		}
-		//Merge the two objects, modifying the first.
-		$.extend(defaults, options);
-		if (!options.browserLang) {
-			// Override the i18n method in order to get only one resource
-			// Because we presume that each resource in any language has the same pairs key/value
-			jQuery.i18n.browserLang = function() {
-				return null;
+	//START ntlI18n
+	$.mdoI18n = {};
+	/** Map holding bundle keys */
+	$.mdoI18n.map = {};
+	/**
+	 * Load and parse message bundle,
+	 * making bundles keys available as javascript variables.
+	 * 
+	 * Sample usage:
+	 * var keys =  	{	
+	 * 					"keyArgsMap" : 	{
+	 *										"cart.msg.accept.all.terms" 		: null,
+	 *										"cart.msg.delete.no.product" 		: null,
+	 *										"cart.invoice.address.modify.title" : null,
+	 *										"subscription_duration" 			: ["20"]
+	 *									}
+	 *				};
+	 *
+	 * $.mdoI18n.properties(keys);
+	 * then get a label with:
+	 * var labelSubscriptionDuration = $.mdoI18n.prop("subscription_duration"); 
+	 * 
+	 * @param  keys		is an array of objects binding with I18nKeyArgsForm.
+	 */	
+	jQuery.mdoI18n.properties = function(keys) {
+		// Checking if the elements keys are already in cache $.mdoI18n.map
+		if (keys && keys.keyArgsMap) {
+			var indexForLength = 0;
+			$.each(keys.keyArgsMap, function(key, value) {
+				indexForLength++;
+	        	if ($.mdoI18n.map[key]) {
+	        		// Remove existed key
+	        		delete keys.keyArgsMap[key];
+	        		indexForLength--;
+	        	}
+	        });
+			if (indexForLength==0) {
+				// All keys are in cache
+				return;
 			}
 		}
-		jQuery.i18n.properties(defaults);
-	}
-	//END mdoI18nProperties
+		
+ 		var type = "POST"; // or "GET"
+ 		// The JSON is come from json2.js
+ 		var data = JSON.stringify(keys); // or keys for GET method.
+ 		$.ajax({
+ 	        url : "i18n",
+ 	        type : type,
+ 	        contentType : "application/json",
+ 	        timeout : 3000,
+ 	        success : function(json) {
+ 	        	$.each(json, function(key, value) {
+ 	        		// Fill the cache map 
+ 	        		$.mdoI18n.map[key] = value;
+ 	        	});
+ 	        },
+ 	        error : null,
+ 	        data : data,
+ 	        dataType : "json"
+ 	    });
+	};
+	
+	/**
+	 * Return the cached label from key. 
+	 */
+	jQuery.mdoI18n.prop = function(key) {
+		var value = $.mdoI18n.map[key];
+		if (value == null) {
+			return '[' + key + ']';
+		} else {
+			for (var i = 1; i < arguments.length; i++) {
+				value = value.replace("{"+(i-1)+"}", arguments[i]);
+	        }
+		}
+		return value;
+	};
+	//END mdoI18n
+	//START serializeJSON
+	/**
+	 * Convert all elements of form to a JS object.
+	 * Example:
+	 * 	var data = $("#myForm").serializeJSON();
+	 * 	Note, if the form contains an array of one single element then don't forget to convert it to a real array:
+	 * 	if ($(":checkbox[name=categories]:checked", "#myForm").length==1) {
+	 *		// So we have to change the element to be an array instead a simple element.
+	 *		data.categories = [data.categories];
+	 * 	}
+	 *
+     *  $.ajax({
+     *  	type:'POST',
+     *      url:'search/advanced/result',
+     *      data: JSON.stringify(data),
+     *      contentType: 'application/json; charset=utf-8',
+     *      success:function(html) {
+     *			..........          
+     *      }
+     *  });
+	 */
+	$.fn.serializeJSON = function() {
+	    var json = {};
+	    var a = this.serializeArray();
+	    $.each(a, function() {
+	        if (json[this.name] !== undefined) {
+	            if (!json[this.name].push) {
+	            	json[this.name] = [json[this.name]];
+	            }
+	            json[this.name].push(this.value || '');
+	        } else {
+	        	json[this.name] = this.value || '';
+	        }
+	    });
+	    return json;
+	};
+	//END serializeJSON
 	//START mdoValidate
 	jQuery.fn.extend({
 		mdoValidate: function(options) {

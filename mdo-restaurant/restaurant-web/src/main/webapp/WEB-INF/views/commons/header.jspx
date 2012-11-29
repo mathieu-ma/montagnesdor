@@ -11,9 +11,11 @@
     <button id="locked-orders"><spring:message code="header.access.locked.orders" /></button>
           
  <script>
-    $(function() {
-        $("#home").button({
+ 	$(document).ready(function() {
+    	
+    	$("#home").button({
             text: true,
+            label: "LL",
             icons: {
                 primary: "ui-icon-person"
             }

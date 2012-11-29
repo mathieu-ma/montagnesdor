@@ -47,11 +47,13 @@
     	</put-list-attribute>
 
 		<put-list-attribute name="javascript-files-default">
-		    <add-attribute type="string" value="javascript/jquery/jquery-1.8.2.min.js"/>
-		    <add-attribute type="string" value="javascript/jquery/jquery-ui/minified/jquery-ui.custom.min.js"/>
+		    <add-attribute type="string" value="javascript/library/jquery/jquery-1.8.2.min.js"/>
+		    <add-attribute type="string" value="javascript/library/jquery/jquery-ui/minified/jquery-ui.custom.min.js"/>
+		    <add-attribute type="string" value="javascript/library/json2.js"/>
+		    <add-attribute type="string" value="javascript/library/handlebars-1.0.0.beta.6.js"/>
+		    <add-attribute type="string" value="javascript/library/ember-1.0.0-pre.2.js"/>
 		    <add-attribute type="string" value="javascript/mdo-jquery-plugin.js"/>
-		    <add-attribute type="string" value="javascript/mvc/ext/handlebars-1.0.0.beta.6.js"/>
-		    <add-attribute type="string" value="javascript/mvc/ext/ember-1.0.0-pre.2.js"/>
+		    <add-attribute type="string" value="javascript/mvc/i18n.js"/>		    
 		    <add-attribute type="string" value="javascript/mvc/mdo.js"/>		    
 		    <add-attribute type="string" value="javascript/mvc/models.js"/>
 		    <add-attribute type="string" value="javascript/mvc/views.js"/>

@@ -22,6 +22,9 @@ $(document).ready(function() {
 				enter: function (router) {
 					console.log("Mdo index");
 		        },
+		        connectOutlets:  function(router, context){
+		        	router.get('applicationController').connectOutlet('header', 'header', { greeting: "My Ember App" });
+		        }		        
 			}),
 			orders: Mdo.OrdersRoute  
 		})
