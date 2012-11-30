@@ -52,6 +52,7 @@
 		    <add-attribute type="string" value="javascript/library/json2.js"/>
 		    <add-attribute type="string" value="javascript/library/handlebars-1.0.0.beta.6.js"/>
 		    <add-attribute type="string" value="javascript/library/ember-1.0.0-pre.2.js"/>
+<!-- 		    <add-attribute type="string" value="javascript/mvc/templates/application.js"/> -->
 		    <add-attribute type="string" value="javascript/mdo-jquery-plugin.js"/>
 		    <add-attribute type="string" value="javascript/mvc/i18n.js"/>		    
 		    <add-attribute type="string" value="javascript/mvc/mdo.js"/>		    

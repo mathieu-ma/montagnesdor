@@ -3,7 +3,17 @@
  * It must be declared at last in order to initialize the whole Mdo application.
  */
 $(document).ready(function() {
-	
+
+	/**
+	 * User route. It must be declared before the Mdo.Router because Mdo.Router uses it. 
+	 */
+	Mdo.UserRoute = Ember.Route.extend({
+		route: '/user',
+		enter: function (router) {
+			console.log("The user sub-state was entered.");
+        }
+	}); 
+
 	/**
 	 * Orders route. It must be declared before the Mdo.Router because Mdo.Router uses it. 
 	 */
@@ -11,7 +21,11 @@ $(document).ready(function() {
 		route: '/orders',
 		enter: function (router) {
 			console.log("The orders sub-state was entered.");
-        }
+        },
+		connectOutlets: function(router, context) {
+	    	// Insert OrdersView in body outlet with OrdersController content. 
+	    	router.get('applicationController').connectOutlet('body', 'orders', {mma: "orders"});
+	    }		
 	}); 
 	
 	Mdo.Router = Ember.Router.extend({
@@ -19,14 +33,17 @@ $(document).ready(function() {
 		root: Ember.Route.extend({
 			index: Ember.Route.extend({
 				route: '/',
+				moveElsewhere: Ember.Route.transitionTo('orders'),
 				enter: function (router) {
 					console.log("Mdo index");
 		        },
-		        connectOutlets:  function(router, context){
-		        	router.get('applicationController').connectOutlet('header', 'header', { greeting: "My Ember App" });
+		        connectOutlets: function(router, context) {
+		        	// Insert HeaderView in header outlet with default HeaderController content. 
+		        	router.get('applicationController').connectOutlet('header', 'header');
 		        }		        
 			}),
-			orders: Mdo.OrdersRoute  
+			user: Mdo.UserRoute,
+			orders: Mdo.OrdersRoute
 		})
 	});
 

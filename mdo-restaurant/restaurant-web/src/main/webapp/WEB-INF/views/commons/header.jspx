@@ -9,36 +9,6 @@
     <button id="orders"><spring:message code="header.access.orders" /></button>
     <button id="cashed-orders"><spring:message code="header.access.cashed.orders" /></button>
     <button id="locked-orders"><spring:message code="header.access.locked.orders" /></button>
-          
- <script>
- 	$(document).ready(function() {
-    	
-    	$("#home").button({
-            text: true,
-            label: "LL",
-            icons: {
-                primary: "ui-icon-person"
-            }
-        });
-        $("#orders").button({
-            text: true,
-            icons: {
-                primary: "ui-icon-cart"
-            }
-        });
-        $("#cashed-orders").button({
-            text: true,
-            icons: {
-                primary: "ui-icon-document"
-            }
-        });
-        $("#locked-orders").button({
-            text: true,
-            icons: {
-                primary: "ui-icon-locked"
-            }
-        });
-    });
-    </script>
-          
+
+
 </jsp:root>          
