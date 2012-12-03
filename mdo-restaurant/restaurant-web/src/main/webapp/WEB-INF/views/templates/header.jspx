@@ -18,9 +18,13 @@
 		</script>
 
 		<script type="text/x-handlebars" data-template-name="header">
-			{{#each content}}
-				{{#view Mdo.ButtonView labelKey=labelKey icons=icons click=click}}{{/view}}
-			{{/each}}
+			<span id="menu-buttons">
+				{{#each item in controller}}
+					{{#with item}}			
+						{{#view "Mdo.ButtonView" labelKey=labelKey icons=icons selected=selected click=click}}{{/view}}
+					{{/with}}	
+				{{/each}}
+			</span>	
 		</script>
 		
 		<script type="text/x-handlebars" data-template-name="user">

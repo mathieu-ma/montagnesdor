@@ -11,7 +11,13 @@ $(document).ready(function() {
 		route: '/user',
 		enter: function (router) {
 			console.log("The user sub-state was entered.");
-        }
+        },
+		connectOutlets: function(router, context) {
+        	// Insert HeaderView in header outlet with default HeaderController content. 
+        	router.get('applicationController').connectOutlet('header', 'header', Mdo.Header.allButtons("user"));
+	    	// Insert UserView in body outlet with OrdersController content. 
+	    	router.get('applicationController').connectOutlet('body', 'user', {mma: "user"});
+	    }		
 	}); 
 
 	/**
@@ -23,6 +29,8 @@ $(document).ready(function() {
 			console.log("The orders sub-state was entered.");
         },
 		connectOutlets: function(router, context) {
+        	// Insert HeaderView in header outlet with default HeaderController content.
+        	router.get('applicationController').connectOutlet('header', 'header', Mdo.Header.allButtons("orders"));
 	    	// Insert OrdersView in body outlet with OrdersController content. 
 	    	router.get('applicationController').connectOutlet('body', 'orders', {mma: "orders"});
 	    }		
@@ -31,15 +39,16 @@ $(document).ready(function() {
 	Mdo.Router = Ember.Router.extend({
 		enableLogging:  true,
 		root: Ember.Route.extend({
+			gotoOrders: Ember.Route.transitionTo('orders'),
+			gotoUser: Ember.Route.transitionTo('user'),
 			index: Ember.Route.extend({
 				route: '/',
-				moveElsewhere: Ember.Route.transitionTo('orders'),
 				enter: function (router) {
 					console.log("Mdo index");
 		        },
 		        connectOutlets: function(router, context) {
-		        	// Insert HeaderView in header outlet with default HeaderController content. 
-		        	router.get('applicationController').connectOutlet('header', 'header');
+		        	// Insert HeaderView in header outlet with default HeaderController content.
+		        	router.get('applicationController').connectOutlet('header', 'header', Mdo.Header.allButtons("user"));
 		        }		        
 			}),
 			user: Mdo.UserRoute,
