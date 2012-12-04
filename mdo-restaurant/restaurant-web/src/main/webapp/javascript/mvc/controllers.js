@@ -25,21 +25,24 @@ $(document).ready(function() {
 						this.get('controller')[value.name]();
 					} catch (e) {
 						// If the index doesn't bind a function
+						alert(e);
 					}
 				};
-				var resultItem = Ember.Object.create({ 
-					name: value.name,
-					labelKey: value.labelKey,
-					icons: value.icons,
-					selected: value.selected,
-					click: value.click
-				});
-				buttons.pushObject(resultItem);
+				
+				var button = Mdo.HeaderButton.create();
+				button.set('name', value.name);
+				button.set('labelKey', value.labelKey);
+				button.set('icons', value.icons);
+				button.set('selected', value.selected);
+				button.set('click', value.click);
+				buttons.pushObject(button);
 			});
 		},
 		refreshButtons: function(selected) {
+			var isContentEmpty = false;
 			var buttons = this.content;
 			if (buttons.length == 0) {
+				isContentEmpty = true;
 				this.initButtons(selected);
 			} else {
 				$.each(buttons, function(index, value) {
@@ -47,15 +50,22 @@ $(document).ready(function() {
 					if (value.name == selected) {
 						isSelected = true;
 					}
-					value.selected = isSelected;
+					value.set('selected', isSelected);
 				});
 			}
+			return isContentEmpty;
 		},
 		user: function() {
 			this.target.router.send('gotoUser');
 		},
 		orders: function() {
 			this.target.router.send('gotoOrders');
+		},
+		cashedOrders: function() {
+			alert("cashedOrders")
+		},	
+		lockedOrders: function() {
+			alert("lockedOrders")
 		}	
 	});
 	

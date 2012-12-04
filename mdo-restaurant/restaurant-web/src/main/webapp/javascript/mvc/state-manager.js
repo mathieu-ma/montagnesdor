@@ -15,8 +15,10 @@ $(document).ready(function() {
 		connectOutlets: function(router, context) {
         	// Insert HeaderView in header outlet with default HeaderController content.
 			var headerController = router.get('headerController');
-			headerController.refreshButtons("user");
-        	router.get('applicationController').connectOutlet('header', 'header');
+			var isContentEmpty = headerController.refreshButtons("user");
+			if (isContentEmpty) {
+	        	router.get('applicationController').connectOutlet('header', 'header');
+			}
 	    	// Insert UserView in body outlet with OrdersController content. 
 	    	router.get('applicationController').connectOutlet('body', 'user', {mma: "user"});
 	    }		
@@ -33,8 +35,10 @@ $(document).ready(function() {
 		connectOutlets: function(router, context) {
         	// Insert HeaderView in header outlet with default HeaderController content.
 			var headerController = router.get('headerController');
-			headerController.refreshButtons("orders");
-        	router.get('applicationController').connectOutlet('header', 'header');
+			var isContentEmpty = headerController.refreshButtons("orders");
+			if (isContentEmpty) {
+	        	router.get('applicationController').connectOutlet('header', 'header');
+			}
 	    	// Insert OrdersView in body outlet with OrdersController content. 
 	    	router.get('applicationController').connectOutlet('body', 'orders', {mma: "orders"});
 	    }		

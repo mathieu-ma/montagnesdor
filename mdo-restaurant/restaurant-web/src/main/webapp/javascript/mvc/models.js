@@ -1,5 +1,11 @@
 $(document).ready(function() {
 	Mdo.Header = Ember.Object.extend();
+	Mdo.HeaderButton = Ember.Object.extend({
+		name: "",
+		labelKey: "",
+		icons: {},
+		selected: false
+	});
 	Mdo.Header.reopenClass({
 		_stubDataSource: [
 		                  	{
@@ -17,14 +23,14 @@ $(document).ready(function() {
 						        }
 							},
 							{
-				        	  	name: "cashed.orders",
+				        	  	name: "cashedOrders",
 								labelKey: "header.access.cashed.orders",
 						    	icons: {
 						            primary: "ui-icon-document"
 						        }
 							},
 							{
-				        	  	name: "locked.orders",
+				        	  	name: "lockedOrders",
 								labelKey: "header.access.locked.orders",
 						    	icons: {
 						            primary: "ui-icon-locked"

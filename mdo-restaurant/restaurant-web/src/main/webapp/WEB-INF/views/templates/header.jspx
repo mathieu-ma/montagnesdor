@@ -21,7 +21,7 @@
 			<span id="menu-buttons">
 				{{#each item in controller}}
 					{{#with item}}
-						{{#view "Mdo.ButtonView" labelKey=labelKey icons=icons selected=selected click=click}}{{/view}}
+						{{#view "Mdo.ButtonView" labelKey=labelKey icons=icons selectedBinding="selected" click=click}}{{/view}}
 					{{/with}}	
 				{{/each}}
 			</span>	
