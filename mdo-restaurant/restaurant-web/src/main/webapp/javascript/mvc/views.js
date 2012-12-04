@@ -16,13 +16,13 @@ $(document).ready(function() {
 		    	label: $.mdoI18n.prop(thisEmberView.get('labelKey')),
 		    	// icons comes from HeaderView template.
 		    	icons: thisEmberView.get('icons'),
+		    	// selected comes from HeaderView template.
+		    	disabled: thisEmberView.get('selected')
 		    });
-//alert(thisEmberView.get('selected'))			
 	    	// selected comes from HeaderView template.
+			button.removeClass('ui-state-active, ui-state-disabled');
 			if (thisEmberView.get('selected')) {
 				button.addClass('ui-state-active');
-			} else {
-				button.removeClass('ui-state-active');
 			}
 		}
 	});

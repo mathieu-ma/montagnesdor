@@ -20,7 +20,7 @@
 		<script type="text/x-handlebars" data-template-name="header">
 			<span id="menu-buttons">
 				{{#each item in controller}}
-					{{#with item}}			
+					{{#with item}}
 						{{#view "Mdo.ButtonView" labelKey=labelKey icons=icons selected=selected click=click}}{{/view}}
 					{{/with}}	
 				{{/each}}
