@@ -28,7 +28,7 @@ import fr.mch.mdo.restaurant.ui.forms.TableHeaderForm;
 
 @Controller
 @RequestMapping(OrdersController.ORDERS_CONTROLLER)
-public final class OrdersController //extends AbstractController
+public final class OrdersController extends AbstractController
 {
 
 	public static final String ORDERS_CONTROLLER = "/orders";
