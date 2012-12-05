@@ -9,30 +9,30 @@ import fr.mch.mdo.restaurant.services.business.utils.DefaultUsersHelper;
 import fr.mch.mdo.restaurant.services.business.utils.IUsersHelper;
 import fr.mch.mdo.restaurant.services.logs.LoggerServiceImpl;
 
-public class DefaultUsersManager extends AbstractRestaurantManager implements IUsersManager
+public class DefaultFrontUsersManager extends AbstractRestaurantManager implements IFrontUsersManager
 {
 	private IUsersHelper helper;
 	
 	private static class LazyHolder {
-		private static IUsersManager instance = new DefaultUsersManager(
-				LoggerServiceImpl.getInstance().getLogger(DefaultUsersManager.class.getName()),
+		private static IFrontUsersManager instance = new DefaultFrontUsersManager(
+				LoggerServiceImpl.getInstance().getLogger(DefaultFrontUsersManager.class.getName()),
 				DefaultUserAuthenticationsDao.getInstance());
 	}
 
-	private DefaultUsersManager(ILogger logger, IDaoServices dao) {
+	private DefaultFrontUsersManager(ILogger logger, IDaoServices dao) {
 		super.logger = logger;
 		super.dao = dao;
 		this.helper = DefaultUsersHelper.getInstance(); 
 	}
 
-	public static IUsersManager getInstance() {
+	public static IFrontUsersManager getInstance() {
 		return LazyHolder.instance;
 	}
 
 	/**
 	 * This constructor is used by ioc
 	 */
-	public DefaultUsersManager() {
+	public DefaultFrontUsersManager() {
 	}
 
 	/**
@@ -57,8 +57,8 @@ public class DefaultUsersManager extends AbstractRestaurantManager implements IU
 
 	@Override
 	public UserAuthenticationDto find(Long authId) throws MdoException {
-		// TODO Auto-generated method stub
-		return null;
+		UserAuthenticationDto result = (UserAuthenticationDto) dao.findByPrimaryKey(authId, false); 
+		return result;
 	}
 
 	@Override

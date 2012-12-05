@@ -1,4 +1,7 @@
 $(document).ready(function() {
+	Mdo.Label = Ember.Object.extend({
+		label: null
+	});
 	Mdo.Header = Ember.Object.extend();
 	Mdo.HeaderButton = Ember.Object.extend({
 		name: "",

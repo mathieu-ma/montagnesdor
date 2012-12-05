@@ -29,6 +29,9 @@
 		
 		<script type="text/x-handlebars" data-template-name="user">
 			{{mma}}
+			{{#i18n header.access.locked.orders}}{{/i18n}}
+			{{#i18n logon.title}}{{/i18n}}
+			{{view "Mdo.LabelView" labelKey="header.access.locked.orders"}}
 		</script>
 
 		<script type="text/x-handlebars" data-template-name="orders">

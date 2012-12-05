@@ -3,7 +3,7 @@ package fr.mch.mdo.restaurant.services.business.managers;
 import fr.mch.mdo.restaurant.beans.dto.UserAuthenticationDto;
 import fr.mch.mdo.restaurant.exception.MdoException;
 
-public interface IUsersManager
+public interface IFrontUsersManager
 {
 	UserAuthenticationDto findByLogin(String login) throws MdoException;
 

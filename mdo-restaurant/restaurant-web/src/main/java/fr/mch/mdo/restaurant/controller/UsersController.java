@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import fr.mch.mdo.restaurant.beans.dto.UserAuthenticationDto;
-import fr.mch.mdo.restaurant.services.business.managers.IUsersManager;
+import fr.mch.mdo.restaurant.services.business.managers.IFrontUsersManager;
 
 
 /**
@@ -19,14 +19,16 @@ import fr.mch.mdo.restaurant.services.business.managers.IUsersManager;
  *
  */
 @Controller
-@RequestMapping("/auth")
-public class AuthenticationController extends AbstractController {
+@RequestMapping(UsersController.USERS_CONTROLLER)
+public class UsersController extends AbstractController {
 
-	private static final String FIND_USER_AUTH_ID = "/find/user/{authId}";
+	public static final String USERS_CONTROLLER = "/users";
+
+	public static final String FIND_USER_AUTH_ID = "/find/user/{authId}";
 
 	@Inject
-	@Named("UsersManager")
-	private IUsersManager manager;
+	@Named("FrontUsersManager")
+	private IFrontUsersManager manager;
 
 	/**
 	 * Find the user authentication by id.

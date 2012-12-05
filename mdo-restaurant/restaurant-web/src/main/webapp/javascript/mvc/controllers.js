@@ -50,6 +50,7 @@ $(document).ready(function() {
 					if (value.name == selected) {
 						isSelected = true;
 					}
+					// Change and fire selected
 					value.set('selected', isSelected);
 				});
 			}

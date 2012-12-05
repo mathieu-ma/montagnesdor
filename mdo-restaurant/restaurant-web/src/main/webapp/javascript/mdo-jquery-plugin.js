@@ -238,7 +238,7 @@
 	 * 
 	 * Sample usage:
 	 * var keys =  	{	
-	 * 					"keyArgsMap" : 	{
+	 * 					keyArgsMap : 	{
 	 *										"cart.msg.accept.all.terms" 		: null,
 	 *										"cart.msg.delete.no.product" 		: null,
 	 *										"cart.invoice.address.modify.title" : null,
@@ -252,7 +252,7 @@
 	 * 
 	 * @param  keys		is an array of objects binding with I18nKeyArgsForm.
 	 */	
-	jQuery.mdoI18n.properties = function(keys) {
+	jQuery.mdoI18n.properties = function(keys, completeCallback) {
 		// Checking if the elements keys are already in cache $.mdoI18n.map
 		if (keys && keys.keyArgsMap) {
 			var indexForLength = 0;
@@ -269,7 +269,6 @@
 				return;
 			}
 		}
-		
  		var type = "POST"; // or "GET"
  		// The JSON is come from json2.js
  		var data = JSON.stringify(keys); // or keys for GET method.
@@ -283,6 +282,9 @@
  	        		// Fill the cache map 
  	        		$.mdoI18n.map[key] = value;
  	        	});
+ 	        },
+ 	        complete: function() {
+ 	        	completeCallback();
  	        },
  	        error : null,
  	        data : data,

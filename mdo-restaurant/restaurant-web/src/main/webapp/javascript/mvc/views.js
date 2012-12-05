@@ -6,6 +6,24 @@ $(document).ready(function() {
 	Mdo.ApplicationView = Ember.View.extend({
 		template: Ember.Handlebars.compile('application')
 	});
+
+	Mdo.LabelView = Ember.View.extend({
+		tagName: 'span',
+		template: Ember.Handlebars.compile('888'),
+		labelKey: null,
+		label: function() {
+//			Mdo.I18n.prop(this.labelKey, null, this, this.i18nLabelChanged);
+		}.property(),
+		i18nLabelChanged: function(sender, key) {
+			var label = sender.get(key);
+//			alert(labelKey)
+		},
+		willRerender: function() {
+			alert(this.labelKey)
+			this.template = Ember.Handlebars.compile(this.labelKey)
+//			alert(this.$().html())
+		}
+	});
 	
 	Mdo.ButtonView = Ember.View.extend({
 		tagName: 'button',
@@ -19,15 +37,22 @@ $(document).ready(function() {
 			// selected field has changed
 			this.disabledButton(viewSelected);
 		}.observes('selected'),
+		i18nLabelChanged: function(sender, key) {
+			var label = sender.get(key);
+			this.$().button({ label: label });
+		},
 		didInsertElement: function() {
 			var thisEmberView = this;
-			thisEmberView.$().button({
+			var button = thisEmberView.$().button({
 		    	// labelKey comes from HeaderView template.
-		    	label: $.mdoI18n.prop(thisEmberView.get('labelKey')),
+		    	//label: $.mdoI18n.prop(thisEmberView.labelKey),
 		    	// icons comes from HeaderView template.
 		    	icons: thisEmberView.get('icons'),
 		    });
-	    	// selected comes from HeaderView template.
+			// Process the i18n label and wait the return from server with Ember.Observable
+			// The label will be set in the method i18nLabelChanged
+			Mdo.I18n.prop(thisEmberView.labelKey, null, this, this.i18nLabelChanged);
+			// selected comes from HeaderView template.
 			this.disabledButton(thisEmberView.get('selected'));
 		},
 		disabledButton: function(selected) {

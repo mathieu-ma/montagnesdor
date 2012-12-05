@@ -306,18 +306,6 @@
 		<property name="dao" ref="RestaurantsDao" />
 	</bean>
 	
-	<bean id="UsersManager" class="fr.mch.mdo.restaurant.services.business.managers.users.DefaultUsersManager">
-		<property name="restaurantsManager" ref="RestaurantsManager" />
-		<property name="mdoTableAsEnumsManager" ref="MdoTableAsEnumsManager" />
-		<property name="logger">
-			 <bean factory-bean="Logger" factory-method="getLogger">
-			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.users.DefaultUsersManager</value></constructor-arg>
-   		   	</bean>
-		</property>	
-		<property name="assembler" ref="UsersAssembler" />
-		<property name="dao" ref="UsersDao" />
-	</bean>
-
 	<bean id="UserRolesManager" class="fr.mch.mdo.restaurant.services.business.managers.users.DefaultUserRolesManager">
 		<property name="mdoTableAsEnumsManager" ref="MdoTableAsEnumsManager" />
 		<property name="localesManager" ref="LocalesManager" />
@@ -330,20 +318,6 @@
 		<property name="dao" ref="UserRolesDao" />
 	</bean>
 		
-	<bean id="UserAuthenticationsManager" class="fr.mch.mdo.restaurant.services.business.managers.users.DefaultUserAuthenticationsManager">
-		<property name="localesManager" ref="LocalesManager" />
-		<property name="usersManager" ref="UsersManager" />
-		<property name="userRolesManager" ref="UserRolesManager" />
-		<property name="restaurantsManager" ref="RestaurantsManager" />
-		<property name="logger">
-			 <bean factory-bean="Logger" factory-method="getLogger">
-			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.users.DefaultUserAuthenticationsManager</value></constructor-arg>
-   		   	</bean>
-		</property>	
-		<property name="assembler" ref="UserAuthenticationsAssembler" />
-		<property name="dao" ref="UserAuthenticationsDao" />
-	</bean>		
-
 	<bean id="CategoriesManager" class="fr.mch.mdo.restaurant.services.business.managers.products.DefaultCategoriesManager">
 		<property name="mdoTableAsEnumsManager" ref="MdoTableAsEnumsManager" />
 		<property name="localesManager" ref="LocalesManager" />
@@ -444,5 +418,21 @@
 		<property name="orderLinesDao" ref="OrderLinesDao" />
 		<property name="helper" ref="OrdersDtoHelper" />
 	</bean>
-	
+	<bean id="UsersHelper" class="fr.mch.mdo.restaurant.services.business.utils.DefaultUsersHelper">
+		<property name="logger">
+			 <bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.utils.DefaultUsersHelper</value></constructor-arg>
+   		   	</bean>
+		</property>	
+	</bean>
+	<bean id="FrontUsersManager" class="fr.mch.mdo.restaurant.services.business.managers.DefaultFrontUsersManager">
+		<property name="logger">
+			 <bean factory-bean="Logger" factory-method="getLogger">
+			 	<constructor-arg><value>fr.mch.mdo.restaurant.services.business.managers.DefaultFrontUsersManager</value></constructor-arg>
+   		   	</bean>
+		</property>	
+		<property name="dao" ref="UserAuthenticationsDao" />
+		<property name="helper" ref="UsersHelper" />
+	</bean>
+		
 </beans>       
