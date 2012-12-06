@@ -291,6 +291,8 @@
  	        		// state == 1 == processed
  	        		$.mdoI18n.map[key] = {state: 1, value: value};
  	        	});
+ 	        },
+ 	        complete: function() {
  	        	if (completeCallback) {
  	 	        	completeCallback();
  	        	}

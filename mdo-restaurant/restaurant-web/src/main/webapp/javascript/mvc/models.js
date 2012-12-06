@@ -1,5 +1,6 @@
 $(document).ready(function() {
 	Mdo.Label = Ember.Object.extend({
+		toto: null,
 		labelKey: null,
 		counter: 0,
 		/**
@@ -57,5 +58,10 @@ $(document).ready(function() {
 			var allButtons = this._stubDataSource;
 	    	return allButtons;
 		}
+	});
+	Mdo.HeaderOrder = Ember.Object.extend({
+		number: null,
+		takeaway: false,
+		customersNumber: 10,
 	});
 });

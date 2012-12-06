@@ -26,6 +26,7 @@ $(document).ready(function() {
 					} catch (e) {
 						// If the index doesn't bind a function
 						alert(e);
+						throw e;
 					}
 				};
 				
@@ -63,17 +64,30 @@ $(document).ready(function() {
 			this.target.router.send('gotoOrders');
 		},
 		cashedOrders: function() {
-			alert("cashedOrders")
+			this.target.router.send('gotoCashedOrders');
 		},	
 		lockedOrders: function() {
-			alert("lockedOrders")
-		}	
+			this.target.router.send('gotoLockedOrders');
+		},
 	});
-	
+
+	Mdo.HeaderOrderNumberController = Ember.ObjectController.extend({
+	});
+	Mdo.HeaderOrderCustomersNumberController = Ember.ObjectController.extend({
+	});
+	Mdo.HeaderOrderController = Ember.ObjectController.extend({
+		content: Mdo.HeaderOrder.create()
+	});
+
 	Mdo.UserController = Ember.ObjectController.extend({
 	});
 	
 	Mdo.OrdersController = Ember.ObjectController.extend({
 	});
 
+	Mdo.CashedOrdersController = Ember.ObjectController.extend({
+	});
+
+	Mdo.LockedOrdersController = Ember.ObjectController.extend({
+	});
 });

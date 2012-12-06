@@ -12,21 +12,20 @@ $(document).ready(function() {
 		labelKey: null,
 		i18nLabelChanged: function(sender, key) {
 			var label = sender.get(key);
-console.log("0)" + label)			
 			this.$().html(label);
-console.log("1)" + label)			
-
 		},
 		didInsertElement: function() {
-			Mdo.I18n.prop(this.labelKey, null, this, this.i18nLabelChanged);
+			Mdo.I18n.propAddObserver(this.labelKey, null, this, this.i18nLabelChanged);
 		},
 		willDestroyElement: function() {
-			Mdo.I18n.prop.removeObserver(this.labelKey, this, this.i18nLabelChanged);
+			// Have to remove because when this view is deleted, the observable object did not know of it.
+			Mdo.I18n.propRemoveObserver(this.labelKey, this, this.i18nLabelChanged);
 		}
 	});
 	
 	Mdo.ButtonView = Ember.View.extend({
 		tagName: 'button',
+		labelKey: null,
 		selected: false,
 		/**
 		 * Observe the change of selected field.
@@ -34,8 +33,11 @@ console.log("1)" + label)
 		 */
 		selectedChanged: function(sender, key) {
 			var viewSelected = this.get("selected");
-			// selected field has changed
+			// selected field has changed.
 			this.disabledButton(viewSelected);
+			// Focus the order number text field.
+console.log(Em.View.views['number'])			
+//			Em.View.views['number'].$().focus();
 		}.observes('selected'),
 		i18nLabelChanged: function(sender, key) {
 			var label = sender.get(key);
@@ -51,9 +53,13 @@ console.log("1)" + label)
 		    });
 			// Process the i18n label and wait the return from server with Ember.Observable
 			// The label will be set in the method i18nLabelChanged
-			Mdo.I18n.prop(thisEmberView.labelKey, null, this, this.i18nLabelChanged);
+			Mdo.I18n.propAddObserver(this.labelKey, null, this, this.i18nLabelChanged);
 			// selected comes from HeaderView template.
-			this.disabledButton(thisEmberView.get('selected'));
+			this.disabledButton(this.get('selected'));
+		},
+		willDestroyElement: function() {
+			// Have to remove because when this view is deleted, the observable object did not know of it.
+			Mdo.I18n.propRemoveObserver(this.labelKey, this, this.i18nLabelChanged);
 		},
 		disabledButton: function(selected) {
 			var button = this.$().button({ disabled: selected });
@@ -61,7 +67,7 @@ console.log("1)" + label)
 			if (selected) {
 				button.addClass('ui-state-active');
 			} else {
-				button.removeClass('ui-state-hover, ui-state-focus, ui-state-active');
+				button.removeClass('ui-state-hover ui-state-focus ui-state-active');
 			}
 		}
 	});
@@ -72,6 +78,60 @@ console.log("1)" + label)
 			$("#menu-buttons").buttonset();
 		}
 	});
+	
+/*	
+	Mdo.HeaderOrderNumberView = Ember.TextField.extend({elementId: "number", classNames: "ui-widget-content", valueBinding: "number"});
+	Mdo.HeaderOrderCustomersNumberView = Ember.TextField.extend({elementId: "customersNumber", classNames: "ui-widget-content", valueBinding: "customersNumber", disabled: "disabled"});
+	Mdo.HeaderOrderView = Ember.View.extend({
+		templateName: "headerOrder",
+//		childViews: ['headerOrderNumberLabelView', 'headerOrderNumberView', 'headerOrderCustomersNumberLabelView', 'headerOrderCustomersNumberView'],
+//		headerOrderNumberLabelView: Mdo.LabelView.create({labelKey: "header.order.number"}),
+//		headerOrderNumberView: Mdo.HeaderOrderNumberView.create(),
+//		headerOrderCustomersNumberLabelView: Mdo.LabelView.create({labelKey: "header.order.customers.number"}),
+//		headerOrderCustomersNumberView: Mdo.HeaderOrderCustomersNumberView.create(),
+		didInsertElement: function() {
+			// Focus the order number text field.
+//			this.headerOrderNumberView.$().focus();
+alert(2)			
+//			Em.View.views['number'].$().focus();
+		},
+	});
+**/	
+	Mdo.HeaderOrderNumberView = Ember.View.extend({
+		templateName: "headerOrderNumber",
+		tagName: "span",
+		didInsertElement: function() {
+			// Focus the order number text field.
+//			this.headerOrderNumberView.$().focus();
+alert("headerOrderNumber")			
+//			Em.View.views['number'].$().focus();
+		},
+	});
+//	Mdo.HeaderOrderCustomersNumberView = Ember.TextField.extend({elementId: "customersNumber", classNames: "ui-widget-content", valueBinding: "customersNumber", disabled: "disabled"});
+	Mdo.HeaderOrderCustomersNumberView = Ember.View.extend({
+		templateName: "headerOrderCustomersNumber",
+		tagName: "span",
+		didInsertElement: function() {
+			// Focus the order number text field.
+//			this.headerOrderNumberView.$().focus();
+alert("headerOrderNumber")			
+//			Em.View.views['number'].$().focus();
+		},
+	});
+	Mdo.HeaderOrderView = Ember.View.extend({
+		templateName: "headerOrder",
+//		childViews: ['headerOrderNumberLabelView', 'headerOrderNumberView', 'headerOrderCustomersNumberLabelView', 'headerOrderCustomersNumberView'],
+//		headerOrderNumberLabelView: Mdo.LabelView.create({labelKey: "header.order.number"}),
+//		headerOrderNumberView: Mdo.HeaderOrderNumberView.create(),
+//		headerOrderCustomersNumberLabelView: Mdo.LabelView.create({labelKey: "header.order.customers.number"}),
+//		headerOrderCustomersNumberView: Mdo.HeaderOrderCustomersNumberView.create(),
+		didInsertElement: function() {
+			// Focus the order number text field.
+//			this.headerOrderNumberView.$().focus();
+alert(2)			
+//			Em.View.views['number'].$().focus();
+		},
+	});
 
 	Mdo.UserView = Ember.View.extend({
 		templateName: "user"
@@ -79,5 +139,13 @@ console.log("1)" + label)
 
 	Mdo.OrdersView = Ember.View.extend({
 		templateName: "orders"
+	});
+
+	Mdo.CashedOrdersView = Ember.View.extend({
+		templateName: "cashedOrders"
+	});
+
+	Mdo.LockedOrdersView = Ember.View.extend({
+		templateName: "lockedOrders"
 	});
 });

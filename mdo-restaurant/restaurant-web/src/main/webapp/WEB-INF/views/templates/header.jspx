@@ -19,12 +19,26 @@
 
 		<script type="text/x-handlebars" data-template-name="header">
 			<span id="menu-buttons">
-				{{#each item in controller}}
-					{{#with item}}
+				{{#each button in content}}
+					{{#with button}}
 						{{#view "Mdo.ButtonView" labelKey=labelKey icons=icons selectedBinding="selected" click=click}}{{/view}}
 					{{/with}}	
 				{{/each}}
-			</span>	
+			</span>
+			<span id="headerOrder">
+				{{outlet headerOrder}}
+			</span>
+		</script>
+
+		<script type="text/x-handlebars" data-template-name="headerOrder">
+			{{outlet headerOrderNumber}}
+			{{outlet headerOrderCustomersNumber}}
+		</script>
+		<script type="text/x-handlebars" data-template-name="headerOrderNumber">
+			{{view "Mdo.LabelView" labelKey="header.order.number"}} {{view Ember.TextField name="number" elementId="number" class="ui-widget-content" valueBinding="number"}}
+		</script>
+		<script type="text/x-handlebars" data-template-name="headerOrderCustomersNumber">
+			{{view "Mdo.LabelView" labelKey="header.order.customers.number"}} {{view Ember.TextField name="customersNumber" elementId="customersNumber" class="ui-widget-content" valueBinding="customersNumber"}}
 		</script>
 		
 		<script type="text/x-handlebars" data-template-name="user">
@@ -39,6 +53,13 @@
 		<script type="text/x-handlebars" data-template-name="orders">
 			{{mma}}
 		</script>
+
+		<script type="text/x-handlebars" data-template-name="cashedOrders">
+			{{mma}}
+		</script>
 		
+		<script type="text/x-handlebars" data-template-name="lockedOrders">
+			{{mma}}
+		</script>
 	]]>
 </jsp:root>

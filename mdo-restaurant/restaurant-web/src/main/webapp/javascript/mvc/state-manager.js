@@ -8,17 +8,14 @@ $(document).ready(function() {
 	 * User route. It must be declared before the Mdo.Router because Mdo.Router uses it. 
 	 */
 	Mdo.UserRoute = Ember.Route.extend({
-		route: '/user',
+		route: '/',
 		enter: function (router) {
 			console.log("The user sub-state was entered.");
         },
 		connectOutlets: function(router, context) {
         	// Insert HeaderView in header outlet with default HeaderController content.
 			var headerController = router.get('headerController');
-			var isContentEmpty = headerController.refreshButtons("user");
-			if (isContentEmpty) {
-	        	router.get('applicationController').connectOutlet('header', 'header');
-			}
+			headerController.refreshButtons("user");
 	    	// Insert UserView in body outlet with OrdersController content. 
 	    	router.get('applicationController').connectOutlet('body', 'user', {mma: "user"});
 	    }		
@@ -35,20 +32,54 @@ $(document).ready(function() {
 		connectOutlets: function(router, context) {
         	// Insert HeaderView in header outlet with default HeaderController content.
 			var headerController = router.get('headerController');
-			var isContentEmpty = headerController.refreshButtons("orders");
-			if (isContentEmpty) {
-	        	router.get('applicationController').connectOutlet('header', 'header');
-			}
+			headerController.refreshButtons("orders");
 	    	// Insert OrdersView in body outlet with OrdersController content. 
 	    	router.get('applicationController').connectOutlet('body', 'orders', {mma: "orders"});
 	    }		
 	}); 
 	
+	/**
+	 * Cashed Orders route. It must be declared before the Mdo.Router because Mdo.Router uses it. 
+	 */
+	Mdo.CashedOrdersRoute = Ember.Route.extend({
+		route: '/cashed/orders',
+		enter: function (router) {
+			console.log("The cashed orders sub-state was entered.");
+        },
+		connectOutlets: function(router, context) {
+        	// Insert HeaderView in header outlet with default HeaderController content.
+			var headerController = router.get('headerController');
+			headerController.refreshButtons("cashedOrders");
+	    	// Insert OrdersView in body outlet with OrdersController content. 
+	    	router.get('applicationController').connectOutlet('body', 'cashedOrders', {mma: "cashed orders"});
+	    }		
+	}); 
+
+	/**
+	 * Locked Orders route. It must be declared before the Mdo.Router because Mdo.Router uses it. 
+	 */
+	Mdo.LockedOrdersRoute = Ember.Route.extend({
+		route: '/locked/orders',
+		enter: function (router) {
+			console.log("The locked orders sub-state was entered.");
+        },
+		connectOutlets: function(router, context) {
+        	// Insert HeaderView in header outlet with default HeaderController content.
+			var headerController = router.get('headerController');
+			headerController.refreshButtons("lockedOrders");
+	    	// Insert OrdersView in body outlet with OrdersController content. 
+	    	router.get('applicationController').connectOutlet('body', 'lockedOrders', {mma: "locked orders"});
+	    }		
+	}); 
+
 	Mdo.Router = Ember.Router.extend({
 		enableLogging:  true,
 		root: Ember.Route.extend({
-			gotoOrders: Ember.Route.transitionTo('orders'),
+			// EVENTS
 			gotoUser: Ember.Route.transitionTo('user'),
+			gotoOrders: Ember.Route.transitionTo('orders'),
+			gotoCashedOrders: Ember.Route.transitionTo('cashedOrders'),
+			gotoLockedOrders: Ember.Route.transitionTo('lockedOrders'),
 			index: Ember.Route.extend({
 				route: '/',
 				enter: function (router) {
@@ -59,12 +90,16 @@ $(document).ready(function() {
 					var headerController = router.get('headerController');
 					headerController.initButtons("user");
 		        	router.get('applicationController').connectOutlet('header', 'header');
-			    	// Insert UserView in body outlet with OrdersController content. 
-			    	router.get('applicationController').connectOutlet('body', 'user', {mma: "user"});
-		        }		        
+		        	router.get('headerController').connectOutlet('headerOrder', 'headerOrder');
+		        	router.get('headerOrderController').connectOutlet('headerOrderNumber', 'headerOrderNumber');
+		        	router.get('headerOrderController').connectOutlet('headerOrderCustomersNumber', 'headerOrderCustomersNumber');
+		        },
+				// STATES
+				user: Mdo.UserRoute,
+				orders: Mdo.OrdersRoute,
+				cashedOrders: Mdo.CashedOrdersRoute,
+				lockedOrders: Mdo.LockedOrdersRoute,
 			}),
-			user: Mdo.UserRoute,
-			orders: Mdo.OrdersRoute
 		})
 	});
 
