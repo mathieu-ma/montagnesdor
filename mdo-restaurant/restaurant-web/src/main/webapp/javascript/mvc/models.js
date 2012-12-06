@@ -1,6 +1,19 @@
 $(document).ready(function() {
 	Mdo.Label = Ember.Object.extend({
-		label: null
+		labelKey: null,
+		counter: 0,
+		/**
+		 * The label is a computed property and depends on the 2 properties labelKey and counter.
+		 * The labelKey property is used to find the label.
+		 * The counter is only used for observing because we want the observer to be called whenever we need.
+		 * See the Ember note on observable api:
+		 * Note that if propertyKey is a computed property, the observer will be called when any of the property dependencies are changed, 
+		 * even if the resulting value of the computed property is unchanged. 
+		 * This is necessary because computed properties are not computed until get is called.
+		 */
+		label: function() {
+			return $.mdoI18n.prop(this.labelKey);
+		}.property("labelKey", "counter")
 	});
 	Mdo.Header = Ember.Object.extend();
 	Mdo.HeaderButton = Ember.Object.extend({

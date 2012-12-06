@@ -9,19 +9,19 @@ $(document).ready(function() {
 
 	Mdo.LabelView = Ember.View.extend({
 		tagName: 'span',
-		template: Ember.Handlebars.compile('888'),
 		labelKey: null,
-		label: function() {
-//			Mdo.I18n.prop(this.labelKey, null, this, this.i18nLabelChanged);
-		}.property(),
 		i18nLabelChanged: function(sender, key) {
 			var label = sender.get(key);
-//			alert(labelKey)
+console.log("0)" + label)			
+			this.$().html(label);
+console.log("1)" + label)			
+
 		},
-		willRerender: function() {
-			alert(this.labelKey)
-			this.template = Ember.Handlebars.compile(this.labelKey)
-//			alert(this.$().html())
+		didInsertElement: function() {
+			Mdo.I18n.prop(this.labelKey, null, this, this.i18nLabelChanged);
+		},
+		willDestroyElement: function() {
+			Mdo.I18n.prop.removeObserver(this.labelKey, this, this.i18nLabelChanged);
 		}
 	});
 	

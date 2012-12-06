@@ -228,9 +228,13 @@
 	  	return parent;
 	};
 	//END mdoParentsByCss
-	//START ntlI18n
+	//START mdoI18n
 	$.mdoI18n = {};
-	/** Map holding bundle keys */
+	/** Map holding bundle keys 
+	 *  The map structure value is {state: null, value: null}
+	 *  The state field value could be null, -1 == processing, 1 == processed.
+	 *  The value field value could be null or any string.
+	 **/
 	$.mdoI18n.map = {};
 	/**
 	 * Load and parse message bundle,
@@ -255,36 +259,41 @@
 	jQuery.mdoI18n.properties = function(keys, completeCallback) {
 		// Checking if the elements keys are already in cache $.mdoI18n.map
 		if (keys && keys.keyArgsMap) {
-			var indexForLength = 0;
+			var numberOfKeysToProcess = 0;
 			$.each(keys.keyArgsMap, function(key, value) {
-				indexForLength++;
+				numberOfKeysToProcess++;
 	        	if ($.mdoI18n.map[key]) {
 	        		// Remove existed key
 	        		delete keys.keyArgsMap[key];
-	        		indexForLength--;
+	        		numberOfKeysToProcess--;
+	        	} else {
+	        		// processing
+	        		$.mdoI18n.map[key] = {state: -1};
 	        	}
 	        });
-			if (indexForLength==0) {
+			if (numberOfKeysToProcess==0) {
 				// All keys are in cache
 				return;
 			}
 		}
+		
  		var type = "POST"; // or "GET"
  		// The JSON is come from json2.js
  		var data = JSON.stringify(keys); // or keys for GET method.
  		$.ajax({
- 	        url : "i18n",
- 	        type : type,
- 	        contentType : "application/json",
+ 	        url: "i18n",
+ 	        type: type,
+ 	        contentType: "application/json",
  	        timeout : 3000,
- 	        success : function(json) {
+ 	        success: function(json) {
  	        	$.each(json, function(key, value) {
  	        		// Fill the cache map 
- 	        		$.mdoI18n.map[key] = value;
+ 	        		// state == 1 == processed
+ 	        		$.mdoI18n.map[key] = {state: 1, value: value};
  	        	});
- 	        },
- 	        complete: function() {
- 	        	completeCallback();
+ 	        	if (completeCallback) {
+ 	 	        	completeCallback();
+ 	        	}
  	        },
  	        error : null,
  	        data : data,
@@ -296,15 +305,17 @@
 	 * Return the cached label from key. 
 	 */
 	jQuery.mdoI18n.prop = function(key) {
-		var value = $.mdoI18n.map[key];
-		if (value == null) {
-			return '[' + key + ']';
-		} else {
-			for (var i = 1; i < arguments.length; i++) {
-				value = value.replace("{"+(i-1)+"}", arguments[i]);
-	        }
+		var result = '[' + key + ']';
+		var cachedElment = $.mdoI18n.map[key];
+		if (cachedElment) {
+			result = cachedElment.value;
+			if (result) {
+				for (var i = 1; i < arguments.length; i++) {
+					result = result.replace("{"+(i-1)+"}", arguments[i]);
+		        }
+			}
 		}
-		return value;
+		return result;
 	};
 	//END mdoI18n
 	//START serializeJSON
