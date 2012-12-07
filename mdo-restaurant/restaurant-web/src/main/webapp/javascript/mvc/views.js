@@ -37,7 +37,7 @@ $(document).ready(function() {
 			this.disabledButton(viewSelected);
 			// Focus the order number text field.
 console.log(Em.View.views['number'])			
-//			Em.View.views['number'].$().focus();
+			Em.View.views['number'].$().focus();
 		}.observes('selected'),
 		i18nLabelChanged: function(sender, key) {
 			var label = sender.get(key);
@@ -74,11 +74,36 @@ console.log(Em.View.views['number'])
 	
 	Mdo.HeaderView = Ember.View.extend({
 		templateName: "header",
+	});
+
+	Mdo.FlagView = Ember.View.extend({
+		tagName: 'div',
+		classNameBindings: ['flagClasses'],
+		attributeBindings: ['title'],
+		id: null,
+		languageIso2: null,
+		displayLanguage: null,
+		title: function() {
+			return this.displayLanguage;
+		}.property('displayLanguage'),
+		flagClasses: function() {
+			return "flag flag-" + this.languageIso2;
+		}.property("languageIso2"),
 		didInsertElement: function() {
-			$("#menu-buttons").buttonset();
 		}
 	});
-	
+	Mdo.HeaderLanguagesView = Ember.View.extend({
+		templateName: "headerLanguages",
+		didInsertElement: function() {
+		}
+	});
+
+	Mdo.HeaderButtonsView = Ember.View.extend({
+		templateName: "headerButtons",
+		didInsertElement: function() {
+			$("#header-buttons").buttonset();
+		}
+	});
 /*	
 	Mdo.HeaderOrderNumberView = Ember.TextField.extend({elementId: "number", classNames: "ui-widget-content", valueBinding: "number"});
 	Mdo.HeaderOrderCustomersNumberView = Ember.TextField.extend({elementId: "customersNumber", classNames: "ui-widget-content", valueBinding: "customersNumber", disabled: "disabled"});
@@ -103,7 +128,7 @@ alert(2)
 		didInsertElement: function() {
 			// Focus the order number text field.
 //			this.headerOrderNumberView.$().focus();
-alert("headerOrderNumber")			
+//alert("headerOrderNumber")			
 //			Em.View.views['number'].$().focus();
 		},
 	});
@@ -114,7 +139,7 @@ alert("headerOrderNumber")
 		didInsertElement: function() {
 			// Focus the order number text field.
 //			this.headerOrderNumberView.$().focus();
-alert("headerOrderNumber")			
+//alert("headerOrderNumber")			
 //			Em.View.views['number'].$().focus();
 		},
 	});
@@ -128,7 +153,6 @@ alert("headerOrderNumber")
 		didInsertElement: function() {
 			// Focus the order number text field.
 //			this.headerOrderNumberView.$().focus();
-alert(2)			
 //			Em.View.views['number'].$().focus();
 		},
 	});

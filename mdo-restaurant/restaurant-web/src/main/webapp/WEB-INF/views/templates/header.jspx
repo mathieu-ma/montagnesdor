@@ -18,18 +18,30 @@
 		</script>
 
 		<script type="text/x-handlebars" data-template-name="header">
-			<span id="menu-buttons">
-				{{#each button in content}}
-					{{#with button}}
-						{{#view "Mdo.ButtonView" labelKey=labelKey icons=icons selectedBinding="selected" click=click}}{{/view}}
-					{{/with}}	
-				{{/each}}
+			<span id="header-languages">
+				{{outlet headerLanguages}}
 			</span>
-			<span id="headerOrder">
+			<span id="header-buttons">
+				{{outlet headerButtons}}
+			</span>
+			<span id="header-order">
 				{{outlet headerOrder}}
 			</span>
 		</script>
-
+		<script type="text/x-handlebars" data-template-name="headerLanguages">
+			{{#each language in content}}
+				{{#with language}}
+					{{#view "Mdo.FlagView" id=id languageIso2=languageIso2 displayLanguage=displayLanguage}}{{/view}}
+				{{/with}}	
+			{{/each}}
+		</script>
+		<script type="text/x-handlebars" data-template-name="headerButtons">
+			{{#each button in content}}
+				{{#with button}}
+					{{#view "Mdo.ButtonView" labelKey=labelKey icons=icons selectedBinding="selected" click=click}}{{/view}}
+				{{/with}}	
+			{{/each}}
+		</script>
 		<script type="text/x-handlebars" data-template-name="headerOrder">
 			{{outlet headerOrderNumber}}
 			{{outlet headerOrderCustomersNumber}}

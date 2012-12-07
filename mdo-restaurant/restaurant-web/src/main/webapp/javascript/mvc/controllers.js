@@ -4,8 +4,28 @@
 $(document).ready(function() {
 	// This is the application controller. It is required by Mdo application for initial context.
 	Mdo.ApplicationController = Ember.Controller.extend();
-	
-	Mdo.HeaderController = Ember.ArrayController.extend({
+
+	Mdo.HeaderController = Ember.ObjectController.extend({
+		content: [],
+	});
+	Mdo.HeaderLanguagesController = Ember.ArrayController.extend({
+		content: [],
+		init: function() {
+			this.content.clear();
+			var languages = this.content;
+			languages.clear();
+			var locales = Mdo.User.create().get("locales");
+			$.each(locales, function(index, value) {
+				var language = Ember.Object.create({
+						languageIso2: index,
+						id: value.id, 
+						displayLanguage: value.displayLanguage, 
+					});
+				languages.pushObject(language);
+			});
+		}
+	});
+	Mdo.HeaderButtonsController = Ember.ArrayController.extend({
 		content: [],
 		initButtons: function(selected) {
 			this.content.clear();
@@ -72,8 +92,10 @@ $(document).ready(function() {
 	});
 
 	Mdo.HeaderOrderNumberController = Ember.ObjectController.extend({
+//		content: Mdo.HeaderOrder.create()
 	});
 	Mdo.HeaderOrderCustomersNumberController = Ember.ObjectController.extend({
+		content: Mdo.HeaderOrder.create()
 	});
 	Mdo.HeaderOrderController = Ember.ObjectController.extend({
 		content: Mdo.HeaderOrder.create()

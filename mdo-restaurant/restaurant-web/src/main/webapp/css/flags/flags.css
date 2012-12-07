@@ -1,7 +1,15 @@
 .flag {
 	width: 16px;
 	height: 11px;
-	background:url(flags.png) no-repeat
+	background:url(flags.png) no-repeat;
+	float: left;
+	margin: 1px;
+}
+
+.flag:hover {
+	border-width: 1px;
+	border-style: outset;
+	border-color: white; 
 }
 
 .flag.flag-ad {background-position: -16px 0}
@@ -48,7 +56,7 @@
 .flag.flag-ck {background-position: -160px -22px}
 .flag.flag-cl {background-position: -176px -22px}
 .flag.flag-cm {background-position: -192px -22px}
-.flag.flag-cn {background-position: -208px -22px}
+.flag.flag-zh {background-position: -208px -22px}
 .flag.flag-co {background-position: -224px -22px}
 .flag.flag-cr {background-position: -240px -22px}
 .flag.flag-cu {background-position: 0 -33px}

@@ -21,7 +21,7 @@
 	SWITCH_SCHEME_ONLY_HTTPS = 2 : only https scheme : http scheme in redirect to https scheme out
 	SWITCH_SCHEME_HTTPS_ENTRY_POINT_ONLY = 21 : switch https scheme in to http scheme out
  -->
-				<param name="switchScheme">21</param>
+				<param name="switchScheme">0</param>
 			</interceptor>
 			<interceptor name="mdoUserContext" class="fr.mch.mdo.restaurant.web.struts.MdoUserContextInterceptor"/>
 			<interceptor name="mdoProcessLanguage" class="fr.mch.mdo.restaurant.web.struts.MdoProcessLanguageInterceptor">

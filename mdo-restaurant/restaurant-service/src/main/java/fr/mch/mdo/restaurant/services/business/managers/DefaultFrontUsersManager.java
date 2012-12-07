@@ -3,6 +3,7 @@ package fr.mch.mdo.restaurant.services.business.managers;
 import fr.mch.mdo.logs.ILogger;
 import fr.mch.mdo.restaurant.beans.dto.UserAuthenticationDto;
 import fr.mch.mdo.restaurant.dao.IDaoServices;
+import fr.mch.mdo.restaurant.dao.beans.UserAuthentication;
 import fr.mch.mdo.restaurant.dao.users.hibernate.DefaultUserAuthenticationsDao;
 import fr.mch.mdo.restaurant.exception.MdoException;
 import fr.mch.mdo.restaurant.services.business.utils.DefaultUsersHelper;
@@ -57,7 +58,9 @@ public class DefaultFrontUsersManager extends AbstractRestaurantManager implemen
 
 	@Override
 	public UserAuthenticationDto find(Long authId) throws MdoException {
-		UserAuthenticationDto result = (UserAuthenticationDto) dao.findByPrimaryKey(authId, false); 
+		UserAuthenticationDto result = null;
+		UserAuthentication user = (UserAuthentication) dao.findByPrimaryKey(authId, false); 
+		result = helper.fromUserAuthentication(user);
 		return result;
 	}
 

@@ -64,4 +64,18 @@ $(document).ready(function() {
 		takeaway: false,
 		customersNumber: 10,
 	});
+	
+	Mdo.User = Ember.Object.extend({
+	    id: 1,
+	    login: "mch",
+	    locales: {
+	        "zh": {id: 2, displayLanguage: "chinois"},
+	        "fr": {id: 1, displayLanguage: "français"},
+	    },
+	    user: {
+	        name: "MA",
+	        forename1: "Mathieu",
+	        title: "MISTER"
+	    }
+	});
 });

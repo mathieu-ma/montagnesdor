@@ -14,8 +14,8 @@ $(document).ready(function() {
         },
 		connectOutlets: function(router, context) {
         	// Insert HeaderView in header outlet with default HeaderController content.
-			var headerController = router.get('headerController');
-			headerController.refreshButtons("user");
+			var headerButtonsController = router.get('headerButtonsController');
+			headerButtonsController.refreshButtons("user");
 	    	// Insert UserView in body outlet with OrdersController content. 
 	    	router.get('applicationController').connectOutlet('body', 'user', {mma: "user"});
 	    }		
@@ -31,8 +31,8 @@ $(document).ready(function() {
         },
 		connectOutlets: function(router, context) {
         	// Insert HeaderView in header outlet with default HeaderController content.
-			var headerController = router.get('headerController');
-			headerController.refreshButtons("orders");
+			var headerButtonsController = router.get('headerButtonsController');
+			headerButtonsController.refreshButtons("orders");
 	    	// Insert OrdersView in body outlet with OrdersController content. 
 	    	router.get('applicationController').connectOutlet('body', 'orders', {mma: "orders"});
 	    }		
@@ -48,8 +48,8 @@ $(document).ready(function() {
         },
 		connectOutlets: function(router, context) {
         	// Insert HeaderView in header outlet with default HeaderController content.
-			var headerController = router.get('headerController');
-			headerController.refreshButtons("cashedOrders");
+			var headerButtonsController = router.get('headerButtonsController');
+			headerButtonsController.refreshButtons("cashedOrders");
 	    	// Insert OrdersView in body outlet with OrdersController content. 
 	    	router.get('applicationController').connectOutlet('body', 'cashedOrders', {mma: "cashed orders"});
 	    }		
@@ -65,8 +65,8 @@ $(document).ready(function() {
         },
 		connectOutlets: function(router, context) {
         	// Insert HeaderView in header outlet with default HeaderController content.
-			var headerController = router.get('headerController');
-			headerController.refreshButtons("lockedOrders");
+			var headerButtonsController = router.get('headerButtonsController');
+			headerButtonsController.refreshButtons("lockedOrders");
 	    	// Insert OrdersView in body outlet with OrdersController content. 
 	    	router.get('applicationController').connectOutlet('body', 'lockedOrders', {mma: "locked orders"});
 	    }		
@@ -87,10 +87,12 @@ $(document).ready(function() {
 		        },
 		        connectOutlets: function(router, context) {
 		        	// Insert HeaderView in header outlet with default HeaderController content.
-					var headerController = router.get('headerController');
-					headerController.initButtons("user");
+					var headerButtonsController = router.get('headerButtonsController');
+					headerButtonsController.initButtons("user");
 		        	router.get('applicationController').connectOutlet('header', 'header');
+		        	router.get('headerController').connectOutlet('headerLanguages', 'headerLanguages');
 		        	router.get('headerController').connectOutlet('headerOrder', 'headerOrder');
+		        	router.get('headerController').connectOutlet('headerButtons', 'headerButtons');
 		        	router.get('headerOrderController').connectOutlet('headerOrderNumber', 'headerOrderNumber');
 		        	router.get('headerOrderController').connectOutlet('headerOrderCustomersNumber', 'headerOrderCustomersNumber');
 		        },

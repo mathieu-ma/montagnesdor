@@ -24,6 +24,7 @@
 	 			<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}${style}"/>
 	    	</c:forEach>
 	    	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/montagnesdor-commons.css"/>
+	    	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/flags/flags.css"/>
 
 			<title><fmt:message key="application.name"/> - <tiles:getAsString name="title"/></title>
 		</head>
