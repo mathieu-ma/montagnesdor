@@ -31,7 +31,7 @@
 			<s:iterator var="userLocale" value="form.dtoBean.locales" status="statusUserLocales">
 				<tr>
 					<td style="width: 33em;">	
-						<s:property value="%{#userLocale.locale.displayLanguage}" />
+						<c:out value="${userSession.systemAvailableLanguages[userLocale.locale.languageCode]}"/>
 						<s:hidden name="form.dtoBean.locales(%{#userLocale.id}).locale.id" value="%{#userLocale.locale.id}" />
 						<s:hidden name="form.dtoBean.locales(%{#userLocale.id}).locale.displayLanguage" value="%{#userLocale.locale.displayLanguage}" />
 						<s:hidden name="form.dtoBean.locales(%{#userLocale.id}).user.id" value="%{form.dtoBean.id}" />

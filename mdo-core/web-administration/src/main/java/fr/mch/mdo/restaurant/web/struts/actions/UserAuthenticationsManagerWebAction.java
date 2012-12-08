@@ -67,6 +67,7 @@ public class UserAuthenticationsManagerWebAction extends AdministrationManagerAc
 	 */
 	private void processAvailableLanguages() {
 		UserAuthenticationDto dtoBean = (UserAuthenticationDto) super.getForm().getDtoBean();
+		MdoUserContext user = (MdoUserContext) super.getForm().getUserContext();
 		UserAuthenticationsManagerViewBean viewBean = (UserAuthenticationsManagerViewBean) ((IMdoAdministrationForm) super.getForm()).getViewBean();
 
 		List<LocaleDto> listAll = viewBean.getLanguages();
@@ -74,6 +75,8 @@ public class UserAuthenticationsManagerWebAction extends AdministrationManagerAc
 		if (dtoBean != null && dtoBean.getLocales() != null) {
 			for (IMdoDtoBean language : listAll) {
 				for (UserLocaleDto exlcudedBean : dtoBean.getLocales()) {
+					String displayLanguage = user.getSystemAvailableLanguages().get(exlcudedBean.getLocale().getLanguageCode());
+					exlcudedBean.getLocale().setDisplayLanguage(displayLanguage);
 					if (language.getId() != null && exlcudedBean.getLocale() != null && language.getId().equals(exlcudedBean.getLocale().getId())) {
 						availableLanguages.remove(language);
 					}
@@ -133,6 +136,27 @@ public class UserAuthenticationsManagerWebAction extends AdministrationManagerAc
 		String restaurantIdToRemove = super.getRequest().getParameter("method:removeLanguage");
 		this.processSave(restaurantIdToRemove);
 		this.form();
+		
+		// If we delete a language that is the current one then we must switch to another one(the last one).
+		boolean isCurrentLanguageDeleted = true;
+		MdoUserContext userContext = (MdoUserContext) super.getForm().getUserContext();
+		Set<UserLocaleDto> userLocales = userContext.getUserAuthentication().getLocales();
+		if (userLocales != null) {
+			UserLocaleDto lastUserLocaleDto = null;
+			for (UserLocaleDto userLocaleDto : userLocales) {
+				if (userLocaleDto.getLocale().getId().equals(userContext.getCurrentLocale().getId())) {
+					isCurrentLanguageDeleted = false;
+					break;
+				}
+				lastUserLocaleDto = userLocaleDto;
+			}
+			if (isCurrentLanguageDeleted && lastUserLocaleDto != null) {
+				// Change the current locale.
+				// After that change, must process language in MdoProcessLanguageInterceptor.
+				userContext.setCurrentLocale(lastUserLocaleDto.getLocale());
+			}
+		}
+		// Redirect + process language in MdoProcessLanguageInterceptor.
 		return Constants.ACTION_RESULT_AFTER_CUD_LANGUAGE;
 	}
 

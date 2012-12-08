@@ -232,6 +232,8 @@
 				<param name="method">form</param>
 				<param name="tab">#tabs-2</param>
 				<param name="form.dtoBean.id">${form.dtoBean.id}</param>
+				<!-- Change the language in case of deleting the current one. So process language in MdoProcessLanguageInterceptor. -->
+				<param name="request_locale">${form.userContext.currentLocale.languageCode}</param>
 			</result>
 			<!-- After CUD -->
 			<result name="acud" type="redirectAction">UserAuthenticationsManager</result>
