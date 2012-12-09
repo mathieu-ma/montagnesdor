@@ -23,60 +23,6 @@ $(document).ready(function() {
 		}
 	});
 	
-	Mdo.ButtonView = Ember.View.extend({
-		tagName: 'button',
-		labelKey: null,
-		selected: false,
-		controllerChangeButton: null,
-		/**
-		 * Observe the change of selected field.
-		 * The selected field is binded to the HeaderButton. 
-		 */
-		selectedChanged: function(sender, key) {
-			var viewSelected = this.get("selected");
-			// selected field has changed.
-			this.disabledButton(viewSelected);
-			// Focus the order number text field.
-console.log(Em.View.views['number'])			
-			Em.View.views['number'].$().focus();
-		}.observes('selected'),
-		i18nLabelChanged: function(sender, key) {
-			var label = sender.get(key);
-			this.$().button({ label: label });
-		},
-		click: function() {
-			this.get('parentView').manageButtons(this);
-			this.controllerChangeButton();
-		},
-		didInsertElement: function() {
-			var thisEmberView = this;
-			var button = thisEmberView.$().button({
-		    	// labelKey comes from HeaderView template.
-		    	//label: $.mdoI18n.prop(thisEmberView.labelKey),
-		    	// icons comes from HeaderView template.
-		    	icons: thisEmberView.get('icons'),
-		    });
-			// Process the i18n label and wait the return from server with Ember.Observable
-			// The label will be set in the method i18nLabelChanged
-			Mdo.I18n.propAddObserver(this.labelKey, null, this, this.i18nLabelChanged);
-			// selected comes from HeaderView template.
-			this.disabledButton(this.get('selected'));
-		},
-		willDestroyElement: function() {
-			// Have to remove because when this view is deleted, the observable object did not know of it.
-			Mdo.I18n.propRemoveObserver(this.labelKey, this, this.i18nLabelChanged);
-		},
-		disabledButton: function(selected) {
-			var button = this.$().button({ disabled: selected });
-			button.removeClass('ui-state-disabled');
-			if (selected) {
-				button.addClass('ui-state-active');
-			} else {
-				button.removeClass('ui-state-hover ui-state-focus ui-state-active');
-			}
-		}
-	});
-	
 	Mdo.HeaderView = Ember.View.extend({
 		templateName: "header",
 	});
@@ -118,6 +64,38 @@ console.log(Em.View.views['number'])
 		templateName: "headerLanguages",
 	});
 
+	Mdo.ButtonView = Ember.View.extend({
+		tagName: 'button',
+		labelKey: null,
+		selected: false,
+		controllerChangeButton: null,
+		i18nLabelChanged: function(sender, key) {
+			var label = sender.get(key);
+			this.$().button({ label: label });
+		},
+		click: function() {
+			this.get('parentView').manageButtons(this);
+			this.controllerChangeButton();
+		},
+		didInsertElement: function() {
+			var thisEmberView = this;
+			var button = thisEmberView.$().button({
+		    	// labelKey comes from HeaderView template.
+		    	//label: $.mdoI18n.prop(thisEmberView.labelKey),
+		    	// icons comes from HeaderView template.
+		    	icons: thisEmberView.get('icons'),
+		    });
+			// Process the i18n label and wait the return from server with Ember.Observable
+			// The label will be set in the method i18nLabelChanged
+			Mdo.I18n.propAddObserver(this.labelKey, null, this, this.i18nLabelChanged);
+			// selected comes from HeaderView template.
+			this.get('parentView').disabledButton(this.$(), this.get('selected'));
+		},
+		willDestroyElement: function() {
+			// Have to remove because when this view is deleted, the observable object did not know of it.
+			Mdo.I18n.propRemoveObserver(this.labelKey, this, this.i18nLabelChanged);
+		},
+	});
 	Mdo.HeaderButtonsView = Ember.View.extend({
 		templateName: "headerButtons",
 		didInsertElement: function() {

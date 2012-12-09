@@ -29,7 +29,11 @@ $(document).ready(function() {
 			});
 		},
 		modifyLanguage: function(lang) {
-			window.location.href = "?lang=" + lang + "#" + this.target.get('currentState.route');
+			var route = this.target.get('currentState.route');
+			if (route=="/") {
+				route = "";
+			}
+			window.location.href = "?lang=" + lang + "#" + route;
 		}
 	});
 	Mdo.HeaderButtonsController = Ember.ArrayController.extend({
