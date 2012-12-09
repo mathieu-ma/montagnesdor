@@ -13,9 +13,6 @@ $(document).ready(function() {
 			console.log("The user sub-state was entered.");
         },
 		connectOutlets: function(router, context) {
-        	// Insert HeaderView in header outlet with default HeaderController content.
-			var headerButtonsController = router.get('headerButtonsController');
-			headerButtonsController.refreshButtons("user");
 	    	// Insert UserView in body outlet with OrdersController content. 
 	    	router.get('applicationController').connectOutlet('body', 'user', {mma: "user"});
 	    }		
@@ -30,9 +27,6 @@ $(document).ready(function() {
 			console.log("The orders sub-state was entered.");
         },
 		connectOutlets: function(router, context) {
-        	// Insert HeaderView in header outlet with default HeaderController content.
-			var headerButtonsController = router.get('headerButtonsController');
-			headerButtonsController.refreshButtons("orders");
 	    	// Insert OrdersView in body outlet with OrdersController content. 
 	    	router.get('applicationController').connectOutlet('body', 'orders', {mma: "orders"});
 	    }		
@@ -47,9 +41,6 @@ $(document).ready(function() {
 			console.log("The cashed orders sub-state was entered.");
         },
 		connectOutlets: function(router, context) {
-        	// Insert HeaderView in header outlet with default HeaderController content.
-			var headerButtonsController = router.get('headerButtonsController');
-			headerButtonsController.refreshButtons("cashedOrders");
 	    	// Insert OrdersView in body outlet with OrdersController content. 
 	    	router.get('applicationController').connectOutlet('body', 'cashedOrders', {mma: "cashed orders"});
 	    }		
@@ -64,9 +55,6 @@ $(document).ready(function() {
 			console.log("The locked orders sub-state was entered.");
         },
 		connectOutlets: function(router, context) {
-        	// Insert HeaderView in header outlet with default HeaderController content.
-			var headerButtonsController = router.get('headerButtonsController');
-			headerButtonsController.refreshButtons("lockedOrders");
 	    	// Insert OrdersView in body outlet with OrdersController content. 
 	    	router.get('applicationController').connectOutlet('body', 'lockedOrders', {mma: "locked orders"});
 	    }		
@@ -76,6 +64,7 @@ $(document).ready(function() {
 		enableLogging:  true,
 		root: Ember.Route.extend({
 			// EVENTS
+			//i18n/modify/language?lang=fr
 			gotoUser: Ember.Route.transitionTo('user'),
 			gotoOrders: Ember.Route.transitionTo('orders'),
 			gotoCashedOrders: Ember.Route.transitionTo('cashedOrders'),
@@ -88,8 +77,16 @@ $(document).ready(function() {
 		        connectOutlets: function(router, context) {
 		        	// Insert HeaderView in header outlet with default HeaderController content.
 					var headerButtonsController = router.get('headerButtonsController');
-					headerButtonsController.initButtons("user");
-		        	router.get('applicationController').connectOutlet('header', 'header');
+					// Default selected button
+					var selectedButton = "user";
+					// 1) Filter each state by route property with value equals to this.router.location.location.hash.substring(1)==Remove #==the first letter
+					// 2) Iterate over found by filter and get the last one.
+					$.each(this.childStates.filterProperty("route", this.router.location.location.hash.substring(1)), function(index, state) {
+						selectedButton = state.name;
+					});
+					headerButtonsController.initButtons(selectedButton);
+
+					router.get('applicationController').connectOutlet('header', 'header');
 		        	router.get('headerController').connectOutlet('headerLanguages', 'headerLanguages');
 		        	router.get('headerController').connectOutlet('headerOrder', 'headerOrder');
 		        	router.get('headerController').connectOutlet('headerButtons', 'headerButtons');

@@ -69,8 +69,8 @@ $(document).ready(function() {
 	    id: 1,
 	    login: "mch",
 	    locales: {
-	        "zh": {id: 2, displayLanguage: "chinois"},
-	        "fr": {id: 1, displayLanguage: "français"},
+	        "zh": {id: 2, displayLanguage: "chinois", selected: false},
+	        "fr": {id: 1, displayLanguage: "français", selected: true},
 	    },
 	    user: {
 	        name: "MA",

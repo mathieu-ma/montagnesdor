@@ -19,10 +19,17 @@ $(document).ready(function() {
 				var language = Ember.Object.create({
 						languageIso2: index,
 						id: value.id, 
-						displayLanguage: value.displayLanguage, 
+						displayLanguage: value.displayLanguage,
+						selected: value.selected, 
+						controllerModifyLanguage: function(lang) {
+							this.get('controller')['modifyLanguage'](lang);
+						}
 					});
 				languages.pushObject(language);
 			});
+		},
+		modifyLanguage: function(lang) {
+			window.location.href = "?lang=" + lang + "#" + this.target.get('currentState.route');
 		}
 	});
 	Mdo.HeaderButtonsController = Ember.ArrayController.extend({
@@ -38,9 +45,9 @@ $(document).ready(function() {
 					isSelected = true;
 				}
 				value.selected = isSelected;
-				value.click = function() {
-					// this.get('controller') == HeaderController
-					// If index == user then this.get('controller')[index] == this.get('controller')[user] = HeaderController.user
+				value.controllerChangeButton = function() {
+					// this.get('controller') == HeaderButtonsController
+					// If index == user then this.get('controller')[index] == this.get('controller')[user] = HeaderButtonsController.user
 					try {
 						this.get('controller')[value.name]();
 					} catch (e) {
@@ -55,27 +62,9 @@ $(document).ready(function() {
 				button.set('labelKey', value.labelKey);
 				button.set('icons', value.icons);
 				button.set('selected', value.selected);
-				button.set('click', value.click);
+				button.set('controllerChangeButton', value.controllerChangeButton);
 				buttons.pushObject(button);
 			});
-		},
-		refreshButtons: function(selected) {
-			var isContentEmpty = false;
-			var buttons = this.content;
-			if (buttons.length == 0) {
-				isContentEmpty = true;
-				this.initButtons(selected);
-			} else {
-				$.each(buttons, function(index, value) {
-					var isSelected = false;
-					if (value.name == selected) {
-						isSelected = true;
-					}
-					// Change and fire selected
-					value.set('selected', isSelected);
-				});
-			}
-			return isContentEmpty;
 		},
 		user: function() {
 			this.target.router.send('gotoUser');

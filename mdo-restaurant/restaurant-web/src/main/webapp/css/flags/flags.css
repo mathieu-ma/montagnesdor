@@ -1,15 +1,22 @@
+.flag, .flag-state-active, .flag:hover {
+	border-width: 1px;
+	border-style: outset;
+	border-color: white; 
+	cursor: pointer;
+}
+
 .flag {
 	width: 16px;
 	height: 11px;
 	background:url(flags.png) no-repeat;
 	float: left;
 	margin: 1px;
+	border-color: blue; 
 }
 
-.flag:hover {
-	border-width: 1px;
-	border-style: outset;
-	border-color: white; 
+.flag-state-active, .flag-state-active:hover {
+	border-color: yellow; 
+	cursor: auto;
 }
 
 .flag.flag-ad {background-position: -16px 0}
