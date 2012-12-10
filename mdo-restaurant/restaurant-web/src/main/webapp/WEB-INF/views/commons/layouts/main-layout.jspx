@@ -23,6 +23,7 @@
 	 		<c:forEach items="${styles}" var="style">
 	 			<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}${style}"/>
 	    	</c:forEach>
+	    	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/jquery-ui-timepicker-addon.css"/>
 	    	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/montagnesdor-commons.css"/>
 	    	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/flags/flags.css"/>
 
@@ -34,6 +35,7 @@
 	 		<c:forEach items="${javascripts}" var="javascript">
 	 			<script type="text/javascript" src="${pageContext.request.contextPath}/${javascript}"><!-- // --></script>
 	    	</c:forEach>
+ 			<script type="text/javascript" src="${pageContext.request.contextPath}/javascript/library/jquery/plugins/jquery-ui-timepicker-addon.js"><!-- // --></script>
 
 			<c:import url="../templates/header.jspx" />
 

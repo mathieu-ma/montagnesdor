@@ -75,21 +75,11 @@ $(document).ready(function() {
 					console.log("Mdo index");
 		        },
 		        connectOutlets: function(router, context) {
-		        	// Insert HeaderView in header outlet with default HeaderController content.
-					var headerButtonsController = router.get('headerButtonsController');
-					// Default selected button
-					var selectedButton = "user";
-					// 1) Filter each state by route property with value equals to this.router.location.location.hash.substring(1)==Remove #==the first letter
-					// 2) Iterate over found by filter and get the last one.
-					$.each(this.childStates.filterProperty("route", this.router.location.location.hash.substring(1)), function(index, state) {
-						selectedButton = state.name;
-					});
-					headerButtonsController.initButtons(selectedButton);
-
 					router.get('applicationController').connectOutlet('header', 'header');
+		        	router.get('headerController').connectOutlet('headerDateTime', 'headerDateTime');
 		        	router.get('headerController').connectOutlet('headerLanguages', 'headerLanguages');
+		        	router.get('headerController').connectOutlet('headerButtons', 'headerButtons', router.get('headerButtonsController').allButtons());
 		        	router.get('headerController').connectOutlet('headerOrder', 'headerOrder');
-		        	router.get('headerController').connectOutlet('headerButtons', 'headerButtons');
 		        	router.get('headerOrderController').connectOutlet('headerOrderNumber', 'headerOrderNumber');
 		        	router.get('headerOrderController').connectOutlet('headerOrderCustomersNumber', 'headerOrderCustomersNumber');
 		        },

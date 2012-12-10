@@ -18,6 +18,9 @@
 		</script>
 
 		<script type="text/x-handlebars" data-template-name="header">
+			<span id="header-date-time">
+				{{outlet headerDateTime}}
+			</span>
 			<span id="header-languages">
 				{{outlet headerLanguages}}
 			</span>
@@ -27,6 +30,9 @@
 			<span id="header-order">
 				{{outlet headerOrder}}
 			</span>
+		</script>
+		<script type="text/x-handlebars" data-template-name="headerDateTime">
+			{{#view "Mdo.DateTimeView" pattern=pattern}}{{/view}}
 		</script>
 		<script type="text/x-handlebars" data-template-name="headerLanguages">
 			{{#each language in content}}

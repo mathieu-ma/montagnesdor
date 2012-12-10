@@ -27,6 +27,22 @@ $(document).ready(function() {
 		templateName: "header",
 	});
 
+	Mdo.HeaderDateTimeView = Ember.View.extend({
+		templateName: "headerDateTime",
+	});
+	Mdo.DateTimeView = Ember.View.extend({
+		tagName: 'a',
+//		classNames: ['ui-widget-content'],
+		pattern: 'DD d MM yy',
+		didInsertElement: function() {
+alert(jQuery.datepicker.regional[''].monthNames)			
+			$.datepicker.setDefaults( $.datepicker.regional["fr"] );
+			var entryFormattedDate = $.datepicker.formatDate(this.pattern, new Date());
+			this.$().html(entryFormattedDate);
+//			this.$().datetimepicker();
+		}
+	});
+	
 	Mdo.FlagView = Ember.View.extend({
 		tagName: 'div',
 		classNameBindings: ['flagClasses'],

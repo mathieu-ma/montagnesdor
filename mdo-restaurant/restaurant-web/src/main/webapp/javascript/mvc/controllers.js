@@ -7,6 +7,10 @@ $(document).ready(function() {
 
 	Mdo.HeaderController = Ember.ObjectController.extend({
 		content: [],
+		init: function() {
+			// Global variable for Mdo.user.
+			Mdo.user = Mdo.User.create();
+		},
 	});
 	Mdo.HeaderLanguagesController = Ember.ArrayController.extend({
 		content: [],
@@ -14,17 +18,21 @@ $(document).ready(function() {
 			this.content.clear();
 			var languages = this.content;
 			languages.clear();
-			var locales = Mdo.User.create().get("locales");
+			var locales = Mdo.user.get("locales");
 			$.each(locales, function(index, value) {
 				var language = Ember.Object.create({
-						languageIso2: index,
-						id: value.id, 
-						displayLanguage: value.displayLanguage,
-						selected: value.selected, 
-						controllerModifyLanguage: function(lang) {
-							this.get('controller')['modifyLanguage'](lang);
-						}
-					});
+					languageIso2: index,
+					id: value.id, 
+					displayLanguage: value.displayLanguage,
+					selected: value.selected, 
+					controllerModifyLanguage: function(lang) {
+						this.get('controller')['modifyLanguage'](lang);
+					}
+				});
+				if (value.selected) {
+					// Set Global variable for Mdo.selectedLocale.
+					Mdo.selectedLocale = value;
+				}
 				languages.pushObject(language);
 			});
 		},
@@ -36,13 +44,32 @@ $(document).ready(function() {
 			window.location.href = "?lang=" + lang + "#" + route;
 		}
 	});
+	Mdo.HeaderDateTimeController = Ember.ObjectController.extend({
+		content: {},
+		init: function() {
+			
+		}
+	});
 	Mdo.HeaderButtonsController = Ember.ArrayController.extend({
 		content: [],
-		initButtons: function(selected) {
+		allButtons: function() {
+			this.initButtons();
+			return this.content;
+		},
+		initButtons: function() {
 			this.content.clear();
 			var buttons = this.content;  
 			buttons.clear();
 			var data = Mdo.Header.allButtons();
+
+			// Default selected button
+			var selected = "user";
+			// 1) Filter each state by route property with value equals to this.router.location.location.hash.substring(1)==Remove #==the first letter
+			// 2) Iterate over found by filter and get the last one.
+			$.each(this.target.currentState.childStates.filterProperty("route", this.target.location.location.hash.substring(1)), function(index, state) {
+				selected = state.name;
+			});
+					
 			$.each(data, function(index, value) {
 				var isSelected = false;
 				if (value.name == selected) {
