@@ -3,13 +3,12 @@
  */
 $(document).ready(function() {
 	// This is the application controller. It is required by Mdo application for initial context.
-	Mdo.ApplicationController = Ember.Controller.extend();
+	Mdo.ApplicationController = Ember.Controller.extend({
+	});
 
 	Mdo.HeaderController = Ember.ObjectController.extend({
 		content: [],
 		init: function() {
-			// Global variable for Mdo.user.
-			Mdo.user = Mdo.User.create();
 		},
 	});
 	Mdo.HeaderLanguagesController = Ember.ArrayController.extend({
@@ -31,7 +30,7 @@ $(document).ready(function() {
 				});
 				if (value.selected) {
 					// Set Global variable for Mdo.selectedLocale.
-					Mdo.selectedLocale = value;
+					Mdo.user.set('selectedLanguage', language);
 				}
 				languages.pushObject(language);
 			});
@@ -45,9 +44,22 @@ $(document).ready(function() {
 		}
 	});
 	Mdo.HeaderDateTimeController = Ember.ObjectController.extend({
-		content: {},
+		content: {
+			pattern: null,
+			controllerChangeDateTime: function() {
+alert(222222222)
+			}
+		},
 		init: function() {
-			
+/*			
+			var languages = this.content;
+			languages = {
+				pattern: 'DD d MM yy',
+				controllerChangeDateTime: function() {
+alert(222222222)
+				}
+			};
+*/			
 		}
 	});
 	Mdo.HeaderButtonsController = Ember.ArrayController.extend({

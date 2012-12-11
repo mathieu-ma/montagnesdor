@@ -72,10 +72,26 @@ $(document).ready(function() {
 	        "zh": {id: 2, displayLanguage: "chinois", selected: false},
 	        "fr": {id: 1, displayLanguage: "français", selected: true},
 	    },
+	    // Will be set later in HeaderLanguagesController
+	    selectedLanguageIso2: function() {
+	    	$.each(this.locales, function(index, value) {
+				if (value.selected) {
+					this.selectedLanguageIso2 = index;
+					// break.
+					return false;
+				}
+			});
+	    }.property('locales'),
 	    user: {
 	        name: "MA",
 	        forename1: "Mathieu",
 	        title: "MISTER"
 	    }
+	});
+	
+	Mdo.userManager = Ember.Object.create({
+		find: function(id) {
+			return Mdo.User.create(); 
+		}
 	});
 });

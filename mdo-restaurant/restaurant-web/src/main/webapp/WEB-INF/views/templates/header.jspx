@@ -32,7 +32,10 @@
 			</span>
 		</script>
 		<script type="text/x-handlebars" data-template-name="headerDateTime">
-			{{#view "Mdo.DateTimeView" pattern=pattern}}{{/view}}
+		:::::{{pattern}}{{content.pattern}}::::::::
+			{{#with content}}
+				{{#view "Mdo.DateTimeView" pattern=pattern controllerChangeDateTime=controllerChangeDateTime}}{{/view}}
+			{{/with}}
 		</script>
 		<script type="text/x-handlebars" data-template-name="headerLanguages">
 			{{#each language in content}}

@@ -36,9 +36,11 @@
 	 			<script type="text/javascript" src="${pageContext.request.contextPath}/${javascript}"><!-- // --></script>
 	    	</c:forEach>
  			<script type="text/javascript" src="${pageContext.request.contextPath}/javascript/library/jquery/plugins/jquery-ui-timepicker-addon.js"><!-- // --></script>
-
+ 			<script type="text/javascript" src="${pageContext.request.contextPath}/javascript/library/jquery/jquery-ui/i18n/jquery.ui.datepicker-${pageContext.response.locale}.js"><!-- // --></script>
+ 			<script type="text/javascript" src="${pageContext.request.contextPath}/javascript/library/jquery/plugins/i18n/jquery-ui-timepicker-${pageContext.response.locale}.js"><!-- // --></script>
+ 			
 			<c:import url="../templates/header.jspx" />
-
+			
 			<div id="main-application">
 			</div>  		    
 		</body>

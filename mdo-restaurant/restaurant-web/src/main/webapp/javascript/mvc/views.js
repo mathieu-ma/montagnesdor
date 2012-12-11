@@ -34,12 +34,19 @@ $(document).ready(function() {
 		tagName: 'a',
 //		classNames: ['ui-widget-content'],
 		pattern: 'DD d MM yy',
+		controllerChangeDateTime: null,
 		didInsertElement: function() {
-alert(jQuery.datepicker.regional[''].monthNames)			
-			$.datepicker.setDefaults( $.datepicker.regional["fr"] );
+//alert(jQuery.datepicker.regional[''].monthNames)			
+			// selectedLanguage is set in HeaderLanguagesController
 			var entryFormattedDate = $.datepicker.formatDate(this.pattern, new Date());
 			this.$().html(entryFormattedDate);
 //			this.$().datetimepicker();
+		},
+		click: function() {
+			if(this.controllerChangeDateTime) {
+				this.controllerChangeDateTime();
+			}
+			alert(1111)
 		}
 	});
 	
@@ -68,10 +75,10 @@ alert(jQuery.datepicker.regional[''].monthNames)
 			this.set('selected', this.selected);
 		},
 		didInsertElement: function() {
-			var thisEmberView = this;
+			var self = this;
 			if (!this.selected) {
 				this.$().click(function() {
-					thisEmberView.controllerModifyLanguage(thisEmberView.languageIso2);
+					self.controllerModifyLanguage(self.languageIso2);
 				});
 			}
 		}
