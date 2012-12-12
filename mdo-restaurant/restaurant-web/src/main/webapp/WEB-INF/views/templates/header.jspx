@@ -36,8 +36,9 @@
 				{{#view "Mdo.DateTimeView" datePattern=datePattern timePattern=timePattern controllerChangeDateTime=controllerChangeDateTime}}{{/view}}
 			{{/with}}
 		</script>
-		<script type="text/x-handlebars" data-template-name="dateTimePassword">
-			222222{{view "Mdo.LabelView" labelKey="header.order.number"}} {{view Ember.TextField name="number" elementId="number" class="ui-widget-content" valueBinding="number"}}
+		<script type="text/x-handlebars" data-template-name="dateTimeDialog">
+			{{view "Mdo.LabelView" labelKey="date.time.dialog.password"}} 
+			{{view Ember.TextField name="password" elementId="password" class="ui-widget-content"}}
 		</script>
 		<script type="text/x-handlebars" data-template-name="headerLanguages">
 			{{#each language in content}}

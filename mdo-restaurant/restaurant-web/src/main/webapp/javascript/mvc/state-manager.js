@@ -115,17 +115,16 @@ $(document).ready(function() {
 		waitingDots: $("<span>&#160;</span>"),
 		label: Mdo.LabelView.create({
 			labelKey: "application.waiting.loading",
-			template: Ember.Handlebars.compile("")
 		}),
+		waitingLabel: $("<label></label>"),
 		init: function() {
-			// Create the DOM element.
-			this.label.createElement();
-			// Initialize the i18n label.
-			this.label.didInsertElement();
+			// The method appendTo will process automatically the following:
+			// 1) Create the DOM element.
+			// 2) Initialize the i18n label.
+			this.label.appendTo(this.waitingLabel);
 		},
 		spinner: function(jContainer) {
-			var waitingLabel = $("<label>" + this.label.$().html() + "</label>");
-			jContainer.html(this.spinnerIcon).append(waitingLabel).append(this.waitingDots);
+			jContainer.html(this.spinnerIcon).append(this.waitingLabel).append(this.waitingDots);
 			this.spinnerIcon.removeClass('ui-icon-arrowrefresh-1-' + this.iconDirs[this.iconDirsIndex]);
 			this.iconDirsIndex = this.iconDirsIndex + 1;
 			if (this.iconDirsIndex >= this.iconDirs.length) {
@@ -141,7 +140,7 @@ $(document).ready(function() {
 		},
 		destroy: function() {
 			// Destroy Mdo 18n Label event.
-			this.label.willDestroyElement();
+			this.label.destroy();
 			window.clearTimeout(this.clearSpinnerTimeout);
 			this._super();
 		}

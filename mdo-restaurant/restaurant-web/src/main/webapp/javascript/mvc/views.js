@@ -30,8 +30,89 @@ $(document).ready(function() {
 	Mdo.HeaderDateTimeView = Ember.View.extend({
 		templateName: "headerDateTime",
 	});
-	Mdo.DateTimePasswordView = Ember.View.extend({
-		templateName: "dateTimePassword",
+	Mdo.DialogView = Ember.View.extend({
+		labelTitleKey: null,
+		buttons: [],
+		dialogContent: $("<div/>"),
+		init: function() {
+			var self = this;
+			var labelTitle = Mdo.LabelView.create({
+				labelKey: self.labelTitleKey,
+			});
+        	self.dialogContent.html("");
+			self.appendTo(self.dialogContent);
+			self.dialogContent.dialog({
+				autoOpen: false,
+				open: function() {
+					labelTitle.appendTo($(this).parent().find(".ui-dialog-title"));
+					_processButtons(this);
+		        },
+		        close: function() {
+		        	$(this).dialog("destroy").remove();
+		        }
+			});
+			_processButtons = function(dialog) {
+				$(dialog).dialog("option", "buttons", self.buttons);
+				$.each(self.buttons, function(index, button) {
+					var label = Mdo.LabelView.create({labelKey: button.labelKey});
+					label.appendTo($(dialog).parent().find("#" + button.id).button({icons: button.icons}).find(".ui-button-text"));
+				});
+			};
+		},
+		openDialog: function() {
+			return this.dialogContent.dialog("open");
+		}
+	});
+	Mdo.DateTimeDialogView = Mdo.DialogView.extend({
+		labelTitleKey: "date.time.dialog.title", 
+		buttons: [{
+     	   id: "save",
+    	   labelKey: "common.save",
+    	   click: function() { 
+    		   if (self.controllerChangeDateTime) {
+    			   self.controllerChangeDateTime();
+    		   }
+    		   $(this).dialog("close"); 
+    	   },
+    	   icons: {
+				primary: "ui-icon-disk"
+    	   }
+       }, 
+       { 
+    	   id: "cancel",
+    	   labelKey: "common.cancel",
+    	   click: function() {
+    		   $(this).dialog("close"); 
+    	   },
+    	   icons: {
+				primary: "ui-icon-close"
+    	   }
+       }],
+       init: function() {
+			//var dialogContent = $("<div/>");
+    	   var dialogContent = this.dialogContent;
+
+    	   	dialogContent.append($("<input/>").datetimepicker());
+    	   	
+			var labelPassword = Mdo.LabelView.create({
+				labelKey: "date.time.dialog.password",
+			});
+			labelPassword.appendTo(dialogContent);
+			var textPassword = Ember.TextField.create({
+				classNames: ['ui-widget-content'],
+			});
+			textPassword.appendTo(dialogContent);
+			this.dialogContent = dialogContent;
+			this._super();
+       },
+       didInsertElement: function() {
+			var textDateTime = Ember.TextField.create({
+								classNames: ['ui-widget-content'],
+			});
+			textDateTime.appendTo(this.dialogContent);
+//			textDateTime.datetimepicker();
+//			this.dialogContent.append(textDateTime);
+       }
 	});
 	Mdo.DateTimeView = Ember.View.extend({
 		tagName: 'a',
@@ -40,19 +121,13 @@ $(document).ready(function() {
 		timePattern: null,
 		controllerChangeDateTime: null,
 		didInsertElement: function() {
-//alert(jQuery.datepicker.regional[''].monthNames)			
-			// selectedLanguage is set in HeaderLanguagesController
 			var entryFormattedDate = $.datepicker.formatDate(this.datePattern, new Date());
 			this.$().html(entryFormattedDate);
 //			this.$().datetimepicker();
 		},
 		click: function() {
-			var dateTimePassword = Mdo.DateTimePasswordView.create({});
-			dateTimePassword.createElement()
-console.log(dateTimePassword.$().html())			
-			if(this.controllerChangeDateTime) {
-				this.controllerChangeDateTime();
-			}
+			var dateTimeDialog = Mdo.DateTimeDialogView.create();
+			dateTimeDialog.openDialog();
 		}
 	});
 	

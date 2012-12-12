@@ -56,8 +56,6 @@ $(document).ready(function() {
 		},
 		openDialog: function() {
 alert("HeaderDateTimeController")
-$("<div/>").dialog({});
-
 		},
 	});
 	Mdo.HeaderButtonsController = Ember.ArrayController.extend({
