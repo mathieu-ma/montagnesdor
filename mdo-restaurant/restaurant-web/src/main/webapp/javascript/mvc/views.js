@@ -92,8 +92,19 @@ $(document).ready(function() {
 			//var dialogContent = $("<div/>");
     	   var dialogContent = this.dialogContent;
 
-    	   	dialogContent.append($("<input/>").datetimepicker());
-    	   	
+    	   var textDateTime = Ember.TextField.create({
+    		   classNames: ['ui-widget-content'],
+    		   didInsertElement: function() {
+    			   this.$().datetimepicker({
+    				   dateFormat: 'DD d MM yy',
+    				   defaultDate: new Date(1985,01,01),
+    				   hour: 13,
+    				   minute: 15
+    			   }).datetimepicker("setDate", new Date(1985,01,01));
+    		   },
+    	   });
+    	   textDateTime.appendTo(dialogContent);
+    	   
 			var labelPassword = Mdo.LabelView.create({
 				labelKey: "date.time.dialog.password",
 			});
@@ -105,14 +116,6 @@ $(document).ready(function() {
 			this.dialogContent = dialogContent;
 			this._super();
        },
-       didInsertElement: function() {
-			var textDateTime = Ember.TextField.create({
-								classNames: ['ui-widget-content'],
-			});
-			textDateTime.appendTo(this.dialogContent);
-//			textDateTime.datetimepicker();
-//			this.dialogContent.append(textDateTime);
-       }
 	});
 	Mdo.DateTimeView = Ember.View.extend({
 		tagName: 'a',
