@@ -22,7 +22,7 @@ $(document).ready(function() {
 			Mdo.I18n.propRemoveObserver(this.labelKey, this, this.i18nLabelChanged);
 		}
 	});
-	
+
 	Mdo.HeaderView = Ember.View.extend({
 		templateName: "header",
 	});
@@ -30,23 +30,29 @@ $(document).ready(function() {
 	Mdo.HeaderDateTimeView = Ember.View.extend({
 		templateName: "headerDateTime",
 	});
+	Mdo.DateTimePasswordView = Ember.View.extend({
+		templateName: "dateTimePassword",
+	});
 	Mdo.DateTimeView = Ember.View.extend({
 		tagName: 'a',
 //		classNames: ['ui-widget-content'],
-		pattern: 'DD d MM yy',
+		datePattern: null,
+		timePattern: null,
 		controllerChangeDateTime: null,
 		didInsertElement: function() {
 //alert(jQuery.datepicker.regional[''].monthNames)			
 			// selectedLanguage is set in HeaderLanguagesController
-			var entryFormattedDate = $.datepicker.formatDate(this.pattern, new Date());
+			var entryFormattedDate = $.datepicker.formatDate(this.datePattern, new Date());
 			this.$().html(entryFormattedDate);
 //			this.$().datetimepicker();
 		},
 		click: function() {
+			var dateTimePassword = Mdo.DateTimePasswordView.create({});
+			dateTimePassword.createElement()
+console.log(dateTimePassword.$().html())			
 			if(this.controllerChangeDateTime) {
 				this.controllerChangeDateTime();
 			}
-			alert(1111)
 		}
 	});
 	

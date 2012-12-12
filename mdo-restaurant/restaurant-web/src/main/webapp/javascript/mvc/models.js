@@ -72,6 +72,8 @@ $(document).ready(function() {
 	        "zh": {id: 2, displayLanguage: "chinois", selected: false},
 	        "fr": {id: 1, displayLanguage: "français", selected: true},
 	    },
+	    datePattern: 'DD d MM yy',
+	    timePattern: null,
 	    // Will be set later in HeaderLanguagesController
 	    selectedLanguageIso2: function() {
 	    	$.each(this.locales, function(index, value) {

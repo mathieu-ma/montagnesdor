@@ -69,6 +69,7 @@ $(document).ready(function() {
 			gotoOrders: Ember.Route.transitionTo('orders'),
 			gotoCashedOrders: Ember.Route.transitionTo('cashedOrders'),
 			gotoLockedOrders: Ember.Route.transitionTo('lockedOrders'),
+			gotoOpenDialog: Ember.Route.transitionTo('openDialog'),
 			index: Ember.Route.extend({
 				route: '/',
 				enter: function (router) {

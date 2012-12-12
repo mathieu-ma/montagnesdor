@@ -44,23 +44,21 @@ $(document).ready(function() {
 		}
 	});
 	Mdo.HeaderDateTimeController = Ember.ObjectController.extend({
-		content: {
-			pattern: null,
-			controllerChangeDateTime: function() {
-alert(222222222)
-			}
-		},
+		content: {},
 		init: function() {
-/*			
-			var languages = this.content;
-			languages = {
-				pattern: 'DD d MM yy',
+			this.set('content', {
+				datePattern: Mdo.user.datePattern,
+				timePattern: Mdo.user.timePattern,
 				controllerChangeDateTime: function() {
-alert(222222222)
+					this.get('controller')['openDialog']();
 				}
-			};
-*/			
-		}
+			});
+		},
+		openDialog: function() {
+alert("HeaderDateTimeController")
+$("<div/>").dialog({});
+
+		},
 	});
 	Mdo.HeaderButtonsController = Ember.ArrayController.extend({
 		content: [],
