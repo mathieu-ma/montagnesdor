@@ -1,4 +1,8 @@
+/****************************************/
+/*	START: Mdo common template   		*/
+/****************************************/
 	html {
+		font-size: 10px;
 		border: 6px groove #FFB73D;
 		color: #FFF;
 		height: 97.5%;
@@ -6,11 +10,6 @@
 		background-color: #660000; 
 		cursor: url('../images/panda.cur'), pointer;
 		background-image: url("./images/montagnesdor2.gif"); 
-	}
-
-	html, button {
-		font-family: Segoe UI,Arial,sans-serif; 
-		font-size: 10px;
 	}
 
 	body {
@@ -48,7 +47,29 @@
 	div#footer {
 		clear: both;
 	}
-	
+/****************************************/
+/*	END: Mdo common template   			*/
+/****************************************/
+
+/****************************************/
+/*	START: Mdo header Date Time			*/
+/****************************************/
+	.displayed-date-registration {
+		color: #00FF00;		
+	}
+	.displayed-date-now {
+		color: #FFFFFF;		
+	}
+	.displayed-date-user-entry-odd {
+		color: #FFFFFF;		
+	}
+	.displayed-date-user-entry-even {
+		color: #FF0000;	
+	}
+/****************************************/
+/*	END: Mdo header Date Time			*/
+/****************************************/
+
 /****************************/
 /*	START: JQuery Theme   	*/
 /****************************/

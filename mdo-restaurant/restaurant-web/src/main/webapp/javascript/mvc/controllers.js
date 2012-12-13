@@ -43,20 +43,35 @@ $(document).ready(function() {
 			window.location.href = "?lang=" + lang + "#" + route;
 		}
 	});
+	Mdo.DateTimeForm = Ember.Object.extend({
+		date: null,
+		password: null,
+	});
 	Mdo.HeaderDateTimeController = Ember.ObjectController.extend({
-		content: {},
+		dateTime: null,
+		displayedDate: new Date(),
 		init: function() {
-			this.set('content', {
+			this.dateTime = Mdo.DateTime.create({
 				datePattern: Mdo.user.datePattern,
-				timePattern: Mdo.user.timePattern,
-				controllerChangeDateTime: function() {
-					this.get('controller')['openDialog']();
+				controllerChangeDateTime: function(form) {
+					Mdo.router.get('headerDateTimeController')['openDialog'](form);
 				}
 			});
+//			this.startDateTime();
 		},
-		openDialog: function() {
-alert("HeaderDateTimeController")
+		openDialog: function(dateTimeForm) {
+			// TODO
+			alert(dateTimeForm)
 		},
+		startDateTime: function() {
+			var self = this;
+			window.setInterval(function() {
+				var entryFormattedDate = $.datepicker.formatDate(self.dateTime.datePattern, new Date());
+//alert(1)
+				self.set('displayedDate', new Date());
+			},
+			1000);
+		}
 	});
 	Mdo.HeaderButtonsController = Ember.ArrayController.extend({
 		content: [],

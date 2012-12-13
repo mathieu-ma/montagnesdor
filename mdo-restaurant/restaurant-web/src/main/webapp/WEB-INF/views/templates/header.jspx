@@ -32,9 +32,7 @@
 			</span>
 		</script>
 		<script type="text/x-handlebars" data-template-name="headerDateTime">
-			{{#with content}}
-				{{#view "Mdo.DateTimeView" datePattern=datePattern timePattern=timePattern controllerChangeDateTime=controllerChangeDateTime}}{{/view}}
-			{{/with}}
+			{{#view "Mdo.DateTimeView" dateTime=dateTime displayedDate=displayedDate}}{{displayedDate}}{{/view}}
 		</script>
 		<script type="text/x-handlebars" data-template-name="dateTimeDialog">
 			{{view "Mdo.LabelView" labelKey="date.time.dialog.password"}} 

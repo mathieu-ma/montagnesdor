@@ -169,7 +169,16 @@ $(document).ready(function() {
 	
 	// Get the user details with Ajax. 
 	// On Ajax success, call the Mdo.initialize() method and close the waiting dialog.
-	setTimeout(function() {
+//	setTimeout(function() {
+//		// Global variable for Mdo.user.
+//		Mdo.user = Mdo.userManager.find(1);
+//		// i18n setting
+//		$.datepicker.setDefaults($.datepicker.regional[Mdo.user.get('selectedLanguageIso2')]);
+//		Mdo.initialize();
+//		waitingDialog.dialog("close");
+//	}, 1000);
+	
+	Ember.run.later(null, function(){
 		// Global variable for Mdo.user.
 		Mdo.user = Mdo.userManager.find(1);
 		// i18n setting

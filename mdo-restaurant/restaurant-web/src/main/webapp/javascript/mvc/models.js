@@ -16,6 +16,15 @@ $(document).ready(function() {
 			return $.mdoI18n.prop(this.labelKey);
 		}.property("labelKey", "counter")
 	});
+	
+	
+	Mdo.DateTime = Ember.Object.extend({
+		datePattern: 'DD d MM yy',
+		currentTableRegistrationDate: null,
+		userEntryDate: new Date(),
+		controllerChangeDateTime: null,
+	});
+	
 	Mdo.Header = Ember.Object.extend();
 	Mdo.HeaderButton = Ember.Object.extend({
 		name: "",
@@ -73,7 +82,6 @@ $(document).ready(function() {
 	        "fr": {id: 1, displayLanguage: "français", selected: true},
 	    },
 	    datePattern: 'DD d MM yy',
-	    timePattern: null,
 	    // Will be set later in HeaderLanguagesController
 	    selectedLanguageIso2: function() {
 	    	$.each(this.locales, function(index, value) {
