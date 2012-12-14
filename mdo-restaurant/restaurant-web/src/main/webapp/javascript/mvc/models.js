@@ -20,6 +20,8 @@ $(document).ready(function() {
 	
 	Mdo.DateTime = Ember.Object.extend({
 		datePattern: 'DD d MM yy',
+		dateTimeSeparator: ' - ',
+		timePattern: 'HH:mm:ss',
 		currentTableRegistrationDate: null,
 		userEntryDate: new Date(),
 		controllerChangeDateTime: null,

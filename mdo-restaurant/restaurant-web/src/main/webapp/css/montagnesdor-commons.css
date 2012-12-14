@@ -54,16 +54,16 @@
 /****************************************/
 /*	START: Mdo header Date Time			*/
 /****************************************/
-	.displayed-date-registration {
+	.displayed-date.displayed-date-registration {
 		color: #00FF00;		
 	}
-	.displayed-date-now {
+	.displayed-date.displayed-date-now {
 		color: #FFFFFF;		
 	}
-	.displayed-date-user-entry-odd {
+	.displayed-date.displayed-date-user-entry-odd {
 		color: #FFFFFF;		
 	}
-	.displayed-date-user-entry-even {
+	.displayed-date.displayed-date-user-entry-even {
 		color: #FF0000;	
 	}
 /****************************************/

@@ -49,7 +49,11 @@ $(document).ready(function() {
 	});
 	Mdo.HeaderDateTimeController = Ember.ObjectController.extend({
 		dateTime: null,
-		displayedDate: new Date(),
+		displayedDate: function() {
+			var now = new Date();
+			var result = $.datepicker.formatDate(this.dateTime.datePattern, now) + this.dateTime.dateTimeSeparator + $.datepicker.formatTime(this.dateTime.timePattern, now);
+			return result;
+		}.property(),
 		init: function() {
 			this.dateTime = Mdo.DateTime.create({
 				datePattern: Mdo.user.datePattern,
@@ -57,7 +61,7 @@ $(document).ready(function() {
 					Mdo.router.get('headerDateTimeController')['openDialog'](form);
 				}
 			});
-//			this.startDateTime();
+			this.startDateTime();
 		},
 		openDialog: function(dateTimeForm) {
 			// TODO
@@ -66,9 +70,10 @@ $(document).ready(function() {
 		startDateTime: function() {
 			var self = this;
 			window.setInterval(function() {
-				var entryFormattedDate = $.datepicker.formatDate(self.dateTime.datePattern, new Date());
+				var now = new Date();
+				var entryFormattedDate = $.datepicker.formatDate(this.dateTime.datePattern, now) + this.dateTime.dateTimeSeparator + $.datepicker.formatTime(this.dateTime.timePattern, now);
 //alert(1)
-				self.set('displayedDate', new Date());
+				self.set('displayedDate', entryFormattedDate);
 			},
 			1000);
 		}

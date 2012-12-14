@@ -38,15 +38,12 @@ $(document).ready(function() {
 		 * @returns {Array}
 		 */
 		buttons: function() {return [];},
-		dialogContent: $("<div/>"),
-		init: function() {
+		didInsertElement: function() {
 			var self = this;
 			var labelTitle = Mdo.LabelView.create({
 				labelKey: self.labelTitleKey,
 			});
-        	self.dialogContent.html("");
-			self.appendTo(self.dialogContent);
-			self.dialogContent.dialog({
+			self.$().dialog({
 				autoOpen: false,
 				open: function() {
 					labelTitle.appendTo($(this).parent().find(".ui-dialog-title"));
@@ -64,9 +61,10 @@ $(document).ready(function() {
 					label.appendTo($(dialog).parent().find("#" + button.id).button({icons: button.icons}).find(".ui-button-text"));
 				});
 			};
+			self.$().dialog("open");
 		},
 		openDialog: function() {
-			return this.dialogContent.dialog("open");
+			this.append('body');
 		}
 	});
 	Mdo.DateTimeDialogView = Mdo.DialogView.extend({
@@ -100,39 +98,39 @@ $(document).ready(function() {
 	    	   }
 	       }];
 		},
+		childViews: [],
+		textDateTimeClass: Ember.TextField.extend({
+			classNames: ['ui-widget-content'],
+			didInsertElement: function() {
+				this.$().datetimepicker({
+					dateFormat: 'DD d MM yy',
+				}).datetimepicker("setDate", new Date());
+			},
+		}),
+		labelPasswordClass: Mdo.LabelView.extend({
+			labelKey: "date.time.dialog.password",
+		}),
+		textPasswordClass: Ember.TextField.extend({
+			classNames: ['ui-widget-content'],
+		}),
 		init: function() {
-			//var dialogContent = $("<div/>");
-			// this.dialogContent value comes from parent Object
-			var dialogContent = this.dialogContent;
-			var textDateTime = Ember.TextField.create({
-				classNames: ['ui-widget-content'],
-				didInsertElement: function() {
-					this.$().datetimepicker({
-						dateFormat: 'DD d MM yy',
-					}).datetimepicker("setDate", new Date());
-				},
-			});
-			textDateTime.appendTo(dialogContent);
-    	   
-			var labelPassword = Mdo.LabelView.create({
-				labelKey: "date.time.dialog.password",
-			});
-			labelPassword.appendTo(dialogContent);
-			var textPassword = Ember.TextField.create({
-				classNames: ['ui-widget-content'],
-			});
-			textPassword.appendTo(dialogContent);
-			this.dialogContent = dialogContent;
+			this.childViews.clear();
+			var textDateTime = this.textDateTimeClass.create();
+			var labelPassword = this.labelPasswordClass.create();
+			var textPassword = this.textPasswordClass.create();
+			this.childViews.pushObject(textDateTime);
+			this.childViews.pushObject(labelPassword);
+			this.childViews.pushObject(textPassword);
 			this._super();
-       },
+		}
 	});
 	Mdo.DateTimeView = Ember.View.extend({
 		tagName: 'a',
-		classNameBindings: ['ui-widget-content', 'displayedDateClass'],
+		classNames: ['displayed-date'],
+		classNameBindings: ['displayedDateClass'],
 		toggleClass: true,
 		dateTime: null,
 		displayedDateClass: function() {
-console.log(this.displayedDate)
 			var currentTableRegistrationDateFormatted = null;
 			if (this.dateTime.currentTableRegistrationDate) {
 				currentTableRegistrationDateFormatted = $.datepicker.formatDate(this.dateTime.datePattern, this.dateTime.currentTableRegistrationDate);
@@ -142,6 +140,7 @@ console.log(this.displayedDate)
 			if (currentTableRegistrationDateFormatted && currentTableRegistrationDateFormatted!=userEntryDateFormatted) {
 				result = 'displayed-date-registration';
 			} else {
+console.log(this.displayedDate)
 				// Current date
 				var now = jQuery.datepicker.formatDate(this.dateTime.datePattern, new Date());
 				if (now!=userEntryDateFormatted) {
