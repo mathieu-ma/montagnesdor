@@ -70,14 +70,18 @@ $(document).ready(function() {
 	Mdo.DateTimeDialogView = Mdo.DialogView.extend({
 		labelTitleKey: "date.time.dialog.title",
 		tagName: 'form',
+		displayedDate: null,
 		controllerChangeDateTime: null,
 		buttons: function() {
+			var self = this;
 			var controllerChangeDateTime = this.controllerChangeDateTime; 
 			return [{
 	     	   id: "save",
 	    	   labelKey: "common.save",
 	    	   click: function() {
 	    		   var form = Mdo.DateTimeForm.create();
+	    		   // TODO
+	    		   form.date = $(this).find('.user-entry-date').datepicker("getDate"); 
 	    		   if (controllerChangeDateTime) {
 	    			   controllerChangeDateTime(form);
 	    		   }
@@ -99,12 +103,20 @@ $(document).ready(function() {
 	       }];
 		},
 		childViews: [],
+		labelDateTimeClass: Mdo.LabelView.extend({
+			labelKey: "date.time.dialog.date",
+		}),
 		textDateTimeClass: Ember.TextField.extend({
-			classNames: ['ui-widget-content'],
+			classNames: ['ui-widget-content', 'user-entry-date'],
+			displayedDate: new Date(),
 			didInsertElement: function() {
-				this.$().datetimepicker({
+				this.$().datepicker({
 					dateFormat: 'DD d MM yy',
-				}).datetimepicker("setDate", new Date());
+					showOn: "button",
+		            buttonImage: "images/calendar.gif",
+		            buttonImageOnly: true,
+					showButtonPanel: true,
+				}).datepicker("setDate", this.displayedDate);
 			},
 		}),
 		labelPasswordClass: Mdo.LabelView.extend({
@@ -115,14 +127,18 @@ $(document).ready(function() {
 		}),
 		init: function() {
 			this.childViews.clear();
+			var labelDateTime = this.labelDateTimeClass.create();
 			var textDateTime = this.textDateTimeClass.create();
+			// Set the new value
+			textDateTime.displayedDate = this.displayedDate;
 			var labelPassword = this.labelPasswordClass.create();
 			var textPassword = this.textPasswordClass.create();
+			this.childViews.pushObject(labelDateTime);
 			this.childViews.pushObject(textDateTime);
 			this.childViews.pushObject(labelPassword);
 			this.childViews.pushObject(textPassword);
 			this._super();
-		}
+		},
 	});
 	Mdo.DateTimeView = Ember.View.extend({
 		tagName: 'a',
@@ -130,6 +146,7 @@ $(document).ready(function() {
 		classNameBindings: ['displayedDateClass'],
 		toggleClass: true,
 		dateTime: null,
+		displayedDate: null,
 		displayedDateClass: function() {
 			var currentTableRegistrationDateFormatted = null;
 			if (this.dateTime.currentTableRegistrationDate) {
@@ -137,13 +154,15 @@ $(document).ready(function() {
 			}
 			var userEntryDateFormatted = $.datepicker.formatDate(this.dateTime.datePattern, this.dateTime.userEntryDate);
 			var result = 'displayed-date-now';
+//console.log(currentTableRegistrationDateFormatted + "==" + userEntryDateFormatted + "==" + nowFormatted)
 			if (currentTableRegistrationDateFormatted && currentTableRegistrationDateFormatted!=userEntryDateFormatted) {
 				result = 'displayed-date-registration';
 			} else {
-console.log(this.displayedDate)
+//console.log(this.displayedDate)
 				// Current date
-				var now = jQuery.datepicker.formatDate(this.dateTime.datePattern, new Date());
-				if (now!=userEntryDateFormatted) {
+				var nowFormatted = jQuery.datepicker.formatDate(this.dateTime.datePattern, new Date());
+//console.log(currentTableRegistrationDateFormatted + "==" + userEntryDateFormatted + "==" + nowFormatted)
+				if (nowFormatted!=userEntryDateFormatted) {
 					if (this.toggleClass) {
 						this.toggleClass = false;
 						result = 'displayed-date-user-entry-odd';
@@ -154,13 +173,22 @@ console.log(this.displayedDate)
 				}
 			}
 			return result;
-		}.property('controller.displayedDate'),
+		}.property('controller.displayedFormattedDate'),
 		didInsertElement: function() {
+			var self = this;
+			///TODO remove the tests below.
+			$('#setCurrentTableRegistrationDateTest').click(function() {
+				self.get('controller').set('dateTime.currentTableRegistrationDate', new Date(1970, 7, 15)); 
+			});
+			$('#resetCurrentTableRegistrationDateTest').click(function() {
+				self.get('controller').set('dateTime.currentTableRegistrationDate', null); 
+			});
 		},
-		diddisplayedDateChange: function() {
-		}.observes('controller.displayedDate'),
 		click: function() {
-			var dateTimeDialog = Mdo.DateTimeDialogView.create({controllerChangeDateTime: this.dateTime.controllerChangeDateTime});
+			var dateTimeDialog = Mdo.DateTimeDialogView.create({
+				displayedDate: this.displayedDate,
+				controllerChangeDateTime: this.dateTime.controllerChangeDateTime,
+			});
 			dateTimeDialog.openDialog();
 		}
 	});
@@ -262,12 +290,12 @@ console.log(this.displayedDate)
 	Mdo.HeaderOrderNumberView = Ember.View.extend({
 		templateName: "headerOrderNumber",
 		tagName: "span",
-		didInsertElement: function() {
-			// Focus the order number text field.
-//			this.headerOrderNumberView.$().focus();
-//alert("headerOrderNumber")			
-//			Em.View.views['number'].$().focus();
-		},
+//		didInsertElement: function() {
+//			// Focus the order number text field.
+////			this.$().focus();
+////alert("headerOrderNumber")			
+////			Em.View.views['number'].$().focus();
+//		},
 	});
 	Mdo.HeaderOrderCustomersNumberView = Ember.View.extend({
 		templateName: "headerOrderCustomersNumber",
@@ -279,8 +307,22 @@ console.log(this.displayedDate)
 //			Em.View.views['number'].$().focus();
 		},
 	});
-	Mdo.HeaderOrderView = Ember.View.extend({
-		templateName: "headerOrder",
+	Mdo.HeaderOrderView = Ember.ContainerView.extend({
+//		templateName: "headerOrder",
+		tagName: 'form',
+		childViews: ['headerOrderNumberLabel', 'headerOrderNumberText', 'headerOrderCustomersNumberLabel', 'headerOrderCustomersNumberText'],
+		headerOrderNumberLabel: Mdo.LabelView.create({
+			labelKey: "header.order.number",
+		}),
+		headerOrderNumberText: Ember.TextField.create({
+			classNames: ['ui-widget-content'],
+		}),
+		headerOrderCustomersNumberLabel: Mdo.LabelView.create({
+			labelKey: "header.order.customers.number",
+		}),
+		headerOrderCustomersNumberText: Ember.TextField.create({
+			classNames: ['ui-widget-content'],
+		}),
 		didInsertElement: function() {
 			// Focus the order number text field.
 //			this.headerOrderNumberView.$().focus();

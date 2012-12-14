@@ -32,7 +32,9 @@
 			</span>
 		</script>
 		<script type="text/x-handlebars" data-template-name="headerDateTime">
-			{{#view "Mdo.DateTimeView" dateTime=dateTime displayedDate=displayedDate}}{{displayedDate}}{{/view}}
+			{{#view "Mdo.DateTimeView" dateTime=dateTime displayedDateBinding="displayedDate"}}{{displayedFormattedDate}}{{/view}}
+			<button id='setCurrentTableRegistrationDateTest'>Set Current Table Registration Date</button>
+			<button id='resetCurrentTableRegistrationDateTest'>Reset Current Table Registration Date</button>
 		</script>
 		<script type="text/x-handlebars" data-template-name="dateTimeDialog">
 			{{view "Mdo.LabelView" labelKey="date.time.dialog.password"}} 
@@ -53,8 +55,10 @@
 			{{/each}}
 		</script>
 		<script type="text/x-handlebars" data-template-name="headerOrder">
-			{{outlet headerOrderNumber}}
-			{{outlet headerOrderCustomersNumber}}
+			<form style="float: left">
+				{{outlet headerOrderNumber}}
+				{{outlet headerOrderCustomersNumber}}
+			</form>
 		</script>
 		<script type="text/x-handlebars" data-template-name="headerOrderNumber">
 			{{view "Mdo.LabelView" labelKey="header.order.number"}} {{view Ember.TextField name="number" elementId="number" class="ui-widget-content" valueBinding="number"}}

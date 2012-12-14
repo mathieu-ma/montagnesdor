@@ -48,32 +48,65 @@ $(document).ready(function() {
 		password: null,
 	});
 	Mdo.HeaderDateTimeController = Ember.ObjectController.extend({
-		dateTime: null,
-		displayedDate: function() {
-			var now = new Date();
-			var result = $.datepicker.formatDate(this.dateTime.datePattern, now) + this.dateTime.dateTimeSeparator + $.datepicker.formatTime(this.dateTime.timePattern, now);
+		dateTime: Mdo.DateTime.create({
+			controllerChangeDateTime: function(form) {
+				Mdo.router.get('headerDateTimeController')['saveDateTime'](form);
+			}
+		}),
+		displayedDate: new Date(),
+		displayedTime: new Date(),
+		displayedFormattedDate: function(sender, key) {
+			var formattedDisplayedDate = $.datepicker.formatDate(this.dateTime.datePattern, this.displayedDate);
+			var formattedDisplayedTime = $.datepicker.formatTime(this.dateTime.timePattern, this.time(this.displayedTime));
+			var result = formattedDisplayedDate + this.dateTime.dateTimeSeparator + formattedDisplayedTime;
 			return result;
-		}.property(),
+		}.property('displayedDate', 'displayedTime'),
+		didUserEntryDateChange: function(sender, key) {
+			if (!this.dateTime.currentTableRegistrationDate) {
+				this.set('displayedDate', this.dateTime.userEntryDate);
+			}
+		}.observes('dateTime.userEntryDate'),
+		didCurrentTableRegistrationDateChange: function(sender, key) {
+			var displayedDate = this.dateTime.currentTableRegistrationDate; 
+			if (!displayedDate) {
+				displayedDate = this.dateTime.userEntryDate;
+			}
+			this.set('displayedDate', displayedDate);
+		}.observes('dateTime.currentTableRegistrationDate'),
 		init: function() {
-			this.dateTime = Mdo.DateTime.create({
-				datePattern: Mdo.user.datePattern,
-				controllerChangeDateTime: function(form) {
-					Mdo.router.get('headerDateTimeController')['openDialog'](form);
-				}
+			this.dateTime.reopen({
+				datePattern: Mdo.user.datePattern
 			});
 			this.startDateTime();
 		},
-		openDialog: function(dateTimeForm) {
-			// TODO
-			alert(dateTimeForm)
+		time: function(date) {
+			var result = {
+				hour: date.getHours(),
+				minute: date.getMinutes(),
+				second: date.getSeconds(),
+				millisec: date.getMilliseconds(),
+				timezone: date.getTimezoneOffset()
+			};
+			return result;
+		},
+		formatDateTime: function(date) {
+			var result = $.datepicker.formatDate(this.dateTime.datePattern, date) + this.dateTime.dateTimeSeparator 
+			+ $.datepicker.formatTime(this.dateTime.timePattern, this.time(new Date()));
+			return result;
+		},
+		saveDateTime: function(dateTimeForm) {
+			var self = this;
+			Ember.run.later(null, function() {
+				// TODO: Ajax to confirm password the set displayedDate
+				// If password false then display warning message
+				self.set('dateTime.userEntryDate', dateTimeForm.date);
+			}, 2000);
 		},
 		startDateTime: function() {
 			var self = this;
 			window.setInterval(function() {
-				var now = new Date();
-				var entryFormattedDate = $.datepicker.formatDate(this.dateTime.datePattern, now) + this.dateTime.dateTimeSeparator + $.datepicker.formatTime(this.dateTime.timePattern, now);
-//alert(1)
-				self.set('displayedDate', entryFormattedDate);
+				// This will fire the change of displayedFormattedDate property. 
+				self.set('displayedTime', new Date());
 			},
 			1000);
 		}

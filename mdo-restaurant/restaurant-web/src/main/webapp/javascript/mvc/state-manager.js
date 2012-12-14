@@ -178,7 +178,7 @@ $(document).ready(function() {
 //		waitingDialog.dialog("close");
 //	}, 1000);
 	
-	Ember.run.later(null, function(){
+	Ember.run.later(null, function() {
 		// Global variable for Mdo.user.
 		Mdo.user = Mdo.userManager.find(1);
 		// i18n setting

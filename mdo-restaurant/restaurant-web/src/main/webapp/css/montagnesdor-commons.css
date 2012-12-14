@@ -54,6 +54,9 @@
 /****************************************/
 /*	START: Mdo header Date Time			*/
 /****************************************/
+	.displayed-date:hover {
+		cursor: pointer;
+	}
 	.displayed-date.displayed-date-registration {
 		color: #00FF00;		
 	}
