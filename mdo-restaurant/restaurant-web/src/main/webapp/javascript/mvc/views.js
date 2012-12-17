@@ -4,7 +4,10 @@
 $(document).ready(function() {
 	// This is the application view. It is required by Mdo application for initial context.
 	Mdo.ApplicationView = Ember.View.extend({
-		template: Ember.Handlebars.compile('application')
+		template: Ember.Handlebars.compile('application'),
+		didInsertElement: function() {
+			$("#menu, #header, #footer").mdoResizable();
+		},
 	});
 
 	Mdo.LabelView = Ember.View.extend({
@@ -287,46 +290,149 @@ $(document).ready(function() {
 			}
 		}
 	});
-	Mdo.HeaderOrderNumberView = Ember.View.extend({
-		templateName: "headerOrderNumber",
-		tagName: "span",
-//		didInsertElement: function() {
-//			// Focus the order number text field.
-////			this.$().focus();
-////alert("headerOrderNumber")			
-////			Em.View.views['number'].$().focus();
-//		},
-	});
-	Mdo.HeaderOrderCustomersNumberView = Ember.View.extend({
-		templateName: "headerOrderCustomersNumber",
-		tagName: "span",
-		didInsertElement: function() {
-			// Focus the order number text field.
-//			this.headerOrderNumberView.$().focus();
-//alert("headerOrderNumber")			
-//			Em.View.views['number'].$().focus();
-		},
-	});
+
 	Mdo.HeaderOrderView = Ember.ContainerView.extend({
 //		templateName: "headerOrder",
 		tagName: 'form',
-		childViews: ['headerOrderNumberLabel', 'headerOrderNumberText', 'headerOrderCustomersNumberLabel', 'headerOrderCustomersNumberText'],
+		childViews: ['headerOrderNumberLabel', 'headerOrderNumberText', 
+		             'headerOrderCustomersNumberLabel', 'headerOrderCustomersNumberText',
+		             'headerOrderTakeawayLabel',
+		             'headerOrderMergeAutoCheckbox', 'headerOrderMergeAutoLabel'],
 		headerOrderNumberLabel: Mdo.LabelView.create({
 			labelKey: "header.order.number",
 		}),
 		headerOrderNumberText: Ember.TextField.create({
 			classNames: ['ui-widget-content'],
+			classNameBindings: ['labelClass'],
+			labelClass: "",
+			attributeBindings: ['value', 'disabled'],
+			value: "",
+			disabled: false,
+			didValueChange: function() {
+				if (this.get('controller.headerOrder.number')) {
+					this.set('value', this.get('controller.headerOrder.number'));
+					var disabled = true;
+					var labelClass = 'no-border';
+					if (this.get('controller.headerOrder.customersNumber')) {
+						disabled = false;
+						labelClass = '';
+					}
+					this.set('disabled', disabled);
+					this.set('labelClass', labelClass);
+				}
+			}.observes('controller.headerOrder.number', 'controller.headerOrder.customersNumber'),
+			keyUp: function(event) {
+				var self = this;
+				switch(event.keyCode) {     	  
+					//13 == key Enter
+					case 13 :
+console.log('enter:');
+console.log($(this));
+						self.get('controller.checkNumber')(this.$().val());
+					return;
+					//27 == key Esc
+					case 27 :
+console.log('Esc ' + $(this));
+					return;
+				};
+				return false;
+
+			},
 		}),
 		headerOrderCustomersNumberLabel: Mdo.LabelView.create({
 			labelKey: "header.order.customers.number",
 		}),
 		headerOrderCustomersNumberText: Ember.TextField.create({
 			classNames: ['ui-widget-content'],
+			classNameBindings: ['labelClass'],
+			labelClass: "visibility-hidden",
+			attributeBindings: ['value', 'disabled'],
+			value: "",
+			disabled: true,
+			didValueChange: function() {
+				if (this.get('controller.headerOrder.number')) {
+//					this.set('labelClass', 'visibility-show');
+					this.set('value', this.get('controller.headerOrder.customersNumber'));
+					var disabled = false;
+					var labelClass = 'visibility-show';
+					if (this.get('controller.headerOrder.customersNumber')) {
+						disabled = true;
+						labelClass = 'visibility-show no-border';
+					}
+					this.set('disabled', disabled);
+					this.set('labelClass', labelClass);
+				}
+			}.observes('controller.headerOrder.number', 'controller.headerOrder.customersNumber'),
+			keyUp: function(event) {
+				var self = this;
+				switch(event.keyCode) {     	  
+					//13 == key Enter
+					case 13 :
+console.log('enter' + $(this));
+						self.set('controller.headerOrder.customersNumber', self.$().val());
+					return;
+					//27 == key Esc
+					case 27 :
+console.log('Esc' + $(this));
+						// Perform twice because we want to call didValueChange even we enter same value
+						self.set('controller.headerOrder.customersNumber', self.$().val());
+						self.set('controller.headerOrder.customersNumber', '');
+					return;
+				};
+				return false;
+
+			},
+		}),
+		headerOrderTakeawayLabel: Mdo.LabelView.create({
+			labelKey: "header.order.takeaway",
+			classNameBindings: ['labelClass'],
+			labelClass: "display-none",
+			toggleClass: false,
+			blinkLabelClass: function() {
+				var self = this;
+				if (this.get('controller.headerOrder.takeaway')) {
+					self.set('labelClass', 'header-takeaway-odd');
+					this.clearInterval = window.setInterval(function() {
+						var cssClass = "display-none";
+						if (self.toggleClass) {
+							cssClass = "header-takeaway-even";
+						} else {
+							cssClass = "header-takeaway-odd";
+						}
+						self.toggleClass = !self.toggleClass;
+						self.set('labelClass', cssClass);
+					},
+					1000);
+				} else {
+					self.set('labelClass', 'display-none');
+					window.clearInterval(this.clearInterval);
+				}
+			}.observes('controller.headerOrder.takeaway'),
+			clearInterval: null
+		}),
+		headerOrderMergeAutoCheckbox: Ember.Checkbox.create({
+			attributeBindings: ['checked'],
+			checked: true,
+		}),
+		headerOrderMergeAutoLabel: Mdo.LabelView.create({
+			labelKey: "header.order.line.merge.auto",
 		}),
 		didInsertElement: function() {
+			var self = this;
 			// Focus the order number text field.
 //			this.headerOrderNumberView.$().focus();
 //			Em.View.views['number'].$().focus();
+console.log(this.get('controller.headerOrder'))
+$('#customersNumberTest').click(function() {
+	self.set('controller.headerOrder.customersNumber', '2'); 
+	self.set('controller.headerOrder.number', '11'); 
+});
+$('#takeawayTrueTest').click(function() {
+	self.set('controller.headerOrder.takeaway', true); 
+});
+$('#takeawayFalseTest').click(function() {
+	self.set('controller.headerOrder.takeaway', false); 
+});
 		},
 	});
 

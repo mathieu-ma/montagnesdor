@@ -18,7 +18,7 @@
 	}
 
 	div#body, div#menu {
-		height: 90%;
+		height: 80%;
 	}
 
 	div#menu {
@@ -37,15 +37,21 @@
 
 	div#footer {
 		height: 10%;
-		/height: 10.5%;
 	}
 
 	div#header {
-		height: 12%;
+		height: 10%;
 	}
 
 	div#footer {
 		clear: both;
+	}
+	
+	.display-none {
+		display: none;
+	}
+	.visibility-hidden {
+		visibility: hidden;
 	}
 /****************************************/
 /*	END: Mdo common template   			*/
@@ -71,6 +77,18 @@
 	}
 /****************************************/
 /*	END: Mdo header Date Time			*/
+/****************************************/
+/****************************************/
+/*	START: Mdo header Order				*/
+/****************************************/
+	.header-takeaway-odd {
+		color: #FFFFFF;	
+	}
+	.header-takeaway-even {
+		color: #FF0000;	
+	}
+/****************************************/
+/*	END: Mdo header Order				*/
 /****************************************/
 
 /****************************/
@@ -110,6 +128,9 @@
 		cursor: row-resize;
 	}
 	
+	.ui-widget-content.no-border {
+		border-width: 0px; 
+	}
 /****************************/
 /*	END: JQuery Theme   	*/
 /****************************/

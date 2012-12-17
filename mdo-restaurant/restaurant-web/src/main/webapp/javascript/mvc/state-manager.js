@@ -84,8 +84,6 @@ $(document).ready(function() {
 		        	router.get('headerController').connectOutlet('headerLanguages', 'headerLanguages');
 		        	router.get('headerController').connectOutlet('headerButtons', 'headerButtons', router.get('headerButtonsController').allButtons());
 		        	router.get('headerController').connectOutlet('headerOrder', 'headerOrder');
-		        	router.get('headerOrderController').connectOutlet('headerOrderNumber', 'headerOrderNumber');
-		        	router.get('headerOrderController').connectOutlet('headerOrderCustomersNumber', 'headerOrderCustomersNumber');
 		        },
 				// STATES
 				user: Mdo.UserRoute,

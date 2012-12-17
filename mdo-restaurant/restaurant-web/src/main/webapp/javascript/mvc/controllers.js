@@ -48,34 +48,35 @@ $(document).ready(function() {
 		password: null,
 	});
 	Mdo.HeaderDateTimeController = Ember.ObjectController.extend({
-		dateTime: Mdo.DateTime.create({
-			controllerChangeDateTime: function(form) {
-				Mdo.router.get('headerDateTimeController')['saveDateTime'](form);
+		dateTime: Mdo.DateTime.create(),
+		displayedDate: function() {
+			var result = new Date();
+			if (this.dateTime.currentTableRegistrationDate) {
+				result = this.dateTime.currentTableRegistrationDate;
+			} else if (this.dateTime.userEntryDate) {
+				result = this.dateTime.userEntryDate;
 			}
-		}),
-		displayedDate: new Date(),
+			return result;
+		}.property('dateTime.userEntryDate', 'dateTime.currentTableRegistrationDate'),
+		// Used for refreshing time in the method startDateTime in order to display date.
 		displayedTime: new Date(),
-		displayedFormattedDate: function(sender, key) {
-			var formattedDisplayedDate = $.datepicker.formatDate(this.dateTime.datePattern, this.displayedDate);
+		displayedFormattedDate: function() {
+			var displayedDate = this.get('displayedDate');			
+			var formattedDisplayedDate = $.datepicker.formatDate(this.dateTime.datePattern, displayedDate);
 			var formattedDisplayedTime = $.datepicker.formatTime(this.dateTime.timePattern, this.time(this.displayedTime));
 			var result = formattedDisplayedDate + this.dateTime.dateTimeSeparator + formattedDisplayedTime;
 			return result;
+			// Because of setInterval in method startDateTime, we could avoid to make this property depends on the property 'displayedDate'.
 		}.property('displayedDate', 'displayedTime'),
-		didUserEntryDateChange: function(sender, key) {
-			if (!this.dateTime.currentTableRegistrationDate) {
-				this.set('displayedDate', this.dateTime.userEntryDate);
-			}
-		}.observes('dateTime.userEntryDate'),
-		didCurrentTableRegistrationDateChange: function(sender, key) {
-			var displayedDate = this.dateTime.currentTableRegistrationDate; 
-			if (!displayedDate) {
-				displayedDate = this.dateTime.userEntryDate;
-			}
-			this.set('displayedDate', displayedDate);
-		}.observes('dateTime.currentTableRegistrationDate'),
 		init: function() {
 			this.dateTime.reopen({
-				datePattern: Mdo.user.datePattern
+				datePattern: Mdo.user.datePattern,
+				// Extends 3 following properties: think as DTO.
+				currentTableRegistrationDate: null,
+				userEntryDate: new Date(),
+				controllerChangeDateTime: function(form) {
+					Mdo.router.get('headerDateTimeController')['saveDateTime'](form);
+				},				
 			});
 			this.startDateTime();
 		},
@@ -172,14 +173,15 @@ $(document).ready(function() {
 		},
 	});
 
-	Mdo.HeaderOrderNumberController = Ember.ObjectController.extend({
-//		content: Mdo.HeaderOrder.create()
-	});
-	Mdo.HeaderOrderCustomersNumberController = Ember.ObjectController.extend({
-		content: Mdo.HeaderOrder.create()
-	});
 	Mdo.HeaderOrderController = Ember.ObjectController.extend({
-		content: Mdo.HeaderOrder.create()
+		headerOrder: Mdo.HeaderOrder.create(),
+		checkNumber: function(number) {
+			Ember.run.later(null, function() {
+				// TODO: Ajax to check number
+				Mdo.router.set('headerOrderController.headerOrder.number', number);
+			}, 500);
+
+		}
 	});
 
 	Mdo.UserController = Ember.ObjectController.extend({

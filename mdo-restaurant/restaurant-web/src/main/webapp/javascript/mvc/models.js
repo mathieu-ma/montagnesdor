@@ -19,12 +19,9 @@ $(document).ready(function() {
 	
 	
 	Mdo.DateTime = Ember.Object.extend({
-		datePattern: 'DD d MM yy',
+		datePattern: null,
 		dateTimeSeparator: ' - ',
 		timePattern: 'HH:mm:ss',
-		currentTableRegistrationDate: null,
-		userEntryDate: new Date(),
-		controllerChangeDateTime: null,
 	});
 	
 	Mdo.Header = Ember.Object.extend();
@@ -73,7 +70,7 @@ $(document).ready(function() {
 	Mdo.HeaderOrder = Ember.Object.extend({
 		number: null,
 		takeaway: false,
-		customersNumber: 10,
+		customersNumber: null,
 	});
 	
 	Mdo.User = Ember.Object.extend({
@@ -83,7 +80,7 @@ $(document).ready(function() {
 	        "zh": {id: 2, displayLanguage: "chinois", selected: false},
 	        "fr": {id: 1, displayLanguage: "français", selected: true},
 	    },
-	    datePattern: 'DD d MM yy',
+	    datePattern: 'DD dd MM yy',
 	    // Will be set later in HeaderLanguagesController
 	    selectedLanguageIso2: function() {
 	    	$.each(this.locales, function(index, value) {
