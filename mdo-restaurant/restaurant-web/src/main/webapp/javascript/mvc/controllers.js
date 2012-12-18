@@ -175,11 +175,25 @@ $(document).ready(function() {
 
 	Mdo.HeaderOrderController = Ember.ObjectController.extend({
 		headerOrder: Mdo.HeaderOrder.create(),
+		step: 0,
 		checkNumber: function(number) {
+			var step = Mdo.router.get('headerOrderController.step');
+			// Before Ajax call, change the step in order to disable the view
+			// Go forward to next step.
+			Mdo.router.set('headerOrderController.step', step + 1);
+
 			Ember.run.later(null, function() {
 				// TODO: Ajax to check number
-				Mdo.router.set('headerOrderController.headerOrder.number', number);
-			}, 500);
+				var error = false;
+				if (error) {
+					// In case of error Ajax error
+					// Go back the previous step.
+					Mdo.router.set('headerOrderController.step', step);
+				} else {
+					Mdo.router.set('headerOrderController.headerOrder.number', number);
+					Mdo.router.set('headerOrderController.headerOrder.customersNumber', 2);
+				}
+			}, 100);
 
 		}
 	});

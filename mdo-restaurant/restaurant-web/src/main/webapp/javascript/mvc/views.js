@@ -308,26 +308,39 @@ $(document).ready(function() {
 			attributeBindings: ['value', 'disabled'],
 			value: "",
 			disabled: false,
+			step: 0,
 			didValueChange: function() {
-				if (this.get('controller.headerOrder.number')) {
+				// Default values for both 2 cases:
+				// Case 1) First entry.
+				// Case 2) Back from customersNumber text field.
+				var disabled = false;
+				var labelClass = "";
+				var step = this.get('controller.step');
+				if (this.get('controller.headerOrder.number') && step > this.step) {
 					this.set('value', this.get('controller.headerOrder.number'));
-					var disabled = true;
-					var labelClass = 'no-border';
-					if (this.get('controller.headerOrder.customersNumber')) {
-						disabled = false;
-						labelClass = '';
-					}
-					this.set('disabled', disabled);
-					this.set('labelClass', labelClass);
+					// In case of success getting dinner table header details. 
+					disabled = true;
+					labelClass = 'no-border';
 				}
-			}.observes('controller.headerOrder.number', 'controller.headerOrder.customersNumber'),
+				this.set('disabled', disabled);
+				this.set('labelClass', labelClass);
+				if (this.$()) {
+					this.$().focus();
+				}
+			}.observes('controller.headerOrder.number', 'controller.headerOrder.customersNumber', 'controller.step'),
+			didStepChange: function() {
+				var step = this.get('controller.step');
+				if (step != this.step) {
+					this.set('disabled', true);
+				}
+			}.observes('controller.step'),
 			keyUp: function(event) {
 				var self = this;
 				switch(event.keyCode) {     	  
 					//13 == key Enter
 					case 13 :
 console.log('enter:');
-console.log($(this));
+						// Check the number.
 						self.get('controller.checkNumber')(this.$().val());
 					return;
 					//27 == key Esc
@@ -336,8 +349,11 @@ console.log('Esc ' + $(this));
 					return;
 				};
 				return false;
-
 			},
+			didInsertElement: function() {
+				var self = this;
+				self.$().focus();
+			}
 		}),
 		headerOrderCustomersNumberLabel: Mdo.LabelView.create({
 			labelKey: "header.order.customers.number",
@@ -349,34 +365,53 @@ console.log('Esc ' + $(this));
 			attributeBindings: ['value', 'disabled'],
 			value: "",
 			disabled: true,
+			step: 1,
 			didValueChange: function() {
-				if (this.get('controller.headerOrder.number')) {
-//					this.set('labelClass', 'visibility-show');
-					this.set('value', this.get('controller.headerOrder.customersNumber'));
-					var disabled = false;
-					var labelClass = 'visibility-show';
-					if (this.get('controller.headerOrder.customersNumber')) {
-						disabled = true;
-						labelClass = 'visibility-show no-border';
+				var step = this.get('controller.step');
+				// Default values for both 2 cases:
+				// Case 1) First entry.
+				// Case 2) Back to number text field.
+				var disabled = true;
+				var labelClass = 'visibility-hidden';
+				if (step >= this.step) {
+					if (this.get('controller.headerOrder.number')) {
+						disabled = false;
+						labelClass = '';
+						var customersNumber = this.get('controller.headerOrder.customersNumber'); 
+						this.set('value', customersNumber);
+						if (customersNumber && step > this.step) {
+							disabled = true;
+							labelClass = 'no-border';
+						}
 					}
-					this.set('disabled', disabled);
-					this.set('labelClass', labelClass);
 				}
-			}.observes('controller.headerOrder.number', 'controller.headerOrder.customersNumber'),
+				this.set('disabled', disabled);
+				this.set('labelClass', labelClass);
+				if (this.$()) {
+					this.$().focus();
+				}
+			}.observes('controller.headerOrder.number', 'controller.headerOrder.customersNumber', 'controller.step'),
 			keyUp: function(event) {
 				var self = this;
 				switch(event.keyCode) {     	  
 					//13 == key Enter
 					case 13 :
 console.log('enter' + $(this));
+						self.set('controller.step', 2);
 						self.set('controller.headerOrder.customersNumber', self.$().val());
+						// Check the number.
+						self.get('controller.checkNumber')(this.$().val());
+
 					return;
 					//27 == key Esc
 					case 27 :
 console.log('Esc' + $(this));
-						// Perform twice because we want to call didValueChange even we enter same value
-						self.set('controller.headerOrder.customersNumber', self.$().val());
+						// Back
+						self.set('controller.step', 0);
+						self.set('controller.headerOrder.number', '');
 						self.set('controller.headerOrder.customersNumber', '');
+//						self.set('disabled', true);
+//						self.set('labelClass', 'visibility-hidden');
 					return;
 				};
 				return false;
