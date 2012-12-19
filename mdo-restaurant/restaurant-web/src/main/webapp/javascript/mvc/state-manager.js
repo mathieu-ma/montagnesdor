@@ -60,6 +60,76 @@ $(document).ready(function() {
 	    }		
 	}); 
 
+	/**
+	 * Locked Orders route. It must be declared before the Mdo.Router because Mdo.Router uses it. 
+	 */
+	Mdo.HeaderOrderRoute = Ember.Route.extend({
+		route: '/header/order',
+		enter: function (router) {
+			console.log("The header order sub-state was entered.");
+        },
+        index:  Ember.Route.extend({
+            route: '/',
+            enter: function ( router ){
+              console.log("The shoes sub-state was entered.");
+            },
+            connectOutlets:  function(router, context){
+            }
+        }),
+        number: Ember.Route.extend({
+        	route: '/number',
+        	connectOutlets: function(router, context) {
+        		
+        	}
+        }),
+        customersNumber: Ember.Route.extend({
+        	route: '/customers/:number',
+        	deserialize:  function(router, context) {
+    		alert("deserialize==" + context)
+    		console.log(context)
+    			return context.number;
+        	},
+    		serialize:  function(router, context) {
+    		alert("serialize==" + context)
+    		console.log(context)
+    		            	return {
+    		                   id: context.id
+    		                 };
+    		            },
+        	connectOutlets: function(router, number) {
+    			var controller = router.get('headerOrderController');
+    			var step = controller.get('step');
+    			// Before Ajax call, change the step in order to disable the view
+    			// Go forward to next step.
+    			controller.set('step', step + 1);
+
+    			Ember.run.later(null, function() {
+    				// TODO: Ajax to check number
+    				var error = false;
+    				if (error) {
+    					// In case of error Ajax error
+    					// Go back the previous step.
+    					controller.set('step', step);
+    				} else {
+    					controller.set('headerOrder.number', number);
+    					controller.set('headerOrder.customersNumber', 2);
+    					controller.set('headerOrder.takeaway', true);
+    				}
+    			}, 100);
+        	}
+        }),
+        backToNumber: Ember.Route.extend({
+        	route: '/back/to/number',
+        	connectOutlets: function(router, context) {
+				var controller = router.get('headerOrderController');
+				controller.set('step', 0);
+				controller.set('headerOrder.number', '');
+				controller.set('headerOrder.customersNumber', '');
+				controller.set('headerOrder.takeaway', false);
+        	}
+        }),
+	}); 
+
 	Mdo.Router = Ember.Router.extend({
 		enableLogging:  true,
 		root: Ember.Route.extend({
@@ -70,6 +140,8 @@ $(document).ready(function() {
 			gotoCashedOrders: Ember.Route.transitionTo('cashedOrders'),
 			gotoLockedOrders: Ember.Route.transitionTo('lockedOrders'),
 			gotoOpenDialog: Ember.Route.transitionTo('openDialog'),
+			gotoBackToNumber: Ember.Route.transitionTo('headerOrder.backToNumber'),
+			gotoCustomersNumber: Ember.Route.transitionTo('headerOrder.customersNumber'),
 			index: Ember.Route.extend({
 				route: '/',
 				enter: function (router) {
@@ -90,6 +162,7 @@ $(document).ready(function() {
 				orders: Mdo.OrdersRoute,
 				cashedOrders: Mdo.CashedOrdersRoute,
 				lockedOrders: Mdo.LockedOrdersRoute,
+				headerOrder: Mdo.HeaderOrderRoute,
 			}),
 		})
 	});

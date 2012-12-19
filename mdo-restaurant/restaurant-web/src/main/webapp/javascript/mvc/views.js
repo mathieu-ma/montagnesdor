@@ -247,12 +247,12 @@ $(document).ready(function() {
 			this.controllerChangeButton();
 		},
 		didInsertElement: function() {
-			var thisEmberView = this;
-			var button = thisEmberView.$().button({
+			var self = this;
+			var button = self.$().button({
 		    	// labelKey comes from HeaderView template.
-		    	//label: $.mdoI18n.prop(thisEmberView.labelKey),
+		    	//label: $.mdoI18n.prop(self.labelKey),
 		    	// icons comes from HeaderView template.
-		    	icons: thisEmberView.get('icons'),
+		    	icons: self.get('icons'),
 		    });
 			// Process the i18n label and wait the return from server with Ember.Observable
 			// The label will be set in the method i18nLabelChanged
@@ -271,13 +271,13 @@ $(document).ready(function() {
 			$("#header-buttons").buttonset();
 		},
 		manageButtons: function(selectedButtonView) {
-			var thisEmberView = this;
+			var self = this;
 			$("button", "#header-buttons").each(function() {
 				var viewSelected = false;
 				if (selectedButtonView.$().attr('id') == $(this).attr('id')) {
 					viewSelected = true;
 				}
-				thisEmberView.disabledButton(this, viewSelected);
+				self.disabledButton(this, viewSelected);
 			});
 		},
 		disabledButton: function(button, selected) {
@@ -309,7 +309,7 @@ $(document).ready(function() {
 			value: "",
 			disabled: false,
 			step: 0,
-			didValueChange: function() {
+			didValueChange: function(sender, key) {
 				// Default values for both 2 cases:
 				// Case 1) First entry.
 				// Case 2) Back from customersNumber text field.
@@ -341,7 +341,9 @@ $(document).ready(function() {
 					case 13 :
 console.log('enter:');
 						// Check the number.
-						self.get('controller.checkNumber')(this.$().val());
+						//self.get('controller.checkNumber')(this.$().val());
+						self.get('controller.target').send('gotoCustomersNumber', {number: this.$().val()});
+
 					return;
 					//27 == key Esc
 					case 27 :
@@ -366,7 +368,7 @@ console.log('Esc ' + $(this));
 			value: "",
 			disabled: true,
 			step: 1,
-			didValueChange: function() {
+			didValueChange: function(sender, key) {
 				var step = this.get('controller.step');
 				// Default values for both 2 cases:
 				// Case 1) First entry.
@@ -377,8 +379,11 @@ console.log('Esc ' + $(this));
 					if (this.get('controller.headerOrder.number')) {
 						disabled = false;
 						labelClass = '';
-						var customersNumber = this.get('controller.headerOrder.customersNumber'); 
-						this.set('value', customersNumber);
+						var customersNumber = this.get('controller.headerOrder.customersNumber');
+						if (key=='controller.headerOrder.customersNumber') {
+							// Only set the value when this one changed
+							this.set('value', customersNumber);
+						}
 						if (customersNumber && step > this.step) {
 							disabled = true;
 							labelClass = 'no-border';
@@ -397,21 +402,15 @@ console.log('Esc ' + $(this));
 					//13 == key Enter
 					case 13 :
 console.log('enter' + $(this));
-						self.set('controller.step', 2);
-						self.set('controller.headerOrder.customersNumber', self.$().val());
-						// Check the number.
-						self.get('controller.checkNumber')(this.$().val());
-
+						// Save the customers number.
+						self.get('controller.saveCustomersNumber')(this.$().val());
 					return;
 					//27 == key Esc
 					case 27 :
 console.log('Esc' + $(this));
 						// Back
-						self.set('controller.step', 0);
-						self.set('controller.headerOrder.number', '');
-						self.set('controller.headerOrder.customersNumber', '');
-//						self.set('disabled', true);
-//						self.set('labelClass', 'visibility-hidden');
+						//self.get('controller.backToNumber')();
+						self.get('controller.target').send('gotoBackToNumber');
 					return;
 				};
 				return false;
@@ -421,14 +420,14 @@ console.log('Esc' + $(this));
 		headerOrderTakeawayLabel: Mdo.LabelView.create({
 			labelKey: "header.order.takeaway",
 			classNameBindings: ['labelClass'],
-			labelClass: "display-none",
+			labelClass: "visibility-hidden",
 			toggleClass: false,
 			blinkLabelClass: function() {
 				var self = this;
 				if (this.get('controller.headerOrder.takeaway')) {
 					self.set('labelClass', 'header-takeaway-odd');
 					this.clearInterval = window.setInterval(function() {
-						var cssClass = "display-none";
+						var cssClass = "visibility-hidden";
 						if (self.toggleClass) {
 							cssClass = "header-takeaway-even";
 						} else {
@@ -439,7 +438,7 @@ console.log('Esc' + $(this));
 					},
 					1000);
 				} else {
-					self.set('labelClass', 'display-none');
+					self.set('labelClass', 'visibility-hidden');
 					window.clearInterval(this.clearInterval);
 				}
 			}.observes('controller.headerOrder.takeaway'),
