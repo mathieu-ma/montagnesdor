@@ -176,53 +176,6 @@ $(document).ready(function() {
 	Mdo.HeaderOrderController = Ember.ObjectController.extend({
 		headerOrder: Mdo.HeaderOrder.create(),
 		step: 0,
-		checkNumber: function(number) {
-			var controller = Mdo.router.get('headerOrderController');
-			var step = controller.get('step');
-			// Before Ajax call, change the step in order to disable the view
-			// Go forward to next step.
-			controller.set('step', step + 1);
-
-			Ember.run.later(null, function() {
-				// TODO: Ajax to check number
-				var error = false;
-				if (error) {
-					// In case of error Ajax error
-					// Go back the previous step.
-					controller.set('step', step);
-				} else {
-					controller.set('headerOrder.number', number);
-					controller.set('headerOrder.customersNumber', 2);
-					controller.set('headerOrder.takeaway', true);
-				}
-			}, 100);
-		},
-		saveCustomersNumber: function(customersNumber) {
-			var controller = Mdo.router.get('headerOrderController');
-			var step = controller.get('step');
-			// Before Ajax call, change the step in order to disable the view
-			// Go forward to next step.
-			controller.set('step', step + 1);
-
-			Ember.run.later(null, function() {
-				// TODO: Ajax to check number
-				var error = false;
-				if (error) {
-					// In case of error Ajax error
-					// Go back the previous step.
-					controller.set('step', step);
-				} else {
-					controller.set('headerOrder.customersNumber', customersNumber);
-				}
-			}, 100);
-		},
-		backToNumber: function() {
-			var controller = Mdo.router.get('headerOrderController');
-			controller.set('step', 0);
-			controller.set('headerOrder.number', '');
-			controller.set('headerOrder.customersNumber', '');
-			controller.set('headerOrder.takeaway', false);
-		}
 	});
 
 	Mdo.UserController = Ember.ObjectController.extend({

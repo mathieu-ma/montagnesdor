@@ -340,10 +340,8 @@ $(document).ready(function() {
 					//13 == key Enter
 					case 13 :
 console.log('enter:');
-						// Check the number.
-						//self.get('controller.checkNumber')(this.$().val());
-						self.get('controller.target').send('gotoCustomersNumber', {number: this.$().val()});
-
+						// Check the number and display Customers Number.
+						self.get('controller.target').send('gotoCustomersNumber', {tableNumber: this.$().val()});
 					return;
 					//27 == key Esc
 					case 27 :
@@ -375,15 +373,15 @@ console.log('Esc ' + $(this));
 				// Case 2) Back to number text field.
 				var disabled = true;
 				var labelClass = 'visibility-hidden';
+				var customersNumber = this.get('controller.headerOrder.customersNumber');
+				if (key=='controller.headerOrder.customersNumber') {
+					// Only set the value when this one changed
+					this.set('value', customersNumber);
+				}
 				if (step >= this.step) {
 					if (this.get('controller.headerOrder.number')) {
 						disabled = false;
 						labelClass = '';
-						var customersNumber = this.get('controller.headerOrder.customersNumber');
-						if (key=='controller.headerOrder.customersNumber') {
-							// Only set the value when this one changed
-							this.set('value', customersNumber);
-						}
 						if (customersNumber && step > this.step) {
 							disabled = true;
 							labelClass = 'no-border';
@@ -402,19 +400,17 @@ console.log('Esc ' + $(this));
 					//13 == key Enter
 					case 13 :
 console.log('enter' + $(this));
-						// Save the customers number.
-						self.get('controller.saveCustomersNumber')(this.$().val());
+						// Save the customers number and display list of order lines.
+						self.get('controller.target').send('gotoSaveCustomersNumber', {customersNumber: this.$().val()});
 					return;
 					//27 == key Esc
 					case 27 :
 console.log('Esc' + $(this));
-						// Back
-						//self.get('controller.backToNumber')();
+						// Back to the number field.
 						self.get('controller.target').send('gotoBackToNumber');
 					return;
 				};
 				return false;
-
 			},
 		}),
 		headerOrderTakeawayLabel: Mdo.LabelView.create({

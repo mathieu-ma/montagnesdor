@@ -83,20 +83,17 @@ $(document).ready(function() {
         	}
         }),
         customersNumber: Ember.Route.extend({
-        	route: '/customers/:number',
+        	route: '/customers/number/:tableNumber',
         	deserialize:  function(router, context) {
-    		alert("deserialize==" + context)
-    		console.log(context)
-    			return context.number;
+    			return context.tableNumber;
         	},
     		serialize:  function(router, context) {
-    		alert("serialize==" + context)
-    		console.log(context)
-    		            	return {
-    		                   id: context.id
-    		                 };
-    		            },
-        	connectOutlets: function(router, number) {
+    			return {
+    				// Replace :tableNumber in the url by the value of context.number. 
+    				tableNumber: context.tableNumber
+    			};
+    		},
+        	connectOutlets: function(router, tableNumber) {
     			var controller = router.get('headerOrderController');
     			var step = controller.get('step');
     			// Before Ajax call, change the step in order to disable the view
@@ -111,7 +108,7 @@ $(document).ready(function() {
     					// Go back the previous step.
     					controller.set('step', step);
     				} else {
-    					controller.set('headerOrder.number', number);
+    					controller.set('headerOrder.number', tableNumber);
     					controller.set('headerOrder.customersNumber', 2);
     					controller.set('headerOrder.takeaway', true);
     				}
@@ -121,11 +118,48 @@ $(document).ready(function() {
         backToNumber: Ember.Route.extend({
         	route: '/back/to/number',
         	connectOutlets: function(router, context) {
+				// Reset the controller data.
 				var controller = router.get('headerOrderController');
 				controller.set('step', 0);
 				controller.set('headerOrder.number', '');
 				controller.set('headerOrder.customersNumber', '');
 				controller.set('headerOrder.takeaway', false);
+        	}
+        }),
+        saveCustomersNumber: Ember.Route.extend({
+        	route: '/save/customers/number/:customersNumber',
+        	deserialize:  function(router, context) {
+    			return context.customersNumber;
+        	},
+    		serialize:  function(router, context) {
+    			return {
+    				// Replace :customersNumber in the url by the value of context.number. 
+    				customersNumber: context.customersNumber
+    			};
+    		},
+        	connectOutlets: function(router, customersNumber) {
+    			var controller = router.get('headerOrderController');
+    			var step = controller.get('step');
+    			// Before Ajax call, change the step in order to disable the view
+    			// Go forward to next step.
+    			controller.set('step', step + 1);
+
+    			Ember.run.later(null, function() {
+    				// TODO: Ajax to check number
+    				var error = false;
+    				if (error) {
+    					// In case of error Ajax error
+    					// Go back the previous step.
+    					controller.set('step', step);
+    				} else {
+    					// 2 Ajax
+    					// 1) Save the customers number.
+    					controller.set('headerOrder.customersNumber', customersNumber);
+    					// 2) Display list of order lines
+    			    	// Insert OrderLinesView in body outlet with OrderLinesController content. 
+    			    	router.get('applicationController').connectOutlet('body', 'orderLines', {mma: "orders"});
+    				}
+    			}, 100);
         	}
         }),
 	}); 
@@ -142,6 +176,7 @@ $(document).ready(function() {
 			gotoOpenDialog: Ember.Route.transitionTo('openDialog'),
 			gotoBackToNumber: Ember.Route.transitionTo('headerOrder.backToNumber'),
 			gotoCustomersNumber: Ember.Route.transitionTo('headerOrder.customersNumber'),
+			gotoSaveCustomersNumber: Ember.Route.transitionTo('headerOrder.saveCustomersNumber'),
 			index: Ember.Route.extend({
 				route: '/',
 				enter: function (router) {
