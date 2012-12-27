@@ -614,6 +614,21 @@
 		}
 	});	
 	//END mdoInputText
+	
+	//START cachedScript
+	jQuery.cachedScript = function(url, options) {
+		// allow user to set any option except for dataType, cache, and url
+		options = $.extend(options || {}, {
+			dataType: "script",
+		    cache: true,
+		    url: url
+		});
+
+		// Use $.ajax() since it is more flexible than $.getScript
+		// Return the jqXHR object so we can chain callbacks
+		return jQuery.ajax(options);
+	};
+	//END cachedScript
 })(jQuery);			
 
 //START UpsideDown class
@@ -816,11 +831,10 @@ function UpsideDown(selector) {
 			}
 		}
 		return true;
-    }
+    };
 	this.constructor();
 }
 //END UpsideDown class
-
 
 function dumpProps(obj, parent) {
 	// Go through all the properties of the passed-in object

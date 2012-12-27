@@ -59,6 +59,7 @@
 		    <add-attribute type="string" value="javascript/mvc/models.js"/>
 		    <add-attribute type="string" value="javascript/mvc/views.js"/>
 		    <add-attribute type="string" value="javascript/mvc/controllers.js"/>
+<!-- 		    <add-attribute type="string" value="javascript/mvc/user-route.js"/> -->
 		    <add-attribute type="string" value="javascript/mvc/state-manager.js"/>
 		</put-list-attribute>
 	</definition>

@@ -4,19 +4,30 @@
  */
 $(document).ready(function() {
 
-	/**
-	 * User route. It must be declared before the Mdo.Router because Mdo.Router uses it. 
-	 */
-	Mdo.UserRoute = Ember.Route.extend({
-		route: '/',
-		enter: function (router) {
-			console.log("The user sub-state was entered.");
+	Mdo.Router = Ember.Router.extend({
+		enableLogging:  true,
+		init: function() {
+			// This event method is used to setup needed routes.
+			// Because we use separated javascripts routes files and need to load them later.
+			
+			// The following routes classes are set in a dedicated files and depend on others classes in others files.
+			// So we have to initialize them here because the javascripts files could be loaded in any order. 
+			this.root = Mdo.RootRoute.create();
+
+			this._super();
+		},
+		root: null
+	});
+	
+    Mdo.Index =  Ember.Route.extend({
+        route: '/',
+        enter: function ( router ){
+          console.log("The generic index sub-state was entered.");
         },
-		connectOutlets: function(router, context) {
-	    	// Insert UserView in body outlet with OrdersController content. 
-	    	router.get('applicationController').connectOutlet('body', 'user', {mma: "user"});
-	    }		
-	}); 
+        connectOutlets:  function(router, context){
+        	router.send('gotoUser');
+        }
+    });
 
 	/**
 	 * Orders route. It must be declared before the Mdo.Router because Mdo.Router uses it. 
@@ -43,7 +54,7 @@ $(document).ready(function() {
 		connectOutlets: function(router, context) {
 	    	// Insert OrdersView in body outlet with OrdersController content. 
 	    	router.get('applicationController').connectOutlet('body', 'cashedOrders', {mma: "cashed orders"});
-	    }		
+	    },
 	}); 
 
 	/**
@@ -60,147 +71,6 @@ $(document).ready(function() {
 	    }		
 	}); 
 
-	/**
-	 * Locked Orders route. It must be declared before the Mdo.Router because Mdo.Router uses it. 
-	 */
-	Mdo.HeaderOrderRoute = Ember.Route.extend({
-		route: '/header/order',
-		enter: function (router) {
-			console.log("The header order sub-state was entered.");
-        },
-        index:  Ember.Route.extend({
-            route: '/',
-            enter: function ( router ){
-              console.log("The shoes sub-state was entered.");
-            },
-            connectOutlets:  function(router, context){
-            }
-        }),
-        number: Ember.Route.extend({
-        	route: '/number',
-        	connectOutlets: function(router, context) {
-        		
-        	}
-        }),
-        customersNumber: Ember.Route.extend({
-        	route: '/customers/number/:tableNumber',
-        	deserialize:  function(router, context) {
-    			return context.tableNumber;
-        	},
-    		serialize:  function(router, context) {
-    			return {
-    				// Replace :tableNumber in the url by the value of context.number. 
-    				tableNumber: context.tableNumber
-    			};
-    		},
-        	connectOutlets: function(router, tableNumber) {
-    			var controller = router.get('headerOrderController');
-    			var step = controller.get('step');
-    			// Before Ajax call, change the step in order to disable the view
-    			// Go forward to next step.
-    			controller.set('step', step + 1);
-
-    			Ember.run.later(null, function() {
-    				// TODO: Ajax to check number
-    				var error = false;
-    				if (error) {
-    					// In case of error Ajax error
-    					// Go back the previous step.
-    					controller.set('step', step);
-    				} else {
-    					controller.set('headerOrder.number', tableNumber);
-    					controller.set('headerOrder.customersNumber', 2);
-    					controller.set('headerOrder.takeaway', true);
-    				}
-    			}, 100);
-        	}
-        }),
-        backToNumber: Ember.Route.extend({
-        	route: '/back/to/number',
-        	connectOutlets: function(router, context) {
-				// Reset the controller data.
-				var controller = router.get('headerOrderController');
-				controller.set('step', 0);
-				controller.set('headerOrder.number', '');
-				controller.set('headerOrder.customersNumber', '');
-				controller.set('headerOrder.takeaway', false);
-        	}
-        }),
-        saveCustomersNumber: Ember.Route.extend({
-        	route: '/save/customers/number/:customersNumber',
-        	deserialize:  function(router, context) {
-    			return context.customersNumber;
-        	},
-    		serialize:  function(router, context) {
-    			return {
-    				// Replace :customersNumber in the url by the value of context.number. 
-    				customersNumber: context.customersNumber
-    			};
-    		},
-        	connectOutlets: function(router, customersNumber) {
-    			var controller = router.get('headerOrderController');
-    			var step = controller.get('step');
-    			// Before Ajax call, change the step in order to disable the view
-    			// Go forward to next step.
-    			controller.set('step', step + 1);
-
-    			Ember.run.later(null, function() {
-    				// TODO: Ajax to check number
-    				var error = false;
-    				if (error) {
-    					// In case of error Ajax error
-    					// Go back the previous step.
-    					controller.set('step', step);
-    				} else {
-    					// 2 Ajax
-    					// 1) Save the customers number.
-    					controller.set('headerOrder.customersNumber', customersNumber);
-    					// 2) Display list of order lines
-    			    	// Insert OrderLinesView in body outlet with OrderLinesController content. 
-    			    	router.get('applicationController').connectOutlet('body', 'orderLines', {mma: "orders"});
-    				}
-    			}, 100);
-        	}
-        }),
-	}); 
-
-	Mdo.Router = Ember.Router.extend({
-		enableLogging:  true,
-		root: Ember.Route.extend({
-			// EVENTS
-			//i18n/modify/language?lang=fr
-			gotoUser: Ember.Route.transitionTo('user'),
-			gotoOrders: Ember.Route.transitionTo('orders'),
-			gotoCashedOrders: Ember.Route.transitionTo('cashedOrders'),
-			gotoLockedOrders: Ember.Route.transitionTo('lockedOrders'),
-			gotoOpenDialog: Ember.Route.transitionTo('openDialog'),
-			gotoBackToNumber: Ember.Route.transitionTo('headerOrder.backToNumber'),
-			gotoCustomersNumber: Ember.Route.transitionTo('headerOrder.customersNumber'),
-			gotoSaveCustomersNumber: Ember.Route.transitionTo('headerOrder.saveCustomersNumber'),
-			index: Ember.Route.extend({
-				route: '/',
-				enter: function (router) {
-					console.log("Mdo index");
-					// Init i18n
-					//Mdo.I18n.init();
-					
-		        },
-		        connectOutlets: function(router, context) {
-					router.get('applicationController').connectOutlet('header', 'header');
-		        	router.get('headerController').connectOutlet('headerDateTime', 'headerDateTime');
-		        	router.get('headerController').connectOutlet('headerLanguages', 'headerLanguages');
-		        	router.get('headerController').connectOutlet('headerButtons', 'headerButtons', router.get('headerButtonsController').allButtons());
-		        	router.get('headerController').connectOutlet('headerOrder', 'headerOrder');
-		        },
-				// STATES
-				user: Mdo.UserRoute,
-				orders: Mdo.OrdersRoute,
-				cashedOrders: Mdo.CashedOrdersRoute,
-				lockedOrders: Mdo.LockedOrdersRoute,
-				headerOrder: Mdo.HeaderOrderRoute,
-			}),
-		})
-	});
 
 	/**
 	 * A call to Mdo.initialize() has always been the last line of code.
@@ -273,23 +143,36 @@ $(document).ready(function() {
 		}
 	});
 	
-	// Get the user details with Ajax. 
-	// On Ajax success, call the Mdo.initialize() method and close the waiting dialog.
-//	setTimeout(function() {
-//		// Global variable for Mdo.user.
-//		Mdo.user = Mdo.userManager.find(1);
-//		// i18n setting
-//		$.datepicker.setDefaults($.datepicker.regional[Mdo.user.get('selectedLanguageIso2')]);
-//		Mdo.initialize();
-//		waitingDialog.dialog("close");
-//	}, 1000);
-	
-	Ember.run.later(null, function() {
-		// Global variable for Mdo.user.
-		Mdo.user = Mdo.userManager.find(1);
-		// i18n setting
-		$.datepicker.setDefaults($.datepicker.regional[Mdo.user.get('selectedLanguageIso2')]);
-		Mdo.initialize();
-		waitingDialog.dialog("close");
-	}, 1000);
+	// Include routes scripts.
+	var routes = [
+	              "root-route", 
+	              "user-route", 
+	              "header-order-route",
+	              ];
+	// Include controllers scripts.
+	var controllers = [
+	                   "header-languages-controller", 
+	                   "header-date-time-controller", 
+	                   "header-buttons-controller", 
+	                   "header-order-controller"
+	                   ];
+	// Include all in one.
+	var scripts = routes.concat(controllers);
+	var cachedScripts = [];
+	$.each(scripts, function(key, value) {
+		var url = "javascript/mvc/" + value + ".js";
+		var cachedScript = $.cachedScript(url).done(function(script, textStatus) {
+			console.log("Load " + url + " with " + textStatus + " status");
+		});
+		cachedScripts.push(cachedScript);
+	});
+	// To pass an array of values to any function that normally expects them to be separate parameters, use Function.apply.
+	$.when.apply($, cachedScripts).done(function() {
+		Ember.run.later(null, function() {
+			
+			Mdo.initialize();
+			
+			waitingDialog.dialog("close");
+		}, 1000);
+	});
 });

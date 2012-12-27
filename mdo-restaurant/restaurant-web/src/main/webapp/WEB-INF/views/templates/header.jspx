@@ -29,11 +29,10 @@
 			</span>
 			<span id="header-order">
 				{{outlet headerOrder}}
-				<button id='customersNumberTest'>customersNumber</button>
-				<button id='takeawayTrueTest'>takeawayTrueTest</button>
 				<button id='takeawayFalseTest'>takeawayFalseTest</button>
 			</span>
 		</script>
+		
 		<script type="text/x-handlebars" data-template-name="headerDateTime">
 			{{#view "Mdo.DateTimeView" dateTime=dateTime displayedDateBinding="displayedDate"}}{{displayedFormattedDate}}{{/view}}
 			<button id='setCurrentTableRegistrationDateTest'>Set Current Table Registration Date</button>

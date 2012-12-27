@@ -68,15 +68,25 @@ $(document).ready(function() {
 		}
 	});
 	Mdo.HeaderOrder = Ember.Object.extend({
+		id: null,
+		restaurantId: null,
+		userAuthenticationId: null,
 		number: null,
 		takeaway: false,
 		customersNumber: null,
 	});
 	
+	Mdo.Language = Ember.Object.extend({
+		languageIso2: null,
+		id: null, 
+		displayLanguage: null,
+		selected: null, 
+	});
+	
 	Mdo.User = Ember.Object.extend({
 	    id: 1,
 	    login: "mch",
-	    locales: {
+		    locales: {
 	        "zh": {id: 2, displayLanguage: "chinois", selected: false},
 	        "fr": {id: 1, displayLanguage: "français", selected: true},
 	    },
@@ -97,7 +107,6 @@ $(document).ready(function() {
 	        title: "MISTER"
 	    }
 	});
-	
 	Mdo.userManager = Ember.Object.create({
 		find: function(id) {
 			return Mdo.User.create(); 

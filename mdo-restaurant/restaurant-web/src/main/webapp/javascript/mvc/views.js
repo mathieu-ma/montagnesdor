@@ -26,13 +26,6 @@ $(document).ready(function() {
 		}
 	});
 
-	Mdo.HeaderView = Ember.View.extend({
-		templateName: "header",
-	});
-
-	Mdo.HeaderDateTimeView = Ember.View.extend({
-		templateName: "headerDateTime",
-	});
 	Mdo.DialogView = Ember.ContainerView.extend({
 		labelTitleKey: null,
 		/**
@@ -67,17 +60,27 @@ $(document).ready(function() {
 			self.$().dialog("open");
 		},
 		openDialog: function() {
+			// Call this in order to fire didInsertElement event.
 			this.append('body');
-		}
+		},
 	});
-	Mdo.DateTimeDialogView = Mdo.DialogView.extend({
+
+	Mdo.HeaderView = Ember.View.extend({
+		templateName: "header",
+	});
+
+	Mdo.HeaderDateTimeView = Ember.View.extend({
+		templateName: "headerDateTime",
+	});
+
+	Mdo.DateDialogView = Mdo.DialogView.extend({
 		labelTitleKey: "date.time.dialog.title",
 		tagName: 'form',
 		displayedDate: null,
-		controllerChangeDateTime: null,
+		changeDateTimeController: null,
 		buttons: function() {
 			var self = this;
-			var controllerChangeDateTime = this.controllerChangeDateTime; 
+			var changeDateTimeController = this.changeDateTimeController; 
 			return [{
 	     	   id: "save",
 	    	   labelKey: "common.save",
@@ -85,8 +88,8 @@ $(document).ready(function() {
 	    		   var form = Mdo.DateTimeForm.create();
 	    		   // TODO
 	    		   form.date = $(this).find('.user-entry-date').datepicker("getDate"); 
-	    		   if (controllerChangeDateTime) {
-	    			   controllerChangeDateTime(form);
+	    		   if (changeDateTimeController) {
+	    			   changeDateTimeController(form);
 	    		   }
 	    		   $(this).dialog("close"); 
 	    	   },
@@ -142,6 +145,13 @@ $(document).ready(function() {
 			this.childViews.pushObject(textPassword);
 			this._super();
 		},
+		didInsertElement: function() {
+			var self = this;
+			self._super();
+			self.$().on("dialogclose", function( event, ui) {
+				self.controller.target.send('gotoDateDialog', 'close');
+			});
+		},
 	});
 	Mdo.DateTimeView = Ember.View.extend({
 		tagName: 'a',
@@ -188,11 +198,15 @@ $(document).ready(function() {
 			});
 		},
 		click: function() {
-			var dateTimeDialog = Mdo.DateTimeDialogView.create({
-				displayedDate: this.displayedDate,
-				controllerChangeDateTime: this.dateTime.controllerChangeDateTime,
-			});
-			dateTimeDialog.openDialog();
+//			var dateDialog = Mdo.DateDialogView.create({
+//				displayedDate: this.displayedDate,
+//				changeDateTimeController: this.dateTime.changeDateTimeController,
+//			});
+//			dateDialog.openDialog();
+			
+			this.get('controller.target').send('gotoDateDialog', 'open');
+			
+			
 		}
 	});
 	
@@ -203,7 +217,6 @@ $(document).ready(function() {
 		id: null,
 		languageIso2: null,
 		displayLanguage: null,
-		controllerModifyLanguage: null,
 		title: function() {
 			return this.displayLanguage;
 		}.property('displayLanguage'),
@@ -222,12 +235,13 @@ $(document).ready(function() {
 		},
 		didInsertElement: function() {
 			var self = this;
+			var controller = self.get('controller');
 			if (!this.selected) {
 				this.$().click(function() {
-					self.controllerModifyLanguage(self.languageIso2);
+					controller.changeLanguage(self.languageIso2);
 				});
 			}
-		}
+		},
 	});
 	Mdo.HeaderLanguagesView = Ember.View.extend({
 		templateName: "headerLanguages",
@@ -292,16 +306,26 @@ $(document).ready(function() {
 	});
 
 	Mdo.HeaderOrderView = Ember.ContainerView.extend({
-//		templateName: "headerOrder",
 		tagName: 'form',
-		childViews: ['headerOrderNumberLabel', 'headerOrderNumberText', 
-		             'headerOrderCustomersNumberLabel', 'headerOrderCustomersNumberText',
-		             'headerOrderTakeawayLabel',
-		             'headerOrderMergeAutoCheckbox', 'headerOrderMergeAutoLabel'],
-		headerOrderNumberLabel: Mdo.LabelView.create({
+		init: function() {
+			this.get('childViews').pushObjects([
+                        this.headerOrderNumberLabel,
+                        this.headerOrderNumberText,
+                        this.headerOrderCustomersNumberLabel,
+                        this.headerOrderCustomersNumberText,
+                        this.headerOrderTakeawayLabel,
+                        this.headerOrderMergeAutoCheckbox,
+                        this.headerOrderMergeAutoLabel,
+            ]);
+			this._super();
+		},
+		destroy: function() {
+			this._super();
+		},
+		headerOrderNumberLabel: Mdo.LabelView.extend({
 			labelKey: "header.order.number",
 		}),
-		headerOrderNumberText: Ember.TextField.create({
+		headerOrderNumberText: Ember.TextField.extend({
 			classNames: ['ui-widget-content'],
 			classNameBindings: ['labelClass'],
 			labelClass: "",
@@ -317,11 +341,11 @@ $(document).ready(function() {
 				var labelClass = "";
 				var step = this.get('controller.step');
 				if (this.get('controller.headerOrder.number') && step > this.step) {
-					this.set('value', this.get('controller.headerOrder.number'));
 					// In case of success getting dinner table header details. 
 					disabled = true;
 					labelClass = 'no-border';
 				}
+				this.set('value', this.get('controller.headerOrder.number'));
 				this.set('disabled', disabled);
 				this.set('labelClass', labelClass);
 				if (this.$()) {
@@ -341,7 +365,11 @@ $(document).ready(function() {
 					case 13 :
 console.log('enter:');
 						// Check the number and display Customers Number.
-						self.get('controller.target').send('gotoCustomersNumber', {tableNumber: this.$().val()});
+						self.get('controller.target').send('gotoCustomersNumber', {
+							restaurantId: self.get('controller.headerOrder.restaurantId'), 
+							userAuthenticationId: self.get('controller.headerOrder.userAuthenticationId'), 
+							tableNumber: this.$().val()
+						});
 					return;
 					//27 == key Esc
 					case 27 :
@@ -355,10 +383,10 @@ console.log('Esc ' + $(this));
 				self.$().focus();
 			}
 		}),
-		headerOrderCustomersNumberLabel: Mdo.LabelView.create({
+		headerOrderCustomersNumberLabel: Mdo.LabelView.extend({
 			labelKey: "header.order.customers.number",
 		}),
-		headerOrderCustomersNumberText: Ember.TextField.create({
+		headerOrderCustomersNumberText: Ember.TextField.extend({
 			classNames: ['ui-widget-content'],
 			classNameBindings: ['labelClass'],
 			labelClass: "visibility-hidden",
@@ -400,8 +428,12 @@ console.log('Esc ' + $(this));
 					//13 == key Enter
 					case 13 :
 console.log('enter' + $(this));
-						// Save the customers number and display list of order lines.
-						self.get('controller.target').send('gotoSaveCustomersNumber', {customersNumber: this.$().val()});
+						// Upate the customers number and display list of order lines.
+						//self.get('controller.target').send('gotoSaveCustomersNumber', this.$().val());
+						// Do not fire event to router because we want to save data to server.
+						// So call save method from controller and save data 
+						// then in the same controller, we fire event to router in order to display order lines.
+						self.get('controller')['updateCustomersNumber'](this.$().val());
 					return;
 					//27 == key Esc
 					case 27 :
@@ -413,11 +445,12 @@ console.log('Esc' + $(this));
 				return false;
 			},
 		}),
-		headerOrderTakeawayLabel: Mdo.LabelView.create({
+		headerOrderTakeawayLabel: Mdo.LabelView.extend({
 			labelKey: "header.order.takeaway",
 			classNameBindings: ['labelClass'],
 			labelClass: "visibility-hidden",
 			toggleClass: false,
+			clearInterval: null,
 			blinkLabelClass: function() {
 				var self = this;
 				if (this.get('controller.headerOrder.takeaway')) {
@@ -438,13 +471,12 @@ console.log('Esc' + $(this));
 					window.clearInterval(this.clearInterval);
 				}
 			}.observes('controller.headerOrder.takeaway'),
-			clearInterval: null
 		}),
-		headerOrderMergeAutoCheckbox: Ember.Checkbox.create({
+		headerOrderMergeAutoCheckbox: Ember.Checkbox.extend({
 			attributeBindings: ['checked'],
 			checked: true,
 		}),
-		headerOrderMergeAutoLabel: Mdo.LabelView.create({
+		headerOrderMergeAutoLabel: Mdo.LabelView.extend({
 			labelKey: "header.order.line.merge.auto",
 		}),
 		didInsertElement: function() {
@@ -453,13 +485,6 @@ console.log('Esc' + $(this));
 //			this.headerOrderNumberView.$().focus();
 //			Em.View.views['number'].$().focus();
 console.log(this.get('controller.headerOrder'))
-$('#customersNumberTest').click(function() {
-	self.set('controller.headerOrder.customersNumber', '2'); 
-	self.set('controller.headerOrder.number', '11'); 
-});
-$('#takeawayTrueTest').click(function() {
-	self.set('controller.headerOrder.takeaway', true); 
-});
 $('#takeawayFalseTest').click(function() {
 	self.set('controller.headerOrder.takeaway', false); 
 });
