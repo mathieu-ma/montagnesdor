@@ -24,7 +24,7 @@ $(document).ready(function() {
         enter: function ( router ){
           console.log("The generic index sub-state was entered.");
         },
-        connectOutlets:  function(router, context){
+        connectOutlets: function(router, context) {
         	router.send('gotoUser');
         }
     });
@@ -33,14 +33,35 @@ $(document).ready(function() {
 	 * Orders route. It must be declared before the Mdo.Router because Mdo.Router uses it. 
 	 */
 	Mdo.OrdersRoute = Ember.Route.extend({
-		route: '/orders',
+        route: '/orders',
 		enter: function (router) {
 			console.log("The orders sub-state was entered.");
         },
-		connectOutlets: function(router, context) {
-	    	// Insert OrdersView in body outlet with OrdersController content. 
-	    	router.get('applicationController').connectOutlet('body', 'orders', {mma: "orders"});
-	    }		
+        index: Ember.Route.extend({
+    		route: '/',
+    		enter: function (router) {
+    			console.log("The orders sub-state was entered.");
+            },
+            connectOutlets: function(router, context) {
+    	    	// Insert OrdersView in body outlet with OrdersController content. 
+    	    	router.get('applicationController').connectOutlet('body', 'orders', {mma: "orders"});
+            },
+        }),
+        displayOrderLines: Ember.Route.extend({
+        	route: '/display/order/lines/:dinnerTableId',
+        	connectOutlets: function(router, dinnerTableId) {
+    			var controller = router.get('headerOrderController');
+				controller.displayOrderLines(dinnerTableId);
+	        	var headerButtonsController = router.get('headerButtonsController');
+//				$.each(headerButtonsController.content.filterProperty("name", "orders"), function(index, button) {
+//					button.set('selected', true);
+//				});
+
+		    	// Insert OrderLinesView in body outlet with OrderLinesController content. 
+		    	router.get('applicationController').connectOutlet('body', 'headerOrder', controller.get('orderLines'));
+//alert('displayOrderLines')        		
+        	}
+        }),
 	}); 
 	
 	/**
@@ -148,16 +169,25 @@ $(document).ready(function() {
 	              "root-route", 
 	              "user-route", 
 	              "header-order-route",
+	              "orders-route",
 	              ];
+	// Include views scripts.
+	var views = [
+	                   "dialog-view", 
+	                   "button-view", 
+	                   "header-order-view", 
+	                   "order-view", 
+	                   ];
 	// Include controllers scripts.
 	var controllers = [
 	                   "header-languages-controller", 
 	                   "header-date-time-controller", 
 	                   "header-buttons-controller", 
-	                   "header-order-controller"
+	                   "header-order-controller",
+	                   "order-controller",
 	                   ];
 	// Include all in one.
-	var scripts = routes.concat(controllers);
+	var scripts = routes.concat(views, controllers);
 	var cachedScripts = [];
 	$.each(scripts, function(key, value) {
 		var url = "javascript/mvc/" + value + ".js";

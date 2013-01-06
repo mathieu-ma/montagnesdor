@@ -29,7 +29,8 @@ $(document).ready(function() {
 		name: "",
 		labelKey: "",
 		icons: {},
-		selected: false
+		// Could be false, true or null
+		selected: null
 	});
 	Mdo.Header.reopenClass({
 		_stubDataSource: [
@@ -69,8 +70,7 @@ $(document).ready(function() {
 	});
 	Mdo.HeaderOrder = Ember.Object.extend({
 		id: null,
-		restaurantId: null,
-		userAuthenticationId: null,
+		registrationDate: null,
 		number: null,
 		takeaway: false,
 		customersNumber: null,
@@ -85,6 +85,7 @@ $(document).ready(function() {
 	
 	Mdo.User = Ember.Object.extend({
 	    id: 1,
+	    restaurantId: 1,
 	    login: "mch",
 		    locales: {
 	        "zh": {id: 2, displayLanguage: "chinois", selected: false},

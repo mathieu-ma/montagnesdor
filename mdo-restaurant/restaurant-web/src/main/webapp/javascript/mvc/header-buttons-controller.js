@@ -26,7 +26,8 @@ $(document).ready(function() {
 			$.each(data, function(index, value) {
 				var isSelected = false;
 				if (value.name == selected) {
-					isSelected = true;
+					// null is pseudo state before true state.
+					isSelected = null;
 				}
 				value.selected = isSelected;
 				value.controllerChangeButton = function() {
@@ -48,6 +49,19 @@ $(document).ready(function() {
 				button.set('selected', value.selected);
 				button.set('controllerChangeButton', value.controllerChangeButton);
 				buttons.pushObject(button);
+			});
+			// Observe button selected change
+			$.each(buttons, function(index, button1) {
+				$.each(buttons, function(index, button2) {
+					if (button1 != button2) {
+						button1.addObserver('selected', button2, function(sender, key) {
+							var selected = sender.get(key);
+							if (selected) {
+								this.set('selected', false);
+							}
+						});
+					}
+				});
 			});
 		},
 		user: function() {

@@ -13,7 +13,7 @@ $(document).ready(function() {
 	});
 
 	Mdo.UserController = Ember.ObjectController.extend({
-		user: Mdo.User.create(),
+		user: null,
 		
 	});
 	

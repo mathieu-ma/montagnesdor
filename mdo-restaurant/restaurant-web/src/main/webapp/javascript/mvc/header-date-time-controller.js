@@ -7,16 +7,21 @@ $(document).ready(function() {
 		password: null,
 	});
 	Mdo.HeaderDateTimeController = Ember.ObjectController.extend({
+		// This will be connected in the router.
+		headerOrderController: null,
+		registrationDate: function() {
+			return this.headerOrderController.headerOrder.registrationDate;
+		}.property('headerOrderController.headerOrder.registrationDate'),
 		dateTime: Mdo.DateTime.create(),
 		displayedDate: function() {
 			var result = new Date();
-			if (this.dateTime.currentTableRegistrationDate) {
-				result = this.dateTime.currentTableRegistrationDate;
+			if (this.headerOrderController.headerOrder.registrationDate) {
+				result = this.headerOrderController.headerOrder.registrationDate;
 			} else if (this.dateTime.userEntryDate) {
 				result = this.dateTime.userEntryDate;
 			}
 			return result;
-		}.property('dateTime.userEntryDate', 'dateTime.currentTableRegistrationDate'),
+		}.property('dateTime.userEntryDate', 'registrationDate'),
 		// Used for refreshing time in the method startDateTime in order to display date.
 		displayedTime: new Date(),
 		displayedFormattedDate: function() {

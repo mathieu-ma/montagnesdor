@@ -40,7 +40,7 @@
  			<script type="text/javascript" src="${pageContext.request.contextPath}/javascript/library/jquery/plugins/i18n/jquery-ui-timepicker-${pageContext.response.locale}.js"><!-- // --></script>
  			
 			<c:import url="../templates/header.jspx" />
-			<div id="main-application">
+			<div id="main-application" data-user-id="1">
 			</div>  		    
 		</body>
 	</html>    

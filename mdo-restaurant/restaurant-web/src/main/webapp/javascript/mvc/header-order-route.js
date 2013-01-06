@@ -12,8 +12,8 @@ $(document).ready(function() {
 		enter: function (router) {
 			console.log("The header order sub-state was entered.");
         },
-        index:  Mdo.Index.reopenClass({
-            connectOutlets:  function(router, context){
+        index: Mdo.Index.reopenClass({
+            connectOutlets: function(router, context) {
 //    			var userController = router.get('userController');
 //    			var headerOrderController = router.get('headerOrderController');
 //    			headerOrderController.setUser(userController.getUser());
@@ -45,10 +45,10 @@ $(document).ready(function() {
         	}
         }),
         customersNumber: Ember.Route.extend({
-        	route: '/:restaurantId/:userAuthenticationId/table/header/by/number/:tableNumber',
+        	route: '/table/header/by/number/:tableNumber',
         	connectOutlets: function(router, context) {
     			var controller = router.get('headerOrderController');
-				controller.customersNumber(context.restaurantId, context.userAuthenticationId, context.tableNumber);
+				controller.customersNumber(context.tableNumber);
         	}
         }),
         backToNumber: Ember.Route.extend({
@@ -57,25 +57,6 @@ $(document).ready(function() {
 				// Reset the controller data.
 				var controller = router.get('headerOrderController');
 				controller.backToNumber();
-        	}
-        }),
-        displayOrderLines: Ember.Route.extend({
-        	route: '/display/order/lines/:id',
-        	deserialize:  function(router, context) {
-    			return context.id;
-        	},
-    		serialize:  function(router, context) {
-    			return {
-    				// Replace :customersNumber in the url by the value of context.number. 
-    				id: context
-    			};
-    		},
-        	connectOutlets: function(router, id) {
-    			var controller = router.get('headerOrderController');
-				controller.displayOrderLines(id);
-		    	// Insert OrderLinesView in body outlet with OrderLinesController content. 
-		    	//router.get('applicationController').connectOutlet('body', 'orderLines', {mma: "orders"});
-//alert('displayOrderLines')        		
         	}
         }),
 	}); 
