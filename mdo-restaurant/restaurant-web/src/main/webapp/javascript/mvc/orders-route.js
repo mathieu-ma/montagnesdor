@@ -25,16 +25,20 @@ $(document).ready(function() {
         displayOrderLines: Ember.Route.extend({
         	route: '/display/order/lines/:dinnerTableId',
         	connectOutlets: function(router, dinnerTableId) {
-    			var controller = router.get('headerOrderController');
-				controller.displayOrderLines(dinnerTableId);
+    			var headerOrderController = router.get('headerOrderController');
+    			headerOrderController.displayOrderLines(dinnerTableId);
 	        	var headerButtonsController = router.get('headerButtonsController');
 //				$.each(headerButtonsController.content.filterProperty("name", "orders"), function(index, button) {
 //					button.set('selected', true);
 //				});
 
+    			var orderLinesLoadingController = router.get('orderLinesLoadingController');
+    			orderLinesLoadingController.set('orderLines', headerOrderController.get('orderLines'));
 		    	// Insert OrderLinesView in body outlet with OrderLinesController content. 
-		    	router.get('applicationController').connectOutlet('body', 'orderLines', controller.get('orderLines'));
-//alert('displayOrderLines')        		
+		    	router.get('applicationController').connectOutlet('body', 'orderLinesLoading');
+    			orderLinesLoadingController.connectOutlet('orderLines', 'orderLines');
+	        	var orderLinesController = router.get('orderLinesController');
+	        	orderLinesController.connectControllers('headerButtons');
         	}
         }),
 	}); 

@@ -176,7 +176,7 @@ $(document).ready(function() {
 	                   "dialog-view", 
 	                   "button-view", 
 	                   "header-order-view", 
-	                   "order-view", 
+	                   "order-lines-view", 
 	                   ];
 	// Include controllers scripts.
 	var controllers = [
@@ -184,7 +184,7 @@ $(document).ready(function() {
 	                   "header-date-time-controller", 
 	                   "header-buttons-controller", 
 	                   "header-order-controller",
-	                   "order-controller",
+	                   "order-lines-controller",
 	                   ];
 	// Include all in one.
 	var scripts = routes.concat(views, controllers);

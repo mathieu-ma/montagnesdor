@@ -30,7 +30,6 @@
 			<span id="header-order">
 				{{outlet headerOrder}}
 				<button id='takeawayFalseTest'>takeawayFalseTest</button>
-				<button id='addOrderLineTest'>addOrderLineTest</button>
 			</span>
 		</script>
 		
@@ -58,45 +57,11 @@
 			{{/each}}
 		</script>
 
-		<script type="text/x-handlebars" data-template-name="orderLines">
-					<thead>
-						<tr>
-							<th class="order-lines-quantity-header">{{view Mdo.LabelView labelKey="order.lines.quantity"}}</th>
-							<th class="order-lines-code-header">{{view Mdo.LabelView labelKey="order.lines.code"}}</th>
-							<th class="order-lines-label-header">{{view Mdo.LabelView labelKey="order.lines.description"}}</th>
-							<th class="order-lines-unit-price-header">{{view Mdo.LabelView labelKey="order.lines.unit.price"}}</th>
-							<th class="order-lines-amount-header">{{view Mdo.LabelView labelKey="order.lines.amount"}}</th>
-					  	</tr>
-					</thead>
-					<tfoot>
-						<tr>
-							<td class="cell0">Footer</td>
-							<td class="cell1"></td>
-							<td class="cell2"></td>
-							<td class="cell3"></td>
-							<td class="cell4"></td>
-						</tr>		
-					</tfoot>
-					<tbody>
-						{{#each line in content}}
-							{{#with line}}
-								<tr>
-									<td class="cell0">{{view Mdo.OrderLineTextView valueBinding="quantity"}}</td>
-									<td class="cell1">{{view Mdo.OrderLineTextView valueBinding="code"}}</td>
-									<td class="cell2">{{view Mdo.OrderLineTextView valueBinding="label"}}</td>
-									<td class="cell3">{{view Mdo.OrderLineTextView valueBinding="price"}}</td>
-									<td class="cell4">{{view Mdo.LabelView labelBinding="amount"}}</td>
-								</tr>		
-							{{/with}}	
-						{{/each}}
-						<tr>
-							<td class="cell0">{{view Mdo.OrderLineTextView lastLine=true}}</td>
-							<td class="cell1"></td>
-							<td class="cell2"></td>
-							<td class="cell3"></td>
-							<td class="cell4"></td>
-						</tr>		
-					</tbody>
+		<script type="text/x-handlebars" data-template-name="orderLinesLoading">
+			<form>
+				{{outlet orderLines}}
+				<button id='addOrderLineTest'>addOrderLineTest</button>
+			</form>
 		</script>
 		
 		<script type="text/x-handlebars" data-template-name="user">

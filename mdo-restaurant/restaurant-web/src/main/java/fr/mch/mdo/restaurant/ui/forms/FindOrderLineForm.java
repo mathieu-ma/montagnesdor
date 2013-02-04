@@ -2,10 +2,18 @@ package fr.mch.mdo.restaurant.ui.forms;
 
 import java.math.BigDecimal;
 
+/**
+ * Use this form container in order to validate the form later.
+ *  
+ * @author mathieu
+ *
+ */
 public class FindOrderLineForm {
 
 	private BigDecimal quantity;
-	
+
+	private String orderCode;
+
 	/**
 	 * @return the quantity
 	 */
@@ -33,6 +41,4 @@ public class FindOrderLineForm {
 	public void setOrderCode(String orderCode) {
 		this.orderCode = orderCode;
 	}
-
-	private String orderCode;
 }

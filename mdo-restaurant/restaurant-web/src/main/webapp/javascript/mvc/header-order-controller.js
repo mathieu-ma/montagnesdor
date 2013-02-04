@@ -62,7 +62,7 @@ deferredFunction = function() {return deferred;};
 
 			// Ajax Update call
 			// Update the customers number.
-			var url = "/update/table/" + self.headerOrder.id + "/customers/number/" + customersNumber;
+			var url = "/orders/update/table/" + self.headerOrder.id + "/customers/number/" + customersNumber;
 			var deferredFunction = function() {
 				return $.post(url);
 			};
@@ -89,7 +89,7 @@ deferredFunction = function() {return deferred;};
 			var self = this;
 			
 			// Ajax find dinner table call
-			var url = "/table/header/" + id;
+			var url = "/orders/table/header/" + id;
 			var deferredFunction = function() {
 				return $.get(url);
 			};

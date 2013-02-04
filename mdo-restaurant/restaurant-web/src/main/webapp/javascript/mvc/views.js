@@ -16,13 +16,13 @@ $(document).ready(function() {
 		labelKey: null,
 		i18nLabelChanged: function(sender, key) {
 			var label = this.label;
-			if (!this.label) {
+			if (label == null) {
 				label = sender.get(key);
 			}
 			this.$().html(label);
 		},
 		didInsertElement: function() {
-			if (!this.label) {
+			if (this.label == null) {
 				Mdo.I18n.propAddObserver(this.labelKey, null, this, this.i18nLabelChanged);
 			} else {
 				this.$().html(this.label);

@@ -5,6 +5,7 @@ $(document).ready(function() {
 	Mdo.HeaderButtonsController = Ember.ArrayController.extend({
 		headerOrderController: null,
 		content: [],
+		currentEventName: null, 
 		allButtons: function() {
 			this.initButtons();
 			return this.content;
@@ -17,6 +18,7 @@ $(document).ready(function() {
 
 			// Default selected button
 			var selected = "user";
+			this.currentEventName = 'gotoUser';
 			// 1) Filter each state by route property with value equals to this.router.location.location.hash.substring(1)==Remove #==the first letter
 			// 2) Iterate over found by filter and get the last one.
 			$.each(this.target.currentState.childStates.filterProperty("route", this.target.location.location.hash.substring(1)), function(index, state) {
@@ -76,8 +78,12 @@ $(document).ready(function() {
 		lockedOrders: function() {
 			this._redirect('gotoLockedOrders');
 		},
+		refreshCurrentSelection: function() {
+			this._redirect(this.currentEventName);
+		},
 		// Forward to other event
 		_redirect: function(eventName) {
+			this.currentEventName = eventName; 
 			// Reset header order
 			this.headerOrderController.resetHeaderOrder();
 			// Send redirect
