@@ -1,0 +1,164 @@
+/****************************************/
+/*	START: Mdo common template   		*/
+/****************************************/
+	html {
+		font-size: 10px;
+		border: 6px groove #FFB73D;
+		color: #FFF;
+		height: 97.5%;
+		overflow: hidden;
+		background-color: #660000; 
+		cursor: url('../images/panda.cur'), pointer;
+		background-image: url("./images/montagnesdor2.gif"); 
+	}
+
+	body {
+		height: 100%;
+		margin: auto;
+	}
+
+	div#body, div#menu {
+		height: 80%;
+	}
+
+	div#menu {
+		background-color: green; 
+		float: left;
+		width: 10%;				
+	}
+
+	div#body {
+		outline: none;
+		float: left;
+		background: url('../images/montagnesdor2.gif') no-repeat center center;
+	  	background-attachment: fixed;
+		width: 90%;
+	}
+
+	div#footer {
+		height: 10%;
+	}
+
+	div#header {
+		height: 10%;
+	}
+
+	div#footer {
+		clear: both;
+	}
+	
+	.display-none {
+		display: none;
+	}
+	.visibility-hidden {
+		visibility: hidden;
+	}
+	
+	#main-application, .application {
+		height: 100%;
+	}
+/****************************************/
+/*	END: Mdo common template   			*/
+/****************************************/
+
+/****************************************/
+/*	START: Mdo header Date Time			*/
+/****************************************/
+	@keyframes date-time-registration-vs-user-rules {
+		0%   {opacity:1;}
+		50%  {opacity:0.6;}
+		100% {opacity:1; color: white;}
+	}
+	.displayed-date:hover {
+		cursor: pointer;
+	}
+	.displayed-date.displayed-date-now {
+		color: #FFFFFF;		
+	}
+	.displayed-date.displayed-date-registration-user-entry {
+		/* pink */
+		color: fuchsia;		
+	}
+	.displayed-date.displayed-date-registration-vs-user-entry {
+		/* red */
+		color: red;		
+		animation: date-time-registration-vs-user-rules 1s linear 0s infinite alternate;		
+}
+	.displayed-date.displayed-date-registration-now {
+		/* green */
+		color: lime;		
+	}
+	.displayed-date.displayed-date-registration-vs-now {
+		/* orange */
+		color: orange;
+		animation: date-time-registration-vs-user-rules 1s linear 0s infinite alternate;		
+	}
+	.displayed-date.displayed-date-user-entry {
+		/* blue */
+		color: aqua;		
+	}
+	.displayed-date.displayed-date-user-entry odd {
+		color: #FFFFFF;		
+	}
+	.displayed-date.displayed-date-user-entry even {
+		color: #FF0000;	
+	}
+/****************************************/
+/*	END: Mdo header Date Time			*/
+/****************************************/
+/****************************************/
+/*	START: Mdo header Order				*/
+/****************************************/
+	.header-takeaway-odd {
+		color: #FFFFFF;	
+	}
+	.header-takeaway-even {
+		color: #FF0000;	
+	}
+/****************************************/
+/*	END: Mdo header Order				*/
+/****************************************/
+
+/****************************/
+/*	START: JQuery Theme   	*/
+/****************************/
+	div.mdo-resizable {
+		overflow: hidden;
+		width: 100%;
+		height: 100.1%;
+	} 	
+	
+	div.mdo-ui-resizable-handle-e, div.mdo-ui-resizable-handle-n, div.mdo-ui-resizable-handle-s	{
+		border: 1px gray dotted;
+	}
+	
+	div.mdo-ui-resizable-handle-e
+	{
+		height: 99.7%;
+		width: 1px;
+		right: 0px;
+		cursor: col-resize;
+	}
+
+	div.mdo-ui-resizable-handle-n
+	{
+		width: 99.7%;
+		height: 1px;
+		top: 0px;
+		cursor: row-resize;
+	}
+	
+	div.mdo-ui-resizable-handle-s
+	{
+		width: 99.7%;
+		height: 1px;
+		bottom: 0px;
+		cursor: row-resize;
+	}
+	
+	.ui-widget-content.no-border {
+		border-width: 0px; 
+	}
+/****************************/
+/*	END: JQuery Theme   	*/
+/****************************/
