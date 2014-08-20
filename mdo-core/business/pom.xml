@@ -54,26 +54,6 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-install-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>install-file-jopendocument</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>install-file</goal>
-						</goals>
-						<configuration>
-							<groupId>org.jopendocument</groupId>
-							<artifactId>jopendocument</artifactId>
-							<version>1.2</version>
-							<packaging>jar</packaging>
-							<file>${basedir}/src/main/resources/lib/jOpenDocument-1.2.jar</file>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.3.2</version>
 				<executions>
@@ -105,9 +85,7 @@
  -->		
 		<dependency>
 			<groupId>org.jopendocument</groupId>
-			<artifactId>jopendocument</artifactId>
-			<version>1.2</version>
-			<scope>compile</scope>
+			<artifactId>jOpenDocument</artifactId>
 		</dependency>
  		<dependency>
 			<groupId>${project.groupId}</groupId>
