@@ -6,8 +6,8 @@ import fr.mch.mdo.restaurant.dao.authentication.AuthenticationPasswordLevel;
 import fr.mch.mdo.restaurant.dto.beans.ChangePasswordDto;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.exception.MdoException;
+import fr.mch.mdo.restaurant.ioc.WebRestaurantBeanFactory;
 import fr.mch.mdo.restaurant.ioc.spring.MdoBeanFactory;
-import fr.mch.mdo.restaurant.services.WebRestaurantBeanFactory;
 import fr.mch.mdo.restaurant.services.business.managers.users.IUserAuthenticationsManager;
 import fr.mch.mdo.restaurant.ui.forms.ChangePasswordForm;
 

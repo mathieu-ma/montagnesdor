@@ -148,23 +148,23 @@
 	/*END menu top*/
 
 	/*START date header*/
-	div.header-date label.pointer
+	div#header-date label.pointer
 	{
 		cursor: pointer;
 	}
 
-	div.header-date label.no-pointer
+	div#header-date label.no-pointer
 	{
 		cursor: inherit;
 	}
 
-	div.header-date label.pointer, div.header-date label.no-pointer
+	div#header-date label.pointer, div#header-date label.no-pointer
 	{
 		/*Used by ie to display next sibling element after this label block*/
 		display: block;
 	}
 
-	div.header-date ul
+	div#header-date ul
 	{
 		float:left;
 		list-style-image:none;
@@ -174,7 +174,7 @@
 		padding:0pt;
 	}
 	
-	div.header-date li
+	div#header-date li
 	{
 		position:relative;
 	}
@@ -221,14 +221,19 @@
 		height: 26px;
 	}
 	
-	div.header-date, div.table-customer, div.table-number
+	div#header-date, div.table-customer, div.table-number
 	{
 		float: left;
 	}
 	
-	div.header-date
+	div#header-date
 	{
-		width: 20%;
+		margin-left: 5px;
+	}
+	
+	div#header-date:first-letter
+	{
+		text-transform: uppercase;
 	}
 	
 	div.table-customer

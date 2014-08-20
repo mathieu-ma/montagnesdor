@@ -5,15 +5,7 @@ var timerID;
 var delay = 1000;
 
 $(document).ready(function() {
-	var dateTimeApplet = document.getElementById('embedDateTimeApplet') || document.getElementById('objectDateTimeApplet');
-	if($.browser.msie) {
-	  	//IE asks user to click on ActiveX before use it
-  		dateTimeApplet.click();
-  	} else if($.browser.mozilla) {
-  		//Hide the object element
-  		$("object").css("visibility", "hidden");
-  	}
-		
+	moment.locale("fr")
 //	$("a.language").each(function () {
 //		var language = "request_locale";
 //		var languageId = $(this).attr("id");
@@ -32,53 +24,51 @@ $(document).ready(function() {
 	timer();
 });
 
-function getApplet(name) {
-	var result = "";
-	var jApplets = $("[name="+name+"]", $("#applets")).each(function() {
-		try {
-			result = $(this).get(0);
-			if(result.isActive()) {
-				return false;
-			}
-		} catch(e) {}
-	});
-	
-	return result;
-}
-
 function timer() {
-	var dateTimeApplet = getApplet("dateTimeApplet");
-	var entryDate = $("#header-date");
+	var entryDateContainer = $("#header-date");
+	var shortDatePattern = "DD/MM/YYYY";
+	var largeDatePattern = "dddd DD MMMM YYYY";
+	var largeDateTimePattern = "dddd DD MMMM YYYY à HH:mm:ss";
 	try {
 		var currentTableRegistrationDate = $("#currentTableRegistrationDate");
-		var shortEntryDate = dateTimeApplet.getShortEntryDate();
-		if(currentTableRegistrationDate.get(0) && currentTableRegistrationDate.val()!=shortEntryDate) {
-			entryDate.css({color: "#00FF00"});
-			entryDate.html(dateTimeApplet.getDate(currentTableRegistrationDate.val()));
+		if(currentTableRegistrationDate.get(0) && currentTableRegistrationDate.val()) {
+			currentTableRegistrationDate = moment(currentTableRegistrationDate, shortDatePattern);
 		} else {
-			var shortCurrentDate = dateTimeApplet.getDateShort()+"";
+			currentTableRegistrationDate = moment();
+		}
+		var userEntryDate = $("#userEntryDate");
+		if(userEntryDate.get(0) && userEntryDate.val()) {
+			userEntryDate = moment(userEntryDate, shortDatePattern);
+		} else {
+			userEntryDate = moment();
+		}
+		if(currentTableRegistrationDate.format(shortDatePattern)!=userEntryDate.format(shortDatePattern)) {
+			entryDateContainer.css({color: "#00FF00"});
+			entryDateContainer.html(currentTableRegistrationDate.format(largeDatePattern));
+		} else {
+			var shortCurrentDate = moment();
 		
-			if(shortCurrentDate==shortEntryDate) {
-				entryDate.html(dateTimeApplet.getDate());
-				entryDate.css({color: "#FFFFFF"});
+			if(shortCurrentDate.format(shortDatePattern)==userEntryDate.format(shortDatePattern)) {
+				entryDateContainer.html(moment().format(largeDatePattern));
+				entryDateContainer.css({color: "#FFFFFF"});
 			} else {	
-				entryDate.html(dateTimeApplet.getDate(shortEntryDate));
+				entryDate.html(userEntryDate.format(largeDatePattern));
 				if(blink=="true") {
-					entryDate.css({color: "#FF0000"});
+					entryDateContainer.css({color: "#FF0000"});
 					blink = "false";
 				} else {
-					entryDate.css({color: "#FFFFFF"});
+					entryDateContainer.css({color: "#FFFFFF"});
 					blink = "true";
 				}
 			}
 		}
 
-		window.status = dateTimeApplet.getDateTime().toString();
-		delay = 5000;
+		window.status = moment().format(largeDateTimePattern);
+		delay = 1000;
 	} catch(err) {
 		try {
 			//Variable waitLoadAppletsMessage définie dans la page header.jsp
-			entryDate.html(entryDate.html()+dot);
+			entryDateContainer.html(entryDateContainer.html()+dot);
 		} catch(err) {
 			//alert("Appuyer sur OK pour continuer : "+err.message);		
 		}

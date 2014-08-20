@@ -373,7 +373,7 @@ div.scroll-table-outer-body th, div.scroll-table-outer-body td {
 	/*Used for hiding submit form element : not disable, different to display none */
  	#hidden-submit-form
  	{
- 		margin: -99999999px;
+ 		visibility: hidden;
  	}
  	
  	.number, .number-float, .number-float-percent

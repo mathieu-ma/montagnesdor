@@ -7,7 +7,7 @@ import fr.mch.mdo.restaurant.dto.beans.DinnerTableDto;
 import fr.mch.mdo.restaurant.dto.beans.MdoUserContext;
 import fr.mch.mdo.restaurant.dto.beans.OrderLineDto;
 import fr.mch.mdo.restaurant.dto.beans.TablesOrdersDto;
-import fr.mch.mdo.restaurant.services.WebRestaurantBeanFactory;
+import fr.mch.mdo.restaurant.ioc.WebRestaurantBeanFactory;
 import fr.mch.mdo.restaurant.services.business.managers.tables.IDinnerTablesManager;
 import fr.mch.mdo.restaurant.ui.forms.TablesOrdersForm;
 
