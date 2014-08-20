@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+		<link href="app/css/images/favicon.ico" type="image/x-icon" rel="shortcut icon" />
+		<link href="app/css/images/favicon.png" type="image/png" rel="shortcut icon" />
+		<link href="libs/jquery/ext/ui/css/themes/kimsan93/jquery-ui-1.10.3.custom.min.css" media="all" type="text/css" rel="stylesheet" />
+		<link href="libs/jquery/ext/timepicker/css/jquery-ui-timepicker-addon.css" type="text/css" rel="stylesheet" />
+		<link href="app/css/montagnesdor-commons.css" type="text/css" rel="stylesheet" />
+		<link href="app/css/flags/flags.css" type="text/css" rel="stylesheet" />
+		<title>Mdo - Se loguer</title>
+	</head>
+	<body class="ui-widget-content">
+		<div data-user-id="1" id="main-application">&#160;</div>
+	
+		<script type="text/x-handlebars" data-template-name="application">
+			<div id="header" style="height: 30%">
+				<div id="header-resizable" class="ui-widget-content mdo-resizable">{{render header}}</div>
+			</div>
+			<div id="menu">
+				<div id="menu-resizable" class="ui-widget-content mdo-resizable">{{outlet menu}}</div>
+			</div>
+			<div id="body">
+				<div id="body-resizable" class="ui-widget-content mdo-resizable">{{outlet body}}</div>
+			</div>
+			<div id="footer">
+				<div id="footer-resizable" class="ui-widget-content mdo-resizable">{{outlet footer}}</div>
+			</div>
+		</script>
+		<script type="text/x-handlebars" data-template-name="header">
+<button id="reset">Reset</button>
+<button id="addOrderLineTest">Add order line</button>
+			<span id="header-date-time">
+				<!-- // Make sense to use render instead of outlet because this is used to instantiate a single component once. -->
+				{{render headerOrderDateTime}}
+			</span>
+			<span id="header-languages">
+				{{render headerLanguages}}
+			</span>
+			<span id="header-menus">
+				{{render headerMenus}}
+			</span>
+			<span id="header-order">
+				{{render headerOrder}}
+			</span>
+		</script>
+		<script type="text/x-handlebars" data-template-name="headerOrderDateTime">
+			{{#view "Mdo.DateTimeView" displayedDateBinding="displayedDate" displayedDateStateBinding="displayedDateState" dateTimeFormatBinding="dateTimeFormat"}}{{/view}}
+		</script>
+		<script type="text/x-handlebars" data-template-name="headerLanguages">
+			{{#each language in model}}
+				{{#with language}}
+					{{#view "Mdo.FlagView" idBinding=id languageIso2Binding=languageIso2 displayLanguageBinding=displayLanguage selectedBinding=selected}}{{/view}}
+				{{/with}}	
+			{{/each}}
+		</script>
+		<script type="text/x-handlebars" data-template-name="headerMenus">
+		</script>
+		<script type="text/x-handlebars" data-template-name="headerOrder">
+		</script>
+	<script type="text/x-handlebars" data-template-name="orderLinesLoading">
+			<form>
+				{{outlet orderLines}}
+				<button id='addOrderLineTest'>addOrderLineTest</button>
+			</form>
+	</script>
+		<script type="text/x-handlebars" data-template-name="user">
+			!!!!!!!!{{login}}***********
+			!!!!!!!!{{view "Mdo.LabelView" key="header.access.locked.orders"}}**********
+			========={{view "Mdo.LabelView" key="header.access.locked.orders"}}$$$$$$$$$
+		</script>
+		<script type="text/x-handlebars" data-template-name="ordersIndex">
+			{{mma}}::::
+		</script>
+		<script type="text/x-handlebars" data-template-name="ordersOrderLines">
+			Line 1
+		</script>
+		<script type="text/x-handlebars" data-template-name="cashedOrders">
+			{{mma}}
+	</script>
+		<script type="text/x-handlebars" data-template-name="lockedOrders">
+			{{mma}}
+	</script>
+		
+		<script src="libs/jquery/js/jquery-1.9.1.js" type="text/javascript"></script>
+		<script src="libs/jquery/ext/ui/js/jquery-ui-1.10.3.custom.js" type="text/javascript"></script>
+	
+		<script src="libs/json/js/json2.js" type="text/javascript"></script>
+		<script src="libs/handlebars/js/handlebars-1.0.0.js" type="text/javascript"></script>
+		<script src="libs/ember/js/ember-1.0.0.js" type="text/javascript"></script>
+ 		<script src="libs/ember/ext/js/ember-data.js"></script>
+ 		<script src="app/js/mdo-jquery-plugin.js" type="text/javascript"></script>
+		<script src="app/js/mvc/models/localstorage_adapter.js"></script>
+  		<script src="app/js/mvc/main.js" type="text/javascript"></script>
+		<script src="app/js/mvc/i18n.js" type="text/javascript"></script>
+ 		<script src="app/js/mvc/models/store.js" type="text/javascript"></script>
+ 		
+		<script src="app/js/mvc/utils/date-time.js" type="text/javascript"></script>
+		<script src="app/js/mvc/utils/focus-view.js" type="text/javascript"></script>
+		<script src="app/js/mvc/models/user.js" type="text/javascript"></script>
+ 		<script src="app/js/mvc/models/models.js" type="text/javascript"></script>
+	
+		<script src="app/js/mvc/views/views.js" type="text/javascript"></script>
+		<script src="app/js/mvc/views/label-view.js" type="text/javascript"></script>
+		<script src="app/js/mvc/views/application-view.js" type="text/javascript"></script>
+		<script src="app/js/mvc/views/header-view.js" type="text/javascript"></script>
+		<script src="app/js/mvc/views/header-order-date-time-view.js" type="text/javascript"></script>
+		<script src="app/js/mvc/views/dialog-view.js" type="text/javascript"></script>
+		<script src="app/js/mvc/views/date-time-view.js" type="text/javascript"></script>
+		<script src="app/js/mvc/views/header-languages-view.js" type="text/javascript"></script>
+		<script src="app/js/mvc/views/button-view.js" type="text/javascript"></script>
+		<script src="app/js/mvc/views/header-menus-view.js" type="text/javascript"></script>
+		<script src="app/js/mvc/views/header-order-view.js" type="text/javascript"></script>
+		<script src="app/js/mvc/views/orders-order-lines-view.js" type="text/javascript"></script>
+		
+		<script src="app/js/mvc/controllers/controllers.js" type="text/javascript"></script>
+		<script src="app/js/mvc/controllers/header-controller.js" type="text/javascript"></script>
+		<script src="app/js/mvc/controllers/header-order-date-time-controller.js" type="text/javascript"></script>
+		<script src="app/js/mvc/controllers/date-time-dialog-controller.js" type="text/javascript"></script>
+		<script src="app/js/mvc/controllers/header-languages-controller.js" type="text/javascript"></script>
+		<script src="app/js/mvc/controllers/header-menus-controller.js" type="text/javascript"></script>
+		<script src="app/js/mvc/controllers/header-order-controller.js" type="text/javascript"></script>
+		<script src="app/js/mvc/controllers/orders-order-lines-controller.js" type="text/javascript"></script>
+	
+		<script src="app/js/mvc/routes/router.js"></script>
+		
+		<script src="libs/jquery/ext/timepicker/js/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
+		<script src="libs/jquery/ext/ui/js/i18n/jquery.ui.datepicker-fr.min.js" type="text/javascript"></script>
+		<script src="libs/jquery/ext/timepicker/js/i18n/jquery-ui-timepicker-fr.js" type="text/javascript"></script>
+	</body>
+</html>
